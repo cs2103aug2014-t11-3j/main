@@ -8,7 +8,7 @@ public class Command {
 		_task = parseTask(userCommand);
 	}
 	private Task parseTask(String userCommand) {
-		// TODO Auto-generated method stub
+		String command = sc.next();
 		return null;
 	}
 	private CommandType parseCommandType(String userCommand) {
