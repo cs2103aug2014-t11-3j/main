@@ -29,13 +29,13 @@ public class Controller {
 			return null;
 		return null;
 	}
-	private static String getTheRestOfTheString(String userCommand) {
+	public static String getTheRestOfTheString(String userCommand) {
 		String[] result = userCommand.split(" ", 2);
 		String restOfTheWord = result[1];
 		return restOfTheWord;
 	}
 	
-	private static String getFirstWord(String userCommand) {
+	public static String getFirstWord(String userCommand) {
 		String[] result = userCommand.split(" ", 2);
 		String firstWord = result[0];
 		return firstWord;
