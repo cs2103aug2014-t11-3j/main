@@ -14,38 +14,53 @@ import org.dom4j.io.XMLWriter;
 
 public class FileStorage implements Storage{
 	private final String DEFAULT_FILE_NAME = "store.xml";
-	private static Document _document;
-	private static File _file;
+	private Document _document;
+	private File _file;
+	
 	@Override
 	public LinkedList<Task> load(){
 		SAXReader reader = new SAXReader();
 		try {
-			_document = reader.read(DEFAULT_FILE_NAME);
+			_document = reader.read(_file);
 		} catch (DocumentException e) {
 		}	
-		return parseDoc(_document);
-		
-	}
-
-	private LinkedList<Task> parseDoc(Document document) {
-		Element root = document.getRootElement();
-		LinkedList<Task> tasks = new LinkedList<Task>();
-		for (int i = 0; i< root.nodeCount(); i++) {
-			Node taskNode = root.node(i);
-			Task task = parseNodeToTask(taskNode);
-			tasks.add(task);
+		try {
+			return parseDoc(_document);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		return tasks;
-	}
-
-	private Task parseNodeToTask(Node taskNode) {
 		return null;
 		
 	}
 
-	public Document createDocument() {
+	private LinkedList<Task> parseDoc(Document document) throws Exception {
+		Element root = document.getRootElement();
+		LinkedList<Task> tasks = new LinkedList<Task>();
+		for (int i = 0; i< root.nodeCount(); i++) {
+			Node taskNode = root.node(i);
+			if (taskNode instanceof Element) {
+				Task task = parseElementToTask((Element) taskNode);
+				tasks.add(task);
+			} else {
+				throw new Exception();
+			}
+			
+		}
+		return tasks;
+	}
+
+	private Task parseElementToTask(Element taskNode) {
+		String taskTypeString = taskNode.attributeValue("type");
+		String name = taskNode.attributeValue("name");
+		Task task = new Task(parseTaskType(taskTypeString),name);
+		return task;
+	}
+	private static TaskType parseTaskType(String taskTypeString) {
+		return TaskType.FLOATING;
+	}
+	public Document createBlankDocument() {
 		Document document = DocumentHelper.createDocument();
-        Element root = document.addElement( "root" );
         return document;
 	}
 	public void writeDocument(Document document) throws IOException {
@@ -56,7 +71,7 @@ public class FileStorage implements Storage{
 	@Override
 	public void init() {
 		_file = new File(DEFAULT_FILE_NAME);
-		_document = createDocument();
+		_document = createBlankDocument();
 		try {
 			writeDocument(_document);
 		} catch (IOException e) {
@@ -68,7 +83,25 @@ public class FileStorage implements Storage{
 
 	@Override
 	public void store(LinkedList<Task> tasks) {
-		
+		Document newDocument = DocumentHelper.createDocument();
+		Element root = newDocument.addElement("root");
+		for (int i = 0; i < tasks.size(); i++) {
+			Task task = tasks.get(i);
+			Element taskElement = root.addElement("task")
+					.addAttribute("type",task.getType())
+					.addAttribute("name",task.getName())
+//					.addAttribute("startdate",task.getStartDate())
+//					.addAttribute("starttime",task.getStartTime())
+//					.addAttribute("enddate",task.getEndDate())
+//					.addAttribute("endtime",task.getEndTime())
+					;
+		}
+		try {
+			writeDocument(newDocument);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 }
