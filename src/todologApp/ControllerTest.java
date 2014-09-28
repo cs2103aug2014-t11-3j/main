@@ -13,7 +13,7 @@ public class ControllerTest {
 
 	@Test
 	public void testGetTheRestOfTheString() {
-		assertEquals("first line should be group meeting", " group meeting", 
-				Controller.getFirstWord("add group meeting"));
+		assertEquals("first line should be group meeting", "group meeting", 
+				Controller.getTheRestOfTheString("add group meeting"));
 	}
 }
