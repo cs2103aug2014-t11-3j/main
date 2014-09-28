@@ -8,13 +8,14 @@ public class TaskTest {
 
 	@Test
 	public void testParseName() {
-		assertEquals("first line should be group meeting", "group meeting", 
-				Task.parseName("\"group meeting\""));
+		Task task = new Task ("\"group meeting\"");
+		assertEquals("output should be group meeting", "group meeting" , task.getTaskName());
 	}
-	public void testTaskParsing() {
-		Task task = new Task("group meeting");
-		assertEquals("aaa",TaskType.FLOATING,task.getTaskType());
-		assertEquals("bbb","group meeting",task.getName());
+	
+	@Test
+	public void testParseType() {
+		Task task = new Task ("\"group meeting\"");
+		assertEquals("output should be floating", TaskType.FLOATING , task.getTaskType());
 	}
 
 }
