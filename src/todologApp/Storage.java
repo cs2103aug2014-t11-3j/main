@@ -5,5 +5,5 @@ import java.util.LinkedList;
 public interface Storage {
 	public LinkedList<Task> load();
 	public void init();
-	public void store(LinkedList<Task> tasks);
+	public void store(Task task);
 }
