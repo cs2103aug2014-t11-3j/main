@@ -46,12 +46,15 @@ public class Task {
 		_taskType = parseTaskType(parameter);
 	}
 	private TaskType parseTaskType(String parameter) {
-		int firstIndex = parameter.indexOf();
-		int lastIndex = parameter.indexOf()
+		
+		
 		return null;
 	}
+	
 	private String parseName(String parameter) {
-		// TODO Auto-generated method stub
-		return null;
+		int firstIndex = parameter.indexOf(QUOTATION_MARK);
+		int lastIndex = parameter.lastIndexOf(QUOTATION_MARK);
+		String taskName = parameter.substring(firstIndex, lastIndex);
+		return taskName;
 	}
 }
