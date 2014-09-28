@@ -8,8 +8,7 @@ public class CommandAdd implements Command{
 	}
 	public void execute() {
 		// TODO Auto-generated method stub
-		_storage = Controller.getStorage();
-		_storage.store(_task);
+	
 	}
 
 	public void undo() {

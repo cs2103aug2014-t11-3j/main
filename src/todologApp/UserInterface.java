@@ -1,5 +1,5 @@
 package todologApp;
-import java.awt.EventQueue;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -12,6 +12,8 @@ public class UserInterface implements ActionListener {
 	private JFrame frame;
 	private JTextField commandEntryTextField;
 	private Controller controller;
+	final static boolean RIGHT_TO_LEFT = false;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -38,10 +40,15 @@ public class UserInterface implements ActionListener {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
-	private void createTextBox() {
-		//TODO implement this
-		//for layout, google for "java layout..."
+	private void addComponentsToFrame(Container pane) {
+		if (RIGHT_TO_LEFT) {
+            pane.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+        }
+		pane.setLayout(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.HORIZONTAL;
 		commandEntryTextField = new JTextField(20);
+		c.fill = GridBagConstraints.HORIZONTAL;
 		commandEntryTextField.addActionListener(this);
 		frame.add(commandEntryTextField);
 	}
@@ -51,7 +58,7 @@ public class UserInterface implements ActionListener {
 	 */
 	public UserInterface() {
 		initialize();
-		createTextBox();
+		addComponentsToFrame(frame.getContentPane());
 		// create more here
 		
 	}

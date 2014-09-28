@@ -3,15 +3,15 @@ package todologApp;
 // remember to write unit test as you code
 public class Controller {
 	
-	private static Storage _storage;
+	private static Storage _DBStorage;
 	private static History _history;
 	
 	public static void setStorage(Storage storage) {
-		_storage = storage;
+		_DBStorage = storage;
 	}
 	
-	public static Storage getStorage() {
-		return _storage;
+	public static Storage getDBStorage() {
+		return _DBStorage;
 	}
 	
 	public static void setHistoryStorage(History history) {
