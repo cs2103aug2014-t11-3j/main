@@ -19,7 +19,21 @@ public class Controller {
 		command.undo();
 	}
 	private static Command createCommand(String userCommand) {
-		//TODO parse command
+		String firstWord = getFirstWord(userCommand);
+		String restOfTheString = getTheRestOfTheString(userCommand);
+		if (firstWord.equalsIgnoreCase("add")) {
+			Task task = new Task(restOfTheString);
+			CommandAdd command = new CommandAdd(task);	
+		} else if (firstWord == "delete")
+			
+		return null;
+	}
+	private static String getTheRestOfTheString(String userCommand) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	private static String getFirstWord(String userCommand) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
