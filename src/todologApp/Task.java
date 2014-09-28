@@ -1,6 +1,13 @@
 package todologApp;
 
 public class Task {
+	
+	//MISC
+	private static String EMPTY_STRING = "";
+	private static String SINGLE_SPACE = " ";
+	private static String DATE_SEPARATOR = "/";
+	private static String SYMBOL_DASH = "-";
+	private static String QUOTATION_MARK = "\"";
 
 	//KEYWORDS
 	private static String KEYWORD_LOCATION = "at";
@@ -39,7 +46,8 @@ public class Task {
 		_taskType = parseTaskType(parameter);
 	}
 	private TaskType parseTaskType(String parameter) {
-		// TODO Auto-generated method stub
+		int firstIndex = parameter.indexOf();
+		int lastIndex = parameter.indexOf()
 		return null;
 	}
 	private String parseName(String parameter) {
