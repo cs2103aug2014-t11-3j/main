@@ -53,6 +53,7 @@ public class UserInterface implements ActionListener {
 		initialize();
 		createTextBox();
 		// create more here
+		
 	}
 	
 	// remember to write unit test as you code
@@ -61,7 +62,7 @@ public class UserInterface implements ActionListener {
 		//(I think for this is when typing (to guess the input)
 		// and for pressing enter then send the text to Parser)
 	    String commandString = commandEntryTextField.getText();
-	    Controller.parseUserCommand(commandString);	    
+	    Controller.acceptUserCommand(commandString);	    
 	    commandEntryTextField.setText("");
 	    
 	}
