@@ -54,7 +54,7 @@ public class Task {
 	public static String parseName(String parameter) {
 		int firstIndex = parameter.indexOf(QUOTATION_MARK);
 		int lastIndex = parameter.lastIndexOf(QUOTATION_MARK);
-		String taskName = parameter.substring(firstIndex+1, lastIndex-1);
+		String taskName = parameter.substring(firstIndex+1, lastIndex);
 		return taskName;
 	}
 }
