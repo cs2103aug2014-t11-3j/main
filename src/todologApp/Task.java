@@ -48,14 +48,14 @@ public class Task {
 	
 	private TaskType parseTaskType(String parameter) {
 		int lastIndex = parameter.lastIndexOf(QUOTATION_MARK);
-		if (parameter.length() == lastIndex) {
+		if (parameter.length() == lastIndex+1) {
 			return (TaskType.FLOATING);
 		}
 		
 		return null;
 	}
 	
-	public static String parseName(String parameter) {
+	private static String parseName(String parameter) {
 		int firstIndex = parameter.indexOf(QUOTATION_MARK);
 		int lastIndex = parameter.lastIndexOf(QUOTATION_MARK);
 		String taskName = parameter.substring(firstIndex+1, lastIndex);
@@ -63,12 +63,10 @@ public class Task {
 	}
 
 	public TaskType getTaskType() {
-		// TODO Auto-generated method stub
 		return _taskType;
 	}
 
-	public String getName() {
-		// TODO Auto-generated method stub
+	public String getTaskName() {
 		return _name;
 	}
 }
