@@ -7,14 +7,14 @@ public class CommandAdd implements Command{
 		_task = task;
 	}
 	public void execute() {
-		// TODO Auto-generated method stub
 		_storage = Controller.getStorage();
 		_storage.store(_task);
 	}
 
 	public void undo() {
-		// TODO Auto-generated method stub
 		
+		CommandDelete undoAdd = new CommandDelete(_task);
+		undoAdd.execute();
 	}
 
 }
