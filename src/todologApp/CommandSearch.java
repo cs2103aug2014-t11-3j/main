@@ -10,8 +10,5 @@ public class CommandSearch implements Command{
 		// TODO Auto-generated method stub
 	}
 
-	public void undo() {
-		// TODO Auto-generated method stub
-	}
 
 }
