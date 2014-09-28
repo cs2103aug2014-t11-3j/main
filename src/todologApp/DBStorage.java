@@ -3,23 +3,22 @@ package todologApp;
 import java.util.LinkedList;
 
 public class DBStorage implements Storage {
-
-	@Override
+	private LinkedList<Task> _tasks;
+	private FileStorage _fileStorage;
 	public LinkedList<Task> load() {
-		// TODO Auto-generated method stub
-		return null;
+		return _tasks;
 	}
 
 	@Override
 	public void init() {
-		// TODO Auto-generated method stub
-		
+		_fileStorage.init();
+		_tasks = _fileStorage.load();
 	}
 
 	@Override
-	public void store(Task task) {
-		// TODO Auto-generated method stub
-		
+	public void store(LinkedList<Task> tasks) {
+		_tasks = tasks;
+		_fileStorage.store(tasks);
 	}
 
 }
