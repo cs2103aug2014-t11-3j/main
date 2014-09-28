@@ -9,6 +9,11 @@ public class Controller {
 	public static void setStorage(Storage storage) {
 		_storage = storage;
 	}
+	
+	public static Storage getStorage() {
+		return _storage;
+	}
+	
 	public static void setHistoryStorage(History history) {
 		_history = history;
 	}
