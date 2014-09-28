@@ -3,16 +3,24 @@ package todologApp;
 // remember to write unit test as you code
 public class Controller {
 	
-	private static Storage storage;
-
-	public static String parseUserCommand(String userCommand) {
-		Command command = new Command(userCommand);
-		String feedback = executeCommand(command);
-		return feedback;
+	private static Storage _storage;
+	private static History _history;
+	
+	public static void setStorage(Storage storage) {
+		_storage = storage;
 	}
-
-	private static String executeCommand(Command command) {
-		// TODO Auto-generated method stub
+	public static void setHistoryStorage(History history) {
+		_history = history;
+	}
+	public static void acceptUserCommand(String userCommand) {
+		Command command = createCommand(userCommand);
+		command.execute();
+		//...
+		command.undo();
+	}
+	private static Command createCommand(String userCommand) {
+		//TODO parse command
 		return null;
 	}
+
 }
