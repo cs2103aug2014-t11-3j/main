@@ -65,11 +65,11 @@ public class Task {
 			String taskName = parameter.substring(firstIndex+1, lastIndex);
 			return taskName;
 		} else if (lastIndex == firstIndex) {
-			showToUser(INVALID_MESSAGE);
+			return INVALID_MESSAGE;
 		} else if (lastIndex < firstIndex) {
-			showToUser(INVALID_MESSAGE);
+			return INVALID_MESSAGE;
 		} else if (firstIndex == -1) {
-			showToUser(INVALID_MESSAGE);
+			return INVALID_MESSAGE;
 		}
 		
 		return null;
