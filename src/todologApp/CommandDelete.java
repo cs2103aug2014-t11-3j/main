@@ -1,4 +1,6 @@
+
 package todologApp;
+import java.util.LinkedList;
 
 public class CommandDelete implements Command{
 	private static Task _task;
@@ -8,7 +10,13 @@ public class CommandDelete implements Command{
 	}
 	public void execute() {
 		_storage=Controller.getStorage();
-		_storage.delete(_task);
+		LinkedList<Task> taskList= _storage.load();
+		if(taskList.indexOf(_task)==-1){
+			System.out.println("Invalid cannot delete");
+		}
+		else{
+			taskList.remove(_task);
+		}	
 	}
 
 	public void undo() {
