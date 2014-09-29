@@ -43,45 +43,16 @@ public class Task {
 
 	private static String _name;
 	private static TaskType _taskType;
+	private static String _taskDay;
 	
 	public Task(String parameter){
 		_name = parseName(parameter);
 		_taskType = parseTaskType(parameter);
+		_taskDay = parseDay(parameter);
 	}
 	
-	private TaskType parseTaskType(String parameter) {
-		int lastIndex = parameter.lastIndexOf(QUOTATION_MARK);
-		if (parameter.length() == lastIndex+1) {
-			return (TaskType.FLOATING);
-		} else if (parameter.length() > lastIndex+2) {
-			return (TaskType.DEADLINE);
-		}
-		
-		return null;
-	}
-	
-	private static String parseName(String parameter) {
-		int firstIndex = parameter.indexOf(QUOTATION_MARK);
-		int lastIndex = parameter.lastIndexOf(QUOTATION_MARK);
-		String[] timeAndDay;
-		String taskName = new String();
-		
-		if (lastIndex > firstIndex) {
-			taskName = parameter.substring(firstIndex+1, lastIndex);
-			return taskName;
-		} else if (lastIndex == firstIndex) {
-			return INVALID_MESSAGE;
-		} else if (lastIndex < firstIndex) {
-			return INVALID_MESSAGE;
-		} else if (firstIndex == -1) {
-			return INVALID_MESSAGE;
-		} else {
-			timeAndDay = parameter.split(" ", 3);
-		}
-
-		taskName = parameter.substring(firstIndex+1, lastIndex);
-		String day = new String();
-		day = timeAndDay[2];
+	private static String parseDay(String parameter) {
+		String day = parameter;
 		
 		if (day.equalsIgnoreCase(DAY_KEYWORD_TODAY)) {
 			return DAY_KEYWORD_TODAY;
@@ -104,12 +75,47 @@ public class Task {
 		} else if (day.equalsIgnoreCase(DAY_KEYWORD_SUNDAY) || day.equalsIgnoreCase(DAY_KEYWORD_SUN)) {
 			return DAY_KEYWORD_SUNDAY;
 		} 
+		return null;
+	}
+
+	private TaskType parseTaskType(String parameter) {
+		int lastIndex = parameter.lastIndexOf(QUOTATION_MARK);
+		if (parameter.length() == lastIndex+1) {
+			return (TaskType.FLOATING);
+		} else if (parameter.length() > lastIndex+2) {
+			return (TaskType.DEADLINE);
+		}
+		
+		return null;
+	}
+	
+	private static String parseName(String parameter) {
+		int firstIndex = parameter.indexOf(QUOTATION_MARK);
+		int lastIndex = parameter.lastIndexOf(QUOTATION_MARK);
+		
+		if (lastIndex > firstIndex) {
+			String taskName = parameter.substring(firstIndex+1, lastIndex);
+			return taskName;
+		} else if (lastIndex == firstIndex) {
+			return INVALID_MESSAGE;
+		} else if (lastIndex < firstIndex) {
+			return INVALID_MESSAGE;
+		} else if (firstIndex == -1) {
+			return INVALID_MESSAGE;
+		} else {
+			String[] timeAndDay = parameter.split(" ", 3);
+			parseDay(timeAndDay[2]);
+		}
 		
 		return null;
 	}
 
 	public TaskType getTaskType() {
 		return _taskType;
+	}
+	
+	public String getTaskDay() {
+		return _taskDay;
 	}
 
 	public String getTaskName() {
