@@ -2,6 +2,9 @@ package todologApp;
 
 public class Task {
 	
+	//MESSAGE
+	private static String INVALID_MESSAGE = "Invalid Input!";
+	
 	//MISC
 	private static String EMPTY_STRING = "";
 	private static String SINGLE_SPACE = " ";
@@ -58,8 +61,18 @@ public class Task {
 	private static String parseName(String parameter) {
 		int firstIndex = parameter.indexOf(QUOTATION_MARK);
 		int lastIndex = parameter.lastIndexOf(QUOTATION_MARK);
-		String taskName = parameter.substring(firstIndex+1, lastIndex);
-		return taskName;
+		if (lastIndex > firstIndex) {
+			String taskName = parameter.substring(firstIndex+1, lastIndex);
+			return taskName;
+		} else if (lastIndex == firstIndex) {
+			showToUser(INVALID_MESSAGE);
+		} else if (lastIndex < firstIndex) {
+			showToUser(INVALID_MESSAGE);
+		} else if (firstIndex == -1) {
+			showToUser(INVALID_MESSAGE);
+		}
+		
+		return null;
 	}
 
 	public TaskType getTaskType() {
@@ -68,5 +81,9 @@ public class Task {
 
 	public String getTaskName() {
 		return _name;
+	}
+	
+	public static void showToUser(String message) {
+		System.out.println(message);
 	}
 }
