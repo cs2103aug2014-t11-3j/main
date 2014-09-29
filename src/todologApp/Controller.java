@@ -18,23 +18,24 @@ public class Controller {
 		//...
 		command.undo();
 	}
-	private static Command createCommand(String userCommand) {
+	public static Command createCommand(String userCommand) {
 		String firstWord = getFirstWord(userCommand);
 		String restOfTheString = getTheRestOfTheString(userCommand);
 		if (firstWord.equalsIgnoreCase("add")) {
 			Task task = new Task(restOfTheString);
-			CommandAdd command = new CommandAdd(task);	
+			CommandAdd command = new CommandAdd(task);
+			return command;
 		} else if (firstWord == "delete")
-
 			return null;
 		return null;
 	}
+	
 	public static String getTheRestOfTheString(String userCommand) {
 		String[] result = userCommand.split(" ", 2);
 		String restOfTheWord = result[1];
 		return restOfTheWord;
 	}
-	
+
 	public static String getFirstWord(String userCommand) {
 		String[] result = userCommand.split(" ", 2);
 		String firstWord = result[0];
