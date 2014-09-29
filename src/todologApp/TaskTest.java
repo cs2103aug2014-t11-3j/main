@@ -10,6 +10,10 @@ public class TaskTest {
 	public void testParseName() {
 		Task task = new Task ("\"group meeting\"");
 		assertEquals("output should be group meeting", "group meeting" , task.getTaskName());
+		Task task2 = new Task ("\"group meeting");
+		assertEquals("output should be invalid input", "Invalid Input!" , task2.getTaskName());
+		Task task3 = new Task ("group meeting");
+		assertEquals("output should be invalid input", "Invalid Input!" , task3.getTaskName());
 	}
 	
 	@Test
