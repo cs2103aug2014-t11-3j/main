@@ -25,8 +25,13 @@ public class Controller {
 			Task task = new Task(restOfTheString);
 			CommandAdd command = new CommandAdd(task);
 			return command;
-		} else if (firstWord == "delete")
+		} else if (firstWord.equalsIgnoreCase("delete")) {
 			return null;
+		} else if (firstWord.equalsIgnoreCase("edit")) {
+			return null;
+		} else if (firstWord.equalsIgnoreCase("search")) {
+			return null;
+		}
 		return null;
 	}
 	
