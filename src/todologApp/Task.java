@@ -85,8 +85,8 @@ public class Task {
 	private TaskType parseTaskType(String parameter) {
 		String taskDateTime = parameter.substring(parameter.lastIndexOf(QUOTATION_MARK)+1);
 		taskDateTime = taskDateTime.trim();
-		System.out.println(parameter);
-		System.out.println(taskDateTime);
+		//System.out.println(parameter);
+		//System.out.println(taskDateTime);
 		String[] analyseTask = taskDateTime.split(SINGLE_SPACE);
 		if (taskDateTime.length() == 0) {
 			return (TaskType.FLOATING);
