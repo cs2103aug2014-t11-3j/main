@@ -46,9 +46,10 @@ public class Task {
 	private static String _taskDay;
 	
 	public Task(String parameter){
+
 		_name = parseName(parameter);
 		_taskType = parseTaskType(parameter);
-		_taskDay = parseDay(parameter);
+		
 	}
 	
 	private static String parseDay(String parameter) {
@@ -105,7 +106,7 @@ public class Task {
 		} else {
 			String taskName = parameter.substring(firstIndex+1, lastIndex);
 			String[] timeAndDay = parameter.split(" ", 3);
-			parseDay(timeAndDay[2]);
+			_taskDay = parseDay(timeAndDay[2]);
 			return taskName;
 		}
 	}
