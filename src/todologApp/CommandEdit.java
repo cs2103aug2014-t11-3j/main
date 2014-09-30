@@ -2,11 +2,20 @@ package todologApp;
 
 public class CommandEdit implements Command{
 	private static Task _taskExisting;
+	private static String _toBeEdited;
 	private static Task _taskEdited;
 	//private static Storage _storage;
-	public CommandEdit(Task taskExisting, Task taskEdited) {
+	
+	
+	public CommandEdit(Task taskExisting, String toBeEdited ) {
 		_taskExisting = taskExisting;
-		_taskEdited=taskEdited;
+		_toBeEdited= toBeEdited;
+		_taskEdited=_taskExisting;
+	}
+	public Task formNewTask(){
+		if(_toBeEdited.startsWith("\"")&& _toBeEdited.endsWith("\"")){
+			_taskEdited.setName(_taskExisting.getName());
+		}
 	}
 	
 	public void execute() {
