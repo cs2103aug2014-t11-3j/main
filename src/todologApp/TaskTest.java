@@ -26,6 +26,8 @@ public class TaskTest {
 		assertEquals("output should be DEADLINE", TaskType.DEADLINE , task3.getTaskType());
 		Task task4 = new Task ("\"group meeting\" every friday");
 		assertEquals("output should be RECURRING", TaskType.RECURRING , task4.getTaskType());
+		Task task5 = new Task ("\"group meeting every friday");
+		assertEquals("output should be INVALID", TaskType.INVALID , task4.getTaskType());
 	}
 
 	@Test
