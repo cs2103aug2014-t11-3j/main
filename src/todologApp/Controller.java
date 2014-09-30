@@ -26,11 +26,14 @@ public class Controller {
 			CommandAdd command = new CommandAdd(task);
 			return command;
 		} else if (firstWord.equalsIgnoreCase("delete")) {
-			return null;
+			CommandDelete command = new CommandDelete(restOfTheString);
+			return command;
 		} else if (firstWord.equalsIgnoreCase("edit")) {
-			return null;
+			CommandEdit command = new CommandEdit(restOfTheString);
+			return command;
 		} else if (firstWord.equalsIgnoreCase("search")) {
-			return null;
+			CommandSearch command = new CommandSearch(restOfTheString);
+			return command;
 		}
 		return null;
 	}
