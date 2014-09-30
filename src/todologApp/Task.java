@@ -13,12 +13,11 @@ public class Task {
 	private static String QUOTATION_MARK = "\"";
 
 	//KEYWORDS
-	private static String KEYWORD_LOCATION = "at";
-	private static String KEYWORD_STARTING = "from";
-	private static String KEYWORD_ENDING = "to";
+	private static String KEYWORD_TIME_STARTING = "from";
+	private static String KEYWORD_TIME_ENDING = "to";
 	private static String KEYWORD_DEADLINE = "by";
-	private static String KEYWORD_HOURS = "hrs";
-
+	private static String KEYWORD_RECURRING = "every";
+	
 	//DAY KEYWORDS
 	private static String DAY_KEYWORD_TODAY = "Today";
 	private static String DAY_KEYWORD_TOMORROW = "Tomorrow";
@@ -41,13 +40,17 @@ public class Task {
 	private static String DAY_KEYWORD_SUNDAY = "Sunday";
 	private static String DAY_KEYWORD_SUN = "sun";
 
-	private static String _name;
+	//Key Variables
+	private static String _taskName;
 	private static TaskType _taskType;
-	private static String _taskDay;
+	private static String _taskStartDay;
+	private static String _taskEndDay;
+	private static String _taskStartTime;
+	private static String _taskEndTime;
 	
 	public Task(String parameter){
 
-		_name = parseName(parameter);
+		_taskName = parseName(parameter);
 		_taskType = parseTaskType(parameter);
 		
 	}
@@ -80,11 +83,16 @@ public class Task {
 	}
 
 	private TaskType parseTaskType(String parameter) {
-		int lastIndex = parameter.lastIndexOf(QUOTATION_MARK);
-		if (parameter.length() == lastIndex+1) {
+		String[] analyseTask = parameter.split(SINGLE_SPACE);
+	
+		if (analyseTask.length == 1) {
 			return (TaskType.FLOATING);
-		} else if (parameter.length() > lastIndex+2) {
+		} else if (analyseTask[1].equalsIgnoreCase(KEYWORD_TIME_STARTING)) {
+			return (TaskType.TIMED);
+		} else if (analyseTask[1].equalsIgnoreCase(KEYWORD_DEADLINE)) {
 			return (TaskType.DEADLINE);
+		} else if (analyseTask[1].equalsIgnoreCase(KEYWORD_DEADLINE)) {
+			return (TaskType.RECURRING);
 		}
 		
 		return null;
@@ -105,7 +113,7 @@ public class Task {
 			return INVALID_MESSAGE;
 		} else {
 			String taskName = parameter.substring(firstIndex+1, lastIndex);
-			String[] timeAndDay = parameter.split(" ", 3);
+			String[] timeAndDay = parameter.split(SINGLE_SPACE, 3);
 			_taskDay = parseDay(timeAndDay[2]);
 			return taskName;
 		}
@@ -120,7 +128,7 @@ public class Task {
 	}
 
 	public String getTaskName() {
-		return _name;
+		return _taskName;
 	}
 	
 	public static void showToUser(String message) {
