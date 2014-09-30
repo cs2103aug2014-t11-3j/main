@@ -22,4 +22,9 @@ public class TaskTest {
 		assertEquals("output should be floating", TaskType.FLOATING , task.getTaskType());
 	}
 
+	@Test
+	public void testParseDay() {
+		Task task = new Task ("\"group meeting\" fri 2359");
+		assertEquals("output should be Friday", "Friday" , task.getTaskDay());
+	}
 }
