@@ -17,12 +17,20 @@ public class FileStorage implements Storage{
 	private Document _document;
 	private File _file;
 	
+	public FileStorage() {
+		_file = new File(DEFAULT_FILE_NAME);
+	}
+	public FileStorage(String fileName) {
+		_file = new File(fileName);
+	}
+	
 	@Override
 	public LinkedList<Task> load(){
 		SAXReader reader = new SAXReader();
 		try {
 			_document = reader.read(_file);
 		} catch (DocumentException e) {
+			e.printStackTrace();
 		}	
 		try {
 			return parseDoc(_document);
@@ -70,7 +78,6 @@ public class FileStorage implements Storage{
 	}
 	@Override
 	public void init() {
-		_file = new File(DEFAULT_FILE_NAME);
 		_document = createBlankDocument();
 		try {
 			writeDocument(_document);
