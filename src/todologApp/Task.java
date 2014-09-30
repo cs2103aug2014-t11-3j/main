@@ -103,11 +103,11 @@ public class Task {
 		} else if (firstIndex == -1) {
 			return INVALID_MESSAGE;
 		} else {
+			String taskName = parameter.substring(firstIndex+1, lastIndex);
 			String[] timeAndDay = parameter.split(" ", 3);
 			parseDay(timeAndDay[2]);
+			return taskName;
 		}
-		
-		return null;
 	}
 
 	public TaskType getTaskType() {
