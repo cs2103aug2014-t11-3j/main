@@ -83,19 +83,23 @@ public class Task {
 	}
 
 	private TaskType parseTaskType(String parameter) {
-		String[] analyseTask = parameter.split(SINGLE_SPACE);
-	
-		if (analyseTask.length == 1) {
+		String taskDateTime = parameter.substring(parameter.lastIndexOf(QUOTATION_MARK)+1);
+		taskDateTime = taskDateTime.trim();
+		System.out.println(parameter);
+		System.out.println(taskDateTime);
+		String[] analyseTask = taskDateTime.split(SINGLE_SPACE);
+		if (taskDateTime.length() == 0) {
 			return (TaskType.FLOATING);
-		} else if (analyseTask[1].equalsIgnoreCase(KEYWORD_TIME_STARTING)) {
+		} else if (analyseTask[0].equalsIgnoreCase(KEYWORD_TIME_STARTING)) {
 			return (TaskType.TIMED);
-		} else if (analyseTask[1].equalsIgnoreCase(KEYWORD_DEADLINE)) {
+		} else if (analyseTask[0].equalsIgnoreCase(KEYWORD_DEADLINE)) {
 			return (TaskType.DEADLINE);
-		} else if (analyseTask[1].equalsIgnoreCase(KEYWORD_DEADLINE)) {
+		} else if (analyseTask[0].equalsIgnoreCase(KEYWORD_RECURRING)) {
 			return (TaskType.RECURRING);
+		} else {
+			return (TaskType.INVALID);
 		}
 		
-		return null;
 	}
 	
 	private static String parseName(String parameter) {
@@ -114,7 +118,7 @@ public class Task {
 		} else {
 			String taskName = parameter.substring(firstIndex+1, lastIndex);
 			String[] timeAndDay = parameter.split(SINGLE_SPACE, 3);
-			_taskDay = parseDay(timeAndDay[2]);
+			_taskStartDay = parseDay(timeAndDay[2]);
 			return taskName;
 		}
 	}
@@ -124,7 +128,7 @@ public class Task {
 	}
 	
 	public String getTaskDay() {
-		return _taskDay;
+		return _taskStartDay;
 	}
 
 	public String getTaskName() {
