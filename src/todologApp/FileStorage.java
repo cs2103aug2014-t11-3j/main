@@ -57,15 +57,41 @@ public class FileStorage implements Storage{
 		}
 		return tasks;
 	}
-
 	private Task parseElementToTask(Element taskNode) {
 		String taskTypeString = taskNode.attributeValue("type");
-		String name = taskNode.attributeValue("name");
-		Task task = new Task(parseTaskType(taskTypeString),name);
+		TaskType taskType = parseTaskType(taskTypeString);
+		Task task;
+		switch (taskType) {
+			case TIMED:
+				task = parseIntoTimed(taskNode);
+			case DEADLINE:
+				task = parseIntoDeadline(taskNode);
+			default:
+				task = parseIntoFloating(taskNode);
+		}
+		
 		return task;
 	}
+	private Task parseIntoFloating(Element taskNode) {
+		String name = taskNode.attributeValue("name");
+		return new Task(TaskType.FLOATING, name);
+	}
+	private Task parseIntoDeadline(Element taskNode) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	private Task parseIntoTimed(Element taskNode) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	private static TaskType parseTaskType(String taskTypeString) {
-		return TaskType.FLOATING;
+		switch (taskTypeString) {
+			case "DEADLINE" :
+				return TaskType.DEADLINE;
+			case "TIMED" :
+				return TaskType.TIMED;
+			default: return TaskType.FLOATING;
+		}
 	}
 	public Document createBlankDocument() {
 		Document document = DocumentHelper.createDocument();
