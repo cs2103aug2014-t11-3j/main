@@ -11,10 +11,17 @@ public class CommandEdit implements Command{
 		_taskExisting = taskExisting;
 		_toBeEdited= toBeEdited;
 		_taskEdited=_taskExisting;
+		formNewTask();
 	}
 	public Task formNewTask(){
 		if(_toBeEdited.startsWith("\"")&& _toBeEdited.endsWith("\"")){
-			_taskEdited.setName(_taskExisting.getName());
+			_taskEdited.setName(_toBeEdited);
+		}
+		else if(equalsWeekDay(_toBeEdited)){
+			_taskEdited.setDay(_toBeEdited);
+		}
+		else if(_toBeEdited.length()==4){
+			_taskEdited.setTime(_toBeEdited);
 		}
 	}
 	
@@ -31,6 +38,15 @@ public class CommandEdit implements Command{
 		CommandAdd existing= new CommandAdd(_taskExisting);
 		existing.execute();
 		}
+	
+	public boolean equalsWeekDay(String day){
+		if(day.equalsIgnoreCase("monday")||day.equalsIgnoreCase("monday")||day.equalsIgnoreCase("tuesday")||day.equalsIgnoreCase("wednesday")||day.equalsIgnoreCase("thursday")||day.equalsIgnoreCase("friday")||day.equalsIgnoreCase("saturday")){
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
 
 }
 
