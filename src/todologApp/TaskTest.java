@@ -27,7 +27,7 @@ public class TaskTest {
 		Task task4 = new Task ("\"group meeting\" every friday");
 		assertEquals("output should be RECURRING", TaskType.RECURRING , task4.getTaskType());
 		Task task5 = new Task ("\"group meeting every friday");
-		assertEquals("output should be INVALID", TaskType.INVALID , task4.getTaskType());
+		assertEquals("output should be INVALID", TaskType.INVALID , task5.getTaskType());
 	}
 
 	@Test
