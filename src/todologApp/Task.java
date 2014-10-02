@@ -52,9 +52,33 @@ public class Task {
 
 		_taskName = parseTaskName(parameter);
 		_taskType = parseTaskType(parameter);
+		_taskStartDay = parseTaskStartDay(parameter);
+		_taskEndDay = parseTaskEndDay(parameter);
+		_taskStartTime = parseTaskStartTime(parameter);
+		_taskEndTime = parseTaskEndTime(parameter);
 		
 	}
 	
+	private String parseTaskEndTime(String parameter) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private String parseTaskStartTime(String parameter) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private String parseTaskEndDay(String parameter) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private String parseTaskStartDay(String parameter) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	private static String parseDay(String parameter) {
 		String day = parameter;
 		
@@ -78,8 +102,9 @@ public class Task {
 			return DAY_KEYWORD_SATURDAY;
 		} else if (day.equalsIgnoreCase(DAY_KEYWORD_SUNDAY) || day.equalsIgnoreCase(DAY_KEYWORD_SUN)) {
 			return DAY_KEYWORD_SUNDAY;
-		} 
-		return null;
+		} else {
+			return DAY_KEYWORD_TODAY;
+		}
 	}
 
 	private TaskType parseTaskType(String parameter) {
