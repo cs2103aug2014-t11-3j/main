@@ -121,8 +121,8 @@ public class FileStorage implements Storage{
 		for (int i = 0; i < tasks.size(); i++) {
 			Task task = tasks.get(i);
 			Element taskElement = root.addElement("task")
-					.addAttribute("type",task.getType())
-					.addAttribute("name",task.getName())
+					.addAttribute("type",task.getTaskType().toString())
+					.addAttribute("name",task.getTaskName())
 //					.addAttribute("startdate",task.getStartDate())
 //					.addAttribute("starttime",task.getStartTime())
 //					.addAttribute("enddate",task.getEndDate())

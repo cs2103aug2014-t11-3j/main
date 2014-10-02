@@ -51,6 +51,10 @@ public class Task {
 		_taskType = parseTaskType(parameter);
 		
 	}
+	public Task(TaskType taskType, String name) {
+		_name = name;
+		_taskType = taskType; 
+	}
 	
 	private static String parseDay(String parameter) {
 		String day = parameter;
