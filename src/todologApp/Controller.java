@@ -3,16 +3,16 @@ package todologApp;
 // remember to write unit test as you code
 public class Controller {
 
-	private static Storage _DBStorage;
+	private static DBStorage _DBStorage;
 
 	private static History _history;
 	
-	public static void setStorage(Storage storage) {
-		_DBStorage = storage;
+	public static void setStorage(DBStorage DBstorage) {
+		_DBStorage = DBstorage;
 	}
 	
 
-	public static Storage getDBStorage() {
+	public static DBStorage getDBStorage() {
 		return _DBStorage;
 
 	}
@@ -35,14 +35,17 @@ public class Controller {
 			CommandAdd command = new CommandAdd(task);
 			return command;
 		} else if (firstWord.equalsIgnoreCase("delete")) {
-			CommandDelete command = new CommandDelete(restOfTheString);
+			Task task = new Task(restOfTheString);
+			CommandDelete command = new CommandDelete(task);
 			return command;
-		} else if (firstWord.equalsIgnoreCase("edit")) {
-			CommandEdit command = new CommandEdit(restOfTheString);
-			return command;
-		} else if (firstWord.equalsIgnoreCase("search")) {
-			CommandSearch command = new CommandSearch(restOfTheString);
-			return command;
+//		} else if (firstWord.equalsIgnoreCase("edit")) {
+//			Task task = new Task(restOfTheString);
+//			CommandEdit command = new CommandEdit(task);
+//			return command;
+//		} else if (firstWord.equalsIgnoreCase("search")) {
+//			Task task = new Task(restOfTheString);
+//			CommandSearch command = new CommandSearch(task);
+//			return command;
 		}
 		return null;
 	}

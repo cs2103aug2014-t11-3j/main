@@ -9,7 +9,7 @@ public class CommandDelete implements Command{
 		_task = task;
 	}
 	public void execute() {
-		_storage=Controller.getStorage();
+		_storage=Controller.getDBStorage();
 		LinkedList<Task> taskList= _storage.load();
 		if(taskList.indexOf(_task)==-1){
 			System.out.println("Invalid cannot delete");

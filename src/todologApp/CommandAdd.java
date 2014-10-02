@@ -10,7 +10,7 @@ public class CommandAdd implements Command{
 		_task = task;
 	}
 	public void execute() {
-		_storage = Controller.getStorage();
+		_storage = Controller.getDBStorage();
 		LinkedList<Task> newList = _storage.load();
 		newList.add(_task);
 		_storage.store(newList);

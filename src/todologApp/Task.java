@@ -131,4 +131,9 @@ public class Task {
 	public static void showToUser(String message) {
 		System.out.println(message);
 	}
+
+	public void setName(String name) {
+		_name = name;
+		
+	}
 }
