@@ -50,7 +50,7 @@ public class Task {
 	
 	public Task(String parameter){
 
-		_taskName = parseName(parameter);
+		_taskName = parseTaskName(parameter);
 		_taskType = parseTaskType(parameter);
 		
 	}
@@ -102,7 +102,7 @@ public class Task {
 		
 	}
 	
-	private static String parseName(String parameter) {
+	private static String parseTaskName(String parameter) {
 		int firstIndex = parameter.indexOf(QUOTATION_MARK);
 		int lastIndex = parameter.lastIndexOf(QUOTATION_MARK);
 		
@@ -116,13 +116,14 @@ public class Task {
 		} else if (firstIndex == -1) {
 			return INVALID_MESSAGE;
 		} else {
-			String taskName = parameter.substring(firstIndex+1, lastIndex);
-			String[] timeAndDay = parameter.split(SINGLE_SPACE, 3);
-			_taskStartDay = parseDay(timeAndDay[2]);
-			return taskName;
+			return null;
 		}
 	}
 
+	public String getTaskName() {
+		return _taskName;
+	}
+	
 	public TaskType getTaskType() {
 		return _taskType;
 	}
@@ -130,10 +131,20 @@ public class Task {
 	public String getTaskDay() {
 		return _taskStartDay;
 	}
-
-	public String getTaskName() {
-		return _taskName;
+	
+	public String getEndDay() {
+		return _taskEndDay;
 	}
+
+	public String getStartTime() {
+		return _taskStartTime;
+	}
+
+	public String getEndTime() {
+		return _taskEndTime;
+	}
+
+	
 	
 	public static void showToUser(String message) {
 		System.out.println(message);
