@@ -4,14 +4,17 @@ package todologApp;
 public class Controller {
 
 	private static Storage _DBStorage;
+
 	private static History _history;
 	
 	public static void setStorage(Storage storage) {
 		_DBStorage = storage;
 	}
 	
+
 	public static Storage getDBStorage() {
 		return _DBStorage;
+
 	}
 	
 	public static void setHistoryStorage(History history) {
