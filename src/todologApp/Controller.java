@@ -7,13 +7,10 @@ import javax.swing.JTextArea;
 // remember to write unit test as you code
 public class Controller {
 
-	private static  DBStorage _DBStorage;
+	private static DBStorage _DBStorage;
 
 	private static History _history;
-	public Controller() {
-		_DBStorage = new DBStorage();
-		//_history = new History();
-	}
+	
 	public void setStorage(DBStorage DBstorage) {
 		_DBStorage = DBstorage;
 	}
@@ -24,10 +21,10 @@ public class Controller {
 
 	}
 	
-	public void setHistoryStorage(History history) {
+	public static void setHistoryStorage(History history) {
 		_history = history;
 	}
-	public void acceptUserCommand(String userCommand) {
+	public static void acceptUserCommand(String userCommand) {
 		Command command = createCommand(userCommand);
 		command.execute();
 	}
@@ -74,5 +71,10 @@ public class Controller {
 		}
 		return output;
 	}
-
+	public static void init() {
+		_DBStorage = new DBStorage();
+	}
+	public static void init(String fileName) {
+		_DBStorage = new DBStorage(fileName);
+	}
 }

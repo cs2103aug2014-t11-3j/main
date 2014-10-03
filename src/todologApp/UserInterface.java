@@ -244,8 +244,8 @@ public class UserInterface extends JFrame { //also I wanna put the action listen
 		
 		initialize(this); 
 		fillUpTheJFrame(this);
-		controller = new Controller();
-		
+		Controller.init();
+		toDoListText.setText(Controller.getOutput());
 		// create more here
 	}
 	
@@ -257,7 +257,7 @@ public class UserInterface extends JFrame { //also I wanna put the action listen
 			//(I think for this is when typing (to guess the input)
 			// and for pressing enter then send the text to Parser)
 			String commandString = commandEntryTextField.getText();
-			controller.acceptUserCommand(commandString);	    
+			Controller.acceptUserCommand(commandString);	    
 			commandEntryTextField.setText("");
 			toDoListText.setText(Controller.getOutput());
 		}
