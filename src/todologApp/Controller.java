@@ -26,7 +26,9 @@ public class Controller {
 			CommandAdd command = new CommandAdd(task);
 			return command;
 		} else if (firstWord.equalsIgnoreCase("delete")) {
-			CommandDelete command = new CommandDelete(restOfTheString);
+			restOfTheString = restOfTheString.trim();
+			int index = Integer.valueOf(restOfTheString);
+			CommandDelete command = new CommandDelete(index);
 			return command;
 		} else if (firstWord.equalsIgnoreCase("edit")) {
 			CommandEdit command = new CommandEdit(restOfTheString);
