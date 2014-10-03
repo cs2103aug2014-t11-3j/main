@@ -84,7 +84,7 @@ public class Task {
 				return endDay;
 			}
 		}	
-		return DAY_KEYWORD_TODAY;
+		return getTaskDay();
 	}
 
 	private String parseTaskStartDay(String parameter) {
@@ -135,7 +135,7 @@ public class Task {
 		String[] analyseTask = taskDateTime.split(SINGLE_SPACE);
 		if (taskDateTime.length() == 0) {
 			return (TaskType.FLOATING);
-		} else if (analyseTask[0].equalsIgnoreCase(KEYWORD_TIME_STARTING)) {
+		} else if (analyseTask[0].equalsIgnoreCase(KEYWORD_DAY_STARTING)) {
 			return (TaskType.TIMED);
 		} else if (analyseTask[0].equalsIgnoreCase(KEYWORD_DEADLINE)) {
 			return (TaskType.DEADLINE);
