@@ -58,6 +58,11 @@ public class Task {
 		_taskEndTime = parseTaskEndTime(parameter);
 	}
 	
+	public Task(TaskType taskType, String name) {
+		_taskType = taskType;
+		_taskName = name;
+	}
+
 	private int parseDeleteIndex(String parameter) {
 		parameter = parameter.trim();
 		int index = Integer.valueOf(parameter);
@@ -178,7 +183,10 @@ public class Task {
 			return null;
 		}
 	}
-
+	public void setTaskName(String name) {
+		_taskName = name;
+	}
+	
 	public String getTaskName() {
 		return _taskName;
 	}
