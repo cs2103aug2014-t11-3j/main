@@ -41,12 +41,12 @@ public class Task {
 	private static String DAY_KEYWORD_SUN = "sun";
 
 	//Key Variables
-	private static String _taskName;
-	private static TaskType _taskType;
-	private static String _taskStartDay;
-	private static String _taskEndDay;
-	private static String _taskStartTime;
-	private static String _taskEndTime;
+	private String _taskName;
+	private TaskType _taskType;
+	private String _taskStartDay;
+	private String _taskEndDay;
+	private String _taskStartTime;
+	private String _taskEndTime;
 	
 	public Task(String parameter){
 
@@ -82,6 +82,11 @@ public class Task {
 			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING)){
 				String endDay = parseDay(messageArray[i+1]);
 				return endDay;
+			} else {
+				if (messageArray[i].equalsIgnoreCase(KEYWORD_DEADLINE)){
+					String endDay = parseDay(messageArray[i+1]);
+					return endDay;
+				}
 			}
 		}	
 		return getTaskDay();
@@ -94,8 +99,12 @@ public class Task {
 			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING)){
 				String startDay = parseDay(messageArray[i+1]);
 				return startDay;
+			} else {
+				if (messageArray[i].equalsIgnoreCase(KEYWORD_DEADLINE)){
+					return DAY_KEYWORD_TODAY;
+				}
 			}
-		}	
+		}
 			return DAY_KEYWORD_TODAY;
 	}
 
