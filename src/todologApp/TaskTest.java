@@ -32,7 +32,17 @@ public class TaskTest {
 
 	@Test
 	public void testParseDay() {
-		Task task = new Task ("\"group meeting\" fri 2359");
+		Task task = new Task ("\"group meeting\" from fri 2359 to sat");
 		assertEquals("output should be Friday", "Friday" , task.getTaskDay());
-		}
+		assertEquals("output should be Saturday", "Saturday" , task.getEndDay());
+		
+		Task task2 = new Task ("\"group meeting\" from thur");
+		assertEquals("output should be Thursday", "Thursday" , task2.getTaskDay());
+		assertEquals("output should be Thursday", "Today" , task2.getEndDay());
+		
+		Task task3 = new Task ("\"group meeting\" to sunday");
+		assertEquals("output should be Today", "Today" , task3.getTaskDay());
+		assertEquals("output should be Sunday", "Sunday" , task3.getEndDay());
+		
+	}
 }
