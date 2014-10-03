@@ -13,8 +13,8 @@ public class Task {
 	private static String QUOTATION_MARK = "\"";
 
 	//KEYWORDS
-	private static String KEYWORD_TIME_STARTING = "from";
-	private static String KEYWORD_TIME_ENDING = "to";
+	private static String KEYWORD_DAY_STARTING = "from";
+	private static String KEYWORD_DAY_ENDING = "to";
 	private static String KEYWORD_DEADLINE = "by";
 	private static String KEYWORD_RECURRING = "every";
 	
@@ -40,7 +40,6 @@ public class Task {
 	private static String DAY_KEYWORD_SUNDAY = "Sunday";
 	private static String DAY_KEYWORD_SUN = "sun";
 
-
 	//Key Variables
 	private String _taskName;
 	private TaskType _taskType;
@@ -48,20 +47,72 @@ public class Task {
 	private String _taskEndDay;
 	private String _taskStartTime;
 	private String _taskEndTime;
-
 	
 	public Task(String parameter){
 
 		_taskName = parseTaskName(parameter);
 		_taskType = parseTaskType(parameter);
-		
-	}
-
-	public Task(TaskType taskType, String name) {
-		_taskName = name;
-		_taskType = taskType; 
+		_taskStartDay = parseTaskStartDay(parameter);
+		_taskEndDay = parseTaskEndDay(parameter);
+		_taskStartTime = parseTaskStartTime(parameter);
+		_taskEndTime = parseTaskEndTime(parameter);
 	}
 	
+	private int parseDeleteIndex(String parameter) {
+		parameter = parameter.trim();
+		int index = Integer.valueOf(parameter);
+		return index;
+	}
+
+	private String[] generateArray(String parameter) {
+		parameter = parameter.trim();
+		String[] array = parameter.split(SINGLE_SPACE);
+		return array;
+	}
+	
+	private String parseTaskEndTime(String parameter) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private String parseTaskStartTime(String parameter) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private String parseTaskEndDay(String parameter) {
+		String [] messageArray = generateArray(parameter);
+
+		for (int i = 0; i+1<=messageArray.length; i++) {
+			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING)){
+				String endDay = parseDay(messageArray[i+1]);
+				return endDay;
+			} else {
+				if (messageArray[i].equalsIgnoreCase(KEYWORD_DEADLINE)){
+					String endDay = parseDay(messageArray[i+1]);
+					return endDay;
+				}
+			}
+		}	
+		return getTaskDay();
+	}
+
+	private String parseTaskStartDay(String parameter) {
+		String [] messageArray = generateArray(parameter);
+		
+		for (int i = 0; i+1<=messageArray.length-1; i++) {
+			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING)){
+				String startDay = parseDay(messageArray[i+1]);
+				return startDay;
+			} else {
+				if (messageArray[i].equalsIgnoreCase(KEYWORD_DEADLINE)){
+					return DAY_KEYWORD_TODAY;
+				}
+			}
+		}
+			return DAY_KEYWORD_TODAY;
+	}
+
 	private static String parseDay(String parameter) {
 		String day = parameter;
 		
@@ -85,8 +136,9 @@ public class Task {
 			return DAY_KEYWORD_SATURDAY;
 		} else if (day.equalsIgnoreCase(DAY_KEYWORD_SUNDAY) || day.equalsIgnoreCase(DAY_KEYWORD_SUN)) {
 			return DAY_KEYWORD_SUNDAY;
-		} 
-		return null;
+		} else {
+			return DAY_KEYWORD_TODAY;
+		}
 	}
 
 	private TaskType parseTaskType(String parameter) {
@@ -97,7 +149,7 @@ public class Task {
 		String[] analyseTask = taskDateTime.split(SINGLE_SPACE);
 		if (taskDateTime.length() == 0) {
 			return (TaskType.FLOATING);
-		} else if (analyseTask[0].equalsIgnoreCase(KEYWORD_TIME_STARTING)) {
+		} else if (analyseTask[0].equalsIgnoreCase(KEYWORD_DAY_STARTING)) {
 			return (TaskType.TIMED);
 		} else if (analyseTask[0].equalsIgnoreCase(KEYWORD_DEADLINE)) {
 			return (TaskType.DEADLINE);
@@ -109,9 +161,7 @@ public class Task {
 		
 	}
 	
-
 	private static String parseTaskName(String parameter) {
-
 		int firstIndex = parameter.indexOf(QUOTATION_MARK);
 		int lastIndex = parameter.lastIndexOf(QUOTATION_MARK);
 		
@@ -152,15 +202,8 @@ public class Task {
 	public String getEndTime() {
 		return _taskEndTime;
 	}
-
-	
 	
 	public static void showToUser(String message) {
 		System.out.println(message);
-	}
-
-	public void setName(String name) {
-		_taskName = name;
-		
 	}
 }

@@ -1,34 +1,23 @@
 package todologApp;
 
-import java.util.LinkedList;
-
-import javax.swing.JTextArea;
-
 // remember to write unit test as you code
 public class Controller {
 
-	private static DBStorage _DBStorage;
-
+	private static Storage _storage;
 	private static History _history;
-	
-	public void setStorage(DBStorage DBstorage) {
-		_DBStorage = DBstorage;
-	}
-	
 
-	public static DBStorage getDBStorage() {
-		return _DBStorage;
-
+	public static void setStorage(Storage storage) {
+		_storage = storage;
 	}
-	
 	public static void setHistoryStorage(History history) {
 		_history = history;
 	}
 	public static void acceptUserCommand(String userCommand) {
 		Command command = createCommand(userCommand);
 		command.execute();
+		//...
+		command.undo();
 	}
-
 	public static Command createCommand(String userCommand) {
 		String firstWord = getFirstWord(userCommand);
 		String restOfTheString = getTheRestOfTheString(userCommand);
@@ -37,17 +26,16 @@ public class Controller {
 			CommandAdd command = new CommandAdd(task);
 			return command;
 		} else if (firstWord.equalsIgnoreCase("delete")) {
-			Task task = new Task(restOfTheString);
-			CommandDelete command = new CommandDelete(task);
+			restOfTheString = restOfTheString.trim();
+			int index = Integer.valueOf(restOfTheString);
+			CommandDelete command = new CommandDelete(index);
 			return command;
-//		} else if (firstWord.equalsIgnoreCase("edit")) {
-//			Task task = new Task(restOfTheString);
-//			CommandEdit command = new CommandEdit(task);
-//			return command;
-//		} else if (firstWord.equalsIgnoreCase("search")) {
-//			Task task = new Task(restOfTheString);
-//			CommandSearch command = new CommandSearch(task);
-//			return command;
+		} else if (firstWord.equalsIgnoreCase("edit")) {
+			CommandEdit command = new CommandEdit(restOfTheString);
+			return command;
+		} else if (firstWord.equalsIgnoreCase("search")) {
+			CommandSearch command = new CommandSearch(restOfTheString);
+			return command;
 		}
 		return null;
 	}
@@ -63,18 +51,5 @@ public class Controller {
 		String firstWord = result[0];
 		return firstWord;
 	}
-	public static String getOutput() {
-		String output = "";
-		LinkedList<Task> tasks = _DBStorage.load();
-		for (Task task:tasks) {
-			output += task.getTaskName()+'\n';
-		}
-		return output;
-	}
-	public static void init() {
-		_DBStorage = new DBStorage();
-	}
-	public static void init(String fileName) {
-		_DBStorage = new DBStorage(fileName);
-	}
+
 }
