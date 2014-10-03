@@ -38,11 +38,18 @@ public class TaskTest {
 		
 		Task task2 = new Task ("\"group meeting\" from thur");
 		assertEquals("output should be Thursday", "Thursday" , task2.getTaskDay());
-		assertEquals("output should be Thursday", "Today" , task2.getEndDay());
+		assertEquals("output should be Thursday", "Thursday" , task2.getEndDay());
 		
 		Task task3 = new Task ("\"group meeting\" to sunday");
 		assertEquals("output should be Today", "Today" , task3.getTaskDay());
 		assertEquals("output should be Sunday", "Sunday" , task3.getEndDay());
-		
+
+		Task task4 = new Task ("\"group meeting\" from tue");
+		assertEquals("output should be Tuesday", "Tuesday" , task4.getTaskDay());
+		assertEquals("output should be Tuesday", "Tuesday" , task4.getEndDay());
+
+		Task task5 = new Task ("\"group meeting\" by weDnesDAY");
+		assertEquals("output should be Today", "Today" , task5.getTaskDay());
+		assertEquals("output should be Wednesday", "Wednesday" , task5.getEndDay());
 	}
 }
