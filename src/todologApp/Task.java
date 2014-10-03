@@ -76,20 +76,27 @@ public class Task {
 	}
 
 	private String parseTaskEndDay(String parameter) {
-		// TODO Auto-generated method stub
-		return null;
+		String [] messageArray = generateArray(parameter);
+
+		for (int i = 0; i+1<=messageArray.length; i++) {
+			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING)){
+				String endDay = parseDay(messageArray[i+1]);
+				return endDay;
+			}
+		}	
+		return DAY_KEYWORD_TODAY;
 	}
 
 	private String parseTaskStartDay(String parameter) {
 		String [] messageArray = generateArray(parameter);
 		
-		for (int i = 0; i<=messageArray.length; i++) {
+		for (int i = 0; i+1<=messageArray.length-1; i++) {
 			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING)){
 				String startDay = parseDay(messageArray[i+1]);
 				return startDay;
 			}
 		}	
-			return null;
+			return DAY_KEYWORD_TODAY;
 	}
 
 	private static String parseDay(String parameter) {
