@@ -58,7 +58,7 @@ public class Task {
 	}
 
 	public Task(TaskType taskType, String name) {
-		_name = name;
+		_taskName = name;
 		_taskType = taskType; 
 	}
 	
