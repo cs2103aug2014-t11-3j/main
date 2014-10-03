@@ -3,8 +3,8 @@ package todologApp;
 import java.util.LinkedList;
 
 public class CommandSearch {
-	private static String _searchKey;
-	private static Storage _storage;
+	private String _searchKey;
+	private DBStorage _storage;
 	public CommandSearch(String searchKey) {
 		_searchKey=searchKey;
 	}

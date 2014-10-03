@@ -2,7 +2,7 @@
 //for now a listener for the textfield where you input your command is
 //enough
 
-//package todologApp;
+package todologApp;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Vector;
@@ -22,6 +22,8 @@ public class UserInterface extends JFrame { //also I wanna put the action listen
 	
 	private JTextField commandEntryTextField;
 	private JTextArea dynamicHelpText;
+	private JTextArea toDoListText;
+	private Controller controller;
 	//private Controller controller;
 	private Vector <String> toDoListItems; //handle the vector to hold the data
 	
@@ -63,7 +65,7 @@ public class UserInterface extends JFrame { //also I wanna put the action listen
 							 
 	}
 	
-	private void createToDoList(Container mainPanel){                        
+	private void createToDoListTable(Container mainPanel){                        
 		JPanel toDoListHolder = new JPanel(new GridBagLayout());
 		toDoListHolder.setBackground(Color.WHITE);
 		GridBagConstraints panelParameters;      //panelParameters are values for how the top panel will fit into the main frame of ToDoLog
@@ -84,7 +86,20 @@ public class UserInterface extends JFrame { //also I wanna put the action listen
 		mainPanel.add(toDoListHolder, panelParameters);
 		
 	}
-	
+	private void createToDoList(Container mainPanel){
+		JPanel toDoListHolder = new JPanel(new GridBagLayout());
+		toDoListHolder.setBackground(Color.WHITE);
+		GridBagConstraints panelParameters;      //panelParameters are values for how the top panel will fit into the main frame of ToDoLog
+		GridBagConstraints scrollPaneParameters; //scrollPaneParameters are values for how the scrollPane will be placed within the top panel,toDoListHolder
+		toDoListHolder.setPreferredSize(new Dimension(540, 225));
+		
+		panelParameters = setParameters(TODOLIST_PARAMETERS);
+		scrollPaneParameters = setParameters(TODOLIST_SCROLLPANE_PARAMETERS);
+		toDoListText = new JTextArea(10,10);
+		toDoListText.setPreferredSize(new Dimension(532,225));
+		toDoListHolder.add(toDoListText,scrollPaneParameters);
+		mainPanel.add(toDoListHolder, panelParameters);
+	}
 	//private void updateToDoListTable(JTable toDoListTable,)
 	
 	
@@ -229,7 +244,7 @@ public class UserInterface extends JFrame { //also I wanna put the action listen
 		
 		initialize(this); 
 		fillUpTheJFrame(this);
-		
+		controller = new Controller();
 		
 		// create more here
 	}
@@ -242,8 +257,9 @@ public class UserInterface extends JFrame { //also I wanna put the action listen
 			//(I think for this is when typing (to guess the input)
 			// and for pressing enter then send the text to Parser)
 			String commandString = commandEntryTextField.getText();
-			//Controller.parseUserCommand(commandString);	    
+			controller.acceptUserCommand(commandString);	    
 			commandEntryTextField.setText("");
+			toDoListText.setText(Controller.getOutput());
 		}
 	}
 	

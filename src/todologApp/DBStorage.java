@@ -5,6 +5,10 @@ import java.util.LinkedList;
 public class DBStorage implements Storage {
 	private LinkedList<Task> _tasks;
 	private FileStorage _fileStorage;
+	public DBStorage() {
+		_tasks = new LinkedList<Task>();
+		_fileStorage = new FileStorage();
+	}
 	public LinkedList<Task> load() {
 		return _tasks;
 	}
@@ -18,7 +22,7 @@ public class DBStorage implements Storage {
 	@Override
 	public void store(LinkedList<Task> tasks) {
 		_tasks = tasks;
-		_fileStorage.store(tasks);
+		//_fileStorage.store(tasks);
 	}
 
 }

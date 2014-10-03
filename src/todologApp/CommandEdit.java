@@ -1,9 +1,9 @@
 package todologApp;
 
 public class CommandEdit implements Command{
-	private static Task _taskExisting;
-	private static String _toBeEdited;
-	private static Task _taskEdited;
+	private Task _taskExisting;
+	private String _toBeEdited;
+	private Task _taskEdited;
 	//private static Storage _storage;
 	
 	

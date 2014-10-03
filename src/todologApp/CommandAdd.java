@@ -3,8 +3,8 @@ package todologApp;
 import java.util.LinkedList;
 
 public class CommandAdd implements Command{
-	private static Task _task;
-	private static DBStorage _storage;
+	private Task _task;
+	private DBStorage _storage;
 
 	public CommandAdd(Task task) {
 		_task = task;

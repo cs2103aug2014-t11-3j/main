@@ -1,3 +1,5 @@
+package todologApp;
+
 
 import java.awt.*;
 import java.awt.event.*;
@@ -10,12 +12,12 @@ import javax.swing.table.*;
 import java.util.*;
 import java.lang.Object;
 
-public class ToDoListTableModel extends AbstractTableModel{
+public class MyTableModel extends AbstractTableModel{
 	
 	private String[] columnNames = {"No.","Name","Time","Category","Remarks"};
-	private LinkedList<E> tableData;
+	private LinkedList<String> tableData;
 	
-	public ToDoListTableModel(LinkedList<E> currentToDoLogData){
+	public MyTableModel(LinkedList<String> currentToDoLogData){
 		
 	}
 	
@@ -24,10 +26,12 @@ public class ToDoListTableModel extends AbstractTableModel{
 	}
 	
 	public int getRowCount(){
+		return 0;
 		
 	}
 	
 	public Object getValueAt(int row,int col){
+		return col;
 		
 	}
 }

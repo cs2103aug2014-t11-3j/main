@@ -41,9 +41,9 @@ public class Task {
 	private static String DAY_KEYWORD_SUNDAY = "Sunday";
 	private static String DAY_KEYWORD_SUN = "sun";
 
-	private static String _name;
-	private static TaskType _taskType;
-	private static String _taskDay;
+	private String _name;
+	private TaskType _taskType;
+	private String _taskDay;
 	
 	public Task(String parameter){
 
@@ -95,7 +95,7 @@ public class Task {
 		return null;
 	}
 	
-	private static String parseName(String parameter) {
+	private String parseName(String parameter) {
 		int firstIndex = parameter.indexOf(QUOTATION_MARK);
 		int lastIndex = parameter.lastIndexOf(QUOTATION_MARK);
 		

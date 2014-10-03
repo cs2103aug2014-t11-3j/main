@@ -1,13 +1,20 @@
 package todologApp;
 
+import java.util.LinkedList;
+
+import javax.swing.JTextArea;
+
 // remember to write unit test as you code
 public class Controller {
 
-	private static DBStorage _DBStorage;
+	private static  DBStorage _DBStorage;
 
 	private static History _history;
-	
-	public static void setStorage(DBStorage DBstorage) {
+	public Controller() {
+		_DBStorage = new DBStorage();
+		//_history = new History();
+	}
+	public void setStorage(DBStorage DBstorage) {
 		_DBStorage = DBstorage;
 	}
 	
@@ -17,14 +24,12 @@ public class Controller {
 
 	}
 	
-	public static void setHistoryStorage(History history) {
+	public void setHistoryStorage(History history) {
 		_history = history;
 	}
-	public static void acceptUserCommand(String userCommand) {
+	public void acceptUserCommand(String userCommand) {
 		Command command = createCommand(userCommand);
 		command.execute();
-		//...
-		command.undo();
 	}
 
 	public static Command createCommand(String userCommand) {
@@ -60,6 +65,14 @@ public class Controller {
 		String[] result = userCommand.split(" ", 2);
 		String firstWord = result[0];
 		return firstWord;
+	}
+	public static String getOutput() {
+		String output = "";
+		LinkedList<Task> tasks = _DBStorage.load();
+		for (Task task:tasks) {
+			output += task.getTaskName()+'\n';
+		}
+		return output;
 	}
 
 }
