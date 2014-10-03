@@ -59,6 +59,12 @@ public class Task {
 		
 	}
 	
+	private String[] generateArray(String parameter) {
+		parameter = parameter.trim();
+		String[] array = parameter.split(SINGLE_SPACE);
+		return array;
+	}
+	
 	private String parseTaskEndTime(String parameter) {
 		// TODO Auto-generated method stub
 		return null;
