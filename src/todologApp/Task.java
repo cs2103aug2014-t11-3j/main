@@ -13,8 +13,8 @@ public class Task {
 	private static String QUOTATION_MARK = "\"";
 
 	//KEYWORDS
-	private static String KEYWORD_TIME_STARTING = "from";
-	private static String KEYWORD_TIME_ENDING = "to";
+	private static String KEYWORD_DAY_STARTING = "from";
+	private static String KEYWORD_DAY_ENDING = "to";
 	private static String KEYWORD_DEADLINE = "by";
 	private static String KEYWORD_RECURRING = "every";
 	
@@ -81,8 +81,15 @@ public class Task {
 	}
 
 	private String parseTaskStartDay(String parameter) {
-		// TODO Auto-generated method stub
-		return null;
+		String [] messageArray = generateArray(parameter);
+		
+		for (int i = 0; i<=messageArray.length; i++) {
+			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING)){
+				String startDay = parseDay(messageArray[i+1]);
+				return startDay;
+			}
+		}	
+			return null;
 	}
 
 	private static String parseDay(String parameter) {
