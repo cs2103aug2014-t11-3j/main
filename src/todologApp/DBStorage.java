@@ -1,5 +1,6 @@
 package todologApp;
 
+import java.io.IOException;
 import java.util.LinkedList;
 
 public class DBStorage implements Storage {
@@ -24,7 +25,7 @@ public class DBStorage implements Storage {
 	}
 
 	@Override
-	public void store(LinkedList<Task> tasks) {
+	public void store(LinkedList<Task> tasks) throws IOException {
 		_tasks = tasks;
 		_fileStorage.store(tasks);
 	}

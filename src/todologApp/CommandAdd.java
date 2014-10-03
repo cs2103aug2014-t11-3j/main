@@ -1,5 +1,6 @@
 package todologApp;
 
+import java.io.IOException;
 import java.util.LinkedList;
 
 public class CommandAdd implements Command{
@@ -13,7 +14,12 @@ public class CommandAdd implements Command{
 		_storage = Controller.getDBStorage();
 		LinkedList<Task> newList = _storage.load();
 		newList.add(_task);
-		_storage.store(newList);
+		try {
+			_storage.store(newList);
+		} catch (IOException e) {
+			//TODO return feedback
+		}
+		//return feedback
 	}
 
 	public void undo() {

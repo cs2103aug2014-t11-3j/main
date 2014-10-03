@@ -115,7 +115,7 @@ public class FileStorage implements Storage{
 	}
 
 	@Override
-	public void store(LinkedList<Task> tasks) {
+	public void store(LinkedList<Task> tasks) throws IOException{
 		Document newDocument = DocumentHelper.createDocument();
 		Element root = newDocument.addElement("root");
 		for (int i = 0; i < tasks.size(); i++) {
@@ -129,12 +129,8 @@ public class FileStorage implements Storage{
 //					.addAttribute("endtime",task.getEndTime())
 					;
 		}
-		try {
-			writeDocument(newDocument);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		writeDocument(newDocument);
+		
 	}
 	
 }
