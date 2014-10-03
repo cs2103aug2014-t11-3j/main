@@ -56,9 +56,14 @@ public class Task {
 		_taskEndDay = parseTaskEndDay(parameter);
 		_taskStartTime = parseTaskStartTime(parameter);
 		_taskEndTime = parseTaskEndTime(parameter);
-		
 	}
 	
+	private int parseDeleteIndex(String parameter) {
+		parameter = parameter.trim();
+		int index = Integer.valueOf(parameter);
+		return index;
+	}
+
 	private String[] generateArray(String parameter) {
 		parameter = parameter.trim();
 		String[] array = parameter.split(SINGLE_SPACE);
@@ -197,8 +202,6 @@ public class Task {
 	public String getEndTime() {
 		return _taskEndTime;
 	}
-
-	
 	
 	public static void showToUser(String message) {
 		System.out.println(message);
