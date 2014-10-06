@@ -44,7 +44,7 @@ public class Controller {
 					break;
 				case TIMED:
 					display += String.valueOf(i+1)+". "+ task.getTaskName()+
-						" "+task.getTaskDay()+" "+task.getStartTime()+" "+
+						" "+task.getStartDay()+" "+task.getStartTime()+" "+
 						task.getEndDay()+" "+task.getEndTime()+" "
 						+ String.valueOf(task.getTaskStatus())+'\n';
 					break;

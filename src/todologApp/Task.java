@@ -61,9 +61,30 @@ public class Task {
 	}
 
 	
-	public Task(TaskType taskType, String name, boolean status) {
-		_taskType = taskType;
+	public Task(TaskType floating, String name, boolean status) {
+		_taskType = floating;
 		_taskName = name;
+		_taskStatus = status;
+	}
+
+	public Task(TaskType deadline, String name, String endDay, int endTime,
+			boolean status) {
+		_taskType = deadline;
+		_taskName = name;
+		_taskEndDay = endDay;
+		_taskEndTime = endTime;
+		_taskStatus = status;
+	}
+
+
+	public Task(TaskType timed, String name, String startDay, String endDay,
+			int startTime, int endTime, boolean status) {
+		_taskType = timed;
+		_taskName = name;
+		_taskStartDay = startDay;
+		_taskEndDay = endDay;
+		_taskStartTime = startTime;
+		_taskEndTime = endTime;
 		_taskStatus = status;
 	}
 
@@ -130,7 +151,7 @@ public class Task {
 				}
 			}
 		}	
-		return getTaskDay();
+		return getStartDay();
 	}
 
 	private String parseTaskStartDay(String parameter) {
@@ -226,7 +247,7 @@ public class Task {
 		return _taskType;
 	}
 	
-	public String getTaskDay() {
+	public String getStartDay() {
 		return _taskStartDay;
 	}
 	
