@@ -49,7 +49,7 @@ public class Task {
 	private int _taskStartTime;
 	private int _taskEndTime;
 	
-	public Task(String parameter){
+	public Task(String parameter) throws Exception{
 
 		_taskName = parseTaskName(parameter);
 		_taskType = parseTaskType(parameter);
