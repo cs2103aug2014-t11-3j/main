@@ -8,11 +8,11 @@ public class DBStorage implements Storage {
 	private FileStorage _fileStorage;
 	public DBStorage() {
 		_fileStorage = new FileStorage();
-		_tasks = _fileStorage.load();
+		init();
 	}
 	public DBStorage(String fileName) {
 		_fileStorage = new FileStorage(fileName);
-		_tasks = _fileStorage.load();
+		init();
 	}
 	public LinkedList<Task> load() {
 		return _tasks;
@@ -20,14 +20,14 @@ public class DBStorage implements Storage {
 
 	@Override
 	public void init() {
-		_fileStorage.init();
-		_tasks = _fileStorage.load();
+		_tasks = new LinkedList<Task>();
+		//_tasks = _fileStorage.load();
 	}
 
 	@Override
 	public void store(LinkedList<Task> tasks) throws IOException {
 		_tasks = tasks;
-		_fileStorage.store(tasks);
+		//_fileStorage.store(tasks);
 	}
 
 }

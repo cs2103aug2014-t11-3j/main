@@ -99,7 +99,7 @@ public class FileStorage implements Storage{
         return document;
 	}
 	public void writeDocument(Document document) throws IOException {
-		XMLWriter writer = new XMLWriter(new FileWriter(_file));
+		XMLWriter writer = new XMLWriter(new FileWriter("store.xml"));
 		writer.write(document);
 		writer.close();
 	}

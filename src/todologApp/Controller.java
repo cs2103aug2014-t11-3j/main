@@ -33,7 +33,27 @@ public class Controller {
 		LinkedList<Task> tasks = _dbStorage.load();
 		for (int i = 0; i< tasks.size(); i++) {
 			Task task = tasks.get(i);
-			display += String.valueOf(i+1)+". "+ task.getTaskName()+'\n';
+			switch (task.getTaskType()) {
+				case FLOATING:
+					display += String.valueOf(i+1)+". "+ task.getTaskName()+" "
+							+ String.valueOf(task.getTaskStatus()) +'\n';
+					break;
+				case TIMED:
+					display += String.valueOf(i+1)+". "+ task.getTaskName()+
+						" "+task.getTaskDay()+" "+task.getStartTime()+" "+
+						task.getEndDay()+" "+task.getEndTime()+" "
+						+ String.valueOf(task.getTaskStatus())+'\n';
+					break;
+				case DEADLINE:
+					display += String.valueOf(i+1)+". "+ task.getTaskName()+
+						" "+task.getEndDay()+" "+task.getEndTime()+" "
+						+ String.valueOf(task.getTaskStatus())+'\n';
+					break;
+				default:
+					display += "invalid"+'\n';
+					break;
+			}
+			
 		}
 		return display;
 	}
@@ -62,15 +82,19 @@ public class Controller {
 			restOfTheString = restOfTheString.trim();
 			int index = Integer.valueOf(restOfTheString);
 			Task task = _dbStorage.load().get(index-1);
-			CommandDone command = new CommandDone(task);
+			CommandMarkAsDone command = new CommandMarkAsDone(task);
 			return command;
-		} else if (firstWord.equalsIgnoreCase("display")) {
-			Task task = _dbStorage.load().get(index-1);
-			CommandDisplay command = new CommandDisplay(task);
-			return command;
-//			else if (firstWord.equalsIgnoreCase("edit")) {
-//			CommandEdit command = new CommandEdit(restOfTheString);
+//		} else if (firstWord.equalsIgnoreCase("display")) {
+//			Task task = _dbStorage.load().get(index-1);
+//			CommandDisplay command = new CommandDisplay(task);
 //			return command;
+		}else if (firstWord.equalsIgnoreCase("edit")) {
+			restOfTheString = restOfTheString.trim();
+			int index = Integer.valueOf(getFirstWord(restOfTheString));
+			restOfTheString = getTheRestOfTheString(restOfTheString);
+			Task task = _dbStorage.load().get(index-1);
+			CommandEdit command = new CommandEdit(task, restOfTheString);
+			return command;
 //		} else if (firstWord.equalsIgnoreCase("search")) {
 //			CommandSearch command = new CommandSearch(restOfTheString);
 //			return command;

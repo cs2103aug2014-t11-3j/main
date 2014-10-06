@@ -46,8 +46,8 @@ public class Task {
 	private TaskType _taskType;
 	private String _taskStartDay;
 	private String _taskEndDay;
-	private String _taskStartTime;
-	private String _taskEndTime;
+	private int _taskStartTime;
+	private int _taskEndTime;
 	private boolean _taskStatus;
 
 	public Task(String parameter){
@@ -177,7 +177,7 @@ public class Task {
 		String[] analyseTask = taskDateTime.split(SINGLE_SPACE);
 		if (taskDateTime.length() == 0) {
 			return (TaskType.FLOATING);
-		} else if (analyseTask[0].equalsIgnoreCase(KEYWORD_DAY_STARTING)) {
+		} else if (analyseTask[0].equalsIgnoreCase(KEYWORD_DAY_STARTING) || analyseTask[0].equalsIgnoreCase(KEYWORD_DAY_ENDING)) {
 			return (TaskType.TIMED);
 		} else if (analyseTask[0].equalsIgnoreCase(KEYWORD_DEADLINE)) {
 			return (TaskType.DEADLINE);
@@ -240,5 +240,11 @@ public class Task {
 
 	public boolean getTaskStatus() {
 		return _taskStatus;
+	}
+
+
+	public void setTaskStatus(boolean b) {
+		_taskStatus = b;
+		
 	}
 }
