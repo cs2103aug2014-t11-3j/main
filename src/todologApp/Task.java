@@ -48,10 +48,10 @@ public class Task {
 	private String _taskEndDay;
 	private int _taskStartTime;
 	private int _taskEndTime;
+
 	private boolean _taskStatus;
-
-	public Task(String parameter){
-
+	
+	public Task(String parameter) throws Exception{
 		_taskName = parseTaskName(parameter);
 		_taskType = parseTaskType(parameter);
 		_taskStartDay = parseTaskStartDay(parameter);
@@ -74,34 +74,42 @@ public class Task {
 		return array;
 	}
 	
-	private int parseTaskEndTime(String parameter) {
+	private int parseTaskEndTime(String parameter) throws Exception {
 		String [] messageArray = generateArray(parameter);
 		
 		for (int i = 0; i+3<=messageArray.length; i++) {
 			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING) && 
 				messageArray[i+2].equalsIgnoreCase(SYMBOL_AT)){
-				int endTime = Integer.parseInt(messageArray[i+3]);
-				if (endTime >= 0000 && endTime <= 2359) {
-					return endTime;
-				} else {
-					return 2359;
+				try {
+					int endTime = Integer.parseInt(messageArray[i+3]);
+					if (endTime >= 0000 && endTime <= 2359) {
+						return endTime;
+					} else {
+						return 2359;
+					}
+				} catch (NumberFormatException nfe) {
+					throw new Exception();
 				}
 			}
 		}
 		return 2359;
 	}
 		
-	private int parseTaskStartTime(String parameter) {
+	private int parseTaskStartTime(String parameter) throws Exception  {
 		String [] messageArray = generateArray(parameter);
 
 		for (int i = 0; i+3<=messageArray.length; i++) {
 			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) && 
 					messageArray[i+2].equalsIgnoreCase(SYMBOL_AT)){
-				int startTime = Integer.parseInt(messageArray[i+3]);
-				if (startTime >= 0000 && startTime <= 2359) {
-					return startTime;
-				} else {
-					return 0000;
+				try {
+					int startTime = Integer.parseInt(messageArray[i+3]);
+					if (startTime >= 0000 && startTime <= 2359) {
+						return startTime;
+					} else {
+						return 0000;
+					}
+				} catch (NumberFormatException nfe) {
+					throw new Exception();
 				}
 			} 
 		}
