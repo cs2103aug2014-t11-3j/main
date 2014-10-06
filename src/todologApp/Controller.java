@@ -33,9 +33,14 @@ public class Controller {
 		String firstWord = getFirstWord(userCommand);
 		String restOfTheString = getTheRestOfTheString(userCommand);
 		if (firstWord.equalsIgnoreCase("add")) {
-			Task task = new Task(restOfTheString);
-			CommandAdd command = new CommandAdd(task);
-			return command;
+			try {
+				Task task = new Task(restOfTheString);
+				CommandAdd command = new CommandAdd(task);
+				return command;
+			} catch (Exception e) {
+				//output error message
+			}
+			
 		} else if (firstWord.equalsIgnoreCase("delete")) {
 			restOfTheString = restOfTheString.trim();
 			int index = Integer.valueOf(restOfTheString);
