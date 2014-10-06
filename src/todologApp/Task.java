@@ -72,18 +72,30 @@ public class Task {
 			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING) && 
 				messageArray[i+2].equalsIgnoreCase(SYMBOL_AT)){
 				int endTime = Integer.parseInt(messageArray[i+3]);
-				return endTime;
-			} 
+				if (endTime >= 0000 && endTime <= 2359) {
+					return endTime;
+				} else {
+					return 2359;
+				}
+			}
 		}
 		return 2359;
 	}
 		
-		
-		
-	
-
 	private int parseTaskStartTime(String parameter) {
-		// TODO Auto-generated method stub
+		String [] messageArray = generateArray(parameter);
+
+		for (int i = 0; i+3<=messageArray.length; i++) {
+			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) && 
+					messageArray[i+2].equalsIgnoreCase(SYMBOL_AT)){
+				int startTime = Integer.parseInt(messageArray[i+3]);
+				if (startTime >= 0000 && startTime <= 2359) {
+					return startTime;
+				} else {
+					return 0000;
+				}
+			} 
+		}
 		return 0000;
 	}
 
