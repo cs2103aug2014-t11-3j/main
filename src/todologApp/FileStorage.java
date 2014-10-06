@@ -19,9 +19,26 @@ public class FileStorage implements Storage{
 	
 	public FileStorage() {
 		_file = new File(DEFAULT_FILE_NAME);
+		_document = createBlankDocument();
+		init();
 	}
 	public FileStorage(String fileName) {
 		_file = new File(fileName);
+		_document = createBlankDocument();
+		init();
+	}
+	
+	@Override
+	public void init() {
+		if (!_file.exists()) {
+			try {
+				_file.createNewFile();
+				writeDocument(_document);
+			} catch (IOException e) {
+				//return feedback of IO error
+			}
+		}
+		
 	}
 	
 	@Override
@@ -35,8 +52,7 @@ public class FileStorage implements Storage{
 		try {
 			return parseDoc(_document);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//unsupported file or file corrupted
 		}
 		return null;
 		
@@ -96,6 +112,7 @@ public class FileStorage implements Storage{
 	}
 	public Document createBlankDocument() {
 		Document document = DocumentHelper.createDocument();
+		document.addElement("root");
         return document;
 	}
 	public void writeDocument(Document document) throws IOException {
@@ -103,17 +120,7 @@ public class FileStorage implements Storage{
 		writer.write(document);
 		writer.close();
 	}
-	@Override
-	public void init() {
-		_document = createBlankDocument();
-		try {
-			writeDocument(_document);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-	}
+	
 
 	@Override
 	public void store(LinkedList<Task> tasks) throws IOException{
