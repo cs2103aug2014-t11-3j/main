@@ -57,12 +57,6 @@ public class Task {
 		_taskStartTime = parseTaskStartTime(parameter);
 		_taskEndTime = parseTaskEndTime(parameter);
 	}
-	
-	private int parseDeleteIndex(String parameter) {
-		parameter = parameter.trim();
-		int index = Integer.valueOf(parameter);
-		return index;
-	}
 
 	private String[] generateArray(String parameter) {
 		parameter = parameter.trim();
@@ -113,7 +107,7 @@ public class Task {
 			return DAY_KEYWORD_TODAY;
 	}
 
-	private static String parseDay(String parameter) {
+	private String parseDay(String parameter) {
 		String day = parameter;
 		
 		if (day.equalsIgnoreCase(DAY_KEYWORD_TODAY)) {
