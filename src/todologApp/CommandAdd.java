@@ -1,5 +1,6 @@
 package todologApp;
 
+import java.io.IOException;
 import java.util.LinkedList;
 
 public class CommandAdd implements Command{
@@ -10,10 +11,15 @@ public class CommandAdd implements Command{
 	}
 	public String execute() {
 		String feedback;
-		_storage = Controller.getStorage();
+		_storage = Controller.getDBStorage();
 		LinkedList<Task> newList = _storage.load();
 		newList.add(_task);
-		_storage.store(newList);
+		try {
+			_storage.store(newList);
+		} catch (IOException e) {
+			feedback = "Cannot add to ToDoLog";
+			return feedback;
+		}
 		feedback="Added "+ _task.getTaskName()+" to ToDoLog";
 		return feedback;	
 	}

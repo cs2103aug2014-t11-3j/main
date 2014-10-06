@@ -4,13 +4,13 @@ import java.util.LinkedList;
 
 public class CommandDelete implements Command{
 	private static Task _task;
-	private static Storage _storage;
+	private static DBStorage _storage;
 	public CommandDelete(Task task) {
 		_task = task;
 	}
 	public String execute() {
 		String feedback;
-		_storage=Controller.getStorage();
+		_storage=Controller.getDBStorage();
 		LinkedList<Task> taskList= _storage.load();
 		if(taskList.indexOf(_task)==-1){
 			feedback="Invalid cannot delete";

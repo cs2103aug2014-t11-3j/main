@@ -10,7 +10,7 @@ public class CommandSearch {
 	}
 	public String execute() {
 		String feedback;
-		_storage = Controller.getStorage();
+		_storage = Controller.getDBStorage();
 		LinkedList<Task> storageList = _storage.load();
         LinkedList<Task> searchList=searchName(storageList);
         System.out.println(searchList);

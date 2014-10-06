@@ -15,7 +15,7 @@ public class CommandEdit implements Command{
 	}
 	public Task formNewTask(){
 		if(_toBeEdited.startsWith("\"")&& _toBeEdited.endsWith("\"")){
-			_taskEdited.setName(_toBeEdited);
+			_taskEdited.setTaskName(_toBeEdited);
 		}
 		return _taskEdited;
 //		else if(equalsWeekDay(_toBeEdited)){
