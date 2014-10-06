@@ -5,13 +5,21 @@
 package todologApp;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.Vector;
+
 
 import javax.swing.*;
 import javax.swing.border.*;
+import javax.swing.table.*;
+
+import java.util.*;
+//import java.lang.Object;
 
 
-public class UserInterface extends JFrame { //also I wanna put the action listener elsewhere
+public class UserInterface extends JFrame { /**
+	 * 
+	 */
+	private static final long serialVersionUID = 4308151724219875078L;
+//also I wanna put the action listener elsewhere
 	
 	private static final int TODOLIST_PARAMETERS = 1;
 	private static final int BOTTOM_PANEL_PARAMETERS = 2;
@@ -23,9 +31,10 @@ public class UserInterface extends JFrame { //also I wanna put the action listen
 	private JTextField commandEntryTextField;
 	private JTextArea dynamicHelpText;
 	private JTextArea toDoListText;
+	private JTable toDoListTable;
 	private Controller controller;
 	//private Controller controller;
-	private Vector <String> toDoListItems; //handle the vector to hold the data
+	private LinkedList <Task> toDoListItems = new LinkedList<Task>();
 	
 	/**
 	 * Launch the application.
@@ -49,7 +58,8 @@ public class UserInterface extends JFrame { //also I wanna put the action listen
 	//this initialize method sets up the main frame for ToDoLog
 	private void initialize(JFrame UserInterface) { 
 		Container contentPane = UserInterface.getContentPane();	
-		contentPane.setLayout(new GridBagLayout());
+		contentPane.setLayout(new GridBagLayout()); 
+		//initializeLinkedList();
 		
 		UserInterface.setTitle("ToDoLog");
 		UserInterface.setResizable(false);
@@ -60,7 +70,7 @@ public class UserInterface extends JFrame { //also I wanna put the action listen
 	//this method consists of setting the different sections within the frame of ToDoLog
 	private void fillUpTheJFrame(JFrame UserInterface){
 		Container mainPanel = UserInterface.getContentPane();
-		createToDoList(mainPanel);
+		createToDoListTable(mainPanel);
 		createBottomPanel(mainPanel); 
 							 
 	}
@@ -75,8 +85,10 @@ public class UserInterface extends JFrame { //also I wanna put the action listen
 		panelParameters = setParameters(TODOLIST_PARAMETERS);
 		scrollPaneParameters = setParameters(TODOLIST_SCROLLPANE_PARAMETERS);
 		
-		JTable toDoListTable = new JTable(10,10);                     //let's use abstract table model
+		toDoListTable = new JTable(new MyTableModel(toDoListItems));    
 		toDoListTable.setPreferredSize(new Dimension(532,225));
+		adjustTableColumns(toDoListTable);
+		changeTableColors(toDoListTable);
 		//updateToDoListTable(toDoListTable,toDoListItems,toDoListHeaders);
 		
 		JScrollPane toDoList = new JScrollPane(toDoListTable);
@@ -152,7 +164,7 @@ public class UserInterface extends JFrame { //also I wanna put the action listen
 	private void createLegend(JPanel bottomPanel){ //this one will be put at borderlayout.east
 		GridBagConstraints LegendParameters;
 		LegendParameters = setParameters(LEGEND_PARAMETERS);
-		Border borderLineForLegend = new LineBorder(Color.BLACK);
+		//Border borderLineForLegend = new LineBorder(Color.BLACK);
 		
 		JPanel legendMainPanel = new JPanel(new GridBagLayout());          //must find a better way of organising the legend
 		legendMainPanel.setBackground(Color.WHITE);                     //looks ugly now    
@@ -245,7 +257,7 @@ public class UserInterface extends JFrame { //also I wanna put the action listen
 		initialize(this); 
 		fillUpTheJFrame(this);
 		Controller.init();
-		toDoListText.setText(Controller.getOutput());
+		//toDoListText.setText(Controller.getOutput());
 		// create more here
 	}
 	
@@ -257,19 +269,27 @@ public class UserInterface extends JFrame { //also I wanna put the action listen
 			//(I think for this is when typing (to guess the input)
 			// and for pressing enter then send the text to Parser)
 			String commandString = commandEntryTextField.getText();
-			Controller.acceptUserCommand(commandString);	    
+
+//			Controller.acceptUserCommand(commandString);	    
+//			commandEntryTextField.setText("");
+//			toDoListText.setText(Controller.getOutput());
+//			dynamicHelpText.setText(Controller.getFeedBack());
+
+			Controller.acceptUserCommand(commandString);
 			commandEntryTextField.setText("");
-			toDoListText.setText(Controller.getOutput());
-			dynamicHelpText.setText(Controller.getFeedBack());
+			dynamicHelpText.setText(Controller.getOutput());
+			toDoListItems = Controller.getDBStorage().load();
+			toDoListTable.setModel(new MyTableModel(toDoListItems));;
+
 		}
 	}
 	
-	private class DynamicHelpTextAreaListener implements ActionListener{
+	/*private class DynamicHelpTextAreaListener implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent evt) {
 			
 		}
-	}
+	}*/
 	
 	//this method is to set up the parameters of the gridbagconstraints
 	//to put the different panels into the right positions on the JFrame
@@ -322,6 +342,45 @@ public class UserInterface extends JFrame { //also I wanna put the action listen
 	
 	//convert linked lists into data for the table, go find out how to
 	//dynamic help text will also be 
+//	private void initializeLinkedList(){
+//		toDoListItems.addFirst(new Task("1","Pink","11/09/2001","High","lol"));
+//		toDoListItems.add(new Task("2","Blue","Bright boy","Low","hahhah"));
+//		toDoListItems.add(new Task("3","Brilliant meeting with the incredible hulk","02/12/1992","Medium","Remember to bring shotgun"));
+//	}
 	
+	private void adjustTableColumns(JTable toDoListTable){
+		TableColumn tableColumn = null;
+		
+		for(int columnHeaders = 0; columnHeaders < 5;columnHeaders++){
+			tableColumn = toDoListTable.getColumnModel().getColumn(columnHeaders);
+			
+			switch(columnHeaders){
+			case 0:
+				tableColumn.setPreferredWidth(20);
+				break;
+			case 1:
+				tableColumn.setPreferredWidth(190);
+				break;
+			case 2:
+				tableColumn.setPreferredWidth(70);
+				break;
+			case 3:
+				tableColumn.setPreferredWidth(40);
+				break;
+			case 4:
+				tableColumn.setPreferredWidth(150);
+				break;
+			}
+		}
+	}
+	
+	private void changeTableColors(JTable toDoListTable){
+		toDoListTable.getColumnModel().getColumn(0).setCellRenderer(new CustomRenderer());
+		toDoListTable.getColumnModel().getColumn(1).setCellRenderer(new CustomRenderer());
+		toDoListTable.getColumnModel().getColumn(2).setCellRenderer(new CustomRenderer());
+		toDoListTable.getColumnModel().getColumn(3).setCellRenderer(new CustomRenderer());
+		toDoListTable.getColumnModel().getColumn(4).setCellRenderer(new CustomRenderer());
+		
+	}
 
 }
