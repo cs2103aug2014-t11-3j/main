@@ -52,4 +52,19 @@ public class TaskTest {
 		assertEquals("output should be Today", "Today" , task5.getTaskDay());
 		assertEquals("output should be Wednesday", "Wednesday" , task5.getEndDay());
 	}
+	
+	@Test
+	public void testTime() {
+		Task task = new Task ("\"group meeting\" from fri @ 2359 to sat @ 1345");
+		assertEquals("output should be 2359", 2359 , task.getStartTime());
+		assertEquals("output should be 1345", 1345 , task.getEndTime());
+		
+		Task task2 = new Task ("\"group meeting\" from fri @ 2459 to sat @ 0000");
+		assertEquals("output should be 0000", 0000 , task2.getStartTime());
+		assertEquals("output should be 0000", 0000 , task2.getEndTime());
+		
+		Task task3 = new Task ("\"group meeting\" from fri @ 1100 to sat @ 1650");
+		assertEquals("output should be 1100", 1100 , task3.getStartTime());
+		assertEquals("output should be 1650", 1650 , task3.getEndTime());
+	}
 }

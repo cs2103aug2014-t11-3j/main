@@ -10,6 +10,7 @@ public class Task {
 	private static String SINGLE_SPACE = " ";
 	private static String DATE_SEPARATOR = "/";
 	private static String SYMBOL_DASH = "-";
+	private static String SYMBOL_AT = "@";
 	private static String QUOTATION_MARK = "\"";
 
 	//KEYWORDS
@@ -48,6 +49,7 @@ public class Task {
 	private String _taskStartTime;
 	private String _taskEndTime;
 	private boolean _taskStatus;
+
 	public Task(String parameter){
 
 		_taskName = parseTaskName(parameter);
@@ -57,6 +59,7 @@ public class Task {
 		_taskStartTime = parseTaskStartTime(parameter);
 		_taskEndTime = parseTaskEndTime(parameter);
 	}
+
 	
 	public Task(TaskType taskType, String name, boolean status) {
 		_taskType = taskType;
@@ -64,11 +67,6 @@ public class Task {
 		_taskStatus = status;
 	}
 
-	private int parseDeleteIndex(String parameter) {
-		parameter = parameter.trim();
-		int index = Integer.valueOf(parameter);
-		return index;
-	}
 
 	private String[] generateArray(String parameter) {
 		parameter = parameter.trim();
@@ -76,14 +74,38 @@ public class Task {
 		return array;
 	}
 	
-	private String parseTaskEndTime(String parameter) {
-		// TODO Auto-generated method stub
-		return null;
+	private int parseTaskEndTime(String parameter) {
+		String [] messageArray = generateArray(parameter);
+		
+		for (int i = 0; i+3<=messageArray.length; i++) {
+			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING) && 
+				messageArray[i+2].equalsIgnoreCase(SYMBOL_AT)){
+				int endTime = Integer.parseInt(messageArray[i+3]);
+				if (endTime >= 0000 && endTime <= 2359) {
+					return endTime;
+				} else {
+					return 2359;
+				}
+			}
+		}
+		return 2359;
 	}
+		
+	private int parseTaskStartTime(String parameter) {
+		String [] messageArray = generateArray(parameter);
 
-	private String parseTaskStartTime(String parameter) {
-		// TODO Auto-generated method stub
-		return null;
+		for (int i = 0; i+3<=messageArray.length; i++) {
+			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) && 
+					messageArray[i+2].equalsIgnoreCase(SYMBOL_AT)){
+				int startTime = Integer.parseInt(messageArray[i+3]);
+				if (startTime >= 0000 && startTime <= 2359) {
+					return startTime;
+				} else {
+					return 0000;
+				}
+			} 
+		}
+		return 0000;
 	}
 
 	private String parseTaskEndDay(String parameter) {
@@ -119,7 +141,7 @@ public class Task {
 			return DAY_KEYWORD_TODAY;
 	}
 
-	private static String parseDay(String parameter) {
+	private String parseDay(String parameter) {
 		String day = parameter;
 		
 		if (day.equalsIgnoreCase(DAY_KEYWORD_TODAY)) {
@@ -204,11 +226,11 @@ public class Task {
 		return _taskEndDay;
 	}
 
-	public String getStartTime() {
+	public int getStartTime() {
 		return _taskStartTime;
 	}
 
-	public String getEndTime() {
+	public int getEndTime() {
 		return _taskEndTime;
 	}
 	
