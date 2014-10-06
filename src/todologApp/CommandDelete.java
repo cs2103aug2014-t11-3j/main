@@ -3,25 +3,32 @@ package todologApp;
 import java.util.LinkedList;
 
 public class CommandDelete implements Command{
-	private Task _task;
-	private DBStorage _storage;
+	private static Task _task;
+	private static DBStorage _storage;
 	public CommandDelete(Task task) {
 		_task = task;
 	}
-	public void execute() {
-		_storage = Controller.getDBStorage();
+	public String execute() {
+		String feedback;
+		_storage=Controller.getDBStorage();
 		LinkedList<Task> taskList= _storage.load();
 		if(taskList.indexOf(_task)==-1){
-			System.out.println("Invalid cannot delete");
+			feedback="Invalid cannot delete";
 		}
 		else{
 			taskList.remove(_task);
+			feedback="Deleted "+ _task.getTaskName()+" from toDoLog";
 		}	
+		return feedback;
 	}
 
-	public void undo() {
+	public String undo() {
+		String feedback;
 		CommandAdd undoDelete=new CommandAdd(_task);
 		undoDelete.execute();
+		feedback="undone the delete command";
+		return feedback;
+		
 		
 	}
 

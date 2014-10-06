@@ -15,7 +15,7 @@ public class CommandEdit implements Command{
 	}
 	public Task formNewTask(){
 		if(_toBeEdited.startsWith("\"")&& _toBeEdited.endsWith("\"")){
-			_taskEdited.setName(_toBeEdited);
+			_taskEdited.setTaskName(_toBeEdited);
 		}
 		return _taskEdited;
 //		else if(equalsWeekDay(_toBeEdited)){
@@ -26,18 +26,24 @@ public class CommandEdit implements Command{
 //		}
 	}
 	
-	public void execute() {
+	public String execute() {
+		String feedback;
 		CommandDelete existing=new CommandDelete(_taskExisting);
 		existing.execute();
 		CommandAdd editing=new CommandAdd(_taskEdited);
 		editing.execute();
+		feedback="edited the string";
+		return feedback;
 		}
 	
-	public void undo() {
+	public String undo() {
+		String feedback;
 		CommandDelete editing=new CommandDelete(_taskEdited);
 		editing.execute();
 		CommandAdd existing= new CommandAdd(_taskExisting);
 		existing.execute();
+		feedback="undone the edit command";
+		return feedback;
 		}
 	
 	public boolean equalsWeekDay(String day){

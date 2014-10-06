@@ -3,16 +3,19 @@ package todologApp;
 import java.util.LinkedList;
 
 public class CommandSearch {
-	private String _searchKey;
-	private DBStorage _storage;
+	private static String _searchKey;
+	private static Storage _storage;
 	public CommandSearch(String searchKey) {
 		_searchKey=searchKey;
 	}
-	public void execute() {
+	public String execute() {
+		String feedback;
 		_storage = Controller.getDBStorage();
 		LinkedList<Task> storageList = _storage.load();
         LinkedList<Task> searchList=searchName(storageList);
         System.out.println(searchList);
+        feedback="searching for "+_searchKey+" is completed";
+        return feedback;
         }
 	public LinkedList<Task> searchName(LinkedList<Task> storageList){
 		LinkedList<Task> searchList=new LinkedList<Task>();
