@@ -7,7 +7,7 @@ import org.junit.Test;
 public class TaskTest {
 
 	@Test
-	public void testParseName() {
+	public void testParseName() throws Exception {
 		Task task = new Task ("\"group meeting\"");
 		assertEquals("output should be group meeting", "group meeting" , task.getTaskName());
 		Task task2 = new Task ("\"group meeting");
@@ -17,7 +17,7 @@ public class TaskTest {
 	}
 	
 	@Test
-	public void testParseType() {
+	public void testParseType() throws Exception {
 		Task task = new Task ("\"group meeting\"");
 		assertEquals("output should be FLOATING", TaskType.FLOATING , task.getTaskType());
 		Task task2 = new Task ("\"group meeting\" from friday to saturday");
@@ -31,7 +31,7 @@ public class TaskTest {
 	}
 
 	@Test
-	public void testParseDay() {
+	public void testParseDay() throws Exception {
 		Task task = new Task ("\"group meeting\" from fri 2359 to sat");
 		assertEquals("output should be Friday", "Friday" , task.getTaskDay());
 		assertEquals("output should be Saturday", "Saturday" , task.getEndDay());
@@ -54,7 +54,7 @@ public class TaskTest {
 	}
 	
 	@Test
-	public void testTime() {
+	public void testTime() throws Exception {
 		Task task = new Task ("\"group meeting\" from fri @ 2359 to sat @ 1345");
 		assertEquals("output should be 2359", 2359 , task.getStartTime());
 		assertEquals("output should be 1345", 1345 , task.getEndTime());
@@ -66,5 +66,11 @@ public class TaskTest {
 		Task task3 = new Task ("\"group meeting\" from fri @ 1100 to sat @ 1650");
 		assertEquals("output should be 1100", 1100 , task3.getStartTime());
 		assertEquals("output should be 1650", 1650 , task3.getEndTime());
+		
+		try {
+			Task task4 = new Task ("\"group meeting\" from fri @ 11h00 to sat @ 16h50");
+		} catch (Exception e) {
+			//pass
+		}
 	}
 }
