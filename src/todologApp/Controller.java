@@ -10,7 +10,7 @@ public class Controller {
 	private static DBStorage _dbStorage;
 
 	private static History _history;
-	
+	private static String _display;
 	public void setStorage(DBStorage DBstorage) {
 		_dbStorage = DBstorage;
 	}
@@ -24,16 +24,32 @@ public class Controller {
 	public static void setHistoryStorage(History history) {
 		_history = history;
 	}
+	public static void setDisplay(String display) {
+		_display = display;
+	}
+	
+	public static String createNewDisplay() {
+		String display = "";
+		LinkedList<Task> tasks = _dbStorage.load();
+		for (int i = 0; i< tasks.size(); i++) {
+			Task task = tasks.get(i);
+			display += String.valueOf(i+1)+". "+ task.getTaskName()+'\n';
+		}
+		return display;
+	}
+	
 	public static void acceptUserCommand(String userCommand) {
-		Command command = createCommand(userCommand);
+		Command command = createCommand(userCommand); //exception here
 		command.execute();
+		setDisplay(createNewDisplay());
+		
 	}
 
 	public static Command createCommand(String userCommand) {
 		String firstWord = getFirstWord(userCommand);
 		String restOfTheString = getTheRestOfTheString(userCommand);
 		if (firstWord.equalsIgnoreCase("add")) {
-			Task task = new Task(restOfTheString);
+			Task task = new Task(restOfTheString); // exception here
 			CommandAdd command = new CommandAdd(task);
 			return command;
 		} else if (firstWord.equalsIgnoreCase("delete")) {
@@ -64,13 +80,7 @@ public class Controller {
 		return firstWord;
 	}
 	public static String getOutput() {
-		String output = "";
-		LinkedList<Task> tasks = _dbStorage.load();
-		for (int i = 0; i< tasks.size(); i++) {
-			Task task = tasks.get(i);
-			output += String.valueOf(i+1)+". "+ task.getTaskName()+'\n';
-		}
-		return output;
+		return _display;
 	}
 
 	public static void init() {
