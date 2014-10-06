@@ -260,6 +260,7 @@ public class UserInterface extends JFrame { //also I wanna put the action listen
 			Controller.acceptUserCommand(commandString);	    
 			commandEntryTextField.setText("");
 			toDoListText.setText(Controller.getOutput());
+			dynamicHelpText.setText(Controller.getFeedBack());
 		}
 	}
 	

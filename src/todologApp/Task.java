@@ -197,7 +197,7 @@ public class Task {
 		
 	}
 	
-	private static String parseTaskName(String parameter) {
+	private static String parseTaskName(String parameter) throws Exception{
 		int firstIndex = parameter.indexOf(QUOTATION_MARK);
 		int lastIndex = parameter.lastIndexOf(QUOTATION_MARK);
 		
@@ -205,11 +205,11 @@ public class Task {
 			String taskName = parameter.substring(firstIndex+1, lastIndex);
 			return taskName;
 		} else if (lastIndex == firstIndex) { //throw Exception
-			return INVALID_MESSAGE;
+			throw new Exception();
 		} else if (lastIndex < firstIndex) {
-			return INVALID_MESSAGE;
+			throw new Exception();
 		} else if (firstIndex == -1) {
-			return INVALID_MESSAGE;
+			throw new Exception();
 		} else {
 			return null;
 		}
