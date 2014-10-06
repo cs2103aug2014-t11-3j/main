@@ -80,10 +80,13 @@ public class FileStorage implements Storage{
 		switch (taskType) {
 			case TIMED:
 				task = parseIntoTimed(taskNode);
+				break;
 			case DEADLINE:
 				task = parseIntoDeadline(taskNode);
+				break;
 			default:
 				task = parseIntoFloating(taskNode);
+				break;
 		}
 		
 		return task;
@@ -93,13 +96,23 @@ public class FileStorage implements Storage{
 		boolean status = Boolean.parseBoolean(taskNode.attributeValue("status"));
 		return new Task(TaskType.FLOATING, name, status);
 	}
+	
 	private Task parseIntoDeadline(Element taskNode) {
-		// TODO Auto-generated method stub
-		return null;
+		String name = taskNode.attributeValue("name");
+		String endDay = taskNode.attributeValue("endday");
+		int endTime = Integer.parseInt(taskNode.attributeValue("endtime"));
+		boolean status = Boolean.parseBoolean(taskNode.attributeValue("status"));
+		return new Task(TaskType.DEADLINE, name, endDay, endTime, status);
 	}
+	
 	private Task parseIntoTimed(Element taskNode) {
-		// TODO Auto-generated method stub
-		return null;
+		String name = taskNode.attributeValue("name");
+		String startDay = taskNode.attributeValue("startday");
+		String endDay = taskNode.attributeValue("endday");
+		int startTime = Integer.parseInt(taskNode.attributeValue("starttime"));
+		int endTime = Integer.parseInt(taskNode.attributeValue("endtime"));
+		boolean status = Boolean.parseBoolean(taskNode.attributeValue("status"));
+		return new Task(TaskType.TIMED, name, startDay, endDay, startTime, endTime, status);
 	}
 	private static TaskType parseTaskType(String taskTypeString) {
 		switch (taskTypeString) {
@@ -107,7 +120,10 @@ public class FileStorage implements Storage{
 				return TaskType.DEADLINE;
 			case "TIMED" :
 				return TaskType.TIMED;
-			default: return TaskType.FLOATING;
+			case "FLOATING" :
+				return TaskType.FLOATING;
+			default:
+				return TaskType.FLOATING;
 		}
 	}
 	public Document createBlankDocument() {
@@ -128,17 +144,48 @@ public class FileStorage implements Storage{
 		Element root = newDocument.addElement("root");
 		for (int i = 0; i < tasks.size(); i++) {
 			Task task = tasks.get(i);
-			Element taskElement = root.addElement("task")
-					.addAttribute("type",task.getTaskType().toString())
-					.addAttribute("name",task.getTaskName())
-					.addAttribute("status", String.valueOf(task.getTaskStatus()))
-//					.addAttribute("startdate",task.getStartDate())
-//					.addAttribute("starttime",task.getStartTime())
-//					.addAttribute("enddate",task.getEndDate())
-//					.addAttribute("endtime",task.getEndTime())
-					;
+			switch (task.getTaskType()) {
+				case FLOATING:
+					addFloatingTaskToRoot(root, task);
+					break;
+				case TIMED:
+					addTimedTaskToRoot(root, task);
+					break;
+				case DEADLINE:
+					addDeadlineTaskToRoot(root, task);
+					break;
+				default:
+					break;
+			}
 		}
 		writeDocument(newDocument);
+		
+	}
+	private void addFloatingTaskToRoot(Element root, Task task) {
+		root.addElement("task")
+		.addAttribute("type",task.getTaskType().toString())
+		.addAttribute("name",task.getTaskName())
+		.addAttribute("status", String.valueOf(task.getTaskStatus()));
+	}
+	
+	private void addDeadlineTaskToRoot(Element root, Task task) {
+		root.addElement("task")
+		.addAttribute("type",task.getTaskType().toString())
+		.addAttribute("name",task.getTaskName())
+		.addAttribute("endday",task.getEndDay())
+		.addAttribute("endtime",String.valueOf(task.getEndTime()))
+		.addAttribute("status", String.valueOf(task.getTaskStatus()));
+	}
+	
+	private void addTimedTaskToRoot(Element root, Task task) {
+		root.addElement("task")
+		.addAttribute("type",task.getTaskType().toString())
+		.addAttribute("name",task.getTaskName())
+		.addAttribute("startday",task.getStartDay())
+		.addAttribute("endday",task.getEndDay())
+		.addAttribute("starttime",String.valueOf(task.getStartTime()))
+		.addAttribute("endtime",String.valueOf(task.getEndTime()))
+		.addAttribute("status", String.valueOf(task.getTaskStatus()));
 		
 	}
 	
