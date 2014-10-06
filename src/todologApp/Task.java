@@ -72,34 +72,42 @@ public class Task {
 		return array;
 	}
 	
-	private int parseTaskEndTime(String parameter) {
+	private int parseTaskEndTime(String parameter) throws Exception {
 		String [] messageArray = generateArray(parameter);
 		
 		for (int i = 0; i+3<=messageArray.length; i++) {
 			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING) && 
 				messageArray[i+2].equalsIgnoreCase(SYMBOL_AT)){
-				int endTime = Integer.parseInt(messageArray[i+3]);
-				if (endTime >= 0000 && endTime <= 2359) {
-					return endTime;
-				} else {
-					return 2359;
+				try {
+					int endTime = Integer.parseInt(messageArray[i+3]);
+					if (endTime >= 0000 && endTime <= 2359) {
+						return endTime;
+					} else {
+						return 2359;
+					}
+				} catch (NumberFormatException nfe) {
+					throw new Exception();
 				}
 			}
 		}
 		return 2359;
 	}
 		
-	private int parseTaskStartTime(String parameter) {
+	private int parseTaskStartTime(String parameter) throws Exception  {
 		String [] messageArray = generateArray(parameter);
 
 		for (int i = 0; i+3<=messageArray.length; i++) {
 			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) && 
 					messageArray[i+2].equalsIgnoreCase(SYMBOL_AT)){
-				int startTime = Integer.parseInt(messageArray[i+3]);
-				if (startTime >= 0000 && startTime <= 2359) {
-					return startTime;
-				} else {
-					return 0000;
+				try {
+					int startTime = Integer.parseInt(messageArray[i+3]);
+					if (startTime >= 0000 && startTime <= 2359) {
+						return startTime;
+					} else {
+						return 0000;
+					}
+				} catch (NumberFormatException nfe) {
+					throw new Exception();
 				}
 			} 
 		}
