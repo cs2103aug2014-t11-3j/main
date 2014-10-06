@@ -72,5 +72,9 @@ public class TaskTest {
 		} catch (Exception e) {
 			//pass
 		}
+		
+		Task task5 = new Task ("\"group meeting\" to sat @ 1650");
+		assertEquals("output should be 0000", 0000 , task5.getStartTime());
+		assertEquals("output should be 1650", 1650 , task5.getEndTime());
 	}
 }
