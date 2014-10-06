@@ -48,7 +48,11 @@ public class Controller {
 			Task task = _dbStorage.load().get(index-1);
 			CommandDone command = new CommandDone(task);
 			return command;
-//		}	else if (firstWord.equalsIgnoreCase("edit")) {
+		} else if (firstWord.equalsIgnoreCase("display")) {
+			Task task = _dbStorage.load().get(index-1);
+			CommandDisplay command = new CommandDisplay(task);
+			return command;
+//			else if (firstWord.equalsIgnoreCase("edit")) {
 //			CommandEdit command = new CommandEdit(restOfTheString);
 //			return command;
 //		} else if (firstWord.equalsIgnoreCase("search")) {
