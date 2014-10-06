@@ -1,8 +1,8 @@
 package todologApp;
 
 public class CommandMarkAsDone implements Command{
-	private static Task _task;
-	private static Storage _storage;
+	private Task _task;
+	private Storage _storage;
 	public CommandMarkAsDone(Task task) {
 		_task = task;
 	}

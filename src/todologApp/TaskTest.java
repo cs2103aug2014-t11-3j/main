@@ -19,12 +19,37 @@ public class TaskTest {
 	@Test
 	public void testParseType() {
 		Task task = new Task ("\"group meeting\"");
-		assertEquals("output should be floating", TaskType.FLOATING , task.getTaskType());
+		assertEquals("output should be FLOATING", TaskType.FLOATING , task.getTaskType());
+		Task task2 = new Task ("\"group meeting\" from friday to saturday");
+		assertEquals("output should be TIMED", TaskType.TIMED , task2.getTaskType());
+		Task task3 = new Task ("\"group meeting\" by friday");
+		assertEquals("output should be DEADLINE", TaskType.DEADLINE , task3.getTaskType());
+		Task task4 = new Task ("\"group meeting\" every friday");
+		assertEquals("output should be RECURRING", TaskType.RECURRING , task4.getTaskType());
+		Task task5 = new Task ("\"group meeting every friday");
+		assertEquals("output should be INVALID", TaskType.INVALID , task5.getTaskType());
 	}
 
 	@Test
 	public void testParseDay() {
-		Task task = new Task ("\"group meeting\" fri 2359");
+		Task task = new Task ("\"group meeting\" from fri 2359 to sat");
 		assertEquals("output should be Friday", "Friday" , task.getTaskDay());
+		assertEquals("output should be Saturday", "Saturday" , task.getEndDay());
+		
+		Task task2 = new Task ("\"group meeting\" from thur");
+		assertEquals("output should be Thursday", "Thursday" , task2.getTaskDay());
+		assertEquals("output should be Thursday", "Thursday" , task2.getEndDay());
+		
+		Task task3 = new Task ("\"group meeting\" to sunday");
+		assertEquals("output should be Today", "Today" , task3.getTaskDay());
+		assertEquals("output should be Sunday", "Sunday" , task3.getEndDay());
+
+		Task task4 = new Task ("\"group meeting\" from tue");
+		assertEquals("output should be Tuesday", "Tuesday" , task4.getTaskDay());
+		assertEquals("output should be Tuesday", "Tuesday" , task4.getEndDay());
+
+		Task task5 = new Task ("\"group meeting\" by weDnesDAY");
+		assertEquals("output should be Today", "Today" , task5.getTaskDay());
+		assertEquals("output should be Wednesday", "Wednesday" , task5.getEndDay());
 	}
 }

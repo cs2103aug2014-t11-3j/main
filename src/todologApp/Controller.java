@@ -1,17 +1,24 @@
 package todologApp;
 
+import java.util.LinkedList;
+
+import javax.swing.JTextArea;
+
 // remember to write unit test as you code
 public class Controller {
-	
-	private static DBStorage _storage;
+
+	private static DBStorage _dbStorage;
+
 	private static History _history;
 	
-	public static void setStorage(Storage storage) {
-		_storage = storage;
+	public void setStorage(DBStorage DBstorage) {
+		_dbStorage = DBstorage;
 	}
 	
-	public static DBStorage getStorage() {
-		return _storage;
+
+	public static DBStorage getDBStorage() {
+		return _dbStorage;
+
 	}
 	
 	public static void setHistoryStorage(History history) {
@@ -20,9 +27,8 @@ public class Controller {
 	public static void acceptUserCommand(String userCommand) {
 		Command command = createCommand(userCommand);
 		command.execute();
-		//...
-		command.undo();
 	}
+
 	public static Command createCommand(String userCommand) {
 		String firstWord = getFirstWord(userCommand);
 		String restOfTheString = getTheRestOfTheString(userCommand);
@@ -31,14 +37,17 @@ public class Controller {
 			CommandAdd command = new CommandAdd(task);
 			return command;
 		} else if (firstWord.equalsIgnoreCase("delete")) {
-			CommandDelete command = new CommandDelete(restOfTheString);
+			restOfTheString = restOfTheString.trim();
+			int index = Integer.valueOf(restOfTheString);
+			Task task = _dbStorage.load().get(index-1);
+			CommandDelete command = new CommandDelete(task);
 			return command;
-		} else if (firstWord.equalsIgnoreCase("edit")) {
-			CommandEdit command = new CommandEdit(restOfTheString);
-			return command;
-		} else if (firstWord.equalsIgnoreCase("search")) {
-			CommandSearch command = new CommandSearch(restOfTheString);
-			return command;
+//		} else if (firstWord.equalsIgnoreCase("edit")) {
+//			CommandEdit command = new CommandEdit(restOfTheString);
+//			return command;
+//		} else if (firstWord.equalsIgnoreCase("search")) {
+//			CommandSearch command = new CommandSearch(restOfTheString);
+//			return command;
 		}
 		return null;
 	}
@@ -53,6 +62,22 @@ public class Controller {
 		String[] result = userCommand.split(" ", 2);
 		String firstWord = result[0];
 		return firstWord;
+	}
+	public static String getOutput() {
+		String output = "";
+		LinkedList<Task> tasks = _dbStorage.load();
+		for (int i = 0; i< tasks.size(); i++) {
+			Task task = tasks.get(i);
+			output += String.valueOf(i+1)+". "+ task.getTaskName()+'\n';
+		}
+		return output;
+	}
+
+	public static void init() {
+		_dbStorage = new DBStorage();
+	}
+	public static void init(String fileName) {
+		_dbStorage = new DBStorage(fileName);
 	}
 
 }

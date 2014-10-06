@@ -1,10 +1,19 @@
 package todologApp;
 
+import java.io.IOException;
 import java.util.LinkedList;
 
 public class DBStorage implements Storage {
 	private LinkedList<Task> _tasks;
 	private FileStorage _fileStorage;
+	public DBStorage() {
+		_fileStorage = new FileStorage();
+		_tasks = _fileStorage.load();
+	}
+	public DBStorage(String fileName) {
+		_fileStorage = new FileStorage(fileName);
+		_tasks = _fileStorage.load();
+	}
 	public LinkedList<Task> load() {
 		return _tasks;
 	}
@@ -16,7 +25,7 @@ public class DBStorage implements Storage {
 	}
 
 	@Override
-	public void store(LinkedList<Task> tasks) {
+	public void store(LinkedList<Task> tasks) throws IOException {
 		_tasks = tasks;
 		_fileStorage.store(tasks);
 	}

@@ -1,9 +1,9 @@
 package todologApp;
 
 public class CommandEdit implements Command{
-	private static Task _taskExisting;
-	private static String _toBeEdited;
-	private static Task _taskEdited;
+	private Task _taskExisting;
+	private String _toBeEdited;
+	private Task _taskEdited;
 	//private static Storage _storage;
 	
 	
@@ -17,12 +17,13 @@ public class CommandEdit implements Command{
 		if(_toBeEdited.startsWith("\"")&& _toBeEdited.endsWith("\"")){
 			_taskEdited.setName(_toBeEdited);
 		}
-		else if(equalsWeekDay(_toBeEdited)){
-			_taskEdited.setDay(_toBeEdited);
-		}
-		else if(_toBeEdited.length()==4){
-			_taskEdited.setTime(_toBeEdited);
-		}
+		return _taskEdited;
+//		else if(equalsWeekDay(_toBeEdited)){
+//			_taskEdited.setDay(_toBeEdited);
+//		}
+//		else if(_toBeEdited.length()==4){
+//			_taskEdited.setTime(_toBeEdited);
+//		}
 	}
 	
 	public String execute() {

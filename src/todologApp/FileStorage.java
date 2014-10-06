@@ -17,12 +17,20 @@ public class FileStorage implements Storage{
 	private Document _document;
 	private File _file;
 	
+	public FileStorage() {
+		_file = new File(DEFAULT_FILE_NAME);
+	}
+	public FileStorage(String fileName) {
+		_file = new File(fileName);
+	}
+	
 	@Override
 	public LinkedList<Task> load(){
 		SAXReader reader = new SAXReader();
 		try {
 			_document = reader.read(_file);
 		} catch (DocumentException e) {
+			e.printStackTrace();
 		}	
 		try {
 			return parseDoc(_document);
@@ -49,15 +57,41 @@ public class FileStorage implements Storage{
 		}
 		return tasks;
 	}
-
 	private Task parseElementToTask(Element taskNode) {
 		String taskTypeString = taskNode.attributeValue("type");
-		String name = taskNode.attributeValue("name");
-		Task task = new Task(parseTaskType(taskTypeString),name);
+		TaskType taskType = parseTaskType(taskTypeString);
+		Task task;
+		switch (taskType) {
+			case TIMED:
+				task = parseIntoTimed(taskNode);
+			case DEADLINE:
+				task = parseIntoDeadline(taskNode);
+			default:
+				task = parseIntoFloating(taskNode);
+		}
+		
 		return task;
 	}
+	private Task parseIntoFloating(Element taskNode) {
+		String name = taskNode.attributeValue("name");
+		return new Task(TaskType.FLOATING, name);
+	}
+	private Task parseIntoDeadline(Element taskNode) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	private Task parseIntoTimed(Element taskNode) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	private static TaskType parseTaskType(String taskTypeString) {
-		return TaskType.FLOATING;
+		switch (taskTypeString) {
+			case "DEADLINE" :
+				return TaskType.DEADLINE;
+			case "TIMED" :
+				return TaskType.TIMED;
+			default: return TaskType.FLOATING;
+		}
 	}
 	public Document createBlankDocument() {
 		Document document = DocumentHelper.createDocument();
@@ -70,7 +104,6 @@ public class FileStorage implements Storage{
 	}
 	@Override
 	public void init() {
-		_file = new File(DEFAULT_FILE_NAME);
 		_document = createBlankDocument();
 		try {
 			writeDocument(_document);
@@ -82,26 +115,22 @@ public class FileStorage implements Storage{
 	}
 
 	@Override
-	public void store(LinkedList<Task> tasks) {
+	public void store(LinkedList<Task> tasks) throws IOException{
 		Document newDocument = DocumentHelper.createDocument();
 		Element root = newDocument.addElement("root");
 		for (int i = 0; i < tasks.size(); i++) {
 			Task task = tasks.get(i);
 			Element taskElement = root.addElement("task")
-					.addAttribute("type",task.getType())
-					.addAttribute("name",task.getName())
+					.addAttribute("type",task.getTaskType().toString())
+					.addAttribute("name",task.getTaskName())
 //					.addAttribute("startdate",task.getStartDate())
 //					.addAttribute("starttime",task.getStartTime())
 //					.addAttribute("enddate",task.getEndDate())
 //					.addAttribute("endtime",task.getEndTime())
 					;
 		}
-		try {
-			writeDocument(newDocument);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		writeDocument(newDocument);
+		
 	}
 	
 }

@@ -1,5 +1,5 @@
 package todologApp;
 
 public enum TaskType {
-	FLOATING, TIMED, DEADLINE;
+	FLOATING, TIMED, DEADLINE, RECURRING, INVALID;
 }
