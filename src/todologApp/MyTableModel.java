@@ -1,22 +1,30 @@
 
-import java.awt.*;
+/*import java.awt.*;
 import java.awt.event.*;
 import java.util.Vector;
 
 import javax.swing.*;
-import javax.swing.border.*;
+import javax.swing.border.*;*/
 import javax.swing.table.*;
 
 import java.util.*;
 import java.lang.Object;
 
-public class ToDoListTableModel extends AbstractTableModel{
+public class MyTableModel extends AbstractTableModel{
 	
-	private String[] columnNames = {"No.","Name","Time","Category","Remarks"};
-	private LinkedList<E> tableData;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4665613032022419075L;
+	/**
+	 * 
+	 */
 	
-	public ToDoListTableModel(LinkedList<E> currentToDoLogData){
-		
+	private final static String[] columnNames = {"No.","Name","Time","Category","Remarks"};
+	private LinkedList<Task> tableData;
+	
+	public MyTableModel(LinkedList<Task> toDoListItems){
+		tableData = toDoListItems;
 	}
 	
 	public int getColumnCount(){
@@ -24,10 +32,39 @@ public class ToDoListTableModel extends AbstractTableModel{
 	}
 	
 	public int getRowCount(){
-		
+		return tableData.size();
 	}
 	
+	public String getColumnName(int col){
+		return columnNames[col];
+	}
 	public Object getValueAt(int row,int col){
+		Task task = tableData.get(row);
 		
+		if(task == null){
+			return null;
+		}
+		
+		switch(col){
+		
+		case 0:
+			return task.getIndexNumber();
+		
+		case 1: 
+			return task.getName();
+			
+		case 2: 
+			return task.timeOfTask();
+			
+		case 3:
+			return task.category();
+			
+		case 4:
+			return task.remarks();
+			
+		default:
+			return null;
+			
+		}
 	}
 }
