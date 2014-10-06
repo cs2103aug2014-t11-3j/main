@@ -8,11 +8,14 @@ public class CommandSearch {
 	public CommandSearch(String searchKey) {
 		_searchKey=searchKey;
 	}
-	public void execute() {
+	public String execute() {
+		String feedback;
 		_storage = Controller.getStorage();
 		LinkedList<Task> storageList = _storage.load();
         LinkedList<Task> searchList=searchName(storageList);
         System.out.println(searchList);
+        feedback="searching for "+_searchKey+" is completed";
+        return feedback;
         }
 	public LinkedList<Task> searchName(LinkedList<Task> storageList){
 		LinkedList<Task> searchList=new LinkedList<Task>();
