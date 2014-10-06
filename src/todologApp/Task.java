@@ -10,6 +10,7 @@ public class Task {
 	private static String SINGLE_SPACE = " ";
 	private static String DATE_SEPARATOR = "/";
 	private static String SYMBOL_DASH = "-";
+	private static String SYMBOL_AT = "@";
 	private static String QUOTATION_MARK = "\"";
 
 	//KEYWORDS
@@ -45,8 +46,8 @@ public class Task {
 	private TaskType _taskType;
 	private String _taskStartDay;
 	private String _taskEndDay;
-	private String _taskStartTime;
-	private String _taskEndTime;
+	private int _taskStartTime;
+	private int _taskEndTime;
 	
 	public Task(String parameter){
 
@@ -64,14 +65,26 @@ public class Task {
 		return array;
 	}
 	
-	private String parseTaskEndTime(String parameter) {
-		// TODO Auto-generated method stub
-		return null;
+	private int parseTaskEndTime(String parameter) {
+		String [] messageArray = generateArray(parameter);
+		
+		for (int i = 0; i+3<=messageArray.length; i++) {
+			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING) && 
+				messageArray[i+2].equalsIgnoreCase(SYMBOL_AT)){
+				int endTime = Integer.parseInt(messageArray[i+3]);
+				return endTime;
+			} 
+		}
+		return 2359;
 	}
+		
+		
+		
+	
 
-	private String parseTaskStartTime(String parameter) {
+	private int parseTaskStartTime(String parameter) {
 		// TODO Auto-generated method stub
-		return null;
+		return 0000;
 	}
 
 	private String parseTaskEndDay(String parameter) {
@@ -189,11 +202,11 @@ public class Task {
 		return _taskEndDay;
 	}
 
-	public String getStartTime() {
+	public int getStartTime() {
 		return _taskStartTime;
 	}
 
-	public String getEndTime() {
+	public int getEndTime() {
 		return _taskEndTime;
 	}
 	
