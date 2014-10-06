@@ -47,7 +47,7 @@ public class Task {
 	private String _taskEndDay;
 	private String _taskStartTime;
 	private String _taskEndTime;
-	
+	private boolean _taskStatus;
 	public Task(String parameter){
 
 		_taskName = parseTaskName(parameter);
@@ -58,9 +58,10 @@ public class Task {
 		_taskEndTime = parseTaskEndTime(parameter);
 	}
 	
-	public Task(TaskType taskType, String name) {
+	public Task(TaskType taskType, String name, boolean status) {
 		_taskType = taskType;
 		_taskName = name;
+		_taskStatus = status;
 	}
 
 	private int parseDeleteIndex(String parameter) {
@@ -173,7 +174,7 @@ public class Task {
 		if (lastIndex > firstIndex) {
 			String taskName = parameter.substring(firstIndex+1, lastIndex);
 			return taskName;
-		} else if (lastIndex == firstIndex) {
+		} else if (lastIndex == firstIndex) { //throw Exception
 			return INVALID_MESSAGE;
 		} else if (lastIndex < firstIndex) {
 			return INVALID_MESSAGE;
@@ -213,5 +214,9 @@ public class Task {
 	
 	public static void showToUser(String message) {
 		System.out.println(message);
+	}
+
+	public boolean getTaskStatus() {
+		return _taskStatus;
 	}
 }

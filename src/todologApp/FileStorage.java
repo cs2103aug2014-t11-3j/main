@@ -74,7 +74,8 @@ public class FileStorage implements Storage{
 	}
 	private Task parseIntoFloating(Element taskNode) {
 		String name = taskNode.attributeValue("name");
-		return new Task(TaskType.FLOATING, name);
+		boolean status = Boolean.parseBoolean(taskNode.attributeValue("status"));
+		return new Task(TaskType.FLOATING, name, status);
 	}
 	private Task parseIntoDeadline(Element taskNode) {
 		// TODO Auto-generated method stub
@@ -123,6 +124,7 @@ public class FileStorage implements Storage{
 			Element taskElement = root.addElement("task")
 					.addAttribute("type",task.getTaskType().toString())
 					.addAttribute("name",task.getTaskName())
+					.addAttribute("status", String.valueOf(task.getTaskStatus()))
 //					.addAttribute("startdate",task.getStartDate())
 //					.addAttribute("starttime",task.getStartTime())
 //					.addAttribute("enddate",task.getEndDate())
