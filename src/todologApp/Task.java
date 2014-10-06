@@ -59,6 +59,13 @@ public class Task {
 		_taskEndTime = parseTaskEndTime(parameter);
 	}
 
+	
+	public Task(TaskType taskType, String name) {
+		_taskType = taskType;
+		_taskName = name;
+	}
+
+
 	private String[] generateArray(String parameter) {
 		parameter = parameter.trim();
 		String[] array = parameter.split(SINGLE_SPACE);
@@ -197,7 +204,10 @@ public class Task {
 			return null;
 		}
 	}
-
+	public void setTaskName(String name) {
+		_taskName = name;
+	}
+	
 	public String getTaskName() {
 		return _taskName;
 	}
