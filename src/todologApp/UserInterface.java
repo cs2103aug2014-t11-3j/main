@@ -2,7 +2,7 @@
 //for now a listener for the textfield where you input your command is
 //enough
 
-//package todologApp;
+package todologApp;
 import java.awt.*;
 import java.awt.event.*;
 
@@ -319,11 +319,11 @@ public class UserInterface extends JFrame { /**
 	
 	//convert linked lists into data for the table, go find out how to
 	//dynamic help text will also be 
-	private void initializeLinkedList(){
+	/*private void initializeLinkedList(){
 		toDoListItems.addFirst(new Task("1","Pink","11/09/2001","High","lol"));
 		toDoListItems.add(new Task("2","Blue","Bright boy","Low","hahhah"));
 		toDoListItems.add(new Task("3","Brilliant meeting with the incredible hulk","02/12/1992","Medium","Remember to bring shotgun"));
-	}
+	}*/
 	
 	private void adjustTableColumns(JTable toDoListTable){
 		TableColumn tableColumn = null;

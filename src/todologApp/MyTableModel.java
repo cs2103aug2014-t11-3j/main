@@ -1,4 +1,4 @@
-
+package todologApp;
 /*import java.awt.*;
 import java.awt.event.*;
 import java.util.Vector;
@@ -48,16 +48,16 @@ public class MyTableModel extends AbstractTableModel{
 		switch(col){
 		
 		case 0:
-			return task.getIndexNumber();
+			return row + 1;
 		
 		case 1: 
-			return task.getName();
+			return task.getTaskName();
 			
 		case 2: 
 			return task.timeOfTask();
 			
 		case 3:
-			return task.category();
+			return task.getTaskType();
 			
 		case 4:
 			return task.remarks();
