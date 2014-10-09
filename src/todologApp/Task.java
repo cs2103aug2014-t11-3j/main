@@ -109,7 +109,7 @@ public class Task {
 						return 2359;
 					}
 				} catch (NumberFormatException nfe) {
-					throw new Exception();
+					throw new Exception("Invalid time format");
 				}
 			}
 		}
@@ -130,7 +130,7 @@ public class Task {
 						return 0000;
 					}
 				} catch (NumberFormatException nfe) {
-					throw new Exception();
+					throw new Exception("Invalid time format");
 				}
 			} 
 		}
@@ -225,12 +225,10 @@ public class Task {
 		if (lastIndex > firstIndex) {
 			String taskName = parameter.substring(firstIndex+1, lastIndex);
 			return taskName;
-		} else if (lastIndex == firstIndex) { //throw Exception
-			throw new Exception();
+		} else if (lastIndex == firstIndex) {
+			throw new Exception("Invalid command. Missing task name.\nTask name must be inside quotation marks.");
 		} else if (lastIndex < firstIndex) {
-			throw new Exception();
-		} else if (firstIndex == -1) {
-			throw new Exception();
+			throw new Error(); //never occurs
 		} else {
 			return null;
 		}
@@ -272,8 +270,12 @@ public class Task {
 	}
 
 
-	public void setTaskStatus(boolean b) {
-		_taskStatus = b;
+	public void toggleTaskStatus() {
+		if (_taskStatus) {
+			_taskStatus = false;
+		} else {
+			_taskStatus = true;
+		}
 		
 	}
 }
