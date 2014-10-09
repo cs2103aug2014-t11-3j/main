@@ -7,18 +7,16 @@ public class CommandEdit implements Command{
 	private Task _taskExisting;
 	private String _toBeEdited;
 	private Task _taskEdited;
-	private int index;
+	private int _index;
 	private String editType;
 	private DBStorage _storage;
 	//private static Storage _storage;
 	
 	
-	public CommandEdit(Task taskExisting, String toBeEdited ) {
-		_taskExisting = taskExisting;
+	public CommandEdit(int index, String toBeEdited ) {
+		_index = index-1;
 		_toBeEdited= toBeEdited;
-		_taskEdited=_taskExisting;
 		_storage = Controller.getDBStorage();
-		editType = formNewTask();
 	}
 	private String formNewTask(){
 		if(_toBeEdited.startsWith("\"")&& _toBeEdited.endsWith("\"")){
@@ -37,24 +35,34 @@ public class CommandEdit implements Command{
 	public String execute() {
 		String feedback;
 		LinkedList<Task> tasks = _storage.load();
-		index = tasks.indexOf(_taskExisting);
-		tasks.remove(index);
-		tasks.add(index, _taskEdited);
+		
 		try {
-			_storage.store(tasks);
-		} catch (IOException e) {
-			feedback = "Cannot store the list to ToDoLog";
-			return feedback;
+			_taskExisting = _storage.load().get(_index);
+			_taskEdited = _taskExisting;
+			editType = formNewTask();
+			tasks.remove(_index);
+			tasks.add(_index, _taskEdited);
+			feedback="Edited "+editType+" of the task.";
+			try {
+				_storage.store(tasks);
+			} catch (IOException e) {
+				feedback = "Cannot store the list to ToDoLog";
+				return feedback;
+			}
+		} catch (IndexOutOfBoundsException ioobe) {
+			feedback="Invalid task number. Cannot edit";
 		}
-		feedback="Edited "+editType+" of the task.";
+		
+		
+		
 		return feedback;
 		}
 	
 	public String undo() {
 		String feedback;
 		LinkedList<Task> tasks = _storage.load();
-		tasks.remove(index);
-		tasks.add(index,_taskExisting);
+		tasks.remove(_index);
+		tasks.add(_index,_taskExisting);
 		feedback="Undone the edit command.";
 		return feedback;
 		}
