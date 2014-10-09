@@ -23,13 +23,16 @@ public class MyTableModel extends AbstractTableModel{
 	 * 
 	 */
 	
-	private final static String[] columnNames = {"No.","Name","Time","Category","Remarks"};
+	private final static String[] columnNames = {"No.","Name","Time","Category","Done"};
 	private LinkedList<Task> tableData;
 	
 	public MyTableModel(LinkedList<Task> toDoListItems){
 		tableData = toDoListItems;
 	}
 	
+	public void setTableData(LinkedList<Task> toDoListItems){
+		tableData = toDoListItems;
+	}
 	public int getColumnCount(){
 		return columnNames.length;
 	}
@@ -57,11 +60,20 @@ public class MyTableModel extends AbstractTableModel{
 		case 1: 
 			return task.getTaskName();
 			
-		case 2: 
-			return task.getStartTime();
+		case 2:
+			switch (task.getTaskType()) {
+				case FLOATING:
+					return "-";
+				case TIMED:
+					return task.getStartDay()+" " + task.getStartTime() + " - "
+					+ task.getEndDay() + " " + task.getEndTime();
+				case DEADLINE:
+					return "by "+ task.getEndDay() + " " + task.getEndTime();
+			}
+			
 			
 		case 3:
-			return "Nothing";
+			return "nil";
 			
 		case 4:
 			return task.getTaskStatus();

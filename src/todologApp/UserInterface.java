@@ -35,10 +35,17 @@ public class UserInterface extends JFrame { /**
 	private Controller controller;
 	//private Controller controller;
 	private LinkedList <Task> toDoListItems = new LinkedList<Task>();
+	private MyTableModel toDoListTableModel;
 	
 	/**
 	 * Launch the application.
 	 */
+	@Override
+	public void setVisible(boolean value) {
+	    super.setVisible(value);
+	    commandEntryTextField.requestFocusInWindow();
+	}
+	
 	public static void main(String[] args) {
 		
 		EventQueue.invokeLater(new Runnable() {
@@ -132,6 +139,7 @@ public class UserInterface extends JFrame { /**
 		mainPanel.add(bottomPanel, parameters);
 		
 	}
+	
 	private void createCommandEntryTextBox(JPanel bottomPanel) {
 		//TODO implement this
 		//for layout, google for "java layout..."
@@ -257,7 +265,10 @@ public class UserInterface extends JFrame { /**
 		initialize(this); 
 		fillUpTheJFrame(this);
 		Controller.init();
-		//toDoListText.setText(Controller.getOutput());
+		toDoListItems = Controller.getDBStorage().load();
+		toDoListTableModel = new MyTableModel(toDoListItems);
+		toDoListTable.setModel(toDoListTableModel);
+		dynamicHelpText.setText(Controller.getFeedback());
 		// create more here
 	}
 	
@@ -277,9 +288,11 @@ public class UserInterface extends JFrame { /**
 
 			Controller.acceptUserCommand(commandString);
 			commandEntryTextField.setText("");
-			dynamicHelpText.setText(Controller.getOutput());
+			dynamicHelpText.setText(Controller.getFeedback());
 			toDoListItems = Controller.getDBStorage().load();
-			toDoListTable.setModel(new MyTableModel(toDoListItems));;
+			toDoListTableModel.setTableData(toDoListItems);
+			toDoListTableModel.fireTableDataChanged();
+			
 
 		}
 	}
