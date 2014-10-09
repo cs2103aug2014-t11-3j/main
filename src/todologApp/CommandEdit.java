@@ -1,9 +1,15 @@
 package todologApp;
 
+import java.io.IOException;
+import java.util.LinkedList;
+
 public class CommandEdit implements Command{
 	private Task _taskExisting;
 	private String _toBeEdited;
 	private Task _taskEdited;
+	private int index;
+	private String editType;
+	private DBStorage _storage;
 	//private static Storage _storage;
 	
 	
@@ -11,13 +17,15 @@ public class CommandEdit implements Command{
 		_taskExisting = taskExisting;
 		_toBeEdited= toBeEdited;
 		_taskEdited=_taskExisting;
-		formNewTask();
+		_storage = Controller.getDBStorage();
+		editType = formNewTask();
 	}
-	public Task formNewTask(){
+	private String formNewTask(){
 		if(_toBeEdited.startsWith("\"")&& _toBeEdited.endsWith("\"")){
 			_taskEdited.setTaskName(_toBeEdited.substring(1, _toBeEdited.length()-1));
+			return "name";
 		}
-		return _taskEdited;
+		return "nothing";
 //		else if(equalsWeekDay(_toBeEdited)){
 //			_taskEdited.setDay(_toBeEdited);
 //		}
@@ -28,21 +36,26 @@ public class CommandEdit implements Command{
 	
 	public String execute() {
 		String feedback;
-		CommandDelete existing=new CommandDelete(_taskExisting);
-		existing.execute();
-		CommandAdd editing=new CommandAdd(_taskEdited);
-		editing.execute();
-		feedback="edited the string";
+		LinkedList<Task> tasks = _storage.load();
+		index = tasks.indexOf(_taskExisting);
+		tasks.remove(index);
+		tasks.add(index, _taskEdited);
+		try {
+			_storage.store(tasks);
+		} catch (IOException e) {
+			feedback = "Cannot store the list to ToDoLog";
+			return feedback;
+		}
+		feedback="Edited "+editType+" of the task.";
 		return feedback;
 		}
 	
 	public String undo() {
 		String feedback;
-		CommandDelete editing=new CommandDelete(_taskEdited);
-		editing.execute();
-		CommandAdd existing= new CommandAdd(_taskExisting);
-		existing.execute();
-		feedback="undone the edit command";
+		LinkedList<Task> tasks = _storage.load();
+		tasks.remove(index);
+		tasks.add(index,_taskExisting);
+		feedback="Undone the edit command.";
 		return feedback;
 		}
 	
