@@ -32,10 +32,9 @@ public class UserInterface extends JFrame { /**
 	private JTextArea dynamicHelpText;
 	private JTextArea toDoListText;
 	private JTable toDoListTable;
-	private Controller controller;
 	//private Controller controller;
 	private LinkedList <Task> toDoListItems = new LinkedList<Task>();
-	private MyTableModel toDoListTableModel;
+	private ToDoListTableModel toDoListTableModel;
 	
 	/**
 	 * Launch the application.
@@ -92,7 +91,7 @@ public class UserInterface extends JFrame { /**
 		panelParameters = setParameters(TODOLIST_PARAMETERS);
 		scrollPaneParameters = setParameters(TODOLIST_SCROLLPANE_PARAMETERS);
 		
-		toDoListTable = new JTable(new MyTableModel(toDoListItems));    
+		toDoListTable = new JTable(new ToDoListTableModel(toDoListItems));    
 		toDoListTable.setPreferredSize(new Dimension(532,225));
 		adjustTableColumns(toDoListTable);
 		changeTableColors(toDoListTable);
@@ -266,8 +265,9 @@ public class UserInterface extends JFrame { /**
 		fillUpTheJFrame(this);
 		Controller.init();
 		toDoListItems = Controller.getDBStorage().load();
-		toDoListTableModel = new MyTableModel(toDoListItems);
+		toDoListTableModel = new ToDoListTableModel(toDoListItems);
 		toDoListTable.setModel(toDoListTableModel);
+		adjustTableColumns(toDoListTable);
 		dynamicHelpText.setText(Controller.getFeedback());
 		// create more here
 	}
@@ -288,7 +288,7 @@ public class UserInterface extends JFrame { /**
 
 			Controller.acceptUserCommand(commandString);
 			commandEntryTextField.setText("");
-			dynamicHelpText.setText(Controller.getFeedback());
+			dynamicHelpText.setText(Controller.getFeedback());	
 			toDoListItems = Controller.getDBStorage().load();
 			toDoListTableModel.setTableData(toDoListItems);
 			toDoListTableModel.fireTableDataChanged();
@@ -296,13 +296,6 @@ public class UserInterface extends JFrame { /**
 
 		}
 	}
-	
-	/*private class DynamicHelpTextAreaListener implements ActionListener{
-		@Override
-		public void actionPerformed(ActionEvent evt) {
-			
-		}
-	}*/
 	
 	//this method is to set up the parameters of the gridbagconstraints
 	//to put the different panels into the right positions on the JFrame

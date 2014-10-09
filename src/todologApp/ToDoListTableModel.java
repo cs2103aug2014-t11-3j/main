@@ -12,7 +12,7 @@ import javax.swing.table.*;
 import java.util.*;
 import java.lang.Object;
 
-public class MyTableModel extends AbstractTableModel{
+public class ToDoListTableModel extends AbstractTableModel{
 	
 
 	/**
@@ -26,7 +26,7 @@ public class MyTableModel extends AbstractTableModel{
 	private final static String[] columnNames = {"No.","Name","Time","Category","Done"};
 	private LinkedList<Task> tableData;
 	
-	public MyTableModel(LinkedList<Task> toDoListItems){
+	public ToDoListTableModel(LinkedList<Task> toDoListItems){
 		tableData = toDoListItems;
 	}
 	
