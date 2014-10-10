@@ -140,8 +140,21 @@ public class Parser {
 				} catch (NumberFormatException nfe) {
 					throw new Exception("Invalid time format");
 				}
-			}
+			} else if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING) && 
+					messageArray[i+1].equalsIgnoreCase(SYMBOL_AT)){
+					try {
+						int endTime = Integer.parseInt(messageArray[i+2]);
+						if (endTime >= 0000 && endTime <= 2359) {
+							return endTime;
+						} else {
+							return 2359;
+						}
+					} catch (NumberFormatException nfe) {
+						throw new Exception("Invalid time format");
+					}
+				}
 		}
+		
 		return 2359;
 	}
 		
