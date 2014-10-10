@@ -174,8 +174,21 @@ public class Parser {
 				} catch (NumberFormatException nfe) {
 					throw new Exception("Invalid time format");
 				}
+			} else if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) && 
+					messageArray[i+1].equalsIgnoreCase(SYMBOL_AT)) {
+				try {
+					int startTime = Integer.parseInt(messageArray[i+2]);
+					if (startTime >= 0000 && startTime <= 2359) {
+						return startTime;
+					} else {
+						return 0000;
+					}
+				} catch (NumberFormatException nfe) {
+					throw new Exception("Invalid time format");
+				}
 			} 
 		}
+		
 		return 0000;
 	}
 
