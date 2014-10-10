@@ -115,16 +115,9 @@ public class FileStorage implements Storage{
 		return new Task(TaskType.TIMED, name, startDay, endDay, startTime, endTime, status);
 	}
 	private static TaskType parseTaskType(String taskTypeString) {
-		switch (taskTypeString) {
-			case "DEADLINE" :
-				return TaskType.DEADLINE;
-			case "TIMED" :
-				return TaskType.TIMED;
-			case "FLOATING" :
+		
 				return TaskType.FLOATING;
-			default:
-				return TaskType.FLOATING;
-		}
+		
 	}
 	public Document createBlankDocument() {
 		Document document = DocumentHelper.createDocument();
