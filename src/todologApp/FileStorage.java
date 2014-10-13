@@ -19,9 +19,26 @@ public class FileStorage implements Storage{
 	
 	public FileStorage() {
 		_file = new File(DEFAULT_FILE_NAME);
+		_document = createBlankDocument();
+		init();
 	}
 	public FileStorage(String fileName) {
 		_file = new File(fileName);
+		_document = createBlankDocument();
+		init();
+	}
+	
+	@Override
+	public void init() {
+		if (!_file.exists()) {
+			try {
+				_file.createNewFile();
+				writeDocument(_document);
+			} catch (IOException e) {
+				//return feedback of IO error
+			}
+		}
+		
 	}
 	
 	@Override
@@ -35,8 +52,7 @@ public class FileStorage implements Storage{
 		try {
 			return parseDoc(_document);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//unsupported file or file corrupted
 		}
 		return null;
 		
@@ -58,32 +74,45 @@ public class FileStorage implements Storage{
 		return tasks;
 	}
 	private Task parseElementToTask(Element taskNode) {
-		String taskTypeString = taskNode.attributeValue("type");
+		String taskTypeString = taskNode.element("type").getText();
 		TaskType taskType = parseTaskType(taskTypeString);
 		Task task;
 		switch (taskType) {
 			case TIMED:
 				task = parseIntoTimed(taskNode);
+				break;
 			case DEADLINE:
 				task = parseIntoDeadline(taskNode);
+				break;
 			default:
 				task = parseIntoFloating(taskNode);
+				break;
 		}
 		
 		return task;
 	}
 	private Task parseIntoFloating(Element taskNode) {
-		String name = taskNode.attributeValue("name");
-		boolean status = Boolean.parseBoolean(taskNode.attributeValue("status"));
+		String name = taskNode.element("name").getText();
+		boolean status = Boolean.parseBoolean(taskNode.element("status").getText());
 		return new Task(TaskType.FLOATING, name, status);
 	}
+	
 	private Task parseIntoDeadline(Element taskNode) {
-		// TODO Auto-generated method stub
-		return null;
+		String name = taskNode.element("name").getText();
+		String endDay = taskNode.element("endday").getText();
+		int endTime = Integer.parseInt(taskNode.element("endtime").getText());
+		boolean status = Boolean.parseBoolean(taskNode.element("status").getText());
+		return new Task(TaskType.DEADLINE, name, endDay, endTime, status);
 	}
+	
 	private Task parseIntoTimed(Element taskNode) {
-		// TODO Auto-generated method stub
-		return null;
+		String name = taskNode.element("name").getText();
+		String startDay = taskNode.element("startday").getText();
+		String endDay = taskNode.element("endday").getText();
+		int startTime = Integer.parseInt(taskNode.element("starttime").getText());
+		int endTime = Integer.parseInt(taskNode.element("endtime").getText());
+		boolean status = Boolean.parseBoolean(taskNode.element("status").getText());
+		return new Task(TaskType.TIMED, name, startDay, endDay, startTime, endTime, status);
 	}
 	private static TaskType parseTaskType(String taskTypeString) {
 		switch (taskTypeString) {
@@ -91,29 +120,23 @@ public class FileStorage implements Storage{
 				return TaskType.DEADLINE;
 			case "TIMED" :
 				return TaskType.TIMED;
-			default: return TaskType.FLOATING;
+			case "FLOATING" :
+				return TaskType.FLOATING;
+			default:
+				return TaskType.FLOATING;
 		}
 	}
-	public Document createBlankDocument() {
+	private Document createBlankDocument() {
 		Document document = DocumentHelper.createDocument();
+		document.addElement("root");
         return document;
 	}
-	public void writeDocument(Document document) throws IOException {
+	private void writeDocument(Document document) throws IOException {
 		XMLWriter writer = new XMLWriter(new FileWriter("store.xml"));
 		writer.write(document);
 		writer.close();
 	}
-	@Override
-	public void init() {
-		_document = createBlankDocument();
-		try {
-			writeDocument(_document);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-	}
+	
 
 	@Override
 	public void store(LinkedList<Task> tasks) throws IOException{
@@ -121,17 +144,48 @@ public class FileStorage implements Storage{
 		Element root = newDocument.addElement("root");
 		for (int i = 0; i < tasks.size(); i++) {
 			Task task = tasks.get(i);
-			Element taskElement = root.addElement("task")
-					.addAttribute("type",task.getTaskType().toString())
-					.addAttribute("name",task.getTaskName())
-					.addAttribute("status", String.valueOf(task.getTaskStatus()))
-//					.addAttribute("startdate",task.getStartDate())
-//					.addAttribute("starttime",task.getStartTime())
-//					.addAttribute("enddate",task.getEndDate())
-//					.addAttribute("endtime",task.getEndTime())
-					;
+			switch (task.getTaskType()) {
+				case FLOATING:
+					addFloatingTaskToRoot(root, task);
+					break;
+				case TIMED:
+					addTimedTaskToRoot(root, task);
+					break;
+				case DEADLINE:
+					addDeadlineTaskToRoot(root, task);
+					break;
+				default:
+					break;
+			}
 		}
 		writeDocument(newDocument);
+		
+	}
+	private void addFloatingTaskToRoot(Element root, Task task) {
+		Element newTask = root.addElement("task");
+		newTask.addElement("type").setText(task.getTaskType().toString());
+		newTask.addElement("name").setText(task.getTaskName());
+		newTask.addElement("status").setText(String.valueOf(task.getTaskStatus()));
+	}
+	
+	private void addDeadlineTaskToRoot(Element root, Task task) {
+		Element newTask = root.addElement("task");
+		newTask.addElement("type").setText(task.getTaskType().toString());
+		newTask.addElement("name").setText(task.getTaskName());
+		newTask.addElement("endday").setText(task.getEndDay());
+		newTask.addElement("endtime").setText(String.valueOf(task.getEndTime()));
+		newTask.addElement("status").setText(String.valueOf(task.getTaskStatus()));
+	}
+	
+	private void addTimedTaskToRoot(Element root, Task task) {
+		Element newTask = root.addElement("task");
+		newTask.addElement("type").setText(task.getTaskType().toString());
+		newTask.addElement("name").setText(task.getTaskName());
+		newTask.addElement("startday").setText(task.getStartDay());
+		newTask.addElement("endday").setText(task.getEndDay());
+		newTask.addElement("starttime").setText(String.valueOf(task.getStartTime()));
+		newTask.addElement("endtime").setText(String.valueOf(task.getEndTime()));
+		newTask.addElement("status").setText(String.valueOf(task.getTaskStatus()));
 		
 	}
 	

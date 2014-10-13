@@ -2,17 +2,17 @@ package todologApp;
 
 import java.util.LinkedList;
 
-import javax.swing.JTextArea;
-
 // remember to write unit test as you code
+
 public class Controller {
 
 	private static DBStorage _dbStorage;
 
 	private static History _history;
-	private static String _display;
+	private static String _textDisplay;
 
 	private static String _feedback;
+	private static final String FEEDBACK_START = "To start, enter a command: add, delete, edit, done.";
 	
 	public void setStorage(DBStorage DBstorage) {
 		_dbStorage = DBstorage;
@@ -27,11 +27,9 @@ public class Controller {
 	public static void setHistoryStorage(History history) {
 		_history = history;
 	}
-	
-	public static void setDisplay(String display) {
-		_display = display;
-	}
-	
+	 
+	// unused
+	// code for TextGUI display
 	public static String createNewDisplay() {
 		String display = "";
 		LinkedList<Task> tasks = _dbStorage.load();
@@ -44,7 +42,7 @@ public class Controller {
 					break;
 				case TIMED:
 					display += String.valueOf(i+1)+". "+ task.getTaskName()+
-						" "+task.getTaskDay()+" "+task.getStartTime()+" "+
+						" "+task.getStartDay()+" "+task.getStartTime()+" "+
 						task.getEndDay()+" "+task.getEndTime()+" "
 						+ String.valueOf(task.getTaskStatus())+'\n';
 					break;
@@ -65,76 +63,31 @@ public class Controller {
 	public static void acceptUserCommand(String userCommand) {
 		Command command;
 		try {
-			command = createCommand(userCommand);
+			command = Parser.createCommand(userCommand);
+			_history.addCommand(command);
 			_feedback = command.execute();
 		} catch (Exception e) {
-			_feedback = "Cannot execute the command";
+			_feedback = e.getMessage();
 		}
-		setDisplay(createNewDisplay());
+		_textDisplay = createNewDisplay();
 	}
 
-	public static Command createCommand(String userCommand) throws Exception{
-		String firstWord = getFirstWord(userCommand);
-		String restOfTheString = getTheRestOfTheString(userCommand);
-		if (firstWord.equalsIgnoreCase("add")) {
-			Task task = new Task(restOfTheString);
-			CommandAdd command = new CommandAdd(task);
-			return command;
-		} else if (firstWord.equalsIgnoreCase("delete")) {
-			restOfTheString = restOfTheString.trim();
-			int index = Integer.valueOf(restOfTheString);
-			Task task = _dbStorage.load().get(index-1);
-			CommandDelete command = new CommandDelete(task);
-			return command;
-		} else if (firstWord.equalsIgnoreCase("done")) {
-			restOfTheString = restOfTheString.trim();
-			int index = Integer.valueOf(restOfTheString);
-			Task task = _dbStorage.load().get(index-1);
-			CommandMarkAsDone command = new CommandMarkAsDone(task);
-			return command;
-//		} else if (firstWord.equalsIgnoreCase("display")) {
-//			Task task = _dbStorage.load().get(index-1);
-//			CommandDisplay command = new CommandDisplay(task);
-//			return command;
-		} else if (firstWord.equalsIgnoreCase("edit")) {
-			restOfTheString = restOfTheString.trim();
-			int index = Integer.valueOf(getFirstWord(restOfTheString));
-			Task task = _dbStorage.load().get(index-1);
-			restOfTheString = getTheRestOfTheString(restOfTheString);
-			CommandEdit command = new CommandEdit(task, restOfTheString);
-			return command;
-//		} else if (firstWord.equalsIgnoreCase("search")) {
-//			CommandSearch command = new CommandSearch(restOfTheString);
-//			return command;
-		}
-		return null;
-	}
-	
-	public static String getTheRestOfTheString(String userCommand) {
-		String[] result = userCommand.split(" ", 2);
-		String restOfTheWord = result[1];
-		return restOfTheWord;
-	}
-
-	public static String getFirstWord(String userCommand) {
-		String[] result = userCommand.split(" ", 2);
-		String firstWord = result[0];
-		return firstWord;
-	}
-	public static String getOutput() {
-		return _display;
+	public static String getPlainTextOutput() {
+		return _textDisplay;
 	}
 
 	public static void init() {
 		_dbStorage = new DBStorage();
-		setDisplay(createNewDisplay());
+		_textDisplay = createNewDisplay();
+		_history = new History();
+		_feedback = FEEDBACK_START;
 	}
 	public static void init(String fileName) {
 		_dbStorage = new DBStorage(fileName);
 	}
 
 
-	public static String getFeedBack() {
+	public static String getFeedback() {
 		return _feedback;
 	}
 

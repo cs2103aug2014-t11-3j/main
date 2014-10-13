@@ -1,4 +1,6 @@
 package todologApp;
+
+
 /*import java.awt.*;
 import java.awt.event.*;
 import java.util.Vector;
@@ -10,8 +12,9 @@ import javax.swing.table.*;
 import java.util.*;
 import java.lang.Object;
 
-public class MyTableModel extends AbstractTableModel{
+public class ToDoListTableModel extends AbstractTableModel{
 	
+
 	/**
 	 * 
 	 */
@@ -20,13 +23,16 @@ public class MyTableModel extends AbstractTableModel{
 	 * 
 	 */
 	
-	private final static String[] columnNames = {"No.","Name","Time","Category","Remarks"};
+	private final static String[] columnNames = {"No.","Name","Time","Category","Done"};
 	private LinkedList<Task> tableData;
 	
-	public MyTableModel(LinkedList<Task> toDoListItems){
+	public ToDoListTableModel(LinkedList<Task> toDoListItems){
 		tableData = toDoListItems;
 	}
 	
+	public void setTableData(LinkedList<Task> toDoListItems){
+		tableData = toDoListItems;
+	}
 	public int getColumnCount(){
 		return columnNames.length;
 	}
@@ -39,6 +45,7 @@ public class MyTableModel extends AbstractTableModel{
 		return columnNames[col];
 	}
 	public Object getValueAt(int row,int col){
+
 		Task task = tableData.get(row);
 		
 		if(task == null){
@@ -48,19 +55,28 @@ public class MyTableModel extends AbstractTableModel{
 		switch(col){
 		
 		case 0:
-			return row + 1;
+			return row+1;
 		
 		case 1: 
 			return task.getTaskName();
 			
-		case 2: 
-			return task.timeOfTask();
+		case 2:
+			switch (task.getTaskType()) {
+				case FLOATING:
+					return "-";
+				case TIMED:
+					return task.getStartDay()+" " + task.getStartTime() + " - "
+					+ task.getEndDay() + " " + task.getEndTime();
+				case DEADLINE:
+					return "by "+ task.getEndDay() + " " + task.getEndTime();
+			}
+			
 			
 		case 3:
-			return task.getTaskType();
+			return "nil";
 			
 		case 4:
-			return task.remarks();
+			return task.getTaskStatus();
 			
 		default:
 			return null;

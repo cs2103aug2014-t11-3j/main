@@ -21,13 +21,13 @@ public class DBStorage implements Storage {
 	@Override
 	public void init() {
 		_tasks = new LinkedList<Task>();
-		//_tasks = _fileStorage.load();
+		_tasks = _fileStorage.load();
 	}
 
 	@Override
 	public void store(LinkedList<Task> tasks) throws IOException {
 		_tasks = tasks;
-		//_fileStorage.store(tasks);
+		_fileStorage.store(tasks);
 	}
 
 }

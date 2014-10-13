@@ -17,7 +17,7 @@ public class CommandAdd implements Command{
 		try {
 			_storage.store(newList);
 		} catch (IOException e) {
-			feedback = "Cannot add to ToDoLog";
+			feedback = "Cannot store the list to ToDoLog";
 			return feedback;
 		}
 		feedback="Added "+ _task.getTaskName()+" to ToDoLog";
@@ -26,9 +26,16 @@ public class CommandAdd implements Command{
 
 	public String undo() {
 		String feedback;
-		CommandDelete undoAdd = new CommandDelete(_task);
-		undoAdd.execute();
-		feedback="undone the add comand";
+		_storage = Controller.getDBStorage();
+		LinkedList<Task> taskList = _storage.load();
+		taskList.remove(_task);
+		try {
+			_storage.store(taskList);
+		} catch (IOException e) {
+			feedback = "Cannot store the list to ToDoLog";
+			return feedback;
+		}
+		feedback="Undone the add comand";
 		return feedback;
 		
 	}
