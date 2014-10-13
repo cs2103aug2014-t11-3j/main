@@ -23,48 +23,46 @@ public class Controller {
 	private static final String HELP_TEXT_DONE = "To mark/unmark a task as done, enter:\n - done [task number].";
 
 	private static final String HELP_TEXT_EDIT = "To edit task name, enter:\n - edit [task number] \"[new name]\"";
-	
+
 	public void setStorage(DBStorage DBstorage) {
 		_dbStorage = DBstorage;
 	}
-	
 
 	public static DBStorage getDBStorage() {
 		return _dbStorage;
 
 	}
-	
+
 	public static void setHistoryStorage(History history) {
 		_history = history;
 	}
-	
 
 	public static String createNewDisplay() {
 		String display = "";
 		LinkedList<Task> tasks = _dbStorage.load();
-		for (int i = 0; i< tasks.size(); i++) {
+		for (int i = 0; i < tasks.size(); i++) {
 			Task task = tasks.get(i);
 			switch (task.getTaskType()) {
-				case FLOATING:
-					display += String.valueOf(i+1)+". "+ task.getTaskName()+" "
-							+ String.valueOf(task.getTaskStatus()) +'\n';
-					break;
-				case TIMED:
-					display += String.valueOf(i+1)+". "+ task.getTaskName()+
-						" "+task.getStartDay()+" "+task.getStartTime()+" "+
-						task.getEndDay()+" "+task.getEndTime()+" "
-						+ String.valueOf(task.getTaskStatus())+'\n';
-					break;
-				case DEADLINE:
-					display += String.valueOf(i+1)+". "+ task.getTaskName()+
-						" "+task.getEndDay()+" "+task.getEndTime()+" "
-						+ String.valueOf(task.getTaskStatus())+'\n';
-					break;
-				default:
-					display += "invalid"+'\n';
-					break;
+			case FLOATING:
+				display += String.valueOf(i + 1) + ". " + task.getTaskName()
+						+ " " + String.valueOf(task.getTaskStatus()) + '\n';
+				break;
+			case TIMED:
+				display += String.valueOf(i + 1) + ". " + task.getTaskName()
+						+ " " + task.getStartDay() + " " + task.getStartTime()
+						+ " " + task.getEndDay() + " " + task.getEndTime()
+						+ " " + String.valueOf(task.getTaskStatus()) + '\n';
+				break;
+			case DEADLINE:
+				display += String.valueOf(i + 1) + ". " + task.getTaskName()
+						+ " " + task.getEndDay() + " " + task.getEndTime()
+						+ " " + String.valueOf(task.getTaskStatus()) + '\n';
+				break;
+			default:
+				display += "invalid" + '\n';
+				break;
 			}
-			
+
 		}
 		return display;
 	}
@@ -80,7 +78,7 @@ public class Controller {
 		_textDisplay = createNewDisplay();
 	}
 
-	public static Command createCommand(String userCommand) throws Exception{
+	public static Command createCommand(String userCommand) throws Exception {
 		userCommand = userCommand.trim();
 		String firstWord = getFirstWord(userCommand);
 		if (firstWord.equalsIgnoreCase("add")) {
@@ -98,7 +96,7 @@ public class Controller {
 			}
 			restOfTheString = restOfTheString.trim();
 			int index = Integer.valueOf(restOfTheString);
-			Task task = _dbStorage.load().get(index-1);
+			Task task = _dbStorage.load().get(index - 1);
 			CommandDelete command = new CommandDelete(index);
 			return command;
 		} else if (firstWord.equalsIgnoreCase("done")) {
@@ -108,13 +106,13 @@ public class Controller {
 			}
 			restOfTheString = restOfTheString.trim();
 			int index = Integer.valueOf(restOfTheString);
-			Task task = _dbStorage.load().get(index-1);
+			Task task = _dbStorage.load().get(index - 1);
 			CommandMarkAsDone command = new CommandMarkAsDone(index);
 			return command;
-//		} else if (firstWord.equalsIgnoreCase("display")) {
-//			Task task = _dbStorage.load().get(index-1);
-//			CommandDisplay command = new CommandDisplay(task);
-//			return command;
+			// } else if (firstWord.equalsIgnoreCase("display")) {
+			// Task task = _dbStorage.load().get(index-1);
+			// CommandDisplay command = new CommandDisplay(task);
+			// return command;
 		} else if (firstWord.equalsIgnoreCase("edit")) {
 			String restOfTheString = getTheRestOfTheString(userCommand);
 			if (restOfTheString == null) {
@@ -122,19 +120,20 @@ public class Controller {
 			}
 			restOfTheString = restOfTheString.trim();
 			int index = Integer.valueOf(getFirstWord(restOfTheString));
-			Task task = _dbStorage.load().get(index-1);
+			Task task = _dbStorage.load().get(index - 1);
 			restOfTheString = getTheRestOfTheString(restOfTheString);
 			CommandEdit command = new CommandEdit(task, restOfTheString);
 			return command;
-//		} else if (firstWord.equalsIgnoreCase("search")) {
-//			CommandSearch command = new CommandSearch(restOfTheString);
-//			return command;
+			// } else if (firstWord.equalsIgnoreCase("search")) {
+			// CommandSearch command = new CommandSearch(restOfTheString);
+			// return command;
 		} else {
-			throw new Exception("Invalid command.\n"+FEEDBACK_TYPE);
+			throw new Exception("Invalid command.\n" + FEEDBACK_TYPE);
 		}
 	}
-	
-	public static String getTheRestOfTheString(String userCommand) throws Exception {
+
+	public static String getTheRestOfTheString(String userCommand)
+			throws Exception {
 		try {
 			String[] result = userCommand.split(" ", 2);
 			String restOfTheWord = result[1];
@@ -149,6 +148,7 @@ public class Controller {
 		String firstWord = result[0];
 		return firstWord;
 	}
+
 	public static String getPlainTextOutput() {
 		return _textDisplay;
 	}
@@ -158,10 +158,10 @@ public class Controller {
 		_textDisplay = createNewDisplay();
 		_feedback = FEEDBACK_START;
 	}
+
 	public static void init(String fileName) {
 		_dbStorage = new DBStorage(fileName);
 	}
-
 
 	public static String getFeedback() {
 		return _feedback;

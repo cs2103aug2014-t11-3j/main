@@ -6,14 +6,17 @@ import java.util.LinkedList;
 public class DBStorage implements Storage {
 	private LinkedList<Task> _tasks;
 	private FileStorage _fileStorage;
+
 	public DBStorage() {
 		_fileStorage = new FileStorage();
 		init();
 	}
+
 	public DBStorage(String fileName) {
 		_fileStorage = new FileStorage(fileName);
 		init();
 	}
+
 	public LinkedList<Task> load() {
 		return _tasks;
 	}
