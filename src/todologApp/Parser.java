@@ -225,6 +225,50 @@ public class Parser {
 		}
 		return DAY_KEYWORD_TODAY;
 	}
+	
+
+	public static int parseTaskDate(String parameter) {
+		String [] messageArray = generateArray(parameter);
+		int _date = 1;
+		for (int i = 0; i+1<=messageArray.length-1; i++) {
+			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) && isInteger(messageArray[i+1])){
+				_date = Integer.parseInt(messageArray[i+1]);
+				_date = _date/10000;
+				return _date;
+			} 
+		}
+		
+		return _date;
+	}
+
+	public static int parseTaskMonth(String parameter) {
+		String [] messageArray = generateArray(parameter);
+		int _month = 1;
+		for (int i = 0; i+1<=messageArray.length-1; i++) {
+			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) && isInteger(messageArray[i+1])){
+				_month = Integer.parseInt(messageArray[i+1]);
+				_month = _month/10000;
+				return _month;
+			} 
+		}
+		
+		return _month;
+	}
+
+	public static int parseTaskYear(String parameter) {
+		String [] messageArray = generateArray(parameter);
+		int _year = 14;
+		for (int i = 0; i+1<=messageArray.length-1; i++) {
+			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) && isInteger(messageArray[i+1])){
+				_year = Integer.parseInt(messageArray[i+1]);
+				_year = _year % 100;
+				return _year;
+			} 
+		}
+		
+		return _year;
+	}
+	
 
 	public static String parseDay(String parameter) {
 		String day = parameter;
@@ -290,20 +334,13 @@ public class Parser {
 		}	
 	}
 	
-	public static int parseTaskDay(int date) {
-		int _date = date/10000;
-		return _date;
+	public static boolean isInteger(String s) {
+	    try { 
+	        Integer.parseInt(s); 
+	    } catch(NumberFormatException e) { 
+	        return false; 
+	    }
+	    // only got here if we didn't return false
+	    return true;
 	}
-
-	public static int parseTaskMonth(int date) {
-		int _month = date / 100;
-		_month = _month % 100;
-		return _month;
-	}
-
-	public static int parseTaskYear(int date) {
-		int _year = date % 100;
-		return _year;
-	}
-	
 }
