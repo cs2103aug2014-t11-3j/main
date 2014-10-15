@@ -234,8 +234,7 @@ public class Parser {
 			try {
 				if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) && isInteger(messageArray[i+1])){
 					_date = Integer.parseInt(messageArray[i+1]);
-					_date = _date/100;
-					_date = _date/100;
+					_date = _date/10000;
 					if (parseTaskStartMonth(parameter) == 2 && _date > 0 && _date <= 29) {
 						return _date;
 					} else if (parseTaskStartMonth(parameter) == 4 &&  _date > 0 && _date <= 30){
@@ -306,8 +305,7 @@ public class Parser {
 			try {
 				if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING) && isInteger(messageArray[i+1])){
 					_date = Integer.parseInt(messageArray[i+1]);
-					_date = _date/100;
-					_date = _date/100;
+					_date = _date/10000;
 					if (parseTaskStartMonth(parameter) == 2 && _date > 0 && _date <= 29) {
 						return _date;
 					} else if (parseTaskStartMonth(parameter) == 4 &&  _date > 0 && _date <= 30){
