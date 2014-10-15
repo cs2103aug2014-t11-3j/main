@@ -227,13 +227,14 @@ public class Parser {
 	}
 	
 
-	public static int parseTaskDate(String parameter) {
+	public static int parseTaskStartDate(String parameter) {
 		String [] messageArray = generateArray(parameter);
 		int _date = 1;
 		for (int i = 0; i+1<=messageArray.length-1; i++) {
 			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) && isInteger(messageArray[i+1])){
 				_date = Integer.parseInt(messageArray[i+1]);
-				_date = _date/10000;
+				_date = _date/100;
+				_date = _date/100;
 				return _date;
 			} 
 		}
@@ -241,13 +242,14 @@ public class Parser {
 		return _date;
 	}
 
-	public static int parseTaskMonth(String parameter) {
+	public static int parseTaskStartMonth(String parameter) {
 		String [] messageArray = generateArray(parameter);
 		int _month = 1;
 		for (int i = 0; i+1<=messageArray.length-1; i++) {
 			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) && isInteger(messageArray[i+1])){
 				_month = Integer.parseInt(messageArray[i+1]);
-				_month = _month/10000;
+				_month = _month/100;
+				_month = _month % 100;
 				return _month;
 			} 
 		}
@@ -255,7 +257,7 @@ public class Parser {
 		return _month;
 	}
 
-	public static int parseTaskYear(String parameter) {
+	public static int parseTaskStartYear(String parameter) {
 		String [] messageArray = generateArray(parameter);
 		int _year = 14;
 		for (int i = 0; i+1<=messageArray.length-1; i++) {
@@ -342,5 +344,20 @@ public class Parser {
 	    }
 	    // only got here if we didn't return false
 	    return true;
+	}
+
+	public static int parseTaskEndDate(String parameter) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public static int parseTaskEndMonth(String parameter) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public static int parseTaskEndYear(String parameter) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }
