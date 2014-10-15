@@ -14,6 +14,7 @@ public class Parser {
 
 	//KEYWORDS
 	private static String KEYWORD_DAY_STARTING = "from";
+	private static String KEYWORD_DAY_STARTING_2 = "on";
 	private static String KEYWORD_DAY_ENDING = "to";
 	private static String KEYWORD_DEADLINE = "by";
 	private static String KEYWORD_RECURRING = "every";
@@ -217,7 +218,9 @@ public class Parser {
 		String [] messageArray = generateArray(parameter);
 
 		for (int i = 0; i+1<=messageArray.length-1; i++) {
-			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) && !isInteger(messageArray[i+1])){
+			if ( (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) 
+					|| messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING_2))
+					&& !isInteger(messageArray[i+1])){
 				String startDay = parseDay(messageArray[i+1]);
 				return startDay;
 			} else {
@@ -454,6 +457,7 @@ public class Parser {
 			for (int j=i+1; j<=messageArray.length-1; j++) {
 				if (messageArray[i].equalsIgnoreCase(KEYWORD_WITH) 
 						&& !messageArray[j].equalsIgnoreCase(KEYWORD_DAY_STARTING)
+						&& !messageArray[j].equalsIgnoreCase(KEYWORD_DAY_STARTING_2)
 						&& !messageArray[j].equalsIgnoreCase(KEYWORD_DAY_ENDING)
 						&& !messageArray[j].equalsIgnoreCase(KEYWORD_DEADLINE)
 						&& !messageArray[j].equalsIgnoreCase(KEYWORD_RECURRING)
@@ -478,6 +482,7 @@ public class Parser {
 				if ( (messageArray[i].equalsIgnoreCase(KEYWORD_AT) 
 						|| messageArray[i].equalsIgnoreCase(KEYWORD_IN)) 
 						&& !messageArray[j].equalsIgnoreCase(KEYWORD_DAY_STARTING)
+						&& !messageArray[j].equalsIgnoreCase(KEYWORD_DAY_STARTING_2)
 						&& !messageArray[j].equalsIgnoreCase(KEYWORD_DAY_ENDING)
 						&& !messageArray[j].equalsIgnoreCase(KEYWORD_DEADLINE)
 						&& !messageArray[j].equalsIgnoreCase(KEYWORD_RECURRING)
