@@ -119,7 +119,7 @@ public class TaskTest {
 
 	@Test
 	public void testGeneralCases() throws Exception {
-		Task task = new Task ("\"group meeting\" with ben and linh at computing on 140414 @ 1600");
+		Task task = new Task ("group meeting with ben and linh at computing on 140414 @ 1600");
 		assertEquals ("output should be group meeting", "group meeting", task.getTaskName());
 		assertEquals ("output should be ben and linh", "ben and linh", task.getTaskPerson());
 		assertEquals ("output should be computing", "computing", task.getTaskVenue());
