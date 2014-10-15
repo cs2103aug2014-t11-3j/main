@@ -27,6 +27,12 @@ public class Task {
 		_taskEndDay = Parser.parseTaskEndDay(parameter);
 		_taskStartTime = Parser.parseTaskStartTime(parameter);
 		_taskEndTime = Parser.parseTaskEndTime(parameter);
+		_taskStartDate = Parser.parseTaskStartDate(parameter);
+		_taskStartMonth = Parser.parseTaskStartMonth(parameter);
+		_taskStartYear = Parser.parseTaskStartYear (parameter);
+		_taskEndDate = Parser.parseTaskEndDate(parameter);
+		_taskEndMonth = Parser.parseTaskEndMonth(parameter);
+		_taskEndYear = Parser.parseTaskEndYear (parameter);
 	}
 
 	
