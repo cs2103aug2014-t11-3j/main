@@ -95,6 +95,8 @@ public class TaskTest {
 		assertEquals("output should be 1", 1, task.getEndDate());
 		assertEquals("output should be 1", 1, task.getEndMonth());
 		assertEquals("output should be 14", 14, task.getEndYear());
+		assertEquals("output should be Today", "Today", task.getStartDay());
+		assertEquals("output should be Saturday", "Saturday", task.getEndDay());
 		
 		Task task2 = new Task ("\"group meeting\" from 090314 @ 1500 to 100514 @ 1650");
 		assertEquals("output should be 9", 9, task2.getStartDate());
@@ -103,6 +105,8 @@ public class TaskTest {
 		assertEquals("output should be 10", 10, task2.getEndDate());
 		assertEquals("output should be 5", 5, task2.getEndMonth());
 		assertEquals("output should be 14", 14, task2.getEndYear());
+		assertEquals("output should be Today", "Today", task2.getStartDay());
+		assertEquals("output should be Saturday", "Today", task2.getEndDay());
 	}
 
 }
