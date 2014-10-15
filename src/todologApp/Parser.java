@@ -19,6 +19,7 @@ public class Parser {
 	private static String KEYWORD_RECURRING = "every";
 	private static String KEYWORD_WITH = "with";
 	private static String KEYWORD_AT = "at";
+	private static String KEYWORD_IN = "in";
 
 	//DAY KEYWORDS
 	private static String DAY_KEYWORD_TODAY = "Today";
@@ -456,8 +457,12 @@ public class Parser {
 						&& !messageArray[j].equalsIgnoreCase(KEYWORD_DAY_ENDING)
 						&& !messageArray[j].equalsIgnoreCase(KEYWORD_DEADLINE)
 						&& !messageArray[j].equalsIgnoreCase(KEYWORD_RECURRING)
-						&& !messageArray[j].equalsIgnoreCase(KEYWORD_AT)) {
+						&& !messageArray[j].equalsIgnoreCase(KEYWORD_AT)
+						&& !messageArray[j].equalsIgnoreCase(KEYWORD_IN)
+						&& !messageArray[j].equalsIgnoreCase(SYMBOL_AT)) {
 					taskPerson = taskPerson + messageArray[j] + SINGLE_SPACE;
+				} else {
+					break;
 				}
 			}
 		}
@@ -470,13 +475,17 @@ public class Parser {
 
 		for (int i=0; i+1<=messageArray.length-1; i++) {
 			for (int j=i+1; j<=messageArray.length-1; j++) {
-				if (messageArray[i].equalsIgnoreCase(KEYWORD_AT) 
+				if ( (messageArray[i].equalsIgnoreCase(KEYWORD_AT) 
+						|| messageArray[i].equalsIgnoreCase(KEYWORD_IN)) 
 						&& !messageArray[j].equalsIgnoreCase(KEYWORD_DAY_STARTING)
 						&& !messageArray[j].equalsIgnoreCase(KEYWORD_DAY_ENDING)
 						&& !messageArray[j].equalsIgnoreCase(KEYWORD_DEADLINE)
 						&& !messageArray[j].equalsIgnoreCase(KEYWORD_RECURRING)
-						&& !messageArray[j].equalsIgnoreCase(KEYWORD_WITH)) {
+						&& !messageArray[j].equalsIgnoreCase(KEYWORD_WITH)
+						&& !messageArray[j].equalsIgnoreCase(SYMBOL_AT)) {
 					taskVenue = taskVenue + messageArray[j] + SINGLE_SPACE;
+				} else {
+					break;
 				}
 			}
 		}
