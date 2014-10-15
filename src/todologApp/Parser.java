@@ -289,45 +289,63 @@ public class Parser {
 
 	}
 	
-	public static int parseTaskEndDate(String parameter) {
+	public static int parseTaskEndDate(String parameter) throws Exception {
 		String [] messageArray = generateArray(parameter);
 		int _date = 1;
 		for (int i = 0; i+1<=messageArray.length-1; i++) {
-			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING) && isInteger(messageArray[i+1])){
-				_date = Integer.parseInt(messageArray[i+1]);
-				_date = _date/100;
-				_date = _date/100;
-				return _date;
-			} 
+			try {
+				if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING) && isInteger(messageArray[i+1])){
+					_date = Integer.parseInt(messageArray[i+1]);
+					_date = _date/100;
+					_date = _date/100;
+					if (_date > 0 && _date <= 31) {
+						return _date;
+					}
+				}
+			} catch (NumberFormatException nfe) {
+				throw new Exception("Invalid date format");
+			}
 		}
-		
+
 		return _date;
 	}
 
-	public static int parseTaskEndMonth(String parameter) {
+	public static int parseTaskEndMonth(String parameter) throws Exception {
 		String [] messageArray = generateArray(parameter);
 		int _month = 1;
 		for (int i = 0; i+1<=messageArray.length-1; i++) {
+			try {
 			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING) && isInteger(messageArray[i+1])){
 				_month = Integer.parseInt(messageArray[i+1]);
 				_month = _month/100;
 				_month = _month % 100;
+				if (_month > 0 && _month <= 12) {
 				return _month;
+				}
+			} 
+			} catch (NumberFormatException nfe) {
+				throw new Exception("Invalid date format");
 			} 
 		}
 		
 		return _month;
 	}
 
-	public static int parseTaskEndYear(String parameter) {
+	public static int parseTaskEndYear(String parameter) throws Exception {
 		String [] messageArray = generateArray(parameter);
 		int _year = 14;
 		for (int i = 0; i+1<=messageArray.length-1; i++) {
+			try {
 			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING) && isInteger(messageArray[i+1])){
 				_year = Integer.parseInt(messageArray[i+1]);
 				_year = _year % 100;
+				if (_year > 0 && _year <= 12) {
 				return _year;
+				}
 			} 
+			} catch (NumberFormatException nfe) {
+				throw new Exception("Invalid date format");
+			}
 		}
 		
 		return _year;
