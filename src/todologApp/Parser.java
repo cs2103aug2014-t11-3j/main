@@ -461,7 +461,7 @@ public class Parser {
 				}
 			}
 		}
-		return taskPerson;
+		return taskPerson.trim();
 	}
 
 	public static String parseTaskVenue(String parameter) {
@@ -480,7 +480,7 @@ public class Parser {
 				}
 			}
 		}
-		return taskVenue;
+		return taskVenue.trim();
 	}
 	
 }
