@@ -197,7 +197,7 @@ public class Parser {
 		String [] messageArray = generateArray(parameter);
 
 		for (int i = 0; i+1<=messageArray.length; i++) {
-			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING)){
+			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING) && !isInteger(messageArray[i+1])){
 				String endDay = parseDay(messageArray[i+1]);
 				return endDay;
 			} else {
@@ -214,7 +214,7 @@ public class Parser {
 		String [] messageArray = generateArray(parameter);
 
 		for (int i = 0; i+1<=messageArray.length-1; i++) {
-			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING)){
+			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) && !isInteger(messageArray[i+1])){
 				String startDay = parseDay(messageArray[i+1]);
 				return startDay;
 			} else {
