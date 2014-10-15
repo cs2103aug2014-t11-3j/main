@@ -85,4 +85,16 @@ public class TaskTest {
 		assertEquals("output should be 0000", 0000 , task5.getStartTime());
 		assertEquals("output should be 1650", 1650 , task5.getEndTime());
 	}
+	
+	@Test
+	public void testDateMonthYear() throws Exception {
+		Task task = new Task ("\"group meeting\" from 090314 @ 1500 to sat @ 1650");
+		assertEquals("output should be 9", 9, task.getStartDate());
+		assertEquals("output should be 03", 3, task.getStartMonth());
+		assertEquals("output should be 14", 14, task.getStartYear());
+		assertEquals("output should be 14", 1, task.getEndDate());
+		assertEquals("output should be 14", 1, task.getEndMonth());
+		assertEquals("output should be 14", 14, task.getEndYear());
+	}
+
 }
