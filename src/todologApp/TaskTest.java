@@ -10,10 +10,18 @@ public class TaskTest {
 	public void testParseName() throws Exception {
 		Task task = new Task ("\"group meeting\"");
 		assertEquals("output should be group meeting", "group meeting" , task.getTaskName());
-		Task task2 = new Task ("\"group meeting");
-		assertEquals("output should be invalid input", "Invalid Input!" , task2.getTaskName());
-		Task task3 = new Task ("group meeting");
-		assertEquals("output should be invalid input", "Invalid Input!" , task3.getTaskName());
+		try {
+			new Task ("\"group meeting");
+		} catch (Exception e) {
+			assertEquals("output should be invalid input", "Invalid command. Missing task name.\nTask name must be inside quotation marks." ,
+					e.getMessage());
+		}
+		try {
+			new Task ("group meeting");
+		} catch (Exception e) {
+		assertEquals("output should be invalid input", "Invalid command. Missing task name.\nTask name must be inside quotation marks." , 
+				e.getMessage());
+		}
 	}
 	
 	@Test
