@@ -92,9 +92,17 @@ public class TaskTest {
 		assertEquals("output should be 9", 9, task.getStartDate());
 		assertEquals("output should be 03", 3, task.getStartMonth());
 		assertEquals("output should be 14", 14, task.getStartYear());
-		assertEquals("output should be 14", 1, task.getEndDate());
-		assertEquals("output should be 14", 1, task.getEndMonth());
+		assertEquals("output should be 1", 1, task.getEndDate());
+		assertEquals("output should be 1", 1, task.getEndMonth());
 		assertEquals("output should be 14", 14, task.getEndYear());
+		
+		Task task2 = new Task ("\"group meeting\" from 090314 @ 1500 to 100514 @ 1650");
+		assertEquals("output should be 9", 9, task2.getStartDate());
+		assertEquals("output should be 03", 3, task2.getStartMonth());
+		assertEquals("output should be 14", 14, task2.getStartYear());
+		assertEquals("output should be 10", 10, task2.getEndDate());
+		assertEquals("output should be 5", 5, task2.getEndMonth());
+		assertEquals("output should be 14", 14, task2.getEndYear());
 	}
 
 }
