@@ -114,5 +114,13 @@ public class TaskTest {
 		Task task = new Task ("\"group meeting\" with Linh at school cafe @ 1500" );
 		assertEquals ("output should be Linh", "Linh" , task.getTaskPerson());
 		assertEquals ("output should be school cafe", "school cafe" , task.getTaskVenue());
+		
+		Task task2 = new Task ("\"camping\" with schoolmates in school from saturday @ 1500 to sunday @ 1600" );
+		assertEquals ("output should be schoolmates", "schoolmates" , task2.getTaskPerson());
+		assertEquals ("output should be school", "school" , task2.getTaskVenue());
+		assertEquals ("output should be saturday", "Saturday" , task2.getStartDay());
+		assertEquals ("output should be sunday", "Sunday" , task2.getEndDay());
+		assertEquals ("output should be 1500", 1500 , task2.getStartTime());
+		assertEquals ("output should be 1500", 1600 , task2.getEndTime());
 	}
 }
