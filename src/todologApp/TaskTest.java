@@ -108,5 +108,11 @@ public class TaskTest {
 		assertEquals("output should be Today", "Today", task2.getStartDay());
 		assertEquals("output should be Saturday", "Today", task2.getEndDay());
 	}
-
+	
+	@Test
+	public void testVenueAndPerson() throws Exception {
+		Task task = new Task ("\"group meeting\" with Linh at school cafe @ 1500" );
+		assertEquals ("output should be Linh", "Linh" , task.getTaskPerson());
+		assertEquals ("output should be school cafe", "school cafe" , task.getTaskVenue());
+	}
 }
