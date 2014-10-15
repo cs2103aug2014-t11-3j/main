@@ -11,7 +11,13 @@ public class Task {
 	private String _taskEndDay;
 	private int _taskStartTime;
 	private int _taskEndTime;
-
+	private int _taskStartDate;
+	private int _taskStartMonth;
+	private int _taskStartYear;
+	private int _taskEndDate;
+	private int _taskEndMonth;
+	private int _taskEndYear;
+	
 	private boolean _taskStatus;
 	
 	public Task(String parameter) throws Exception{
@@ -77,6 +83,30 @@ public class Task {
 
 	public int getEndTime() {
 		return _taskEndTime;
+	}
+	
+	public int getStartDate() {
+		return _taskStartDate;
+	}
+	
+	public int getStartMonth() {
+		return _taskStartMonth;
+	}
+	
+	public int getStartYear() {
+		return _taskStartYear;
+	}
+	
+	public int getEndDate() {
+		return _taskEndDate;
+	}
+	
+	public int getEndMonth() {
+		return _taskEndMonth;
+	}
+	
+	public int getEndYear() {
+		return _taskEndYear;
 	}
 	
 	public static void showToUser(String message) {
