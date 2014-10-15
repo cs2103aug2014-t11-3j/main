@@ -463,5 +463,24 @@ public class Parser {
 		}
 		return taskPerson;
 	}
+
+	public static String parseTaskVenue(String parameter) {
+		String [] messageArray = generateArray(parameter);
+		String taskVenue = EMPTY_STRING;
+
+		for (int i=0; i+1<=messageArray.length-1; i++) {
+			for (int j=i+1; j<=messageArray.length-1; j++) {
+				if (messageArray[i].equalsIgnoreCase(KEYWORD_AT) 
+						&& !messageArray[j].equalsIgnoreCase(KEYWORD_DAY_STARTING)
+						&& !messageArray[j].equalsIgnoreCase(KEYWORD_DAY_ENDING)
+						&& !messageArray[j].equalsIgnoreCase(KEYWORD_DEADLINE)
+						&& !messageArray[j].equalsIgnoreCase(KEYWORD_RECURRING)
+						&& !messageArray[j].equalsIgnoreCase(KEYWORD_WITH)) {
+					taskVenue = taskVenue + messageArray[j] + SINGLE_SPACE;
+				}
+			}
+		}
+		return taskVenue;
+	}
 	
 }
