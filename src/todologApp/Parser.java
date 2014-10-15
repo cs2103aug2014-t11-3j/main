@@ -167,8 +167,9 @@ public class Parser {
 		String [] messageArray = generateArray(parameter);
 
 		for (int i = 0; i+3<=messageArray.length; i++) {
-			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) && 
-					messageArray[i+2].equalsIgnoreCase(SYMBOL_AT)){
+			if ((messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING)
+					|| messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING_2))
+					&& messageArray[i+2].equalsIgnoreCase(SYMBOL_AT)) {
 				try {
 					int startTime = Integer.parseInt(messageArray[i+3]);
 					if (startTime >= 0000 && startTime <= 2359) {
