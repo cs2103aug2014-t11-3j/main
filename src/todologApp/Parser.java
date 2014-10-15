@@ -236,16 +236,26 @@ public class Parser {
 					_date = Integer.parseInt(messageArray[i+1]);
 					_date = _date/100;
 					_date = _date/100;
-					if (_date > 0 && _date <= 31) {
-					return _date;
+					if (parseTaskStartMonth(parameter) == 2 && _date > 0 && _date <= 29) {
+						return _date;
+					} else if (parseTaskStartMonth(parameter) == 4 &&  _date > 0 && _date <= 30){
+						return _date;
+					}  else if (parseTaskStartMonth(parameter) == 6 && _date > 0 && _date <= 30){
+						return _date;
+					} else if (parseTaskStartMonth(parameter) == 9 && _date > 0 && _date <= 30){
+						return _date;
+					} else if (parseTaskStartMonth(parameter) == 11 && _date > 0 && _date <= 30){
+						return _date;
+					} else if (_date > 0 && _date <= 31){
+						return _date;
 					}
 				} 
 			}	catch (NumberFormatException nfe) {
-					throw new Exception("Invalid date format");
-				}
+				throw new Exception("Invalid date format");
+			}
 		}
 		return _date;
-		
+
 	}
 
 	public static int parseTaskStartMonth(String parameter) throws Exception {
@@ -298,10 +308,20 @@ public class Parser {
 					_date = Integer.parseInt(messageArray[i+1]);
 					_date = _date/100;
 					_date = _date/100;
-					if (_date > 0 && _date <= 31) {
+					if (parseTaskStartMonth(parameter) == 2 && _date > 0 && _date <= 29) {
+						return _date;
+					} else if (parseTaskStartMonth(parameter) == 4 &&  _date > 0 && _date <= 30){
+						return _date;
+					}  else if (parseTaskStartMonth(parameter) == 6 && _date > 0 && _date <= 30){
+						return _date;
+					} else if (parseTaskStartMonth(parameter) == 9 && _date > 0 && _date <= 30){
+						return _date;
+					} else if (parseTaskStartMonth(parameter) == 11 && _date > 0 && _date <= 30){
+						return _date;
+					} else if (_date > 0 && _date <= 31){
 						return _date;
 					}
-				}
+				} 
 			} catch (NumberFormatException nfe) {
 				throw new Exception("Invalid date format");
 			}
