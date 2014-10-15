@@ -36,7 +36,7 @@ public class Task {
 		_taskEndMonth = Parser.parseTaskEndMonth(parameter);
 		_taskEndYear = Parser.parseTaskEndYear(parameter);
 		_taskPerson = Parser.parseTaskPerson(parameter);
-		_taskVenue = Parser.parseTaskVenue(paremeter);
+		_taskVenue = Parser.parseTaskVenue(parameter);
 	}
 
 	
@@ -117,6 +117,14 @@ public class Task {
 	
 	public int getEndYear() {
 		return _taskEndYear;
+	}
+	
+	public String getTaskVenue() {
+		return _taskVenue;
+	}
+	
+	public String getTaskPerson() {
+		return _taskPerson;
 	}
 	
 	public static void showToUser(String message) {
