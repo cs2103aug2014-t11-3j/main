@@ -135,5 +135,13 @@ public class TaskTest {
 		assertEquals ("output should be 1500", 1500 , task2.getStartTime());
 		assertEquals ("output should be 1500", 1600 , task2.getEndTime());
 
+		Task task3 = new Task ("engin club meeting with engin club in club room on tuesday @ 1500 to wed @ 0800");
+		assertEquals ("output should be engin club meeting", "engin club meeting", task3.getTaskName());
+		assertEquals ("output should be engin club", "engin club" , task3.getTaskPerson());
+		assertEquals ("output should be club room", "club room" , task3.getTaskVenue());
+		assertEquals ("output should be Tuesday", "Tuesday" , task3.getStartDay());
+		assertEquals ("output should be Wednesday", "Wednesday" , task3.getEndDay());
+		assertEquals ("output should be 1500", 1500 , task3.getStartTime());
+		assertEquals ("output should be 0800", 800 , task3.getEndTime());
 	}
 }
