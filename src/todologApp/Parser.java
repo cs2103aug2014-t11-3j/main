@@ -238,7 +238,9 @@ public class Parser {
 		int _date = 1;
 		for (int i = 0; i+1<=messageArray.length-1; i++) {
 			try {
-				if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) && isInteger(messageArray[i+1])){
+				if ((messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) 
+						|| messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING_2))
+						&& isInteger(messageArray[i+1])) {
 					_date = Integer.parseInt(messageArray[i+1]);
 					_date = _date/10000;
 					if (parseTaskStartMonth(parameter) == 2 && _date > 0 && _date <= 29) {
@@ -268,7 +270,9 @@ public class Parser {
 		int _month = 1;
 		for (int i = 0; i+1<=messageArray.length-1; i++) {
 			try {
-				if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) && isInteger(messageArray[i+1])){
+				if ((messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) 
+						|| messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING_2)) 
+						&& isInteger(messageArray[i+1])) {
 					_month = Integer.parseInt(messageArray[i+1]);
 					_month = _month/100;
 					_month = _month % 100;
@@ -288,7 +292,9 @@ public class Parser {
 		int _year = 14;
 		for (int i = 0; i+1<=messageArray.length-1; i++) {
 			try {
-				if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) && isInteger(messageArray[i+1])){
+				if ((messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) 
+						|| messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING_2))
+						&& isInteger(messageArray[i+1])){
 					_year = Integer.parseInt(messageArray[i+1]);
 					_year = _year % 100;
 					if (_year > 0 && _year <= 12) {
