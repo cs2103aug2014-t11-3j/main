@@ -9,6 +9,8 @@ public class Task {
 	private TaskType _taskType;
 	private String _taskStartDay;
 	private String _taskEndDay;
+	private String _taskPerson;
+	private String _taskVenue;
 	private int _taskStartTime;
 	private int _taskEndTime;
 	private int _taskStartDate;
@@ -32,7 +34,9 @@ public class Task {
 		_taskStartYear = Parser.parseTaskStartYear (parameter);
 		_taskEndDate = Parser.parseTaskEndDate(parameter);
 		_taskEndMonth = Parser.parseTaskEndMonth(parameter);
-		_taskEndYear = Parser.parseTaskEndYear (parameter);
+		_taskEndYear = Parser.parseTaskEndYear(parameter);
+		_taskPerson = Parser.parseTaskPerson(parameter);
+		_taskVenue = Parser.parseTaskVenue(paremeter);
 	}
 
 	
