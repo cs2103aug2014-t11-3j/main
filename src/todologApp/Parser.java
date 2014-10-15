@@ -429,22 +429,45 @@ public class Parser {
 
 	}
 
-	public static String parseTaskName(String parameter) throws Exception{
-		int firstIndex = parameter.indexOf(QUOTATION_MARK);
-		int lastIndex = parameter.lastIndexOf(QUOTATION_MARK);
+//	public static String parseTaskName(String parameter) throws Exception{
+//		int firstIndex = parameter.indexOf(QUOTATION_MARK);
+//		int lastIndex = parameter.lastIndexOf(QUOTATION_MARK);
+//
+//		if (lastIndex > firstIndex) {
+//			String taskName = parameter.substring(firstIndex+1, lastIndex);
+//			return taskName;
+//		} else if (lastIndex == firstIndex) {
+//			throw new Exception("Invalid command. Missing task name.\nTask name must be inside quotation marks.");
+//		} else if (lastIndex < firstIndex) {
+//			throw new Error(); //never occurs
+//		} else {
+//			return null;
+//		}	
+//	}
 
-		if (lastIndex > firstIndex) {
-			String taskName = parameter.substring(firstIndex+1, lastIndex);
-			return taskName;
-		} else if (lastIndex == firstIndex) {
-			throw new Exception("Invalid command. Missing task name.\nTask name must be inside quotation marks.");
-		} else if (lastIndex < firstIndex) {
-			throw new Error(); //never occurs
-		} else {
-			return null;
-		}	
+	public static String parseTaskName(String parameter) throws Exception {
+		String [] messageArray = generateArray(parameter);
+		String taskName = EMPTY_STRING;
+
+		for (int i=0; i<=messageArray.length-1; i++) {
+			if (!messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) 
+					&& !messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING_2)
+					&& !messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING)
+					&& !messageArray[i].equalsIgnoreCase(KEYWORD_DEADLINE)
+					&& !messageArray[i].equalsIgnoreCase(KEYWORD_RECURRING)
+					&& !messageArray[i].equalsIgnoreCase(KEYWORD_WITH)
+					&& !messageArray[i].equalsIgnoreCase(KEYWORD_AT)
+					&& !messageArray[i].equalsIgnoreCase(KEYWORD_IN)
+					&& !messageArray[i].equalsIgnoreCase(SYMBOL_AT)) {
+				taskName = taskName + messageArray[i] + SINGLE_SPACE;
+			} else {
+				break;
+			}
+		}
+
+		return taskName.trim();
 	}
-
+	
 	public static boolean isInteger(String s) {
 		try { 
 			Integer.parseInt(s); 
@@ -502,5 +525,5 @@ public class Parser {
 		}
 		return taskVenue.trim();
 	}
-	
+
 }
