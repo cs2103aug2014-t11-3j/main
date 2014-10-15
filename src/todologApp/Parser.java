@@ -17,6 +17,8 @@ public class Parser {
 	private static String KEYWORD_DAY_ENDING = "to";
 	private static String KEYWORD_DEADLINE = "by";
 	private static String KEYWORD_RECURRING = "every";
+	private static String KEYWORD_WITH = "with";
+	private static String KEYWORD_AT = "at";
 
 	//DAY KEYWORDS
 	private static String DAY_KEYWORD_TODAY = "Today";
@@ -225,7 +227,7 @@ public class Parser {
 		}
 		return DAY_KEYWORD_TODAY;
 	}
-	
+
 
 	public static int parseTaskStartDate(String parameter) throws Exception {
 		String [] messageArray = generateArray(parameter);
@@ -297,7 +299,7 @@ public class Parser {
 		return _year;
 
 	}
-	
+
 	public static int parseTaskEndDate(String parameter) throws Exception {
 		String [] messageArray = generateArray(parameter);
 		int _date = 1;
@@ -333,19 +335,19 @@ public class Parser {
 		int _month = 1;
 		for (int i = 0; i+1<=messageArray.length-1; i++) {
 			try {
-			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING) && isInteger(messageArray[i+1])){
-				_month = Integer.parseInt(messageArray[i+1]);
-				_month = _month/100;
-				_month = _month % 100;
-				if (_month > 0 && _month <= 12) {
-				return _month;
-				}
-			} 
+				if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING) && isInteger(messageArray[i+1])){
+					_month = Integer.parseInt(messageArray[i+1]);
+					_month = _month/100;
+					_month = _month % 100;
+					if (_month > 0 && _month <= 12) {
+						return _month;
+					}
+				} 
 			} catch (NumberFormatException nfe) {
 				throw new Exception("Invalid date format");
 			} 
 		}
-		
+
 		return _month;
 	}
 
@@ -354,18 +356,18 @@ public class Parser {
 		int _year = 14;
 		for (int i = 0; i+1<=messageArray.length-1; i++) {
 			try {
-			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING) && isInteger(messageArray[i+1])){
-				_year = Integer.parseInt(messageArray[i+1]);
-				_year = _year % 100;
-				if (_year > 0 && _year <= 12) {
-				return _year;
-				}
-			} 
+				if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING) && isInteger(messageArray[i+1])){
+					_year = Integer.parseInt(messageArray[i+1]);
+					_year = _year % 100;
+					if (_year > 0 && _year <= 12) {
+						return _year;
+					}
+				} 
 			} catch (NumberFormatException nfe) {
 				throw new Exception("Invalid date format");
 			}
 		}
-		
+
 		return _year;
 	}
 
@@ -432,16 +434,34 @@ public class Parser {
 			return null;
 		}	
 	}
-	
+
 	public static boolean isInteger(String s) {
-	    try { 
-	        Integer.parseInt(s); 
-	    } catch(NumberFormatException e) { 
-	        return false; 
-	    }
-	    // only got here if we didn't return false
-	    return true;
+		try { 
+			Integer.parseInt(s); 
+		} catch(NumberFormatException e) { 
+			return false; 
+		}
+		// only got here if we didn't return false
+		return true;
 	}
 
+	public static String parseTaskPerson(String parameter) {
+		String [] messageArray = generateArray(parameter);
+		String taskPerson = EMPTY_STRING;
+
+		for (int i=0; i+1<=messageArray.length-1; i++) {
+			for (int j=i+1; j<=messageArray.length-1; j++) {
+				if (messageArray[i].equalsIgnoreCase(KEYWORD_WITH) 
+						&& !messageArray[j].equalsIgnoreCase(KEYWORD_DAY_STARTING)
+						&& !messageArray[j].equalsIgnoreCase(KEYWORD_DAY_ENDING)
+						&& !messageArray[j].equalsIgnoreCase(KEYWORD_DEADLINE)
+						&& !messageArray[j].equalsIgnoreCase(KEYWORD_RECURRING)
+						&& !messageArray[j].equalsIgnoreCase(KEYWORD_AT)) {
+					taskPerson = taskPerson + messageArray[j] + SINGLE_SPACE;
+				}
+			}
+		}
+		return taskPerson;
+	}
 	
 }
