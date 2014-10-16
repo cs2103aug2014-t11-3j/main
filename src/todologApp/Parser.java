@@ -325,7 +325,7 @@ public class Parser {
 				if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING) && isInteger(messageArray[i+1])){
 					_date = Integer.parseInt(messageArray[i+1]);
 					_date = _date/10000;
-					if (parseTaskStartMonth(parameter) == 2 && _date > 0 && _date <= 28) {
+					if (parseTaskEndMonth(parameter) == 2 && _date > 0 && _date <= 28) {
 						return _date;
 					} else if (parseTaskStartMonth(parameter) == 4 &&  _date > 0 && _date <= 30){
 						return _date;
@@ -423,24 +423,46 @@ public class Parser {
 	}
 
 	public static TaskType parseTaskType(String parameter) {
-		String taskDateTime = parameter.substring(parameter.lastIndexOf(QUOTATION_MARK)+1);
-		taskDateTime = taskDateTime.trim();
-		//System.out.println(parameter);
-		//System.out.println(taskDateTime);
-		String[] analyseTask = taskDateTime.split(SINGLE_SPACE);
-		if (taskDateTime.length() == 0) {
-			return (TaskType.FLOATING);
-		} else if (analyseTask[0].equalsIgnoreCase(KEYWORD_DAY_STARTING) || analyseTask[0].equalsIgnoreCase(KEYWORD_DAY_ENDING)) {
-			return (TaskType.TIMED);
-		} else if (analyseTask[0].equalsIgnoreCase(KEYWORD_DEADLINE)) {
-			return (TaskType.DEADLINE);
-		} else if (analyseTask[0].equalsIgnoreCase(KEYWORD_RECURRING)) {
-			return (TaskType.RECURRING);
-		} else {
-			return (TaskType.INVALID);
-		}
+		//		String taskDateTime = parameter.substring(parameter.lastIndexOf(QUOTATION_MARK)+1);
+		//		taskDateTime = taskDateTime.trim();
+		//		System.out.println(parameter);
+		//		System.out.println(taskDateTime);
+		//		String[] analyseTask = taskDateTime.split(SINGLE_SPACE);
+		String [] messageArray = generateArray(parameter);
 
+		for (int i=0; i<=messageArray.length-1; i++) {
+			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) 
+					|| messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING_2)
+					|| messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING)) {
+				return (TaskType.TIMED);
+			} else if (messageArray[i].equalsIgnoreCase(KEYWORD_DEADLINE)) {
+				return (TaskType.DEADLINE);
+			} else if (messageArray[i].equalsIgnoreCase(KEYWORD_RECURRING)) {
+				return (TaskType.RECURRING);
+			} else if (!messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) 
+					&& !messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING_2)
+					&& !messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING)
+					&& !messageArray[i].equalsIgnoreCase(KEYWORD_DEADLINE)
+					&& !messageArray[i].equalsIgnoreCase(KEYWORD_RECURRING)
+					&& !messageArray[i].equalsIgnoreCase(SYMBOL_AT) 
+					&& !messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING)){
+				return (TaskType.FLOATING);
+			} else {
+				return (TaskType.INVALID);
+			}
+		}
 	}
+		//			if (taskDateTime.length() == 0) {
+		//				return (TaskType.FLOATING);
+		//			} else if (analyseTask[0].equalsIgnoreCase(KEYWORD_DAY_STARTING) || analyseTask[0].equalsIgnoreCase(KEYWORD_DAY_ENDING)) {
+		//				return (TaskType.TIMED);
+		//			} else if (analyseTask[0].equalsIgnoreCase(KEYWORD_DEADLINE)) {
+		//				return (TaskType.DEADLINE);
+		//			} else if (analyseTask[0].equalsIgnoreCase(KEYWORD_RECURRING)) {
+		//				return (TaskType.RECURRING);
+		//			} else {
+		//				return (TaskType.INVALID);
+		//			}
 
 	//	public static String parseTaskName(String parameter) throws Exception{
 	//		int firstIndex = parameter.indexOf(QUOTATION_MARK);
