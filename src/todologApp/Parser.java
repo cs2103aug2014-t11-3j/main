@@ -244,7 +244,7 @@ public class Parser {
 						&& isInteger(messageArray[i+1])) {
 					_date = Integer.parseInt(messageArray[i+1]);
 					_date = _date/10000;
-					if (parseTaskStartMonth(parameter) == 2 && _date > 0 && _date <= 29) {
+					if (parseTaskStartMonth(parameter) == 2 && _date > 0 && _date <= 28) {
 						return _date;
 					} else if (parseTaskStartMonth(parameter) == 4 &&  _date > 0 && _date <= 30){
 						return _date;
@@ -256,6 +256,8 @@ public class Parser {
 						return _date;
 					} else if (_date > 0 && _date <= 31){
 						return _date;
+					} else {
+						throw new Exception("Invalid Date Format");
 					}
 				} 
 			}	catch (NumberFormatException nfe) {
@@ -279,6 +281,8 @@ public class Parser {
 					_month = _month % 100;
 					if (_month > 0 && _month <= 12) {
 						return _month;
+					} else {
+						throw new Exception("Invalid Date Format");
 					}
 				} 
 			} catch (NumberFormatException nfe) {
@@ -300,10 +304,12 @@ public class Parser {
 					_year = _year % 100;
 					if (_year > 0 && _year <= 12) {
 						return _year;
+					} else {
+						throw new Exception("Invalid Date Format");
 					}
 				} 
 			} catch (NumberFormatException nfe) {
-				throw new Exception("Invalid date format");
+				throw new Exception("Invalid Date Format");
 			}
 
 		}
@@ -319,7 +325,7 @@ public class Parser {
 				if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING) && isInteger(messageArray[i+1])){
 					_date = Integer.parseInt(messageArray[i+1]);
 					_date = _date/10000;
-					if (parseTaskStartMonth(parameter) == 2 && _date > 0 && _date <= 29) {
+					if (parseTaskStartMonth(parameter) == 2 && _date > 0 && _date <= 28) {
 						return _date;
 					} else if (parseTaskStartMonth(parameter) == 4 &&  _date > 0 && _date <= 30){
 						return _date;
@@ -331,10 +337,12 @@ public class Parser {
 						return _date;
 					} else if (_date > 0 && _date <= 31){
 						return _date;
+					} else {
+						throw new Exception("Invalid Date Format");
 					}
 				} 
 			} catch (NumberFormatException nfe) {
-				throw new Exception("Invalid date format");
+				throw new Exception("Invalid Date Format");
 			}
 		}
 
@@ -352,6 +360,8 @@ public class Parser {
 					_month = _month % 100;
 					if (_month > 0 && _month <= 12) {
 						return _month;
+					} else {
+						throw new Exception("Invalid Date Format");
 					}
 				} 
 			} catch (NumberFormatException nfe) {
@@ -372,6 +382,8 @@ public class Parser {
 					_year = _year % 100;
 					if (_year > 0 && _year <= 12) {
 						return _year;
+					} else {
+						throw new Exception("Invalid Date Format");
 					}
 				} 
 			} catch (NumberFormatException nfe) {
