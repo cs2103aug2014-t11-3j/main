@@ -302,7 +302,7 @@ public class Parser {
 						&& isInteger(messageArray[i+1])){
 					_year = Integer.parseInt(messageArray[i+1]);
 					_year = _year % 100;
-					if (_year > 0 && _year <= 12) {
+					if (_year >= 14) {
 						return _year;
 					} else {
 						throw new Exception("Invalid Date Format");
@@ -380,7 +380,7 @@ public class Parser {
 				if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING) && isInteger(messageArray[i+1])){
 					_year = Integer.parseInt(messageArray[i+1]);
 					_year = _year % 100;
-					if (_year > 0 && _year <= 12) {
+					if (_year >= 14) {
 						return _year;
 					} else {
 						throw new Exception("Invalid Date Format");
@@ -442,21 +442,21 @@ public class Parser {
 
 	}
 
-//	public static String parseTaskName(String parameter) throws Exception{
-//		int firstIndex = parameter.indexOf(QUOTATION_MARK);
-//		int lastIndex = parameter.lastIndexOf(QUOTATION_MARK);
-//
-//		if (lastIndex > firstIndex) {
-//			String taskName = parameter.substring(firstIndex+1, lastIndex);
-//			return taskName;
-//		} else if (lastIndex == firstIndex) {
-//			throw new Exception("Invalid command. Missing task name.\nTask name must be inside quotation marks.");
-//		} else if (lastIndex < firstIndex) {
-//			throw new Error(); //never occurs
-//		} else {
-//			return null;
-//		}	
-//	}
+	//	public static String parseTaskName(String parameter) throws Exception{
+	//		int firstIndex = parameter.indexOf(QUOTATION_MARK);
+	//		int lastIndex = parameter.lastIndexOf(QUOTATION_MARK);
+	//
+	//		if (lastIndex > firstIndex) {
+	//			String taskName = parameter.substring(firstIndex+1, lastIndex);
+	//			return taskName;
+	//		} else if (lastIndex == firstIndex) {
+	//			throw new Exception("Invalid command. Missing task name.\nTask name must be inside quotation marks.");
+	//		} else if (lastIndex < firstIndex) {
+	//			throw new Error(); //never occurs
+	//		} else {
+	//			return null;
+	//		}	
+	//	}
 
 	public static String parseTaskName(String parameter) throws Exception {
 		String [] messageArray = generateArray(parameter);
@@ -480,7 +480,7 @@ public class Parser {
 
 		return taskName.trim();
 	}
-	
+
 	public static boolean isInteger(String s) {
 		try { 
 			Integer.parseInt(s); 
