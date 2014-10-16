@@ -9,9 +9,17 @@ public class Task {
 	private TaskType _taskType;
 	private String _taskStartDay;
 	private String _taskEndDay;
+	private String _taskPerson;
+	private String _taskVenue;
 	private int _taskStartTime;
 	private int _taskEndTime;
-
+	private int _taskStartDate;
+	private int _taskStartMonth;
+	private int _taskStartYear;
+	private int _taskEndDate;
+	private int _taskEndMonth;
+	private int _taskEndYear;
+	
 	private boolean _taskStatus;
 	
 	public Task(String parameter) throws Exception{
@@ -21,6 +29,14 @@ public class Task {
 		_taskEndDay = Parser.parseTaskEndDay(parameter);
 		_taskStartTime = Parser.parseTaskStartTime(parameter);
 		_taskEndTime = Parser.parseTaskEndTime(parameter);
+		_taskStartDate = Parser.parseTaskStartDate(parameter);
+		_taskStartMonth = Parser.parseTaskStartMonth(parameter);
+		_taskStartYear = Parser.parseTaskStartYear (parameter);
+		_taskEndDate = Parser.parseTaskEndDate(parameter);
+		_taskEndMonth = Parser.parseTaskEndMonth(parameter);
+		_taskEndYear = Parser.parseTaskEndYear(parameter);
+		_taskPerson = Parser.parseTaskPerson(parameter);
+		_taskVenue = Parser.parseTaskVenue(parameter);
 	}
 
 	
@@ -77,6 +93,38 @@ public class Task {
 
 	public int getEndTime() {
 		return _taskEndTime;
+	}
+	
+	public int getStartDate() {
+		return _taskStartDate;
+	}
+	
+	public int getStartMonth() {
+		return _taskStartMonth;
+	}
+	
+	public int getStartYear() {
+		return _taskStartYear;
+	}
+	
+	public int getEndDate() {
+		return _taskEndDate;
+	}
+	
+	public int getEndMonth() {
+		return _taskEndMonth;
+	}
+	
+	public int getEndYear() {
+		return _taskEndYear;
+	}
+	
+	public String getTaskVenue() {
+		return _taskVenue;
+	}
+	
+	public String getTaskPerson() {
+		return _taskPerson;
 	}
 	
 	public static void showToUser(String message) {
