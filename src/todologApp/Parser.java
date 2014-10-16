@@ -124,11 +124,13 @@ public class Parser {
 		String firstWord = result[0];
 		return firstWord;
 	}
+	
 	private static String[] generateArray(String parameter) {
 		parameter = parameter.trim();
 		String[] array = parameter.split(SINGLE_SPACE);
 		return array;
 	}
+	
 	public static int parseTaskEndTime(String parameter) throws Exception {
 		String [] messageArray = generateArray(parameter);
 
@@ -422,47 +424,61 @@ public class Parser {
 		}
 	}
 
-	public static TaskType parseTaskType(String parameter) {
+	public static TaskType parseTaskType (String parameter) {
 		//		String taskDateTime = parameter.substring(parameter.lastIndexOf(QUOTATION_MARK)+1);
 		//		taskDateTime = taskDateTime.trim();
 		//		System.out.println(parameter);
 		//		System.out.println(taskDateTime);
 		//		String[] analyseTask = taskDateTime.split(SINGLE_SPACE);
 		String [] messageArray = generateArray(parameter);
+		if (messageArray.length != 0) {
+			for (int i=0; i<=messageArray.length-1; i++) {
+				if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) 
+						|| messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING_2)
+						|| messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING)) {
+					return (TaskType.TIMED);
+				}
+			}
 
-		for (int i=0; i<=messageArray.length-1; i++) {
-			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) 
-					|| messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING_2)
-					|| messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING)) {
-				return (TaskType.TIMED);
-			} else if (messageArray[i].equalsIgnoreCase(KEYWORD_DEADLINE)) {
-				return (TaskType.DEADLINE);
-			} else if (messageArray[i].equalsIgnoreCase(KEYWORD_RECURRING)) {
-				return (TaskType.RECURRING);
-			} else if (!messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) 
-					&& !messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING_2)
-					&& !messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING)
-					&& !messageArray[i].equalsIgnoreCase(KEYWORD_DEADLINE)
-					&& !messageArray[i].equalsIgnoreCase(KEYWORD_RECURRING)
-					&& !messageArray[i].equalsIgnoreCase(SYMBOL_AT) 
-					&& !messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING)){
-				return (TaskType.FLOATING);
-			} else {
-				return (TaskType.INVALID);
+			for (int i=0; i<=messageArray.length-1; i++) {
+				if (messageArray[i].equalsIgnoreCase(KEYWORD_DEADLINE)) {
+					return (TaskType.DEADLINE);
+				} 
+			}		
+
+			for (int i=0; i<=messageArray.length-1; i++) {
+				if (messageArray[i].equalsIgnoreCase(KEYWORD_RECURRING)) {
+					return (TaskType.RECURRING);
+				} 		
+			}
+
+			for (int i=0; i<=messageArray.length-1; i++) {
+				if (!messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) 
+						&& !messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING_2)
+						&& !messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING)
+						&& !messageArray[i].equalsIgnoreCase(KEYWORD_DEADLINE)
+						&& !messageArray[i].equalsIgnoreCase(KEYWORD_RECURRING)
+						&& !messageArray[i].equalsIgnoreCase(SYMBOL_AT) 
+						&& !messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING)){
+					return (TaskType.FLOATING);
+				} 
 			}
 		}
+
+		return (TaskType.INVALID);
 	}
-		//			if (taskDateTime.length() == 0) {
-		//				return (TaskType.FLOATING);
-		//			} else if (analyseTask[0].equalsIgnoreCase(KEYWORD_DAY_STARTING) || analyseTask[0].equalsIgnoreCase(KEYWORD_DAY_ENDING)) {
-		//				return (TaskType.TIMED);
-		//			} else if (analyseTask[0].equalsIgnoreCase(KEYWORD_DEADLINE)) {
-		//				return (TaskType.DEADLINE);
-		//			} else if (analyseTask[0].equalsIgnoreCase(KEYWORD_RECURRING)) {
-		//				return (TaskType.RECURRING);
-		//			} else {
-		//				return (TaskType.INVALID);
-		//			}
+
+	//			if (taskDateTime.length() == 0) {
+	//				return (TaskType.FLOATING);
+	//			} else if (analyseTask[0].equalsIgnoreCase(KEYWORD_DAY_STARTING) || analyseTask[0].equalsIgnoreCase(KEYWORD_DAY_ENDING)) {
+	//				return (TaskType.TIMED);
+	//			} else if (analyseTask[0].equalsIgnoreCase(KEYWORD_DEADLINE)) {
+	//				return (TaskType.DEADLINE);
+	//			} else if (analyseTask[0].equalsIgnoreCase(KEYWORD_RECURRING)) {
+	//				return (TaskType.RECURRING);
+	//			} else {
+	//				return (TaskType.INVALID);
+	//			}
 
 	//	public static String parseTaskName(String parameter) throws Exception{
 	//		int firstIndex = parameter.indexOf(QUOTATION_MARK);
