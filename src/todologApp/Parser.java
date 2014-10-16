@@ -155,7 +155,7 @@ public class Parser {
 						return 2359;
 					}
 				} catch (NumberFormatException nfe) {
-					throw new Exception("Invalid time format");
+					throw new Exception("Invalid Time Format");
 				}
 			}
 		}
@@ -178,7 +178,7 @@ public class Parser {
 						return 0000;
 					}
 				} catch (NumberFormatException nfe) {
-					throw new Exception("Invalid time format");
+					throw new Exception("Invalid Time Format");
 				}
 			} else if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) && 
 					messageArray[i+1].equalsIgnoreCase(SYMBOL_AT)) {
@@ -190,7 +190,7 @@ public class Parser {
 						return 0000;
 					}
 				} catch (NumberFormatException nfe) {
-					throw new Exception("Invalid time format");
+					throw new Exception("Invalid Time Format");
 				}
 			} 
 		}
@@ -261,7 +261,7 @@ public class Parser {
 					}
 				} 
 			}	catch (NumberFormatException nfe) {
-				throw new Exception("Invalid date format");
+				throw new Exception("Invalid Date Format");
 			}
 		}
 		return _date;
@@ -286,7 +286,7 @@ public class Parser {
 					}
 				} 
 			} catch (NumberFormatException nfe) {
-				throw new Exception("Invalid date format");
+				throw new Exception("Invalid Date Format");
 			}
 		}
 		return _month;
@@ -365,7 +365,7 @@ public class Parser {
 					}
 				} 
 			} catch (NumberFormatException nfe) {
-				throw new Exception("Invalid date format");
+				throw new Exception("Invalid Date Format");
 			} 
 		}
 
@@ -387,7 +387,7 @@ public class Parser {
 					}
 				} 
 			} catch (NumberFormatException nfe) {
-				throw new Exception("Invalid date format");
+				throw new Exception("Invalid Date Format");
 			}
 		}
 
