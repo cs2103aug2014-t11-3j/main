@@ -124,6 +124,7 @@ public class Task {
 					if (startTime >= 0000 && startTime <= 2359) {
 						return startTime;
 					} else {
+						assert startTime==0;
 						return 0000;
 					}
 				} catch (NumberFormatException nfe) {
