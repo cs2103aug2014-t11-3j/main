@@ -132,7 +132,7 @@ public class FileStorage implements Storage{
         return document;
 	}
 	private void writeDocument(Document document) throws IOException {
-		XMLWriter writer = new XMLWriter(new FileWriter("store.xml"));
+		XMLWriter writer = new XMLWriter(new FileWriter(_file));
 		writer.write(document);
 		writer.close();
 	}
@@ -187,6 +187,12 @@ public class FileStorage implements Storage{
 		newTask.addElement("endtime").setText(String.valueOf(task.getEndTime()));
 		newTask.addElement("status").setText(String.valueOf(task.getTaskStatus()));
 		
+	}
+	public Document getDocument() {
+		return _document;
+	}
+	public File getFile() {
+		return _file;
 	}
 	
 }
