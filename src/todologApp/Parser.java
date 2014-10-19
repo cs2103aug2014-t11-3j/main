@@ -124,11 +124,13 @@ public class Parser {
 		String firstWord = result[0];
 		return firstWord;
 	}
+	
 	private static String[] generateArray(String parameter) {
 		parameter = parameter.trim();
 		String[] array = parameter.split(SINGLE_SPACE);
 		return array;
 	}
+	
 	public static int parseTaskEndTime(String parameter) throws Exception {
 		String [] messageArray = generateArray(parameter);
 
@@ -155,7 +157,7 @@ public class Parser {
 						return 2359;
 					}
 				} catch (NumberFormatException nfe) {
-					throw new Exception("Invalid time format");
+					throw new Exception("Invalid Time Format");
 				}
 			}
 		}
@@ -178,7 +180,7 @@ public class Parser {
 						return 0000;
 					}
 				} catch (NumberFormatException nfe) {
-					throw new Exception("Invalid time format");
+					throw new Exception("Invalid Time Format");
 				}
 			} else if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) && 
 					messageArray[i+1].equalsIgnoreCase(SYMBOL_AT)) {
@@ -190,7 +192,7 @@ public class Parser {
 						return 0000;
 					}
 				} catch (NumberFormatException nfe) {
-					throw new Exception("Invalid time format");
+					throw new Exception("Invalid Time Format");
 				}
 			} 
 		}
@@ -244,7 +246,7 @@ public class Parser {
 						&& isInteger(messageArray[i+1])) {
 					_date = Integer.parseInt(messageArray[i+1]);
 					_date = _date/10000;
-					if (parseTaskStartMonth(parameter) == 2 && _date > 0 && _date <= 29) {
+					if (parseTaskStartMonth(parameter) == 2 && _date > 0 && _date <= 28) {
 						return _date;
 					} else if (parseTaskStartMonth(parameter) == 4 &&  _date > 0 && _date <= 30){
 						return _date;
@@ -256,10 +258,12 @@ public class Parser {
 						return _date;
 					} else if (_date > 0 && _date <= 31){
 						return _date;
+					} else {
+						throw new Exception("Invalid Date Format");
 					}
 				} 
 			}	catch (NumberFormatException nfe) {
-				throw new Exception("Invalid date format");
+				throw new Exception("Invalid Date Format");
 			}
 		}
 		return _date;
@@ -279,10 +283,12 @@ public class Parser {
 					_month = _month % 100;
 					if (_month > 0 && _month <= 12) {
 						return _month;
+					} else {
+						throw new Exception("Invalid Date Format");
 					}
 				} 
 			} catch (NumberFormatException nfe) {
-				throw new Exception("Invalid date format");
+				throw new Exception("Invalid Date Format");
 			}
 		}
 		return _month;
@@ -298,17 +304,18 @@ public class Parser {
 						&& isInteger(messageArray[i+1])){
 					_year = Integer.parseInt(messageArray[i+1]);
 					_year = _year % 100;
-					if (_year > 0 && _year <= 12) {
+					if (_year >= 14) {
 						return _year;
+					} else {
+						throw new Exception("Invalid Date Format");
 					}
 				} 
 			} catch (NumberFormatException nfe) {
-				throw new Exception("Invalid date format");
+				throw new Exception("Invalid Date Format");
 			}
 
 		}
 		return _year;
-
 	}
 
 	public static int parseTaskEndDate(String parameter) throws Exception {
@@ -319,7 +326,7 @@ public class Parser {
 				if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING) && isInteger(messageArray[i+1])){
 					_date = Integer.parseInt(messageArray[i+1]);
 					_date = _date/10000;
-					if (parseTaskStartMonth(parameter) == 2 && _date > 0 && _date <= 29) {
+					if (parseTaskEndMonth(parameter) == 2 && _date > 0 && _date <= 28) {
 						return _date;
 					} else if (parseTaskStartMonth(parameter) == 4 &&  _date > 0 && _date <= 30){
 						return _date;
@@ -331,10 +338,12 @@ public class Parser {
 						return _date;
 					} else if (_date > 0 && _date <= 31){
 						return _date;
+					} else {
+						throw new Exception("Invalid Date Format");
 					}
 				} 
 			} catch (NumberFormatException nfe) {
-				throw new Exception("Invalid date format");
+				throw new Exception("Invalid Date Format");
 			}
 		}
 
@@ -352,10 +361,12 @@ public class Parser {
 					_month = _month % 100;
 					if (_month > 0 && _month <= 12) {
 						return _month;
+					} else {
+						throw new Exception("Invalid Date Format");
 					}
 				} 
 			} catch (NumberFormatException nfe) {
-				throw new Exception("Invalid date format");
+				throw new Exception("Invalid Date Format");
 			} 
 		}
 
@@ -370,12 +381,14 @@ public class Parser {
 				if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING) && isInteger(messageArray[i+1])){
 					_year = Integer.parseInt(messageArray[i+1]);
 					_year = _year % 100;
-					if (_year > 0 && _year <= 12) {
+					if (_year >= 14) {
 						return _year;
+					} else {
+						throw new Exception("Invalid Date Format");
 					}
 				} 
 			} catch (NumberFormatException nfe) {
-				throw new Exception("Invalid date format");
+				throw new Exception("Invalid Date Format");
 			}
 		}
 
@@ -410,41 +423,77 @@ public class Parser {
 		}
 	}
 
-	public static TaskType parseTaskType(String parameter) {
-		String taskDateTime = parameter.substring(parameter.lastIndexOf(QUOTATION_MARK)+1);
-		taskDateTime = taskDateTime.trim();
-		//System.out.println(parameter);
-		//System.out.println(taskDateTime);
-		String[] analyseTask = taskDateTime.split(SINGLE_SPACE);
-		if (taskDateTime.length() == 0) {
-			return (TaskType.FLOATING);
-		} else if (analyseTask[0].equalsIgnoreCase(KEYWORD_DAY_STARTING) || analyseTask[0].equalsIgnoreCase(KEYWORD_DAY_ENDING)) {
-			return (TaskType.TIMED);
-		} else if (analyseTask[0].equalsIgnoreCase(KEYWORD_DEADLINE)) {
-			return (TaskType.DEADLINE);
-		} else if (analyseTask[0].equalsIgnoreCase(KEYWORD_RECURRING)) {
-			return (TaskType.RECURRING);
-		} else {
-			return (TaskType.INVALID);
+	public static TaskType parseTaskType (String parameter) {
+		//		String taskDateTime = parameter.substring(parameter.lastIndexOf(QUOTATION_MARK)+1);
+		//		taskDateTime = taskDateTime.trim();
+		//		System.out.println(parameter);
+		//		System.out.println(taskDateTime);
+		//		String[] analyseTask = taskDateTime.split(SINGLE_SPACE);
+		String [] messageArray = generateArray(parameter);
+		if (messageArray.length != 0) {
+			for (int i=0; i<=messageArray.length-1; i++) {
+				if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) 
+						|| messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING_2)
+						|| messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING)) {
+					return (TaskType.TIMED);
+				}
+			}
+
+			for (int i=0; i<=messageArray.length-1; i++) {
+				if (messageArray[i].equalsIgnoreCase(KEYWORD_DEADLINE)) {
+					return (TaskType.DEADLINE);
+				} 
+			}		
+
+			for (int i=0; i<=messageArray.length-1; i++) {
+				if (messageArray[i].equalsIgnoreCase(KEYWORD_RECURRING)) {
+					return (TaskType.RECURRING);
+				} 		
+			}
+
+			for (int i=0; i<=messageArray.length-1; i++) {
+				if (!messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) 
+						&& !messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING_2)
+						&& !messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING)
+						&& !messageArray[i].equalsIgnoreCase(KEYWORD_DEADLINE)
+						&& !messageArray[i].equalsIgnoreCase(KEYWORD_RECURRING)
+						&& !messageArray[i].equalsIgnoreCase(SYMBOL_AT) 
+						&& !messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING)){
+					return (TaskType.FLOATING);
+				} 
+			}
 		}
 
+		return (TaskType.INVALID);
 	}
 
-//	public static String parseTaskName(String parameter) throws Exception{
-//		int firstIndex = parameter.indexOf(QUOTATION_MARK);
-//		int lastIndex = parameter.lastIndexOf(QUOTATION_MARK);
-//
-//		if (lastIndex > firstIndex) {
-//			String taskName = parameter.substring(firstIndex+1, lastIndex);
-//			return taskName;
-//		} else if (lastIndex == firstIndex) {
-//			throw new Exception("Invalid command. Missing task name.\nTask name must be inside quotation marks.");
-//		} else if (lastIndex < firstIndex) {
-//			throw new Error(); //never occurs
-//		} else {
-//			return null;
-//		}	
-//	}
+	//			if (taskDateTime.length() == 0) {
+	//				return (TaskType.FLOATING);
+	//			} else if (analyseTask[0].equalsIgnoreCase(KEYWORD_DAY_STARTING) || analyseTask[0].equalsIgnoreCase(KEYWORD_DAY_ENDING)) {
+	//				return (TaskType.TIMED);
+	//			} else if (analyseTask[0].equalsIgnoreCase(KEYWORD_DEADLINE)) {
+	//				return (TaskType.DEADLINE);
+	//			} else if (analyseTask[0].equalsIgnoreCase(KEYWORD_RECURRING)) {
+	//				return (TaskType.RECURRING);
+	//			} else {
+	//				return (TaskType.INVALID);
+	//			}
+
+	//	public static String parseTaskName(String parameter) throws Exception{
+	//		int firstIndex = parameter.indexOf(QUOTATION_MARK);
+	//		int lastIndex = parameter.lastIndexOf(QUOTATION_MARK);
+	//
+	//		if (lastIndex > firstIndex) {
+	//			String taskName = parameter.substring(firstIndex+1, lastIndex);
+	//			return taskName;
+	//		} else if (lastIndex == firstIndex) {
+	//			throw new Exception("Invalid command. Missing task name.\nTask name must be inside quotation marks.");
+	//		} else if (lastIndex < firstIndex) {
+	//			throw new Error(); //never occurs
+	//		} else {
+	//			return null;
+	//		}	
+	//	}
 
 	public static String parseTaskName(String parameter) throws Exception {
 		String [] messageArray = generateArray(parameter);
@@ -468,7 +517,7 @@ public class Parser {
 
 		return taskName.trim();
 	}
-	
+
 	public static boolean isInteger(String s) {
 		try { 
 			Integer.parseInt(s); 
@@ -526,5 +575,42 @@ public class Parser {
 		}
 		return taskVenue.trim();
 	}
-
+	
+	public static void editTask (String parameter) {
+		String [] messageArray = generateArray(parameter);
+		int taskIndex = Integer.valueOf(messageArray[0]);
+		
+		if (messageArray[1].equalsIgnoreCase("start") 
+				&& messageArray[2].equalsIgnoreCase("time")) {
+			int startTime = Integer.valueOf(messageArray[3]);
+		} else if (messageArray[1].equalsIgnoreCase("end") 
+				&& messageArray[2].equalsIgnoreCase("time")) {
+			int endTime = Integer.valueOf(messageArray[3]);
+		} else if (messageArray[1].equalsIgnoreCase("start") 
+				&& messageArray[2].equalsIgnoreCase("day")) {
+			
+		} else if (messageArray[1].equalsIgnoreCase("end") 
+				&& messageArray[2].equalsIgnoreCase("day")) {
+			
+		} else if (messageArray[1].equalsIgnoreCase("task") 
+				&& messageArray[2].equalsIgnoreCase("name")) {
+			String taskName = EMPTY_STRING;
+			for (int i=3; i<= messageArray.length-1; i++) {
+				taskName = messageArray[i] + SINGLE_SPACE;
+			}
+			taskName = taskName.trim();
+		} else if (messageArray[1].equalsIgnoreCase("person")) {
+			String taskPerson = EMPTY_STRING;
+			for (int i=3; i<= messageArray.length-1; i++) {
+				taskPerson = messageArray[i] + SINGLE_SPACE;
+			}
+			taskPerson = taskPerson.trim();
+		} else if (messageArray[1].equalsIgnoreCase("venue")) {
+			String taskVenue = EMPTY_STRING;
+			for (int i=3; i<= messageArray.length-1; i++) {
+				taskVenue = messageArray[i] + SINGLE_SPACE;
+			}
+			taskVenue = taskVenue.trim();
+		}
+	}
 }
