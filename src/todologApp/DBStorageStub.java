@@ -1,18 +1,19 @@
-package todologApp;
+/*package todologApp;
 
 import java.io.IOException;
 import java.util.LinkedList;
 
-public class DBStorage implements Storage {
+public class DBStorageStub extends DBStorage {
+
 	private LinkedList<Task> _tasks;
 	private FileStorage _fileStorage;
 
-	public DBStorage() {
+	public DBStorageStub() {
 		_fileStorage = new FileStorage();
 		init();
 	}
 
-	public DBStorage(String fileName) {
+	public DBStorageStub(String fileName) {
 		_fileStorage = new FileStorage(fileName);
 		init();
 	}
@@ -33,4 +34,4 @@ public class DBStorage implements Storage {
 		_fileStorage.store(tasks);
 	}
 
-}
+}*/
