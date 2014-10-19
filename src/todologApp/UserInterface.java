@@ -119,7 +119,7 @@ public class UserInterface extends JFrame { /**
 		//updateToDoListTable(toDoListTable,toDoListItems,toDoListHeaders);
 		
 		JScrollPane toDoList = new JScrollPane(toDoListTable);
-		toDoList.setPreferredSize(new Dimension(532,225));
+		toDoList.setPreferredSize(new Dimension(540,225));
 		
 		toDoListHolder.add(toDoList,scrollPaneParameters);
 		mainPanel.add(toDoListHolder, panelParameters);
@@ -133,7 +133,7 @@ public class UserInterface extends JFrame { /**
 		try {
 			img = ImageIO.read(new File("src/spaces_background.jpg"));
 			JLabel background = new JLabel(new ImageIcon(img));
-			background.setBounds(30,10,540,225);
+			background.setBounds(30,20,540,225);
 			layerPane.add(background,new Integer(1));
 		} catch (IOException e) {
 			//TODO some notifying
