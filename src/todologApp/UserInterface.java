@@ -86,7 +86,7 @@ public class UserInterface extends JFrame { /**
 		mainPanel.setLayout(new GridBagLayout());
 		BufferedImage img;
 		try {
-			img = ImageIO.read(new File("src/photo16.jpg"));
+			img = ImageIO.read(new File("src/black-white.jpg"));
 			JLabel background = new JLabel(new ImageIcon(img));
 			background.setBounds(0,0,700, 450);
 			layerPane.add(background,new Integer(0));
@@ -131,7 +131,7 @@ public class UserInterface extends JFrame { /**
 		toDoListTable.setShowGrid(false);
 		BufferedImage img;
 		try {
-			img = ImageIO.read(new File("src/spaces_background.jpg"));
+			img = ImageIO.read(new File("src/black-white.jpg"));
 			JLabel background = new JLabel(new ImageIcon(img));
 			background.setBounds(25,20,650,225);
 			layerPane.add(background,new Integer(1));
