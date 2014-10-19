@@ -11,12 +11,7 @@ import javax.swing.table.*;
 import java.util.*;
 import java.lang.Object;
 
-<<<<<<< HEAD:src/todologApp/ToDoListTableModel.java
 public class ToDoListTableModel extends AbstractTableModel{
-	
-=======
-public class MyTableModel extends AbstractTableModel {
->>>>>>> origin/vani's_branch:src/todologApp/MyTableModel.java
 
 	/**
 	 * 
@@ -25,20 +20,13 @@ public class MyTableModel extends AbstractTableModel {
 	/**
 	 * 
 	 */
-<<<<<<< HEAD:src/todologApp/ToDoListTableModel.java
-	
 	private final static String[] columnNames = {"No.","Name","Time","Category","Venue","Who"};
 	private LinkedList<Task> tableData;
 	
 	public ToDoListTableModel(LinkedList<Task> toDoListItems){
-=======
 
-	private final static String[] columnNames = { "No.", "Name", "Time",
-			"Category", "Done" };
-	private LinkedList<Task> tableData;
 
-	public MyTableModel(LinkedList<Task> toDoListItems) {
->>>>>>> origin/vani's_branch:src/todologApp/MyTableModel.java
+
 		tableData = toDoListItems;
 	}
 
@@ -89,16 +77,13 @@ public class MyTableModel extends AbstractTableModel {
 			return "nil";
 
 		case 4:
-<<<<<<< HEAD:src/todologApp/ToDoListTableModel.java
-			//here must return the venue of the task
+
+			return task.getTaskVenue();
 			
 		case 5:
-			//here must return the person value of the task
+			return task.getTaskPerson();
 			
-=======
-			return task.getTaskStatus();
 
->>>>>>> origin/vani's_branch:src/todologApp/MyTableModel.java
 		default:
 			return null;
 
