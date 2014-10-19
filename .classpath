@@ -2,11 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-<<<<<<< HEAD
-	<classpathentry kind="lib" path="C:/Users/Ben/Downloads/dom4j-1.6.1.jar"/>
-=======
-	<classpathentry kind="lib" path="C:/Users/Stanley/Documents/main/dom4j-1.6.1/dom4j-1.6.1/dom4j-1.6.1.jar"/>
->>>>>>> 7efb62383b7512b0036d1873216203c21682cfa2
+	<classpathentry kind="lib" path="/Users/NhatLinh/Documents/Study Materials/WorkSpace/TodoLog/dom4j-1.6.1/dom4j-1.6.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
