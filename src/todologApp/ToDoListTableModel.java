@@ -23,7 +23,7 @@ public class ToDoListTableModel extends AbstractTableModel{
 	 * 
 	 */
 	
-	private final static String[] columnNames = {"No.","Name","Time","Category","Done"};
+	private final static String[] columnNames = {"No.","Name","Time","Category","Venue","Who"};
 	private LinkedList<Task> tableData;
 	
 	public ToDoListTableModel(LinkedList<Task> toDoListItems){
@@ -76,7 +76,10 @@ public class ToDoListTableModel extends AbstractTableModel{
 			return "nil";
 			
 		case 4:
-			return task.getTaskStatus();
+			//here must return the venue of the task
+			
+		case 5:
+			//here must return the person value of the task
 			
 		default:
 			return null;
