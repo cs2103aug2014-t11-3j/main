@@ -423,6 +423,7 @@ public class UserInterface extends JFrame { /**
 				break;
 			case 5:
 				tableColumn.setPreferredWidth(90);
+				break;
 			}
 		}
 	}
