@@ -8,6 +8,7 @@ public class CommandAddTes {
 	@Test
 	public void testExecute() throws Exception {
 		Controller.init();
+		//Controller.init("testingfile");
 		//Controller.setStorage(new DBStorageStub());
 		Task task = new Task("\"group meeting\"");
 		CommandAdd command = new CommandAdd(task);

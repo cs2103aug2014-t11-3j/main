@@ -1,4 +1,4 @@
-/*package todologApp;
+package todologApp;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -34,4 +34,4 @@ public class DBStorageStub extends DBStorage {
 		_fileStorage.store(tasks);
 	}
 
-}*/
+}
