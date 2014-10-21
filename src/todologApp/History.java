@@ -3,13 +3,14 @@ package todologApp;
 import java.util.LinkedList;
 
 public class History {
-	private static LinkedList<Command> _commands;
-
-	public static boolean addCommand(Command command) {
+	private LinkedList<Command> _commands;
+	public History() {
+		_commands = new LinkedList<Command>();
+	}
+	public boolean addCommand(Command command) {
 		return _commands.add(command);
 	}
-
-	public static Command removeCommand() {
+	public Command removeCommand() {
 		return _commands.pop();
 	}
 }

@@ -1,11 +1,10 @@
 # Created by https://www.gitignore.io
 ### TodoLog ###
 dom4j-1.6.1/
+
 *.xml
-*Test.java
 ### Java ###
 *.class
-.classpath
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
