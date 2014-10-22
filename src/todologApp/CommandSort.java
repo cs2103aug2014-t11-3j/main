@@ -1,4 +1,4 @@
-package todologApp;
+/*package todologApp;
 
 import java.util.LinkedList;
 
@@ -41,5 +41,5 @@ public class CommandSort implements Command{
 	return feedback;
 	}
 
-}
+}*/
 

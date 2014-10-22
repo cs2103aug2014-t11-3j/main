@@ -35,6 +35,7 @@ public class CommandAdd implements Command {
 	    
 	    
 	    else{
+	    	if(newList.size()>=2){
 			for(int i=0;i<newList.size()-1;i++){
 				//if the date is to be inserted between two years
 				if((newList.get(i).getEndYear()<_task.getEndYear())&&(newList.get(i+1).getEndYear()>_task.getEndYear())){
@@ -44,7 +45,7 @@ public class CommandAdd implements Command {
 				}
 				
 				
-				//when it is equal to the first year but less than the second
+				//when it is equal to first year but less than the second
 				else if(newList.get(i).getEndYear()==_task.getEndYear()&&newList.get(i+1).getEndYear()>_task.getEndYear()){
 					if(newList.get(i).getEndMonth()<_task.getEndMonth()){
 						newList.add(i,_task);
@@ -73,19 +74,14 @@ public class CommandAdd implements Command {
 						break;
 						}
 					else if(newList.get(i).getEndMonth()==_task.getEndMonth()&&newList.get(i+1).getEndMonth()>_task.getEndMonth()){
-						if(newList.get(i).getEndDate()>_task.getEndDate()){
+						if(newList.get(i).getEndDate()>=_task.getEndDate()){
 							newList.add(i,_task);
 							count++;
 							break;
 						}
-						else{
-							newList.add(i+1,_task);
-							count++;
-							break;
-						}	
 					}
 					else if(newList.get(i).getEndMonth()==_task.getEndMonth()&&newList.get(i+1).getEndMonth()==_task.getEndMonth()){
-						if((newList.get(i).getEndDate()<=_task.getEndDate())&&(newList.get(i+1).getEndDate()>=_task.getEndDate())){
+						if((newList.get(i).getEndDate()<=_task.getEndDate())&&(newList.get(i+1).getEndDate()>_task.getEndDate())){
 							newList.add(i+1,_task);
 							count++;
 							break;
@@ -93,10 +89,23 @@ public class CommandAdd implements Command {
 					}
 				}
 			}
+	    	}
+	    	 else if(newList.size()==1){
+				   if((newList.get(0).getEndYear()>_task.getEndYear())
+						   ||((newList.get(0).getEndYear()==_task.getEndYear())
+								   &&(newList.get(0).getEndMonth()>_task.getEndMonth()))
+								   ||(newList.get(0).getEndMonth()==_task.getEndMonth())
+								   &&newList.get(0).getEndDate()>=_task.getEndDate()){
+					   newList.add(0,_task);
+					   count++;
+				   }
+					   
+			   }
 			if(count==0){
-				newList.add(newList.size()-1,_task);
+				newList.add(newList.size(),_task);
 			}	
-		}	
+		}
+	    
 	}
 	
 
