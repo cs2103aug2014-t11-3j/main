@@ -77,9 +77,19 @@ public class Parser {
 				throw new Exception(HELP_TEXT_DELETE);
 			}
 			restOfTheString = restOfTheString.trim();
-			int index = Integer.valueOf(restOfTheString);
-			CommandDelete command = new CommandDelete(index);
-			return command;
+			if (isInteger(restOfTheString)) {
+				int index = Integer.valueOf(restOfTheString);
+				CommandDelete command = new CommandDelete(index);
+				return command;
+			} else {
+				if (restOfTheString.equalsIgnoreCase("all")) {
+					CommandDeleteAll command = new CommandDeleteAll();
+					return command;
+				} else {
+					throw new Exception(HELP_TEXT_DELETE);
+				}
+			}
+			
 		} else if (firstWord.equalsIgnoreCase("done")) {
 			String restOfTheString = getTheRestOfTheString(userCommand);
 			if (restOfTheString == null) {
