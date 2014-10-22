@@ -30,6 +30,7 @@ public class UserInterface extends JFrame { /**
 	private static final int DYNAMIC_HELP_TEXT_PARAMETERS = 4;
 	private static final int LEGEND_PARAMETERS = 5;
 	private static final int TODOLIST_SCROLLPANE_PARAMETERS = 6;
+	private static final int BUTTON_PARAMETERS = 7;
 	
 	private JTextField commandEntryTextField;
 	private JLayeredPane layerPane = new JLayeredPane();
@@ -72,7 +73,7 @@ public class UserInterface extends JFrame { /**
 		
 		UserInterface.setTitle("ToDoLog");
 		UserInterface.setResizable(false);
-		UserInterface.setBounds(100,100,600, 450);					
+		UserInterface.setBounds(100,100,700, 450);					
 		UserInterface.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
@@ -82,13 +83,13 @@ public class UserInterface extends JFrame { /**
 		Container contentPane = UserInterface.getContentPane();
 		contentPane.add(layerPane);
 		JPanel mainPanel = new JPanel();
-		mainPanel.setBounds(0,0,600, 425);
+		mainPanel.setBounds(0,0,700, 425);
 		mainPanel.setLayout(new GridBagLayout());
 		BufferedImage img;
 		try {
-			img = ImageIO.read(new File("src/photo16.jpg"));
+			img = ImageIO.read(new File("src/black-white.jpg"));
 			JLabel background = new JLabel(new ImageIcon(img));
-			background.setBounds(0,0,600, 450);
+			background.setBounds(0,0,700, 450);
 			layerPane.add(background,new Integer(0));
 		} catch (IOException e) {
 			//TODO some notifying
@@ -107,19 +108,19 @@ public class UserInterface extends JFrame { /**
 		toDoListHolder.setBackground(Color.WHITE);
 		GridBagConstraints panelParameters;      //panelParameters are values for how the top panel will fit into the main frame of ToDoLog
 		GridBagConstraints scrollPaneParameters; //scrollPaneParameters are values for how the scrollPane will be placed within the top panel,toDoListHolder
-		toDoListHolder.setPreferredSize(new Dimension(540, 225));
+		toDoListHolder.setPreferredSize(new Dimension(650, 225));
 		
 		panelParameters = setParameters(TODOLIST_PARAMETERS);
 		scrollPaneParameters = setParameters(TODOLIST_SCROLLPANE_PARAMETERS);
 		
 		toDoListTable = new JTable(new ToDoListTableModel(toDoListItems));    
-		toDoListTable.setPreferredSize(new Dimension(540,225));
+		toDoListTable.setPreferredSize(new Dimension(650,225));
 		adjustTableColumns(toDoListTable);
 		changeTableColors(toDoListTable);
 		//updateToDoListTable(toDoListTable,toDoListItems,toDoListHeaders);
 		
 		JScrollPane toDoList = new JScrollPane(toDoListTable);
-		toDoList.setPreferredSize(new Dimension(532,225));
+		toDoList.setPreferredSize(new Dimension(650,225));
 		
 		toDoListHolder.add(toDoList,scrollPaneParameters);
 		mainPanel.add(toDoListHolder, panelParameters);
@@ -131,9 +132,9 @@ public class UserInterface extends JFrame { /**
 		toDoListTable.setShowGrid(false);
 		BufferedImage img;
 		try {
-			img = ImageIO.read(new File("src/spaces_background.jpg"));
+			img = ImageIO.read(new File("src/black-white.jpg"));
 			JLabel background = new JLabel(new ImageIcon(img));
-			background.setBounds(30,10,540,225);
+			background.setBounds(25,20,650,225);
 			layerPane.add(background,new Integer(1));
 		} catch (IOException e) {
 			//TODO some notifying
@@ -146,7 +147,7 @@ public class UserInterface extends JFrame { /**
 		toDoListHolder.setBackground(Color.WHITE);
 		GridBagConstraints panelParameters;      //panelParameters are values for how the top panel will fit into the main frame of ToDoLog
 		GridBagConstraints scrollPaneParameters; //scrollPaneParameters are values for how the scrollPane will be placed within the top panel,toDoListHolder
-		toDoListHolder.setPreferredSize(new Dimension(540, 225));
+		toDoListHolder.setPreferredSize(new Dimension(650, 225));
 		
 		panelParameters = setParameters(TODOLIST_PARAMETERS);
 		scrollPaneParameters = setParameters(TODOLIST_SCROLLPANE_PARAMETERS);
@@ -171,6 +172,7 @@ public class UserInterface extends JFrame { /**
 		createCommandEntryTextBox(bottomPanel);
 		createTextArea(bottomPanel);
 		createLegend(bottomPanel);
+		//createButton(bottomPanel);
 		mainPanel.add(bottomPanel, parameters);
 		bottomPanel.setOpaque(false);
 	}
@@ -240,6 +242,8 @@ public class UserInterface extends JFrame { /**
 		priorityHigh.setPreferredSize(new Dimension(30,15));
 		priorityHigh.setText("Priority: High");
 		priorityHigh.setFont(fontForLegend);
+		priorityHigh.setEnabled(false);
+		priorityHigh.setDisabledTextColor(Color.WHITE);
 		priorityHigh.setBorder(borderLineForText);
 		priorityHigh.setOpaque(false);
 		legendTextLayout = new GridBagConstraints(1,0,5,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
@@ -257,6 +261,8 @@ public class UserInterface extends JFrame { /**
 		priorityMedium.setPreferredSize(new Dimension(30,15));
 		priorityMedium.setText("Priority: Medium");
 		priorityMedium.setFont(fontForLegend);
+		priorityMedium.setEnabled(false);
+		priorityMedium.setDisabledTextColor(Color.WHITE);
 		priorityMedium.setBorder(borderLineForText);
 		priorityMedium.setOpaque(false);
 		legendTextLayout = new GridBagConstraints(1,1,5,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
@@ -276,6 +282,8 @@ public class UserInterface extends JFrame { /**
 		priorityLow.setPreferredSize(new Dimension(30,15));
 		priorityLow.setText("Priority: Low");
 		priorityLow.setFont(fontForLegend);
+		priorityLow.setEnabled(false);
+		priorityLow.setDisabledTextColor(Color.WHITE);
 		priorityLow.setBorder(borderLineForText);
 		priorityLow.setOpaque(false);
 		legendTextLayout = new GridBagConstraints(1,2,5,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
@@ -293,11 +301,23 @@ public class UserInterface extends JFrame { /**
 		done.setPreferredSize(new Dimension(30,15));
 		done.setText("Done");
 		done.setFont(fontForLegend);
+		done.setEnabled(false);
+		done.setDisabledTextColor(Color.WHITE);
 		done.setBorder(borderLineForText);
 		done.setOpaque(false);
 		legendTextLayout = new GridBagConstraints(1,3,5,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
 		legendMainPanel.add(done,legendTextLayout); 
 	}
+	
+	/*	private void createButton(JPanel bottomPanel){
+			GridBagConstraints buttonParameters = setParameters(BUTTON_PARAMETERS);
+			JButton magicButton = new JButton("");
+			magicButton.setPreferredSize(new Dimension(10,10));
+			
+			bottomPanel.add(magicButton,buttonParameters);
+		}
+		
+	/*	
 	/**
 	 * Create the application.
 	 */
@@ -348,7 +368,8 @@ public class UserInterface extends JFrame { /**
 		Insets toDoListInsets = new Insets(20,0,0,0);
 		Insets commandEntryTextFieldInsets = new Insets(10,25,5,25);
 		Insets dynamicHelpTextInsets = new Insets(10,25,20,20);
-		Insets legendInsets = new Insets(0,0,0,25);
+		Insets legendInsets = new Insets(0,0,0,10);
+		Insets buttonInsets = new Insets(10,0,0,20);
 		
 		if(panelParameters == TODOLIST_PARAMETERS){
 			parameters = new GridBagConstraints(0,0,3,3,0.1,0.0,GridBagConstraints.NORTHWEST,GridBagConstraints.BOTH,toDoListInsets,0,0);
@@ -366,18 +387,23 @@ public class UserInterface extends JFrame { /**
 		}
 		
 		else if(panelParameters == COMMAND_ENTRY_PARAMETERS){
-			parameters = new GridBagConstraints(0,0,3,1,0.1,0.0,GridBagConstraints.NORTHWEST,GridBagConstraints.BOTH,commandEntryTextFieldInsets,0,0);
+			parameters = new GridBagConstraints(0,0,6,1,0.1,0.0,GridBagConstraints.NORTHWEST,GridBagConstraints.BOTH,commandEntryTextFieldInsets,0,0);
 			
 			return parameters;
 		}
 		
 		else if(panelParameters == DYNAMIC_HELP_TEXT_PARAMETERS){
-			parameters = new GridBagConstraints(0,1,2,1,0.0,0.1,GridBagConstraints.CENTER,GridBagConstraints.BOTH,dynamicHelpTextInsets,0,0);
+			parameters = new GridBagConstraints(0,1,3,1,0.0,0.1,GridBagConstraints.CENTER,GridBagConstraints.BOTH,dynamicHelpTextInsets,0,0);
 			return parameters;
 		}
 		
 		else if(panelParameters == LEGEND_PARAMETERS){
-			parameters = new GridBagConstraints(2,1,1,1,0.0,0.1,GridBagConstraints.EAST,GridBagConstraints.BOTH,legendInsets,0,0);
+			parameters = new GridBagConstraints(3,1,2,1,0.0,0.1,GridBagConstraints.EAST,GridBagConstraints.BOTH,legendInsets,0,0);
+			return parameters;
+		}
+		
+		else if(panelParameters == BUTTON_PARAMETERS){
+			parameters = new GridBagConstraints(5,1,1,1,0.0,0.1,GridBagConstraints.EAST,GridBagConstraints.BOTH,buttonInsets,0,0);
 			return parameters;
 		}
 		
@@ -393,11 +419,7 @@ public class UserInterface extends JFrame { /**
 	
 	//convert linked lists into data for the table, go find out how to
 	//dynamic help text will also be 
-//	private void initializeLinkedList(){
-//		toDoListItems.addFirst(new Task("1","Pink","11/09/2001","High","lol"));
-//		toDoListItems.add(new Task("2","Blue","Bright boy","Low","hahhah"));
-//		toDoListItems.add(new Task("3","Brilliant meeting with the incredible hulk","02/12/1992","Medium","Remember to bring shotgun"));
-//	}
+
 	
 	private void adjustTableColumns(JTable toDoListTable){
 		TableColumn tableColumn = null;
@@ -416,10 +438,13 @@ public class UserInterface extends JFrame { /**
 				tableColumn.setPreferredWidth(70);
 				break;
 			case 3:
-				tableColumn.setPreferredWidth(40);
+				tableColumn.setPreferredWidth(70);
 				break;
 			case 4:
-				tableColumn.setPreferredWidth(150);
+				tableColumn.setPreferredWidth(100);
+				break;
+			case 5:
+				tableColumn.setPreferredWidth(90);
 				break;
 			}
 		}
@@ -431,6 +456,7 @@ public class UserInterface extends JFrame { /**
 		toDoListTable.getColumnModel().getColumn(2).setCellRenderer(new CustomRenderer());
 		toDoListTable.getColumnModel().getColumn(3).setCellRenderer(new CustomRenderer());
 		toDoListTable.getColumnModel().getColumn(4).setCellRenderer(new CustomRenderer());
+		toDoListTable.getColumnModel().getColumn(5).setCellRenderer(new CustomRenderer());
 		
 	}
 
