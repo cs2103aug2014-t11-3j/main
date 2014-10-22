@@ -14,7 +14,7 @@ public class Controller {
 	private static String _feedback;
 	private static final String FEEDBACK_START = "To start, enter a command: add, delete, edit, done.";
 	
-	public void setStorage(DBStorage DBstorage) {
+	public static void setStorage(DBStorage DBstorage) {
 		_dbStorage = DBstorage;
 	}
 	

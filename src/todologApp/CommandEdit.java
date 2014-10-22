@@ -8,22 +8,22 @@ public class CommandEdit implements Command {
 	private String _toBeEdited;
 	private String _editType;
 	private Task _taskEdited;
-	private int index;
+	private int _index;
 	private DBStorage _storage;
 
 	// private static Storage _storage;
 
-	public CommandEdit(Task taskExisting, String toBeEdited, String editType) {
-		_taskExisting = taskExisting;
-		_toBeEdited = toBeEdited;
+	public CommandEdit(int index, String toBeEdited, String editType) {
+		_index = index;
 		_editType = editType;
 		_taskEdited = _taskExisting;
 		_storage = Controller.getDBStorage();
 		
 	}
 
-	private String formNewTask() {
+	private String formNewTask() throws Exception{
 		//change the name
+		_taskEdited = _taskExisting;
 		if (_editType.equalsIgnoreCase("Task Name")||_editType.equalsIgnoreCase("Name")) {
 			_taskEdited.setTaskName(_toBeEdited);
 			return "name";
@@ -88,11 +88,16 @@ public class CommandEdit implements Command {
 	public String execute() {
 		String feedback;
 		String editedField;
-		editedField=formNewTask();
 		LinkedList<Task> tasks = _storage.load();
-		index = tasks.indexOf(_taskExisting);
-		tasks.remove(index);
-		tasks.add(index, _taskEdited);
+		_taskExisting = tasks.get(_index);
+		try {
+			editedField=formNewTask();
+		} catch (Exception e1) {
+			feedback = e1.getMessage();
+			return feedback;
+		}
+		tasks.remove(_index);
+		tasks.add(_index, _taskEdited);
 		try {
 			_storage.store(tasks);
 		} catch (IOException e) {
@@ -111,9 +116,8 @@ public class CommandEdit implements Command {
 	public String undo() {
 		String feedback;
 		LinkedList<Task> tasks = _storage.load();
-		tasks.remove(index);
-		formNewTask();
-		tasks.add(index, _taskExisting);
+		tasks.remove(_index);
+		tasks.add(_index, _taskExisting);
 		feedback = "Undone the edit command.";
 		return feedback;
 	}
