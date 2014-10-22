@@ -126,13 +126,13 @@ public class Parser {
 		String firstWord = result[0];
 		return firstWord;
 	}
-	
+
 	private static String[] generateArray(String parameter) {
 		parameter = parameter.trim();
 		String[] array = parameter.split(SINGLE_SPACE);
 		return array;
 	}
-	
+
 	public static int parseTaskEndTime(String parameter) throws Exception {
 		String [] messageArray = generateArray(parameter);
 
@@ -577,42 +577,42 @@ public class Parser {
 		}
 		return taskVenue.trim();
 	}
-	
-	public static void editTask (String parameter) {
-		String [] messageArray = generateArray(parameter);
-		int taskIndex = Integer.valueOf(messageArray[0]);
-		
-		if (messageArray[1].equalsIgnoreCase("start") 
-				&& messageArray[2].equalsIgnoreCase("time")) {
-			int startTime = Integer.valueOf(messageArray[3]);
-		} else if (messageArray[1].equalsIgnoreCase("end") 
-				&& messageArray[2].equalsIgnoreCase("time")) {
-			int endTime = Integer.valueOf(messageArray[3]);
-		} else if (messageArray[1].equalsIgnoreCase("start") 
-				&& messageArray[2].equalsIgnoreCase("day")) {
-			
-		} else if (messageArray[1].equalsIgnoreCase("end") 
-				&& messageArray[2].equalsIgnoreCase("day")) {
-			
-		} else if (messageArray[1].equalsIgnoreCase("task") 
-				&& messageArray[2].equalsIgnoreCase("name")) {
-			String taskName = EMPTY_STRING;
-			for (int i=3; i<= messageArray.length-1; i++) {
-				taskName = messageArray[i] + SINGLE_SPACE;
-			}
-			taskName = taskName.trim();
-		} else if (messageArray[1].equalsIgnoreCase("person")) {
-			String taskPerson = EMPTY_STRING;
-			for (int i=3; i<= messageArray.length-1; i++) {
-				taskPerson = messageArray[i] + SINGLE_SPACE;
-			}
-			taskPerson = taskPerson.trim();
-		} else if (messageArray[1].equalsIgnoreCase("venue")) {
-			String taskVenue = EMPTY_STRING;
-			for (int i=3; i<= messageArray.length-1; i++) {
-				taskVenue = messageArray[i] + SINGLE_SPACE;
-			}
-			taskVenue = taskVenue.trim();
-		}
-	}
+
+	//	public static void editTask (String parameter) {
+	//		String [] messageArray = generateArray(parameter);
+	//		int taskIndex = Integer.valueOf(messageArray[0]);
+	//		
+	//		if (messageArray[1].equalsIgnoreCase("start") 
+	//				&& messageArray[2].equalsIgnoreCase("time")) {
+	//			int startTime = Integer.valueOf(messageArray[3]);
+	//		} else if (messageArray[1].equalsIgnoreCase("end") 
+	//				&& messageArray[2].equalsIgnoreCase("time")) {
+	//			int endTime = Integer.valueOf(messageArray[3]);
+	//		} else if (messageArray[1].equalsIgnoreCase("start") 
+	//				&& messageArray[2].equalsIgnoreCase("day")) {
+	//			
+	//		} else if (messageArray[1].equalsIgnoreCase("end") 
+	//				&& messageArray[2].equalsIgnoreCase("day")) {
+	//			
+	//		} else if (messageArray[1].equalsIgnoreCase("task") 
+	//				&& messageArray[2].equalsIgnoreCase("name")) {
+	//			String taskName = EMPTY_STRING;
+	//			for (int i=3; i<= messageArray.length-1; i++) {
+	//				taskName = messageArray[i] + SINGLE_SPACE;
+	//			}
+	//			taskName = taskName.trim();
+	//		} else if (messageArray[1].equalsIgnoreCase("person")) {
+	//			String taskPerson = EMPTY_STRING;
+	//			for (int i=3; i<= messageArray.length-1; i++) {
+	//				taskPerson = messageArray[i] + SINGLE_SPACE;
+	//			}
+	//			taskPerson = taskPerson.trim();
+	//		} else if (messageArray[1].equalsIgnoreCase("venue")) {
+	//			String taskVenue = EMPTY_STRING;
+	//			for (int i=3; i<= messageArray.length-1; i++) {
+	//				taskVenue = messageArray[i] + SINGLE_SPACE;
+	//			}
+	//			taskVenue = taskVenue.trim();
+	//		}
+	//	}
 }
