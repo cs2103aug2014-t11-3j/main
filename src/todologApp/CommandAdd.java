@@ -31,18 +31,25 @@ public class CommandAdd implements Command {
 	    if(_task.getTaskType() == TaskType.FLOATING) {
 	    	newList.add(_task);
 	    } else {
-    		for(int i=0 ; i<newList.size();i++) {
+	    	boolean isAdded = false;
+    		for (int i=0 ; i<newList.size();i++) {
     			Task curr = newList.get(i);
     			if (curr.getTaskType() == TaskType.FLOATING) {
     				newList.add(i,_task);
+    				isAdded=true;
     				break;
     			} else {
 	    			if (curr.getEndDateTime().compareTo(_task.getEndDateTime()) >0) {
 	    				newList.add(i,_task);
+	    				isAdded=true;
 	    				break;
 	    			}
     			}	
     		}
+    		if (!isAdded) {
+    			newList.add(_task);
+    		}
+	    	
 	    }
 	}
 	
