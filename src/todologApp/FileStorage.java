@@ -74,7 +74,7 @@ public class FileStorage implements Storage{
 		return tasks;
 	}
 	private Task parseElementToTask(Element taskNode) {
-		String taskTypeString = taskNode.attributeValue("type");
+		String taskTypeString = taskNode.element("type").getText();
 		TaskType taskType = parseTaskType(taskTypeString);
 		Task task;
 		switch (taskType) {
@@ -92,26 +92,26 @@ public class FileStorage implements Storage{
 		return task;
 	}
 	private Task parseIntoFloating(Element taskNode) {
-		String name = taskNode.attributeValue("name");
-		boolean status = Boolean.parseBoolean(taskNode.attributeValue("status"));
+		String name = taskNode.element("name").getText();
+		boolean status = Boolean.parseBoolean(taskNode.element("status").getText());
 		return new Task(TaskType.FLOATING, name, status);
 	}
 	
 	private Task parseIntoDeadline(Element taskNode) {
-		String name = taskNode.attributeValue("name");
-		String endDay = taskNode.attributeValue("endday");
-		int endTime = Integer.parseInt(taskNode.attributeValue("endtime"));
-		boolean status = Boolean.parseBoolean(taskNode.attributeValue("status"));
+		String name = taskNode.element("name").getText();
+		String endDay = taskNode.element("endday").getText();
+		int endTime = Integer.parseInt(taskNode.element("endtime").getText());
+		boolean status = Boolean.parseBoolean(taskNode.element("status").getText());
 		return new Task(TaskType.DEADLINE, name, endDay, endTime, status);
 	}
 	
 	private Task parseIntoTimed(Element taskNode) {
-		String name = taskNode.attributeValue("name");
-		String startDay = taskNode.attributeValue("startday");
-		String endDay = taskNode.attributeValue("endday");
-		int startTime = Integer.parseInt(taskNode.attributeValue("starttime"));
-		int endTime = Integer.parseInt(taskNode.attributeValue("endtime"));
-		boolean status = Boolean.parseBoolean(taskNode.attributeValue("status"));
+		String name = taskNode.element("name").getText();
+		String startDay = taskNode.element("startday").getText();
+		String endDay = taskNode.element("endday").getText();
+		int startTime = Integer.parseInt(taskNode.element("starttime").getText());
+		int endTime = Integer.parseInt(taskNode.element("endtime").getText());
+		boolean status = Boolean.parseBoolean(taskNode.element("status").getText());
 		return new Task(TaskType.TIMED, name, startDay, endDay, startTime, endTime, status);
 	}
 	private static TaskType parseTaskType(String taskTypeString) {
@@ -126,13 +126,13 @@ public class FileStorage implements Storage{
 				return TaskType.FLOATING;
 		}
 	}
-	public Document createBlankDocument() {
+	private Document createBlankDocument() {
 		Document document = DocumentHelper.createDocument();
 		document.addElement("root");
         return document;
 	}
-	public void writeDocument(Document document) throws IOException {
-		XMLWriter writer = new XMLWriter(new FileWriter("store.xml"));
+	private void writeDocument(Document document) throws IOException {
+		XMLWriter writer = new XMLWriter(new FileWriter(_file));
 		writer.write(document);
 		writer.close();
 	}
@@ -162,31 +162,37 @@ public class FileStorage implements Storage{
 		
 	}
 	private void addFloatingTaskToRoot(Element root, Task task) {
-		root.addElement("task")
-		.addAttribute("type",task.getTaskType().toString())
-		.addAttribute("name",task.getTaskName())
-		.addAttribute("status", String.valueOf(task.getTaskStatus()));
+		Element newTask = root.addElement("task");
+		newTask.addElement("type").setText(task.getTaskType().toString());
+		newTask.addElement("name").setText(task.getTaskName());
+		newTask.addElement("status").setText(String.valueOf(task.getTaskStatus()));
 	}
 	
 	private void addDeadlineTaskToRoot(Element root, Task task) {
-		root.addElement("task")
-		.addAttribute("type",task.getTaskType().toString())
-		.addAttribute("name",task.getTaskName())
-		.addAttribute("endday",task.getEndDay())
-		.addAttribute("endtime",String.valueOf(task.getEndTime()))
-		.addAttribute("status", String.valueOf(task.getTaskStatus()));
+		Element newTask = root.addElement("task");
+		newTask.addElement("type").setText(task.getTaskType().toString());
+		newTask.addElement("name").setText(task.getTaskName());
+		newTask.addElement("endday").setText(task.getEndDay());
+		newTask.addElement("endtime").setText(String.valueOf(task.getEndTime()));
+		newTask.addElement("status").setText(String.valueOf(task.getTaskStatus()));
 	}
 	
 	private void addTimedTaskToRoot(Element root, Task task) {
-		root.addElement("task")
-		.addAttribute("type",task.getTaskType().toString())
-		.addAttribute("name",task.getTaskName())
-		.addAttribute("startday",task.getStartDay())
-		.addAttribute("endday",task.getEndDay())
-		.addAttribute("starttime",String.valueOf(task.getStartTime()))
-		.addAttribute("endtime",String.valueOf(task.getEndTime()))
-		.addAttribute("status", String.valueOf(task.getTaskStatus()));
+		Element newTask = root.addElement("task");
+		newTask.addElement("type").setText(task.getTaskType().toString());
+		newTask.addElement("name").setText(task.getTaskName());
+		newTask.addElement("startday").setText(task.getStartDay());
+		newTask.addElement("endday").setText(task.getEndDay());
+		newTask.addElement("starttime").setText(String.valueOf(task.getStartTime()));
+		newTask.addElement("endtime").setText(String.valueOf(task.getEndTime()));
+		newTask.addElement("status").setText(String.valueOf(task.getTaskStatus()));
 		
+	}
+	public Document getDocument() {
+		return _document;
+	}
+	public File getFile() {
+		return _file;
 	}
 	
 }

@@ -27,8 +27,9 @@ public class Controller {
 	public static void setHistoryStorage(History history) {
 		_history = history;
 	}
-	
-
+	 
+	// unused
+	// code for TextGUI display
 	public static String createNewDisplay() {
 		String display = "";
 		LinkedList<Task> tasks = _dbStorage.load();
@@ -63,7 +64,7 @@ public class Controller {
 		Command command;
 		try {
 			command = Parser.createCommand(userCommand);
-			//_history.addCommand(command);
+			_history.addCommand(command);
 			_feedback = command.execute();
 		} catch (Exception e) {
 			_feedback = e.getMessage();
@@ -78,6 +79,7 @@ public class Controller {
 	public static void init() {
 		_dbStorage = new DBStorage();
 		_textDisplay = createNewDisplay();
+		_history = new History();
 		_feedback = FEEDBACK_START;
 	}
 	public static void init(String fileName) {

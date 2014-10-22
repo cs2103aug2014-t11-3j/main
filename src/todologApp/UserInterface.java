@@ -5,8 +5,11 @@
 package todologApp;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
-
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.table.*;
@@ -29,6 +32,7 @@ public class UserInterface extends JFrame { /**
 	private static final int TODOLIST_SCROLLPANE_PARAMETERS = 6;
 	
 	private JTextField commandEntryTextField;
+	private JLayeredPane layerPane = new JLayeredPane();
 	private JTextArea dynamicHelpText;
 	private JTextArea toDoListText;
 	private JTable toDoListTable;
@@ -51,7 +55,8 @@ public class UserInterface extends JFrame { /**
 			public void run() {  
 				try {
 					UserInterface window = new UserInterface();
-					window.setVisible(true);
+					window.setVisible(true);   
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -63,22 +68,38 @@ public class UserInterface extends JFrame { /**
 	 */
 	//this initialize method sets up the main frame for ToDoLog
 	private void initialize(JFrame UserInterface) { 
-		Container contentPane = UserInterface.getContentPane();	
-		contentPane.setLayout(new GridBagLayout()); 
 		//initializeLinkedList();
 		
 		UserInterface.setTitle("ToDoLog");
 		UserInterface.setResizable(false);
-		UserInterface.setBounds(100,100,550, 375);					
-		UserInterface.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);	
+		UserInterface.setBounds(100,100,600, 450);					
+		UserInterface.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
+	
 	
 	//this method consists of setting the different sections within the frame of ToDoLog
 	private void fillUpTheJFrame(JFrame UserInterface){
-		Container mainPanel = UserInterface.getContentPane();
+		Container contentPane = UserInterface.getContentPane();
+		contentPane.add(layerPane);
+		JPanel mainPanel = new JPanel();
+		mainPanel.setBounds(0,0,600, 425);
+		mainPanel.setLayout(new GridBagLayout());
+		BufferedImage img;
+		try {
+			img = ImageIO.read(new File("src/photo16.jpg"));
+			JLabel background = new JLabel(new ImageIcon(img));
+			background.setBounds(0,0,600, 450);
+			layerPane.add(background,new Integer(0));
+		} catch (IOException e) {
+			//TODO some notifying
+			dynamicHelpText.setText("Cannot load image");
+		}
+		mainPanel.setOpaque(false);
 		createToDoListTable(mainPanel);
 		createBottomPanel(mainPanel); 
-							 
+		layerPane.add(mainPanel,new Integer(2));
+		
+		
 	}
 	
 	private void createToDoListTable(Container mainPanel){                        
@@ -92,7 +113,7 @@ public class UserInterface extends JFrame { /**
 		scrollPaneParameters = setParameters(TODOLIST_SCROLLPANE_PARAMETERS);
 		
 		toDoListTable = new JTable(new ToDoListTableModel(toDoListItems));    
-		toDoListTable.setPreferredSize(new Dimension(532,225));
+		toDoListTable.setPreferredSize(new Dimension(540,225));
 		adjustTableColumns(toDoListTable);
 		changeTableColors(toDoListTable);
 		//updateToDoListTable(toDoListTable,toDoListItems,toDoListHeaders);
@@ -102,6 +123,22 @@ public class UserInterface extends JFrame { /**
 		
 		toDoListHolder.add(toDoList,scrollPaneParameters);
 		mainPanel.add(toDoListHolder, panelParameters);
+		toDoListHolder.setOpaque(false);
+		toDoListTable.setOpaque(false);
+		toDoList.setOpaque(false);
+		((DefaultTableCellRenderer)toDoListTable.getDefaultRenderer(Object.class)).setOpaque(false);
+		toDoList.getViewport().setOpaque(false);
+		toDoListTable.setShowGrid(false);
+		BufferedImage img;
+		try {
+			img = ImageIO.read(new File("src/spaces_background.jpg"));
+			JLabel background = new JLabel(new ImageIcon(img));
+			background.setBounds(30,10,540,225);
+			layerPane.add(background,new Integer(1));
+		} catch (IOException e) {
+			//TODO some notifying
+			dynamicHelpText.setText("Cannot load image");
+		}
 		
 	}
 	private void createToDoList(Container mainPanel){
@@ -134,9 +171,8 @@ public class UserInterface extends JFrame { /**
 		createCommandEntryTextBox(bottomPanel);
 		createTextArea(bottomPanel);
 		createLegend(bottomPanel);
-		
 		mainPanel.add(bottomPanel, parameters);
-		
+		bottomPanel.setOpaque(false);
 	}
 	
 	private void createCommandEntryTextBox(JPanel bottomPanel) {
@@ -181,11 +217,12 @@ public class UserInterface extends JFrame { /**
 		arrangeLegend(legendMainPanel);
 		
 		bottomPanel.add(legendMainPanel, LegendParameters);
+		legendMainPanel.setOpaque(false);
 	}
 	
 	private void arrangeLegend(JPanel legendMainPanel){
 		Font fontForLegend = new Font("SansSerif",Font.BOLD,8);
-		Border borderLineForText = new LineBorder(Color.WHITE);
+		Border borderLineForText = new EmptyBorder(0,0,0,0);
 		GridBagConstraints legendPanelLayout;
 		GridBagConstraints legendTextLayout;
 		Insets insets = new Insets(5,5,5,5);
@@ -194,6 +231,7 @@ public class UserInterface extends JFrame { /**
 		JPanel priorityHighPanel = new JPanel();
 		priorityHighPanel.setPreferredSize(new Dimension(20,5));
 		priorityHighPanel.setBackground(Color.RED);
+		
 		legendPanelLayout = new GridBagConstraints(0,0,1,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
 		legendMainPanel.add(priorityHighPanel,legendPanelLayout);
 		
@@ -203,6 +241,7 @@ public class UserInterface extends JFrame { /**
 		priorityHigh.setText("Priority: High");
 		priorityHigh.setFont(fontForLegend);
 		priorityHigh.setBorder(borderLineForText);
+		priorityHigh.setOpaque(false);
 		legendTextLayout = new GridBagConstraints(1,0,5,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
 		legendMainPanel.add(priorityHigh,legendTextLayout);
         
@@ -219,6 +258,7 @@ public class UserInterface extends JFrame { /**
 		priorityMedium.setText("Priority: Medium");
 		priorityMedium.setFont(fontForLegend);
 		priorityMedium.setBorder(borderLineForText);
+		priorityMedium.setOpaque(false);
 		legendTextLayout = new GridBagConstraints(1,1,5,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
 		legendMainPanel.add(priorityMedium,legendTextLayout);
 		
@@ -237,6 +277,7 @@ public class UserInterface extends JFrame { /**
 		priorityLow.setText("Priority: Low");
 		priorityLow.setFont(fontForLegend);
 		priorityLow.setBorder(borderLineForText);
+		priorityLow.setOpaque(false);
 		legendTextLayout = new GridBagConstraints(1,2,5,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
 		legendMainPanel.add(priorityLow,legendTextLayout); 
 		
@@ -253,6 +294,7 @@ public class UserInterface extends JFrame { /**
 		done.setText("Done");
 		done.setFont(fontForLegend);
 		done.setBorder(borderLineForText);
+		done.setOpaque(false);
 		legendTextLayout = new GridBagConstraints(1,3,5,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
 		legendMainPanel.add(done,legendTextLayout); 
 	}
@@ -303,10 +345,13 @@ public class UserInterface extends JFrame { /**
 	private GridBagConstraints setParameters(int panelParameters){
 		GridBagConstraints parameters;
 		Insets insets = new Insets(0,0,0,0);
-		Insets dynamicHelpTextInsets = new Insets(10,10,10,10);
+		Insets toDoListInsets = new Insets(20,0,0,0);
+		Insets commandEntryTextFieldInsets = new Insets(10,25,5,25);
+		Insets dynamicHelpTextInsets = new Insets(10,25,20,20);
+		Insets legendInsets = new Insets(0,0,0,25);
 		
 		if(panelParameters == TODOLIST_PARAMETERS){
-			parameters = new GridBagConstraints(0,0,3,3,0.1,0.0,GridBagConstraints.NORTHWEST,GridBagConstraints.BOTH,insets,0,0);
+			parameters = new GridBagConstraints(0,0,3,3,0.1,0.0,GridBagConstraints.NORTHWEST,GridBagConstraints.BOTH,toDoListInsets,0,0);
 			
 			
 			return parameters;
@@ -321,7 +366,7 @@ public class UserInterface extends JFrame { /**
 		}
 		
 		else if(panelParameters == COMMAND_ENTRY_PARAMETERS){
-			parameters = new GridBagConstraints(0,0,3,1,0.1,0.0,GridBagConstraints.NORTHWEST,GridBagConstraints.BOTH,insets,0,0);
+			parameters = new GridBagConstraints(0,0,3,1,0.1,0.0,GridBagConstraints.NORTHWEST,GridBagConstraints.BOTH,commandEntryTextFieldInsets,0,0);
 			
 			return parameters;
 		}
@@ -332,7 +377,7 @@ public class UserInterface extends JFrame { /**
 		}
 		
 		else if(panelParameters == LEGEND_PARAMETERS){
-			parameters = new GridBagConstraints(2,1,1,1,0.0,0.1,GridBagConstraints.EAST,GridBagConstraints.BOTH,insets,0,0);
+			parameters = new GridBagConstraints(2,1,1,1,0.0,0.1,GridBagConstraints.EAST,GridBagConstraints.BOTH,legendInsets,0,0);
 			return parameters;
 		}
 		
