@@ -1,6 +1,7 @@
 package todologApp;
 
 import org.joda.time.DateTime;
+import org.joda.time.format.ISODateTimeFormat;
 
 public class Task {
 	
@@ -13,8 +14,6 @@ public class Task {
 	private String _taskEndDay;
 	private String _taskPerson;
 	private String _taskVenue;
-	private int _taskStartTime;
-	private int _taskEndTime;
 	private DateTime _taskStart;
 	private DateTime _taskEnd;
 	
@@ -23,8 +22,6 @@ public class Task {
 	public Task(String parameter) throws Exception{
 		_taskName = Parser.parseTaskName(parameter);
 		_taskType = Parser.parseTaskType(parameter);
-		_taskStartDay = Parser.parseTaskStartDay(parameter);
-		_taskEndDay = Parser.parseTaskEndDay(parameter);
 		_taskPerson = Parser.parseTaskPerson(parameter);
 		_taskVenue = Parser.parseTaskVenue(parameter);
 		_taskStart = Parser.parseTaskStart(parameter);
@@ -38,24 +35,19 @@ public class Task {
 		_taskStatus = status;
 	}
 
-	public Task(TaskType deadline, String name, String endDay, int endTime,
-			boolean status) {
+	public Task(TaskType deadline, String name, DateTime end, boolean status) {
 		_taskType = deadline;
 		_taskName = name;
-		_taskEndDay = endDay;
-		_taskEndTime = endTime;
+		_taskEnd = end;
 		_taskStatus = status;
 	}
 
-
-	public Task(TaskType timed, String name, String startDay, String endDay,
-			int startTime, int endTime, boolean status) {
+	public Task(TaskType timed, String name, DateTime start, DateTime end,
+			boolean status) {
 		_taskType = timed;
 		_taskName = name;
-		_taskStartDay = startDay;
-		_taskEndDay = endDay;
-		_taskStartTime = startTime;
-		_taskEndTime = endTime;
+		_taskStart = start;
+		_taskEnd = end;
 		_taskStatus = status;
 	}
 
@@ -110,7 +102,7 @@ public class Task {
 	}
 	
 	public int getEndYear() {
-		return _taskEnd.monthOfYear().get();
+		return _taskEnd.year().get();
 	}
 	
 	public String getTaskVenue() {
@@ -128,7 +120,12 @@ public class Task {
 	public boolean getTaskStatus() {
 		return _taskStatus;
 	}
-
+	public String getStart() {
+		return _taskStart.toString(ISODateTimeFormat.dateTime());
+	}
+	public String getEnd() {
+		return _taskEnd.toString(ISODateTimeFormat.dateTime());
+	}
 
 	public void toggleTaskStatus() {
 		if (_taskStatus) {
@@ -139,44 +136,44 @@ public class Task {
 		
 	}
 
-	public void setStartDay(String _toBeEdited) throws Exception{
-		int year = getStartYear();
-		int month = getStartMonth();
-		int day = Parser.parseTaskStartDate(_toBeEdited);
+	public void setStartDay(String editInfo) throws Exception{
+		int year = Parser.parseYear(editInfo);
+		int month = Parser.parseMonth(editInfo);
+		int day = Parser.parseDayOfMonth(editInfo);
 		int time = getStartTime();
 		int hour = time/100;
 		int min = time%100;
 		_taskStart = new DateTime(year,month,day,hour,min);
 	}
 	
-	public void setEndDay(String _toBeEdited) throws Exception {
-		int year = getEndYear();
-		int month = getEndMonth();
-		int day = Parser.parseTaskEndDate(_toBeEdited);
+	public void setEndDay(String editInfo) throws Exception {
+		int year = Parser.parseYear(editInfo);
+		int month = Parser.parseMonth(editInfo);
+		int day = Parser.parseDayOfMonth(editInfo);
 		int time = getEndTime();
 		int hour = time/100;
 		int min = time%100;
 		_taskEnd = new DateTime(year,month,day,hour,min);
 	}
 	
-	public void setStartTime(String _toBeEdited) throws Exception {
+	public void setStartTime(String editInfo) throws Exception {
 		int year = getStartYear();
 		int month = getStartMonth();
 		int day = getStartDate();
-		int time = Parser.parseTaskStartTime(_toBeEdited);
+		int time = Integer.parseInt(editInfo);
 		int hour = time/100;
 		int min = time%100;
 		_taskStart = new DateTime(year,month,day,hour,min);
 	}
 	
-	public void setEndTime(String _toBeEdited) throws Exception {
+	public void setEndTime(String editInfo) throws Exception {
 		int year = getEndYear();
 		int month = getEndMonth();
 		int day = getEndDate();
-		int time = Parser.parseTaskEndTime(_toBeEdited);
+		int time =  Integer.parseInt(editInfo);
 		int hour = time/100;
 		int min = time%100;
-		_taskStart = new DateTime(year,month,day,hour,min);
+		_taskEnd = new DateTime(year,month,day,hour,min);
 	}
 	
 	public void setVenue(String _toBeEdited){
@@ -185,5 +182,10 @@ public class Task {
 	
 	public void setPerson(String _toBeEdited){
 		_taskPerson = Parser.parseTaskPerson(_toBeEdited);
+	}
+
+	// for sorting in CommandAdd
+	public DateTime getEndDateTime() {
+		return _taskEnd;
 	}
 }

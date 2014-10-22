@@ -11,6 +11,8 @@ import org.dom4j.Element;
 import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
+import org.joda.time.DateTime;
+import org.joda.time.format.ISODateTimeFormat;
 
 public class FileStorage implements Storage{
 	private final String DEFAULT_FILE_NAME = "store.xml";
@@ -99,20 +101,20 @@ public class FileStorage implements Storage{
 	
 	private Task parseIntoDeadline(Element taskNode) {
 		String name = taskNode.element("name").getText();
-		String endDay = taskNode.element("endday").getText();
-		int endTime = Integer.parseInt(taskNode.element("endtime").getText());
+		String endStr = taskNode.element("end").getText();
+		DateTime end = ISODateTimeFormat.dateTime().parseDateTime(endStr);
 		boolean status = Boolean.parseBoolean(taskNode.element("status").getText());
-		return new Task(TaskType.DEADLINE, name, endDay, endTime, status);
+		return new Task(TaskType.DEADLINE, name, end, status);
 	}
 	
 	private Task parseIntoTimed(Element taskNode) {
 		String name = taskNode.element("name").getText();
-		String startDay = taskNode.element("startday").getText();
-		String endDay = taskNode.element("endday").getText();
-		int startTime = Integer.parseInt(taskNode.element("starttime").getText());
-		int endTime = Integer.parseInt(taskNode.element("endtime").getText());
+		String startStr = taskNode.element("start").getText();
+		String endStr = taskNode.element("end").getText();
+		DateTime start = ISODateTimeFormat.dateTime().parseDateTime(startStr);
+		DateTime end = ISODateTimeFormat.dateTime().parseDateTime(endStr);
 		boolean status = Boolean.parseBoolean(taskNode.element("status").getText());
-		return new Task(TaskType.TIMED, name, startDay, endDay, startTime, endTime, status);
+		return new Task(TaskType.TIMED, name, start, end, status);
 	}
 	private static TaskType parseTaskType(String taskTypeString) {
 		switch (taskTypeString) {
@@ -172,8 +174,7 @@ public class FileStorage implements Storage{
 		Element newTask = root.addElement("task");
 		newTask.addElement("type").setText(task.getTaskType().toString());
 		newTask.addElement("name").setText(task.getTaskName());
-		newTask.addElement("endday").setText(task.getEndDay());
-		newTask.addElement("endtime").setText(String.valueOf(task.getEndTime()));
+		newTask.addElement("end").setText(task.getEnd());
 		newTask.addElement("status").setText(String.valueOf(task.getTaskStatus()));
 	}
 	
@@ -181,10 +182,8 @@ public class FileStorage implements Storage{
 		Element newTask = root.addElement("task");
 		newTask.addElement("type").setText(task.getTaskType().toString());
 		newTask.addElement("name").setText(task.getTaskName());
-		newTask.addElement("startday").setText(task.getStartDay());
-		newTask.addElement("endday").setText(task.getEndDay());
-		newTask.addElement("starttime").setText(String.valueOf(task.getStartTime()));
-		newTask.addElement("endtime").setText(String.valueOf(task.getEndTime()));
+		newTask.addElement("start").setText(task.getStart());
+		newTask.addElement("end").setText(task.getEnd());
 		newTask.addElement("status").setText(String.valueOf(task.getTaskStatus()));
 		
 	}
