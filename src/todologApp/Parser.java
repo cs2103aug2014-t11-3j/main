@@ -99,7 +99,9 @@ public class Parser {
 			restOfTheString = restOfTheString.trim();
 			int index = Integer.valueOf(getFirstWord(restOfTheString));
 			restOfTheString = getTheRestOfTheString(restOfTheString);
-			CommandEdit command = new CommandEdit(index, restOfTheString);
+			String editType = getFirstWord(restOfTheString);
+			restOfTheString = getTheRestOfTheString(restOfTheString);
+			CommandEdit command = new CommandEdit(index, restOfTheString, editType);
 			return command;
 			//		} else if (firstWord.equalsIgnoreCase("search")) {
 			//			CommandSearch command = new CommandSearch(restOfTheString);

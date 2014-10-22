@@ -8,11 +8,6 @@ public class DBStorageStub extends DBStorage {
 	private LinkedList<Task> _tasks;
 	private FileStorage _fileStorage;
 
-	public DBStorageStub() {
-		_fileStorage = new FileStorage();
-		init();
-	}
-
 	public DBStorageStub(String fileName) {
 		_fileStorage = new FileStorage(fileName);
 		init();

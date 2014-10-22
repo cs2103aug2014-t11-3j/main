@@ -144,4 +144,28 @@ public class Task {
 		}
 		
 	}
+
+	public String setStartDay(String _toBeEdited) {
+		return Parser.parseTaskStartDay(_toBeEdited);
+	}
+	
+	public String setEndDay(String _toBeEdited) {
+		return Parser.parseTaskEndDay(_toBeEdited);
+	}
+	
+	public int setStartTime(String _toBeEdited) throws Exception {
+		return Parser.parseTaskStartTime(_toBeEdited);
+	}
+	
+	public int setEndTime(String _toBeEdited) throws Exception {
+		return Parser.parseTaskEndTime(_toBeEdited);
+	}
+	
+	public String setVenue(String _toBeEdited){
+		return Parser.parseTaskVenue(_toBeEdited);
+	}
+	
+	public String setPerson(String _toBeEdited){
+		return Parser.parseTaskPerson(_toBeEdited);
+	}
 }
