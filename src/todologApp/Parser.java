@@ -14,11 +14,13 @@ public class Parser {
 
 	//KEYWORDS
 	private static String KEYWORD_DAY_STARTING = "from";
+	private static String KEYWORD_DAY_STARTING_2 = "on";
 	private static String KEYWORD_DAY_ENDING = "to";
 	private static String KEYWORD_DEADLINE = "by";
 	private static String KEYWORD_RECURRING = "every";
 	private static String KEYWORD_WITH = "with";
 	private static String KEYWORD_AT = "at";
+	private static String KEYWORD_IN = "in";
 
 	//DAY KEYWORDS
 	private static String DAY_KEYWORD_TODAY = "Today";
@@ -165,8 +167,9 @@ public class Parser {
 		String [] messageArray = generateArray(parameter);
 
 		for (int i = 0; i+3<=messageArray.length; i++) {
-			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) && 
-					messageArray[i+2].equalsIgnoreCase(SYMBOL_AT)){
+			if ((messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING)
+					|| messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING_2))
+					&& messageArray[i+2].equalsIgnoreCase(SYMBOL_AT)) {
 				try {
 					int startTime = Integer.parseInt(messageArray[i+3]);
 					if (startTime >= 0000 && startTime <= 2359) {
@@ -216,7 +219,9 @@ public class Parser {
 		String [] messageArray = generateArray(parameter);
 
 		for (int i = 0; i+1<=messageArray.length-1; i++) {
-			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) && !isInteger(messageArray[i+1])){
+			if ( (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) 
+					|| messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING_2))
+					&& !isInteger(messageArray[i+1])){
 				String startDay = parseDay(messageArray[i+1]);
 				return startDay;
 			} else {
@@ -234,7 +239,9 @@ public class Parser {
 		int _date = 1;
 		for (int i = 0; i+1<=messageArray.length-1; i++) {
 			try {
-				if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) && isInteger(messageArray[i+1])){
+				if ((messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) 
+						|| messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING_2))
+						&& isInteger(messageArray[i+1])) {
 					_date = Integer.parseInt(messageArray[i+1]);
 					_date = _date/10000;
 					if (parseTaskStartMonth(parameter) == 2 && _date > 0 && _date <= 29) {
@@ -264,7 +271,9 @@ public class Parser {
 		int _month = 1;
 		for (int i = 0; i+1<=messageArray.length-1; i++) {
 			try {
-				if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) && isInteger(messageArray[i+1])){
+				if ((messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) 
+						|| messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING_2)) 
+						&& isInteger(messageArray[i+1])) {
 					_month = Integer.parseInt(messageArray[i+1]);
 					_month = _month/100;
 					_month = _month % 100;
@@ -284,7 +293,9 @@ public class Parser {
 		int _year = 14;
 		for (int i = 0; i+1<=messageArray.length-1; i++) {
 			try {
-				if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) && isInteger(messageArray[i+1])){
+				if ((messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) 
+						|| messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING_2))
+						&& isInteger(messageArray[i+1])){
 					_year = Integer.parseInt(messageArray[i+1]);
 					_year = _year % 100;
 					if (_year > 0 && _year <= 12) {
@@ -419,22 +430,45 @@ public class Parser {
 
 	}
 
-	public static String parseTaskName(String parameter) throws Exception{
-		int firstIndex = parameter.indexOf(QUOTATION_MARK);
-		int lastIndex = parameter.lastIndexOf(QUOTATION_MARK);
+//	public static String parseTaskName(String parameter) throws Exception{
+//		int firstIndex = parameter.indexOf(QUOTATION_MARK);
+//		int lastIndex = parameter.lastIndexOf(QUOTATION_MARK);
+//
+//		if (lastIndex > firstIndex) {
+//			String taskName = parameter.substring(firstIndex+1, lastIndex);
+//			return taskName;
+//		} else if (lastIndex == firstIndex) {
+//			throw new Exception("Invalid command. Missing task name.\nTask name must be inside quotation marks.");
+//		} else if (lastIndex < firstIndex) {
+//			throw new Error(); //never occurs
+//		} else {
+//			return null;
+//		}	
+//	}
 
-		if (lastIndex > firstIndex) {
-			String taskName = parameter.substring(firstIndex+1, lastIndex);
-			return taskName;
-		} else if (lastIndex == firstIndex) {
-			throw new Exception("Invalid command. Missing task name.\nTask name must be inside quotation marks.");
-		} else if (lastIndex < firstIndex) {
-			throw new Error(); //never occurs
-		} else {
-			return null;
-		}	
+	public static String parseTaskName(String parameter) throws Exception {
+		String [] messageArray = generateArray(parameter);
+		String taskName = EMPTY_STRING;
+
+		for (int i=0; i<=messageArray.length-1; i++) {
+			if (!messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) 
+					&& !messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING_2)
+					&& !messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING)
+					&& !messageArray[i].equalsIgnoreCase(KEYWORD_DEADLINE)
+					&& !messageArray[i].equalsIgnoreCase(KEYWORD_RECURRING)
+					&& !messageArray[i].equalsIgnoreCase(KEYWORD_WITH)
+					&& !messageArray[i].equalsIgnoreCase(KEYWORD_AT)
+					&& !messageArray[i].equalsIgnoreCase(KEYWORD_IN)
+					&& !messageArray[i].equalsIgnoreCase(SYMBOL_AT)) {
+				taskName = taskName + messageArray[i] + SINGLE_SPACE;
+			} else {
+				break;
+			}
+		}
+
+		return taskName.trim();
 	}
-
+	
 	public static boolean isInteger(String s) {
 		try { 
 			Integer.parseInt(s); 
@@ -453,11 +487,16 @@ public class Parser {
 			for (int j=i+1; j<=messageArray.length-1; j++) {
 				if (messageArray[i].equalsIgnoreCase(KEYWORD_WITH) 
 						&& !messageArray[j].equalsIgnoreCase(KEYWORD_DAY_STARTING)
+						&& !messageArray[j].equalsIgnoreCase(KEYWORD_DAY_STARTING_2)
 						&& !messageArray[j].equalsIgnoreCase(KEYWORD_DAY_ENDING)
 						&& !messageArray[j].equalsIgnoreCase(KEYWORD_DEADLINE)
 						&& !messageArray[j].equalsIgnoreCase(KEYWORD_RECURRING)
-						&& !messageArray[j].equalsIgnoreCase(KEYWORD_AT)) {
+						&& !messageArray[j].equalsIgnoreCase(KEYWORD_AT)
+						&& !messageArray[j].equalsIgnoreCase(KEYWORD_IN)
+						&& !messageArray[j].equalsIgnoreCase(SYMBOL_AT)) {
 					taskPerson = taskPerson + messageArray[j] + SINGLE_SPACE;
+				} else {
+					break;
 				}
 			}
 		}
@@ -470,17 +509,22 @@ public class Parser {
 
 		for (int i=0; i+1<=messageArray.length-1; i++) {
 			for (int j=i+1; j<=messageArray.length-1; j++) {
-				if (messageArray[i].equalsIgnoreCase(KEYWORD_AT) 
+				if ( (messageArray[i].equalsIgnoreCase(KEYWORD_AT) 
+						|| messageArray[i].equalsIgnoreCase(KEYWORD_IN)) 
 						&& !messageArray[j].equalsIgnoreCase(KEYWORD_DAY_STARTING)
+						&& !messageArray[j].equalsIgnoreCase(KEYWORD_DAY_STARTING_2)
 						&& !messageArray[j].equalsIgnoreCase(KEYWORD_DAY_ENDING)
 						&& !messageArray[j].equalsIgnoreCase(KEYWORD_DEADLINE)
 						&& !messageArray[j].equalsIgnoreCase(KEYWORD_RECURRING)
-						&& !messageArray[j].equalsIgnoreCase(KEYWORD_WITH)) {
+						&& !messageArray[j].equalsIgnoreCase(KEYWORD_WITH)
+						&& !messageArray[j].equalsIgnoreCase(SYMBOL_AT)) {
 					taskVenue = taskVenue + messageArray[j] + SINGLE_SPACE;
+				} else {
+					break;
 				}
 			}
 		}
 		return taskVenue.trim();
 	}
-	
+
 }

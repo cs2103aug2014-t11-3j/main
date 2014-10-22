@@ -1,34 +1,45 @@
-package todologApp;
+/*package todologApp;
 
-//package todologApp;
-//
-//import java.util.LinkedList;
-//
-//public class CommandSort implements Command{
-//	private static String type;
-//	private static Storage _storage;
-//	LinkedList<Task> newList;
-//	//public CommandSort(Task task) {
-//		//_task = task;
-//	//}
-//	public void execute() {
-//		_storage = Controller.getStorage();
-//		newList = _storage.load();
-//		if(type==name){
-//			LinkedList<Task> sortedByName=sortByName();
-//		}
-//		else if(type==date){
-//			LinkedList<Task> sortedByDate=sortByDate();
-//		}
-//	}
-//	public LinkedList<Task> sortByName(){
-//		
-//	}
-//	
-//
-//	public void undo() {
-//	
-//	}
-//
-//}
-//
+import java.util.LinkedList;
+
+public class CommandSort implements Command{
+	private String _type;
+	private DBStorage _storage;
+	LinkedList<Task> newList;
+	public CommandSort(String type) {
+	_type = type;
+	
+}
+	public String execute() {
+		String feedback;
+		_storage = Controller.getDBStorage();
+		newList = _storage.load();
+		if(_type.equals("name")){
+			LinkedList<Task> sortedByName=sortByName();
+			feedback="";
+		}
+		else if(_type.equals("date")){
+			LinkedList<Task> sortedByDate=sortByDate();
+			feedback="";
+		}
+		else{
+			feedback="";
+		}
+		return feedback;
+	}
+	public LinkedList<Task> sortByName(){
+		
+	}
+	public LinkedList<Task> sortByDate(){
+		
+	}
+	
+
+	public String undo() {
+	String feedback;
+	feedback="";
+	return feedback;
+	}
+
+}*/
+
