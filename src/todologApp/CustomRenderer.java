@@ -4,10 +4,16 @@ import javax.swing.table.DefaultTableCellRenderer;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Graphics;
 
 import javax.swing.*;
 
 public class CustomRenderer extends DefaultTableCellRenderer {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public Component getTableCellRendererComponent(JTable table, Object value,
 			boolean isSelected, boolean hasFocus, int row, int column) {
 		Component cellComponent = super.getTableCellRendererComponent(table,
@@ -22,7 +28,7 @@ public class CustomRenderer extends DefaultTableCellRenderer {
 		}
 
 		else {
-			cellComponent.setBackground(Color.WHITE);
+			cellComponent.setBackground(table.getBackground());
 		}
 
 		return cellComponent;

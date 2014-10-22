@@ -119,27 +119,42 @@ public class UserInterface extends JFrame { /**
 		changeTableColors(toDoListTable);
 		//updateToDoListTable(toDoListTable,toDoListItems,toDoListHeaders);
 		
-		JScrollPane toDoList = new JScrollPane(toDoListTable);
+		JScrollPane toDoList = new JScrollPane(toDoListTable)
+		{
+			protected void paintComponent(Graphics g)
+		    {
+		        g.setColor( getBackground() );
+		        g.fillRect(0, 0, getWidth(), getHeight());
+		        super.paintComponent(g);
+		    }
+		};
+		toDoList.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 		toDoList.setPreferredSize(new Dimension(650,225));
-		
+		toDoList.setOpaque(false);
+		toDoList.setBackground(new Color(255,255,255,220));
 		toDoListHolder.add(toDoList,scrollPaneParameters);
 		mainPanel.add(toDoListHolder, panelParameters);
 		toDoListHolder.setOpaque(false);
 		toDoListTable.setOpaque(false);
-		toDoList.setOpaque(false);
 		((DefaultTableCellRenderer)toDoListTable.getDefaultRenderer(Object.class)).setOpaque(false);
+	
 		toDoList.getViewport().setOpaque(false);
+		toDoList.getViewport().setBackground(new Color(255,255,255,170));
+		Component[] comps = toDoList.getComponents();
+		
 		toDoListTable.setShowGrid(false);
-		BufferedImage img;
-		try {
-			img = ImageIO.read(new File("src/black-white.jpg"));
-			JLabel background = new JLabel(new ImageIcon(img));
-			background.setBounds(25,20,650,225);
-			layerPane.add(background,new Integer(1));
-		} catch (IOException e) {
-			//TODO some notifying
-			dynamicHelpText.setText("Cannot load image");
-		}
+//		BufferedImage img;
+//		try {
+//			img = ImageIO.read(new File("src/black-white.jpg"));
+//			JLabel background = new JLabel();
+//			background.setOpaque(false);
+//			background.setBackground(new Color(255,255,255,170));
+//			background.setBounds(25,20,650,225);
+//			layerPane.add(background,new Integer(1));
+//		} catch (IOException e) {
+//			//TODO some notifying
+//			dynamicHelpText.setText("Cannot load image");
+//		}
 		
 	}
 	private void createToDoList(Container mainPanel){
@@ -325,6 +340,7 @@ public class UserInterface extends JFrame { /**
 		
 		initialize(this); 
 		fillUpTheJFrame(this);
+		
 		Controller.init();
 		toDoListItems = Controller.getDBStorage().load();
 		toDoListTableModel = new ToDoListTableModel(toDoListItems);
@@ -354,7 +370,6 @@ public class UserInterface extends JFrame { /**
 			toDoListItems = Controller.getDBStorage().load();
 			toDoListTableModel.setTableData(toDoListItems);
 			toDoListTableModel.fireTableDataChanged();
-			
 
 		}
 	}
@@ -429,22 +444,22 @@ public class UserInterface extends JFrame { /**
 			
 			switch(columnHeaders){
 			case 0:
-				tableColumn.setPreferredWidth(20);
+				tableColumn.setPreferredWidth(10);
 				break;
 			case 1:
-				tableColumn.setPreferredWidth(190);
+				tableColumn.setPreferredWidth(70);
 				break;
 			case 2:
-				tableColumn.setPreferredWidth(70);
+				tableColumn.setPreferredWidth(190);
 				break;
 			case 3:
 				tableColumn.setPreferredWidth(70);
 				break;
 			case 4:
-				tableColumn.setPreferredWidth(100);
+				tableColumn.setPreferredWidth(30);
 				break;
 			case 5:
-				tableColumn.setPreferredWidth(90);
+				tableColumn.setPreferredWidth(30);
 				break;
 			}
 		}
@@ -456,7 +471,6 @@ public class UserInterface extends JFrame { /**
 		toDoListTable.getColumnModel().getColumn(2).setCellRenderer(new CustomRenderer());
 		toDoListTable.getColumnModel().getColumn(3).setCellRenderer(new CustomRenderer());
 		toDoListTable.getColumnModel().getColumn(4).setCellRenderer(new CustomRenderer());
-		toDoListTable.getColumnModel().getColumn(5).setCellRenderer(new CustomRenderer());
 		
 	}
 
