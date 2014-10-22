@@ -14,9 +14,9 @@ public class CommandEdit implements Command {
 	// private static Storage _storage;
 
 	public CommandEdit(int index, String toBeEdited, String editType) {
-		_index = index;
+		_index = index-1;
 		_editType = editType;
-		_taskEdited = _taskExisting;
+		_toBeEdited = toBeEdited;
 		_storage = Controller.getDBStorage();
 		
 	}
@@ -91,7 +91,7 @@ public class CommandEdit implements Command {
 		LinkedList<Task> tasks = _storage.load();
 		_taskExisting = tasks.get(_index);
 		try {
-			editedField=formNewTask();
+			editedField = formNewTask();
 		} catch (Exception e1) {
 			feedback = e1.getMessage();
 			return feedback;

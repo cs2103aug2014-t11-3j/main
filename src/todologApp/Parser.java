@@ -117,6 +117,15 @@ public class Parser {
 			restOfTheString = getTheRestOfTheString(restOfTheString);
 			String editType = getFirstWord(restOfTheString);
 			restOfTheString = getTheRestOfTheString(restOfTheString);
+			if (editType.equalsIgnoreCase("start") || editType.equalsIgnoreCase("end")) {
+				editType.concat(" ").concat(getFirstWord(restOfTheString));
+				restOfTheString = getTheRestOfTheString(restOfTheString);
+			} else if (editType.equalsIgnoreCase("task")) {
+				editType = getFirstWord(restOfTheString);
+				restOfTheString = getTheRestOfTheString(restOfTheString);
+			} else {
+				restOfTheString = getTheRestOfTheString(restOfTheString);
+			}
 			CommandEdit command = new CommandEdit(index, restOfTheString, editType);
 			return command;
 			//		} else if (firstWord.equalsIgnoreCase("search")) {
