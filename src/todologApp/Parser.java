@@ -118,12 +118,10 @@ public class Parser {
 			String editType = getFirstWord(restOfTheString);
 			restOfTheString = getTheRestOfTheString(restOfTheString);
 			if (editType.equalsIgnoreCase("start") || editType.equalsIgnoreCase("end")) {
-				editType.concat(" ").concat(getFirstWord(restOfTheString));
+				editType = editType.concat(" ").concat(getFirstWord(restOfTheString));
 				restOfTheString = getTheRestOfTheString(restOfTheString);
 			} else if (editType.equalsIgnoreCase("task")) {
 				editType = getFirstWord(restOfTheString);
-				restOfTheString = getTheRestOfTheString(restOfTheString);
-			} else {
 				restOfTheString = getTheRestOfTheString(restOfTheString);
 			}
 			CommandEdit command = new CommandEdit(index, restOfTheString, editType);
@@ -552,12 +550,13 @@ public class Parser {
 		for (int i = 0; i+1<=messageArray.length-1; i++) {
 			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING) 
 			|| messageArray[i].equalsIgnoreCase(KEYWORD_DEADLINE)) {
+				hasKeyword = true;
 				if (isInteger(messageArray[i+1])) {
 					year = parseYear(messageArray[i+1]);
 					month = parseMonth(messageArray[i+1]);
 					day = parseDayOfMonth(messageArray[i+1]);	
 				} else {
-					int dayOfWeek = parseDayOfWeek(parameter);
+					int dayOfWeek = parseDayOfWeek(messageArray[i+1]);
 					DateTime today = new DateTime();
 					if (dayOfWeek == TODAY) {
 						year = today.year().get();
