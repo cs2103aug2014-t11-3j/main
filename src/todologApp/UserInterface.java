@@ -30,6 +30,7 @@ public class UserInterface extends JFrame { /**
 	private static final int DYNAMIC_HELP_TEXT_PARAMETERS = 4;
 	private static final int LEGEND_PARAMETERS = 5;
 	private static final int TODOLIST_SCROLLPANE_PARAMETERS = 6;
+	private static final int BUTTON_PARAMETERS = 7;
 	
 	private JTextField commandEntryTextField;
 	private JLayeredPane layerPane = new JLayeredPane();
@@ -171,6 +172,7 @@ public class UserInterface extends JFrame { /**
 		createCommandEntryTextBox(bottomPanel);
 		createTextArea(bottomPanel);
 		createLegend(bottomPanel);
+		//createButton(bottomPanel);
 		mainPanel.add(bottomPanel, parameters);
 		bottomPanel.setOpaque(false);
 	}
@@ -240,6 +242,8 @@ public class UserInterface extends JFrame { /**
 		priorityHigh.setPreferredSize(new Dimension(30,15));
 		priorityHigh.setText("Priority: High");
 		priorityHigh.setFont(fontForLegend);
+		priorityHigh.setEnabled(false);
+		priorityHigh.setDisabledTextColor(Color.WHITE);
 		priorityHigh.setBorder(borderLineForText);
 		priorityHigh.setOpaque(false);
 		legendTextLayout = new GridBagConstraints(1,0,5,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
@@ -257,6 +261,8 @@ public class UserInterface extends JFrame { /**
 		priorityMedium.setPreferredSize(new Dimension(30,15));
 		priorityMedium.setText("Priority: Medium");
 		priorityMedium.setFont(fontForLegend);
+		priorityMedium.setEnabled(false);
+		priorityMedium.setDisabledTextColor(Color.WHITE);
 		priorityMedium.setBorder(borderLineForText);
 		priorityMedium.setOpaque(false);
 		legendTextLayout = new GridBagConstraints(1,1,5,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
@@ -276,6 +282,8 @@ public class UserInterface extends JFrame { /**
 		priorityLow.setPreferredSize(new Dimension(30,15));
 		priorityLow.setText("Priority: Low");
 		priorityLow.setFont(fontForLegend);
+		priorityLow.setEnabled(false);
+		priorityLow.setDisabledTextColor(Color.WHITE);
 		priorityLow.setBorder(borderLineForText);
 		priorityLow.setOpaque(false);
 		legendTextLayout = new GridBagConstraints(1,2,5,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
@@ -293,11 +301,23 @@ public class UserInterface extends JFrame { /**
 		done.setPreferredSize(new Dimension(30,15));
 		done.setText("Done");
 		done.setFont(fontForLegend);
+		done.setEnabled(false);
+		done.setDisabledTextColor(Color.WHITE);
 		done.setBorder(borderLineForText);
 		done.setOpaque(false);
 		legendTextLayout = new GridBagConstraints(1,3,5,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
 		legendMainPanel.add(done,legendTextLayout); 
 	}
+	
+	/*	private void createButton(JPanel bottomPanel){
+			GridBagConstraints buttonParameters = setParameters(BUTTON_PARAMETERS);
+			JButton magicButton = new JButton("");
+			magicButton.setPreferredSize(new Dimension(10,10));
+			
+			bottomPanel.add(magicButton,buttonParameters);
+		}
+		
+	/*	
 	/**
 	 * Create the application.
 	 */
@@ -348,7 +368,8 @@ public class UserInterface extends JFrame { /**
 		Insets toDoListInsets = new Insets(20,0,0,0);
 		Insets commandEntryTextFieldInsets = new Insets(10,25,5,25);
 		Insets dynamicHelpTextInsets = new Insets(10,25,20,20);
-		Insets legendInsets = new Insets(0,0,0,25);
+		Insets legendInsets = new Insets(0,0,0,10);
+		Insets buttonInsets = new Insets(10,0,0,20);
 		
 		if(panelParameters == TODOLIST_PARAMETERS){
 			parameters = new GridBagConstraints(0,0,3,3,0.1,0.0,GridBagConstraints.NORTHWEST,GridBagConstraints.BOTH,toDoListInsets,0,0);
@@ -366,18 +387,23 @@ public class UserInterface extends JFrame { /**
 		}
 		
 		else if(panelParameters == COMMAND_ENTRY_PARAMETERS){
-			parameters = new GridBagConstraints(0,0,3,1,0.1,0.0,GridBagConstraints.NORTHWEST,GridBagConstraints.BOTH,commandEntryTextFieldInsets,0,0);
+			parameters = new GridBagConstraints(0,0,6,1,0.1,0.0,GridBagConstraints.NORTHWEST,GridBagConstraints.BOTH,commandEntryTextFieldInsets,0,0);
 			
 			return parameters;
 		}
 		
 		else if(panelParameters == DYNAMIC_HELP_TEXT_PARAMETERS){
-			parameters = new GridBagConstraints(0,1,2,1,0.0,0.1,GridBagConstraints.CENTER,GridBagConstraints.BOTH,dynamicHelpTextInsets,0,0);
+			parameters = new GridBagConstraints(0,1,3,1,0.0,0.1,GridBagConstraints.CENTER,GridBagConstraints.BOTH,dynamicHelpTextInsets,0,0);
 			return parameters;
 		}
 		
 		else if(panelParameters == LEGEND_PARAMETERS){
-			parameters = new GridBagConstraints(2,1,1,1,0.0,0.1,GridBagConstraints.EAST,GridBagConstraints.BOTH,legendInsets,0,0);
+			parameters = new GridBagConstraints(3,1,2,1,0.0,0.1,GridBagConstraints.EAST,GridBagConstraints.BOTH,legendInsets,0,0);
+			return parameters;
+		}
+		
+		else if(panelParameters == BUTTON_PARAMETERS){
+			parameters = new GridBagConstraints(5,1,1,1,0.0,0.1,GridBagConstraints.EAST,GridBagConstraints.BOTH,buttonInsets,0,0);
 			return parameters;
 		}
 		
