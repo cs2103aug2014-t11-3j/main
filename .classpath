@@ -4,5 +4,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="/Users/NhatLinh/Documents/Study Materials/WorkSpace/TodoLog/dom4j-1.6.1/dom4j-1.6.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="lib" path="/Users/NhatLinh/Documents/Study Materials/WorkSpace/TodoLog/joda-time-2.5/joda-time-2.5.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
