@@ -456,7 +456,7 @@ public class UserInterface extends JFrame { /**
 		toDoListTable.getColumnModel().getColumn(2).setCellRenderer(new CustomRenderer());
 		toDoListTable.getColumnModel().getColumn(3).setCellRenderer(new CustomRenderer());
 		toDoListTable.getColumnModel().getColumn(4).setCellRenderer(new CustomRenderer());
-		toDoListTable.getColumnModel().getColumn(5).setCellRenderer(new CustomRenderer());
+		//toDoListTable.getColumnModel().getColumn(5).setCellRenderer(new CustomRenderer());
 		
 	}
 
