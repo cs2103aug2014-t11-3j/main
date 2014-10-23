@@ -14,9 +14,9 @@ public class CommandEdit implements Command {
 	// private static Storage _storage;
 
 	public CommandEdit(int index, String toBeEdited, String editType) {
-		_index = index;
+		_index = index-1;
 		_editType = editType;
-		_taskEdited = _taskExisting;
+		_toBeEdited = toBeEdited;
 		_storage = Controller.getDBStorage();
 		
 	}
@@ -29,47 +29,36 @@ public class CommandEdit implements Command {
 			return "name";
 		}
 		
-		//change Start day
-		 else if(_editType.equalsIgnoreCase("Start Day")||_editType.equalsIgnoreCase("Day")){
-			 if(equalsWeekDay(_toBeEdited)){
-				 _taskEdited.setStartDay(_toBeEdited);
-				 return "Start Day";
-			 }
-			 else{
-				 return "invalid";
-			 }
-		 }
 		//change End day
 		 else if(_editType.equalsIgnoreCase("End Day")||_editType.equalsIgnoreCase("Day")){
-			 if(equalsWeekDay(_toBeEdited)){
-				 _taskEdited.setEndDay(_toBeEdited);
-				 return "End Day";
-			 }
-			 else{
-				 return "invalid";
+			 _taskEdited.setEndDay(_toBeEdited);
+			 return "end day";
+		 }
+		//change Start day
+		 else if(_editType.equalsIgnoreCase("Start Day")||_editType.equalsIgnoreCase("Day")){	
+			 _taskEdited.setStartDay(_toBeEdited);
+			 return "start day";
+			 
+		 }
+		
+		//change End Time
+		 else if(_editType.equalsIgnoreCase("End Time")||_editType.equalsIgnoreCase("time")){
+			 if(_toBeEdited.length()==4){
+				 _taskEdited.setEndTime(_toBeEdited);
+			 	return "end time";
+			 } else {
+				 throw new Exception("Incorrect time format input");
 			 }
 		 }
 		//change Start Time
 		 else if(_editType.equalsIgnoreCase("Start Time")){
 			 if(_toBeEdited.length()==4){
 				 _taskEdited.setStartTime(_toBeEdited);
-			 	return "Start time";
-			 }
-			 else{
-				 return "invalid";
-			 }
-		 }
-		//change End Time
-		 else if(_editType.equalsIgnoreCase("End Time")){
-			 if(_toBeEdited.length()==4){
-				 _taskEdited.setEndTime(_toBeEdited);
-			 	return "End time";
-			 }
-			 else{
-				 return "invalid";
+			 	return "start time";
+			 } else {
+				 throw new Exception("Incorrect time format input");
 			 }
 		 }
-		
 		//changeVenue
 		 else if(_editType.equalsIgnoreCase("Venue")){
 			 _taskEdited.setVenue(_toBeEdited);
@@ -81,7 +70,7 @@ public class CommandEdit implements Command {
 			 return "person";
 		 }
 		 else{
-			 return "invalid";
+			 throw new Exception("Incorrect input for edit");
 		 }
 	}
 
@@ -91,7 +80,7 @@ public class CommandEdit implements Command {
 		LinkedList<Task> tasks = _storage.load();
 		_taskExisting = tasks.get(_index);
 		try {
-			editedField=formNewTask();
+			editedField = formNewTask();
 		} catch (Exception e1) {
 			feedback = e1.getMessage();
 			return feedback;
@@ -122,20 +111,6 @@ public class CommandEdit implements Command {
 		return feedback;
 	}
 
-	public boolean equalsWeekDay(String day) {
-		if (day.equalsIgnoreCase("monday") || day.equalsIgnoreCase("monday")
-				|| day.equalsIgnoreCase("tuesday")
-				|| day.equalsIgnoreCase("wednesday")
-				|| day.equalsIgnoreCase("thursday")
-				|| day.equalsIgnoreCase("friday")
-				|| day.equalsIgnoreCase("saturday")
-				|| day.equalsIgnoreCase("today")
-				|| day.equalsIgnoreCase("tomorrow")) {
-			return true;
-		} else {
-			return false;
-		}
-	}
 
 }
 

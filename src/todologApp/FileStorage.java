@@ -96,7 +96,9 @@ public class FileStorage implements Storage{
 	private Task parseIntoFloating(Element taskNode) {
 		String name = taskNode.element("name").getText();
 		boolean status = Boolean.parseBoolean(taskNode.element("status").getText());
-		return new Task(TaskType.FLOATING, name, status);
+		String person = taskNode.element("person").getText();
+		String venue = taskNode.element("venue").getText();
+		return new Task(TaskType.FLOATING, name, status, person, venue);
 	}
 	
 	private Task parseIntoDeadline(Element taskNode) {
@@ -104,7 +106,9 @@ public class FileStorage implements Storage{
 		String endStr = taskNode.element("end").getText();
 		DateTime end = ISODateTimeFormat.dateTime().parseDateTime(endStr);
 		boolean status = Boolean.parseBoolean(taskNode.element("status").getText());
-		return new Task(TaskType.DEADLINE, name, end, status);
+		String person = taskNode.element("person").getText();
+		String venue = taskNode.element("venue").getText();
+		return new Task(TaskType.DEADLINE, name, end, status, person, venue);
 	}
 	
 	private Task parseIntoTimed(Element taskNode) {
@@ -114,7 +118,9 @@ public class FileStorage implements Storage{
 		DateTime start = ISODateTimeFormat.dateTime().parseDateTime(startStr);
 		DateTime end = ISODateTimeFormat.dateTime().parseDateTime(endStr);
 		boolean status = Boolean.parseBoolean(taskNode.element("status").getText());
-		return new Task(TaskType.TIMED, name, start, end, status);
+		String person = taskNode.element("person").getText();
+		String venue = taskNode.element("venue").getText();
+		return new Task(TaskType.TIMED, name, start, end, status, person, venue);
 	}
 	private static TaskType parseTaskType(String taskTypeString) {
 		switch (taskTypeString) {
@@ -168,6 +174,8 @@ public class FileStorage implements Storage{
 		newTask.addElement("type").setText(task.getTaskType().toString());
 		newTask.addElement("name").setText(task.getTaskName());
 		newTask.addElement("status").setText(String.valueOf(task.getTaskStatus()));
+		newTask.addElement("person").setText(task.getTaskPerson());
+		newTask.addElement("venue").setText(task.getTaskVenue());
 	}
 	
 	private void addDeadlineTaskToRoot(Element root, Task task) {
@@ -176,6 +184,8 @@ public class FileStorage implements Storage{
 		newTask.addElement("name").setText(task.getTaskName());
 		newTask.addElement("end").setText(task.getEnd());
 		newTask.addElement("status").setText(String.valueOf(task.getTaskStatus()));
+		newTask.addElement("person").setText(task.getTaskPerson());
+		newTask.addElement("venue").setText(task.getTaskVenue());
 	}
 	
 	private void addTimedTaskToRoot(Element root, Task task) {
@@ -185,7 +195,8 @@ public class FileStorage implements Storage{
 		newTask.addElement("start").setText(task.getStart());
 		newTask.addElement("end").setText(task.getEnd());
 		newTask.addElement("status").setText(String.valueOf(task.getTaskStatus()));
-		
+		newTask.addElement("person").setText(task.getTaskPerson());
+		newTask.addElement("venue").setText(task.getTaskVenue());
 	}
 	public Document getDocument() {
 		return _document;

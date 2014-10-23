@@ -23,7 +23,7 @@ public class ToDoListTableModel extends AbstractTableModel{
 	 * 
 	 */
 	
-	private final static String[] columnNames = {"No.","Name","Time","Category","Done"};
+	private final static String[] columnNames = {"No.","Name","Time","Person / Venue","Done"};
 	private LinkedList<Task> tableData;
 	
 	public ToDoListTableModel(LinkedList<Task> toDoListItems){
@@ -68,16 +68,16 @@ public class ToDoListTableModel extends AbstractTableModel{
 					return task.getStartDate()+"/"
 							+ task.getStartMonth()+"/"
 							+ task.getStartYear()+" " 
-							+ task.getStartTime() + " - " 
+							+ task.getStartTimeStr() + " - " 
 							+ task.getEndDate()+"/"
 							+ task.getEndMonth()+"/"
 							+ task.getEndYear()+" "
-							+ task.getEndTime();
+							+ task.getEndTimeStr();
 				case DEADLINE:
 					return "by "+ task.getEndDate()+"/"
 					+ task.getEndMonth()+"/"
 					+ task.getEndYear()+" "
-					+ task.getEndTime();
+					+ task.getEndTimeStr();
 				case RECURRING:
 					break;
 				default:
@@ -85,9 +85,16 @@ public class ToDoListTableModel extends AbstractTableModel{
 			}
 			
 			
-		case 3:
-			return "nil";
-			
+		case 3: {
+			String col4 = "";
+			if (!task.getTaskPerson().isEmpty()) {
+				col4 = col4.concat("with ").concat(task.getTaskPerson().concat(" "));
+			}
+			if (!task.getTaskVenue().isEmpty()) {
+				col4 = col4.concat("@").concat(task.getTaskVenue());
+			}
+			return col4;
+		}
 		case 4:
 			return task.getTaskStatus();
 			

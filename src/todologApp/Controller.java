@@ -68,7 +68,6 @@ public class Controller {
 			_feedback = command.execute();
 		} catch (Exception e) {
 			_feedback = e.getMessage();
-			e.printStackTrace();
 		}
 		_textDisplay = createNewDisplay();
 	}

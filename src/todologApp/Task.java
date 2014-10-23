@@ -1,6 +1,9 @@
 package todologApp;
 
 import org.joda.time.DateTime;
+import org.joda.time.LocalTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
 public class Task {
@@ -29,26 +32,32 @@ public class Task {
 	}
 
 	
-	public Task(TaskType floating, String name, boolean status) {
+	public Task(TaskType floating, String name, boolean status, String person, String venue) {
 		_taskType = floating;
 		_taskName = name;
 		_taskStatus = status;
+		_taskPerson = person;
+		_taskVenue = venue;
 	}
 
-	public Task(TaskType deadline, String name, DateTime end, boolean status) {
+	public Task(TaskType deadline, String name, DateTime end, boolean status, String person, String venue) {
 		_taskType = deadline;
 		_taskName = name;
 		_taskEnd = end;
 		_taskStatus = status;
+		_taskPerson = person;
+		_taskVenue = venue;
 	}
 
 	public Task(TaskType timed, String name, DateTime start, DateTime end,
-			boolean status) {
+			boolean status, String person, String venue) {
 		_taskType = timed;
 		_taskName = name;
 		_taskStart = start;
 		_taskEnd = end;
 		_taskStatus = status;
+		_taskPerson = person;
+		_taskVenue = venue;
 	}
 
 	public void setTaskName(String name) {
@@ -187,5 +196,15 @@ public class Task {
 	// for sorting in CommandAdd
 	public DateTime getEndDateTime() {
 		return _taskEnd;
+	}
+
+
+	public String getStartTimeStr() {
+		LocalTime time = new LocalTime(getStartTime()/100,getStartTime()%100);
+		return time.toString("HH:mm");
+	}
+	public String getEndTimeStr() {
+		LocalTime time = new LocalTime(getEndTime()/100,getEndTime()%100);
+		return time.toString("HH:mm");
 	}
 }
