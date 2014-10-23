@@ -575,11 +575,12 @@ public class Parser {
 						month = tomorrow.monthOfYear().get();
 						day = tomorrow.dayOfMonth().get();
 					} else {
-						int nextDayDistance = dayOfWeek - today.dayOfWeek().get();
-						if (nextDayDistance < 0) {
+						DateTime start = parseTaskStart(parameter);
+						int nextDayDistance = dayOfWeek - start.dayOfWeek().get();
+						while (nextDayDistance < 0) {
 							nextDayDistance+=7;
 						}
-						DateTime nextDay = today.plusDays(nextDayDistance);
+						DateTime nextDay = start.plusDays(nextDayDistance);
 						year = nextDay.year().get();
 						month = nextDay.monthOfYear().get();
 						day = nextDay.dayOfMonth().get();
