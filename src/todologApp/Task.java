@@ -1,5 +1,7 @@
 package todologApp;
 
+import org.joda.time.DateTime;
+
 public class Task {
 	
 	//MESSAGE
@@ -13,12 +15,8 @@ public class Task {
 	private String _taskVenue;
 	private int _taskStartTime;
 	private int _taskEndTime;
-	private int _taskStartDate;
-	private int _taskStartMonth;
-	private int _taskStartYear;
-	private int _taskEndDate;
-	private int _taskEndMonth;
-	private int _taskEndYear;
+	private DateTime _taskStart;
+	private DateTime _taskEnd;
 	
 	private boolean _taskStatus;
 	
@@ -27,16 +25,10 @@ public class Task {
 		_taskType = Parser.parseTaskType(parameter);
 		_taskStartDay = Parser.parseTaskStartDay(parameter);
 		_taskEndDay = Parser.parseTaskEndDay(parameter);
-		_taskStartTime = Parser.parseTaskStartTime(parameter);
-		_taskEndTime = Parser.parseTaskEndTime(parameter);
-		_taskStartDate = Parser.parseTaskStartDate(parameter);
-		_taskStartMonth = Parser.parseTaskStartMonth(parameter);
-		_taskStartYear = Parser.parseTaskStartYear (parameter);
-		_taskEndDate = Parser.parseTaskEndDate(parameter);
-		_taskEndMonth = Parser.parseTaskEndMonth(parameter);
-		_taskEndYear = Parser.parseTaskEndYear(parameter);
 		_taskPerson = Parser.parseTaskPerson(parameter);
 		_taskVenue = Parser.parseTaskVenue(parameter);
+		_taskStart = Parser.parseTaskStart(parameter);
+		_taskEnd = Parser.parseTaskEnd(parameter);
 	}
 
 	
@@ -88,35 +80,37 @@ public class Task {
 	}
 
 	public int getStartTime() {
-		return _taskStartTime;
+		return _taskStart.hourOfDay().get()*100
+				+ _taskStart.minuteOfHour().get();
 	}
 
 	public int getEndTime() {
-		return _taskEndTime;
+		return _taskEnd.hourOfDay().get()*100
+				+ _taskEnd.minuteOfHour().get();
 	}
 	
 	public int getStartDate() {
-		return _taskStartDate;
+		return _taskStart.dayOfMonth().get();
 	}
 	
 	public int getStartMonth() {
-		return _taskStartMonth;
+		return _taskStart.monthOfYear().get();
 	}
 	
 	public int getStartYear() {
-		return _taskStartYear;
+		return _taskStart.year().get();
 	}
 	
 	public int getEndDate() {
-		return _taskEndDate;
+		return _taskEnd.dayOfMonth().get();
 	}
 	
 	public int getEndMonth() {
-		return _taskEndMonth;
+		return _taskEnd.monthOfYear().get();
 	}
 	
 	public int getEndYear() {
-		return _taskEndYear;
+		return _taskEnd.monthOfYear().get();
 	}
 	
 	public String getTaskVenue() {
@@ -145,27 +139,51 @@ public class Task {
 		
 	}
 
-	public String setStartDay(String _toBeEdited) {
-		return Parser.parseTaskStartDay(_toBeEdited);
+	public void setStartDay(String _toBeEdited) throws Exception{
+		int year = getStartYear();
+		int month = getStartMonth();
+		int day = Parser.parseTaskStartDate(_toBeEdited);
+		int time = getStartTime();
+		int hour = time/100;
+		int min = time%100;
+		_taskStart = new DateTime(year,month,day,hour,min);
 	}
 	
-	public String setEndDay(String _toBeEdited) {
-		return Parser.parseTaskEndDay(_toBeEdited);
+	public void setEndDay(String _toBeEdited) throws Exception {
+		int year = getEndYear();
+		int month = getEndMonth();
+		int day = Parser.parseTaskEndDate(_toBeEdited);
+		int time = getEndTime();
+		int hour = time/100;
+		int min = time%100;
+		_taskEnd = new DateTime(year,month,day,hour,min);
 	}
 	
-	public int setStartTime(String _toBeEdited) throws Exception {
-		return Parser.parseTaskStartTime(_toBeEdited);
+	public void setStartTime(String _toBeEdited) throws Exception {
+		int year = getStartYear();
+		int month = getStartMonth();
+		int day = getStartDate();
+		int time = Parser.parseTaskStartTime(_toBeEdited);
+		int hour = time/100;
+		int min = time%100;
+		_taskStart = new DateTime(year,month,day,hour,min);
 	}
 	
-	public int setEndTime(String _toBeEdited) throws Exception {
-		return Parser.parseTaskEndTime(_toBeEdited);
+	public void setEndTime(String _toBeEdited) throws Exception {
+		int year = getEndYear();
+		int month = getEndMonth();
+		int day = getEndDate();
+		int time = Parser.parseTaskEndTime(_toBeEdited);
+		int hour = time/100;
+		int min = time%100;
+		_taskStart = new DateTime(year,month,day,hour,min);
 	}
 	
-	public String setVenue(String _toBeEdited){
-		return Parser.parseTaskVenue(_toBeEdited);
+	public void setVenue(String _toBeEdited){
+		_taskVenue = Parser.parseTaskVenue(_toBeEdited);
 	}
 	
-	public String setPerson(String _toBeEdited){
-		return Parser.parseTaskPerson(_toBeEdited);
+	public void setPerson(String _toBeEdited){
+		_taskPerson = Parser.parseTaskPerson(_toBeEdited);
 	}
 }

@@ -1,5 +1,7 @@
 package todologApp;
 
+import org.joda.time.DateTime;
+
 public class Parser {
 
 	private static String INVALID_MESSAGE = "Invalid Input!";
@@ -75,9 +77,19 @@ public class Parser {
 				throw new Exception(HELP_TEXT_DELETE);
 			}
 			restOfTheString = restOfTheString.trim();
-			int index = Integer.valueOf(restOfTheString);
-			CommandDelete command = new CommandDelete(index);
-			return command;
+			if (isInteger(restOfTheString)) {
+				int index = Integer.valueOf(restOfTheString);
+				CommandDelete command = new CommandDelete(index);
+				return command;
+			} else {
+				if (restOfTheString.equalsIgnoreCase("all")) {
+					CommandDeleteAll command = new CommandDeleteAll();
+					return command;
+				} else {
+					throw new Exception(HELP_TEXT_DELETE);
+				}
+			}
+			
 		} else if (firstWord.equalsIgnoreCase("done")) {
 			String restOfTheString = getTheRestOfTheString(userCommand);
 			if (restOfTheString == null) {
@@ -614,5 +626,25 @@ public class Parser {
 			}
 			taskVenue = taskVenue.trim();
 		}
+	}
+
+	public static DateTime parseTaskStart(String parameter) throws Exception {
+		int year = parseTaskStartYear(parameter);
+		int month = parseTaskStartMonth(parameter);
+		int day = parseTaskStartDate(parameter);
+		int time = parseTaskStartTime(parameter);
+		int hour = time/100;
+		int min = time%100;
+		return new DateTime(year,month,day,hour,min);
+	}
+
+	public static DateTime parseTaskEnd(String parameter) throws Exception {
+		int year = parseTaskEndYear(parameter);
+		int month = parseTaskEndMonth(parameter);
+		int day = parseTaskEndDate(parameter);
+		int time = parseTaskEndTime(parameter);
+		int hour = time/100;
+		int min = time%100;
+		return new DateTime(year,month,day,hour,min);
 	}
 }
