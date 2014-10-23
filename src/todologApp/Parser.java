@@ -60,6 +60,8 @@ public class Parser {
 
 	private static final String HELP_TEXT_EDIT = "To edit task name, enter:\n - edit [task number] \"[new name]\"";
 
+	private static final String HELP_TEXT_SEARCH = "To search task name, enter:\n - search [task name] ";
+	
 	private static final int TODAY = 0;
 	private static final int TOMORROW = -1;
 
@@ -126,9 +128,14 @@ public class Parser {
 			}
 			CommandEdit command = new CommandEdit(index, restOfTheString, editType);
 			return command;
-			//		} else if (firstWord.equalsIgnoreCase("search")) {
-			//			CommandSearch command = new CommandSearch(restOfTheString);
-			//			return command;
+		} else if (firstWord.equalsIgnoreCase("search")) {
+			String restOfTheString = getTheRestOfTheString(userCommand);
+			if (restOfTheString == null) {
+				throw new Exception(HELP_TEXT_SEARCH);
+			}
+			restOfTheString = restOfTheString.trim();
+			CommandSearch command = new CommandSearch(restOfTheString);
+			return command;
 		} else {
 			throw new Exception("Invalid command.\n"+FEEDBACK_TYPE);
 		}

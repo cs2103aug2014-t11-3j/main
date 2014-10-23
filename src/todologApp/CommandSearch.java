@@ -2,7 +2,7 @@ package todologApp;
 
 import java.util.LinkedList;
 
-public class CommandSearch {
+public class CommandSearch implements Command {
 	private static String _searchKey;
 	private static Storage _storage;
 
@@ -28,5 +28,11 @@ public class CommandSearch {
 			}
 		}
 		return searchList;
+	}
+
+	@Override
+	public String undo() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
