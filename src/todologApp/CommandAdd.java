@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.util.LinkedList;
 
 public class CommandAdd implements Command {
-	private static Task _task;
-	private static DBStorage _storage;
+	private Task _task;
+	private DBStorage _storage;
 	public CommandAdd(Task task) {
 		_task = task;
 		}
@@ -58,14 +58,18 @@ public class CommandAdd implements Command {
 		String feedback;
 		_storage = Controller.getDBStorage();
 		LinkedList<Task> taskList = _storage.load();
-		taskList.remove(_task);
+		boolean isRemoved = taskList.remove(_task);
 		try {
 			_storage.store(taskList);
 		} catch (IOException e) {
 			feedback = "Cannot store the list to ToDoLog";
 			return feedback;
 		}
-		feedback = "Undone the add comand";
+		if (isRemoved) {
+			feedback = "Undone adding "+ _task.getTaskName();
+		} else {
+			feedback = "Cannot undo adding "+ _task.getTaskName(); 
+		}
 		return feedback;
 
 	}
