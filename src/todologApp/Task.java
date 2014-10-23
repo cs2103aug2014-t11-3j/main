@@ -197,7 +197,10 @@ public class Task {
 	public DateTime getEndDateTime() {
 		return _taskEnd;
 	}
-
+	
+	public DateTime getStartDateTime() {
+		return _taskStart;
+	}
 
 	public String getStartTimeStr() {
 		LocalTime time = new LocalTime(getStartTime()/100,getStartTime()%100);
