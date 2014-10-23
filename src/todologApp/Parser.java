@@ -57,6 +57,7 @@ public class Parser {
 
 	private static final String HELP_TEXT_EDIT = "To edit task name, enter:\n - edit [task number] \"[new name]\"";
 
+	private static final String HELP_TEXT_SEARCH = "To search task name, enter:\n - search [task name]";
 
 	public static Command createCommand(String userCommand) throws Exception{
 		userCommand = userCommand.trim();
@@ -105,6 +106,9 @@ public class Parser {
 			return command;
 		} else if (firstWord.equalsIgnoreCase("search")) {
 			String restOfTheString = getTheRestOfTheString(userCommand);
+			if (restOfTheString == null) {
+				throw new Exception(HELP_TEXT_SEARCH);
+			}
 			CommandSearch command = new CommandSearch(restOfTheString);
 			return command;
 		} else {
