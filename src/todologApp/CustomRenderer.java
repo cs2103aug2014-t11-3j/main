@@ -8,6 +8,13 @@ import java.awt.Component;
 import javax.swing.*;
 
 public class CustomRenderer extends DefaultTableCellRenderer {
+	
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public Component getTableCellRendererComponent(JTable table, Object value,
 			boolean isSelected, boolean hasFocus, int row, int column) {
 		Component cellComponent = super.getTableCellRendererComponent(table,
