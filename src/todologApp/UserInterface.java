@@ -105,7 +105,6 @@ public class UserInterface extends JFrame { /**
 	
 	private void createToDoListTable(Container mainPanel){                        
 		JPanel toDoListHolder = new JPanel(new GridBagLayout());
-		toDoListHolder.setBackground(Color.WHITE);
 		GridBagConstraints panelParameters;      //panelParameters are values for how the top panel will fit into the main frame of ToDoLog
 		GridBagConstraints scrollPaneParameters; //scrollPaneParameters are values for how the scrollPane will be placed within the top panel,toDoListHolder
 		toDoListHolder.setPreferredSize(new Dimension(650, 225));
@@ -121,6 +120,11 @@ public class UserInterface extends JFrame { /**
 		
 		JScrollPane toDoList = new JScrollPane(toDoListTable)
 		{
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			protected void paintComponent(Graphics g)
 		    {
 		        g.setColor( getBackground() );
@@ -139,10 +143,10 @@ public class UserInterface extends JFrame { /**
 		((DefaultTableCellRenderer)toDoListTable.getDefaultRenderer(Object.class)).setOpaque(false);
 	
 		toDoList.getViewport().setOpaque(false);
-		toDoList.getViewport().setBackground(new Color(255,255,255,170));
-		Component[] comps = toDoList.getComponents();
+		toDoList.getViewport().setBackground(new Color(255,255,255,220));
 		
 		toDoListTable.setShowGrid(false);
+		toDoListTable.setIntercellSpacing(new Dimension(0, 0));
 //		BufferedImage img;
 //		try {
 //			img = ImageIO.read(new File("src/black-white.jpg"));
@@ -347,6 +351,7 @@ public class UserInterface extends JFrame { /**
 		toDoListTable.setModel(toDoListTableModel);
 		adjustTableColumns(toDoListTable);
 		dynamicHelpText.setText(Controller.getFeedback());
+		changeTableColors(toDoListTable);
 		// create more here
 	}
 	
@@ -444,19 +449,19 @@ public class UserInterface extends JFrame { /**
 			
 			switch(columnHeaders){
 			case 0:
-				tableColumn.setPreferredWidth(10);
+				tableColumn.setPreferredWidth(20);
 				break;
 			case 1:
-				tableColumn.setPreferredWidth(70);
+				tableColumn.setPreferredWidth(100);
 				break;
 			case 2:
-				tableColumn.setPreferredWidth(190);
+				tableColumn.setPreferredWidth(180);
 				break;
 			case 3:
 				tableColumn.setPreferredWidth(70);
 				break;
 			case 4:
-				tableColumn.setPreferredWidth(30);
+				tableColumn.setPreferredWidth(20);
 				break;
 			case 5:
 				tableColumn.setPreferredWidth(30);
