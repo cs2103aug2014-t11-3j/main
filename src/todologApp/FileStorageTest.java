@@ -86,7 +86,7 @@ public class FileStorageTest {
 		    sb.append(c);
 		}
 		String name = sb.toString();
-		return new Task(TaskType.FLOATING, name, false);
+		return new Task(TaskType.FLOATING, name, false, "","");
 	}
 	private Task createRandomTimedTask() {
 		//TODO
@@ -98,7 +98,7 @@ public class FileStorageTest {
 		    sb.append(c);
 		}
 		String name = sb.toString();
-		return new Task(TaskType.TIMED, name, false);
+		return new Task(TaskType.TIMED, name, false, "","");
 	}
 	private Task createRandomDeadlineTask() {
 		//TODO
@@ -110,6 +110,6 @@ public class FileStorageTest {
 		    sb.append(c);
 		}
 		String name = sb.toString();
-		return new Task(TaskType.DEADLINE, name, false);
+		return new Task(TaskType.DEADLINE, name, false, "", "");
 	}
 }

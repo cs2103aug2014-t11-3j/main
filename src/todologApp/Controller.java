@@ -53,7 +53,7 @@ public class Controller {
 					break;
 				default:
 					display += "invalid"+'\n';
-					break;		
+					break;
 			}
 			
 		}
@@ -78,7 +78,7 @@ public class Controller {
 
 	public static void init() {
 		_dbStorage = new DBStorage();
-		//_textDisplay = createNewDisplay();
+		_textDisplay = createNewDisplay();
 		_history = new History();
 		_feedback = FEEDBACK_START;
 	}
