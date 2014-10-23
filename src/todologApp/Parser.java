@@ -103,9 +103,10 @@ public class Parser {
 			restOfTheString = getTheRestOfTheString(restOfTheString);
 			CommandEdit command = new CommandEdit(index, restOfTheString, editType);
 			return command;
-			//		} else if (firstWord.equalsIgnoreCase("search")) {
-			//			CommandSearch command = new CommandSearch(restOfTheString);
-			//			return command;
+		} else if (firstWord.equalsIgnoreCase("search")) {
+			String restOfTheString = getTheRestOfTheString(userCommand);
+			CommandSearch command = new CommandSearch(restOfTheString);
+			return command;
 		} else {
 			throw new Exception("Invalid command.\n"+FEEDBACK_TYPE);
 		}
