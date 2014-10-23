@@ -1,5 +1,8 @@
 package todologApp;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeConstants;
+
 public class Parser {
 
 	private static String INVALID_MESSAGE = "Invalid Input!";
@@ -57,7 +60,9 @@ public class Parser {
 
 	private static final String HELP_TEXT_EDIT = "To edit task name, enter:\n - edit [task number] \"[new name]\"";
 
-	private static final String HELP_TEXT_SEARCH = "To search task name, enter:\n - search [task name]";
+	private static final int TODAY = 0;
+	private static final int TOMORROW = -1;
+
 
 	public static Command createCommand(String userCommand) throws Exception{
 		userCommand = userCommand.trim();
@@ -76,9 +81,19 @@ public class Parser {
 				throw new Exception(HELP_TEXT_DELETE);
 			}
 			restOfTheString = restOfTheString.trim();
-			int index = Integer.valueOf(restOfTheString);
-			CommandDelete command = new CommandDelete(index);
-			return command;
+			if (isInteger(restOfTheString)) {
+				int index = Integer.valueOf(restOfTheString);
+				CommandDelete command = new CommandDelete(index);
+				return command;
+			} else {
+				if (restOfTheString.equalsIgnoreCase("all")) {
+					CommandDeleteAll command = new CommandDeleteAll();
+					return command;
+				} else {
+					throw new Exception(HELP_TEXT_DELETE);
+				}
+			}
+			
 		} else if (firstWord.equalsIgnoreCase("done")) {
 			String restOfTheString = getTheRestOfTheString(userCommand);
 			if (restOfTheString == null) {
@@ -104,13 +119,9 @@ public class Parser {
 			restOfTheString = getTheRestOfTheString(restOfTheString);
 			CommandEdit command = new CommandEdit(index, restOfTheString, editType);
 			return command;
-		} else if (firstWord.equalsIgnoreCase("search")) {
-			String restOfTheString = getTheRestOfTheString(userCommand);
-			if (restOfTheString == null) {
-				throw new Exception(HELP_TEXT_SEARCH);
-			}
-			CommandSearch command = new CommandSearch(restOfTheString);
-			return command;
+			//		} else if (firstWord.equalsIgnoreCase("search")) {
+			//			CommandSearch command = new CommandSearch(restOfTheString);
+			//			return command;
 		} else {
 			throw new Exception("Invalid command.\n"+FEEDBACK_TYPE);
 		}
@@ -131,13 +142,13 @@ public class Parser {
 		String firstWord = result[0];
 		return firstWord;
 	}
-
+	
 	private static String[] generateArray(String parameter) {
 		parameter = parameter.trim();
 		String[] array = parameter.split(SINGLE_SPACE);
 		return array;
 	}
-
+	
 	public static int parseTaskEndTime(String parameter) throws Exception {
 		String [] messageArray = generateArray(parameter);
 
@@ -207,226 +218,73 @@ public class Parser {
 		return 0000;
 	}
 
-	public static String parseTaskEndDay(String parameter) {
-		String [] messageArray = generateArray(parameter);
-
-		for (int i = 0; i+1<=messageArray.length; i++) {
-			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING) && !isInteger(messageArray[i+1])){
-				String endDay = parseDay(messageArray[i+1]);
-				return endDay;
-			} else {
-				if (messageArray[i].equalsIgnoreCase(KEYWORD_DEADLINE)){
-					String endDay = parseDay(messageArray[i+1]);
-					return endDay;
-				}
-			}
-		}	
-		return parseTaskStartDay(parameter);
-	}
-
-	public static String parseTaskStartDay(String parameter) {
-		String [] messageArray = generateArray(parameter);
-
-		for (int i = 0; i+1<=messageArray.length-1; i++) {
-			if ( (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) 
-					|| messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING_2))
-					&& !isInteger(messageArray[i+1])){
-				String startDay = parseDay(messageArray[i+1]);
-				return startDay;
-			} else {
-				if (messageArray[i].equalsIgnoreCase(KEYWORD_DEADLINE)){
-					return DAY_KEYWORD_TODAY;
-				}
-			}
-		}
-		return DAY_KEYWORD_TODAY;
-	}
-
-
-	public static int parseTaskStartDate(String parameter) throws Exception {
-		String [] messageArray = generateArray(parameter);
-		int _date = 1;
-		for (int i = 0; i+1<=messageArray.length-1; i++) {
-			try {
-				if ((messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) 
-						|| messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING_2))
-						&& isInteger(messageArray[i+1])) {
-					_date = Integer.parseInt(messageArray[i+1]);
-					_date = _date/10000;
-					if (parseTaskStartMonth(parameter) == 2 && _date > 0 && _date <= 28) {
-						return _date;
-					} else if (parseTaskStartMonth(parameter) == 4 &&  _date > 0 && _date <= 30){
-						return _date;
-					}  else if (parseTaskStartMonth(parameter) == 6 && _date > 0 && _date <= 30){
-						return _date;
-					} else if (parseTaskStartMonth(parameter) == 9 && _date > 0 && _date <= 30){
-						return _date;
-					} else if (parseTaskStartMonth(parameter) == 11 && _date > 0 && _date <= 30){
-						return _date;
-					} else if (_date > 0 && _date <= 31){
-						return _date;
-					} else {
-						throw new Exception("Invalid Date Format");
-					}
-				} 
-			}	catch (NumberFormatException nfe) {
-				throw new Exception("Invalid Date Format");
-			}
-		}
-		return _date;
-
-	}
-
-	public static int parseTaskStartMonth(String parameter) throws Exception {
-		String [] messageArray = generateArray(parameter);
-		int _month = 1;
-		for (int i = 0; i+1<=messageArray.length-1; i++) {
-			try {
-				if ((messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) 
-						|| messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING_2)) 
-						&& isInteger(messageArray[i+1])) {
-					_month = Integer.parseInt(messageArray[i+1]);
-					_month = _month/100;
-					_month = _month % 100;
-					if (_month > 0 && _month <= 12) {
-						return _month;
-					} else {
-						throw new Exception("Invalid Date Format");
-					}
-				} 
-			} catch (NumberFormatException nfe) {
-				throw new Exception("Invalid Date Format");
-			}
-		}
-		return _month;
-	}
-
-	public static int parseTaskStartYear(String parameter) throws Exception {
-		String [] messageArray = generateArray(parameter);
+	public static int parseYear(String dateInString) throws Exception {
 		int _year = 14;
-		for (int i = 0; i+1<=messageArray.length-1; i++) {
-			try {
-				if ((messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) 
-						|| messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING_2))
-						&& isInteger(messageArray[i+1])){
-					_year = Integer.parseInt(messageArray[i+1]);
-					_year = _year % 100;
-					if (_year >= 14) {
-						return _year;
-					} else {
-						throw new Exception("Invalid Date Format");
-					}
-				} 
-			} catch (NumberFormatException nfe) {
-				throw new Exception("Invalid Date Format");
-			}
-
+		_year = Integer.parseInt(dateInString);
+		_year = _year % 100 + 2000 ;
+		if (_year >= 2014) {
+			return _year;
+		} else {
+			throw new Exception("You added a day in the past!");
 		}
-		return _year;
 	}
-
-	public static int parseTaskEndDate(String parameter) throws Exception {
-		String [] messageArray = generateArray(parameter);
-		int _date = 1;
-		for (int i = 0; i+1<=messageArray.length-1; i++) {
-			try {
-				if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING) && isInteger(messageArray[i+1])){
-					_date = Integer.parseInt(messageArray[i+1]);
-					_date = _date/10000;
-					if (parseTaskEndMonth(parameter) == 2 && _date > 0 && _date <= 28) {
-						return _date;
-					} else if (parseTaskStartMonth(parameter) == 4 &&  _date > 0 && _date <= 30){
-						return _date;
-					}  else if (parseTaskStartMonth(parameter) == 6 && _date > 0 && _date <= 30){
-						return _date;
-					} else if (parseTaskStartMonth(parameter) == 9 && _date > 0 && _date <= 30){
-						return _date;
-					} else if (parseTaskStartMonth(parameter) == 11 && _date > 0 && _date <= 30){
-						return _date;
-					} else if (_date > 0 && _date <= 31){
-						return _date;
-					} else {
-						throw new Exception("Invalid Date Format");
-					}
-				} 
-			} catch (NumberFormatException nfe) {
-				throw new Exception("Invalid Date Format");
+	public static int parseDayOfMonth(String dateInString) throws Exception {
+		int month = parseMonth(dateInString);
+		int date = Integer.parseInt(dateInString);
+		date = date/10000;
+		if (month == 2 && date > 0 && date <= 28) {
+			return date;
+		} else if (month == 4 || month == 6 || month == 9 || month == 11) {
+			if (date > 0 && date <= 30){
+				return date;
 			}
+		} else if (date > 0 &&date <= 31){
+			return date;
+		} else {
+			throw new Exception("Invalid Date Format");
 		}
-
-		return _date;
+		return date;
+		
 	}
-
-	public static int parseTaskEndMonth(String parameter) throws Exception {
-		String [] messageArray = generateArray(parameter);
+	
+	public static int parseMonth(String dateInString) throws Exception {
 		int _month = 1;
-		for (int i = 0; i+1<=messageArray.length-1; i++) {
-			try {
-				if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING) && isInteger(messageArray[i+1])){
-					_month = Integer.parseInt(messageArray[i+1]);
-					_month = _month/100;
-					_month = _month % 100;
-					if (_month > 0 && _month <= 12) {
-						return _month;
-					} else {
-						throw new Exception("Invalid Date Format");
-					}
-				} 
-			} catch (NumberFormatException nfe) {
-				throw new Exception("Invalid Date Format");
-			} 
+		_month = Integer.parseInt(dateInString);
+		_month = _month/100;
+		_month = _month % 100;
+		if (_month > 0 && _month <= 12) {
+			return _month;
+		} else {
+			throw new Exception("Invalid Date Format");
 		}
 
-		return _month;
 	}
 
-	public static int parseTaskEndYear(String parameter) throws Exception {
-		String [] messageArray = generateArray(parameter);
-		int _year = 14;
-		for (int i = 0; i+1<=messageArray.length-1; i++) {
-			try {
-				if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING) && isInteger(messageArray[i+1])){
-					_year = Integer.parseInt(messageArray[i+1]);
-					_year = _year % 100;
-					if (_year >= 14) {
-						return _year;
-					} else {
-						throw new Exception("Invalid Date Format");
-					}
-				} 
-			} catch (NumberFormatException nfe) {
-				throw new Exception("Invalid Date Format");
-			}
-		}
-
-		return _year;
-	}
-
-	public static String parseDay(String parameter) {
+	public static int parseDayOfWeek(String parameter) {
 		String day = parameter;
 
 		if (day.equalsIgnoreCase(DAY_KEYWORD_TODAY) || day.equalsIgnoreCase(DAY_KEYWORD_TDY)) {
-			return DAY_KEYWORD_TODAY;
+			return TODAY;
 		} else if (day.equalsIgnoreCase(DAY_KEYWORD_TOMORROW) || day.equalsIgnoreCase(DAY_KEYWORD_TMR)) {
-			return DAY_KEYWORD_TOMORROW;
+			return TOMORROW;
 		} else if (day.equalsIgnoreCase(DAY_KEYWORD_MONDAY) || day.equalsIgnoreCase(DAY_KEYWORD_MON)) {
-			return DAY_KEYWORD_MONDAY;
+			return DateTimeConstants.MONDAY;
 		} else if (day.equalsIgnoreCase(DAY_KEYWORD_TUESDAY) || day.equalsIgnoreCase(DAY_KEYWORD_TUE) || 
 				day.equalsIgnoreCase(DAY_KEYWORD_TUES)) {
-			return DAY_KEYWORD_TUESDAY;
+			return DateTimeConstants.TUESDAY;
 		} else if (day.equalsIgnoreCase(DAY_KEYWORD_WEDNESDAY) || day.equalsIgnoreCase(DAY_KEYWORD_WED)) {
-			return DAY_KEYWORD_WEDNESDAY;
+			return DateTimeConstants.WEDNESDAY;
 		} else if (day.equalsIgnoreCase(DAY_KEYWORD_THURSDAY) || day.equalsIgnoreCase(DAY_KEYWORD_THURS) || 
 				day.equalsIgnoreCase(DAY_KEYWORD_THUR) || day.equalsIgnoreCase(DAY_KEYWORD_THU)) {
-			return DAY_KEYWORD_THURSDAY;
+			return DateTimeConstants.THURSDAY;
 		} else if (day.equalsIgnoreCase(DAY_KEYWORD_FRIDAY) || day.equalsIgnoreCase(DAY_KEYWORD_FRI)) {
-			return DAY_KEYWORD_FRIDAY;
+			return DateTimeConstants.FRIDAY;
 		} else if (day.equalsIgnoreCase(DAY_KEYWORD_SATURDAY) || day.equalsIgnoreCase(DAY_KEYWORD_SAT)) {
-			return DAY_KEYWORD_SATURDAY;
+			return DateTimeConstants.SATURDAY;
 		} else if (day.equalsIgnoreCase(DAY_KEYWORD_SUNDAY) || day.equalsIgnoreCase(DAY_KEYWORD_SUN)) {
-			return DAY_KEYWORD_SUNDAY;
+			return DateTimeConstants.SUNDAY;
 		} else {
-			return DAY_KEYWORD_TODAY;
+			return TODAY;
 		}
 	}
 
@@ -582,42 +440,150 @@ public class Parser {
 		}
 		return taskVenue.trim();
 	}
+	
+	public static void editTask (String parameter) {
+		String [] messageArray = generateArray(parameter);
+		int taskIndex = Integer.valueOf(messageArray[0]);
+		
+		if (messageArray[1].equalsIgnoreCase("start") 
+				&& messageArray[2].equalsIgnoreCase("time")) {
+			int startTime = Integer.valueOf(messageArray[3]);
+		} else if (messageArray[1].equalsIgnoreCase("end") 
+				&& messageArray[2].equalsIgnoreCase("time")) {
+			int endTime = Integer.valueOf(messageArray[3]);
+		} else if (messageArray[1].equalsIgnoreCase("start") 
+				&& messageArray[2].equalsIgnoreCase("day")) {
+			
+		} else if (messageArray[1].equalsIgnoreCase("end") 
+				&& messageArray[2].equalsIgnoreCase("day")) {
+			
+		} else if (messageArray[1].equalsIgnoreCase("task") 
+				&& messageArray[2].equalsIgnoreCase("name")) {
+			String taskName = EMPTY_STRING;
+			for (int i=3; i<= messageArray.length-1; i++) {
+				taskName = messageArray[i] + SINGLE_SPACE;
+			}
+			taskName = taskName.trim();
+		} else if (messageArray[1].equalsIgnoreCase("person")) {
+			String taskPerson = EMPTY_STRING;
+			for (int i=3; i<= messageArray.length-1; i++) {
+				taskPerson = messageArray[i] + SINGLE_SPACE;
+			}
+			taskPerson = taskPerson.trim();
+		} else if (messageArray[1].equalsIgnoreCase("venue")) {
+			String taskVenue = EMPTY_STRING;
+			for (int i=3; i<= messageArray.length-1; i++) {
+				taskVenue = messageArray[i] + SINGLE_SPACE;
+			}
+			taskVenue = taskVenue.trim();
+		}
+	}
 
-	//	public static void editTask (String parameter) {
-	//		String [] messageArray = generateArray(parameter);
-	//		int taskIndex = Integer.valueOf(messageArray[0]);
-	//		
-	//		if (messageArray[1].equalsIgnoreCase("start") 
-	//				&& messageArray[2].equalsIgnoreCase("time")) {
-	//			int startTime = Integer.valueOf(messageArray[3]);
-	//		} else if (messageArray[1].equalsIgnoreCase("end") 
-	//				&& messageArray[2].equalsIgnoreCase("time")) {
-	//			int endTime = Integer.valueOf(messageArray[3]);
-	//		} else if (messageArray[1].equalsIgnoreCase("start") 
-	//				&& messageArray[2].equalsIgnoreCase("day")) {
-	//			
-	//		} else if (messageArray[1].equalsIgnoreCase("end") 
-	//				&& messageArray[2].equalsIgnoreCase("day")) {
-	//			
-	//		} else if (messageArray[1].equalsIgnoreCase("task") 
-	//				&& messageArray[2].equalsIgnoreCase("name")) {
-	//			String taskName = EMPTY_STRING;
-	//			for (int i=3; i<= messageArray.length-1; i++) {
-	//				taskName = messageArray[i] + SINGLE_SPACE;
-	//			}
-	//			taskName = taskName.trim();
-	//		} else if (messageArray[1].equalsIgnoreCase("person")) {
-	//			String taskPerson = EMPTY_STRING;
-	//			for (int i=3; i<= messageArray.length-1; i++) {
-	//				taskPerson = messageArray[i] + SINGLE_SPACE;
-	//			}
-	//			taskPerson = taskPerson.trim();
-	//		} else if (messageArray[1].equalsIgnoreCase("venue")) {
-	//			String taskVenue = EMPTY_STRING;
-	//			for (int i=3; i<= messageArray.length-1; i++) {
-	//				taskVenue = messageArray[i] + SINGLE_SPACE;
-	//			}
-	//			taskVenue = taskVenue.trim();
-	//		}
-	//	}
+	public static DateTime parseTaskStart(String parameter) throws Exception {
+		String[] messageArray = generateArray(parameter);
+		int year = 1, month = 1, day = 1;
+		boolean hasKeyword = false;
+		for (int i = 0; i+1<=messageArray.length-1; i++) {
+			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) 
+			|| messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING_2)) {
+				hasKeyword = true;
+				if (isInteger(messageArray[i+1])) {
+					year = parseYear(messageArray[i+1]);
+					month = parseMonth(messageArray[i+1]);
+					day = parseDayOfMonth(messageArray[i+1]);	
+				} else {
+					int dayOfWeek = parseDayOfWeek(messageArray[i+1]);
+					DateTime today = new DateTime();
+					if (dayOfWeek == TODAY) {
+						year = today.year().get();
+						month = today.monthOfYear().get();
+						day = today.dayOfMonth().get();
+					} else if (dayOfWeek == TOMORROW) {
+						DateTime tomorrow = today.plusDays(1);
+						year = tomorrow.year().get();
+						month = tomorrow.monthOfYear().get();
+						day = tomorrow.dayOfMonth().get();
+					} else {
+						int nextDayDistance = dayOfWeek - today.dayOfWeek().get();
+						if (nextDayDistance < 0) {
+							nextDayDistance+=7;
+						}
+						DateTime nextDay = today.plusDays(nextDayDistance);
+						year = nextDay.year().get();
+						month = nextDay.monthOfYear().get();
+						day = nextDay.dayOfMonth().get();
+					}
+				}
+			}
+			if (messageArray[i].equalsIgnoreCase(KEYWORD_DEADLINE)) {
+				hasKeyword = true;
+				DateTime today = new DateTime();
+				year = today.year().get();
+				month = today.monthOfYear().get();
+				day = today.dayOfMonth().get();
+			}
+		}
+		if (!hasKeyword) {
+			hasKeyword = true;
+			DateTime today = new DateTime();
+			year = today.year().get();
+			month = today.monthOfYear().get();
+			day = today.dayOfMonth().get();
+		}
+		int time = parseTaskStartTime(parameter);
+		int hour = time/100;
+		int min = time%100;
+		return new DateTime(year,month,day,hour,min);
+	}
+
+	public static DateTime parseTaskEnd(String parameter) throws Exception {
+		String[] messageArray = generateArray(parameter);
+		int year = 1, month = 1, day = 1;
+		boolean hasKeyword = false;
+		for (int i = 0; i+1<=messageArray.length-1; i++) {
+			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING) 
+			|| messageArray[i].equalsIgnoreCase(KEYWORD_DEADLINE)) {
+				if (isInteger(messageArray[i+1])) {
+					year = parseYear(messageArray[i+1]);
+					month = parseMonth(messageArray[i+1]);
+					day = parseDayOfMonth(messageArray[i+1]);	
+				} else {
+					int dayOfWeek = parseDayOfWeek(parameter);
+					DateTime today = new DateTime();
+					if (dayOfWeek == TODAY) {
+						year = today.year().get();
+						month = today.monthOfYear().get();
+						day = today.dayOfMonth().get();
+					} else if (dayOfWeek == TOMORROW) {
+						DateTime tomorrow = today.plusDays(1);
+						year = tomorrow.year().get();
+						month = tomorrow.monthOfYear().get();
+						day = tomorrow.dayOfMonth().get();
+					} else {
+						int nextDayDistance = dayOfWeek - today.dayOfWeek().get();
+						if (nextDayDistance < 0) {
+							nextDayDistance+=7;
+						}
+						DateTime nextDay = today.plusDays(nextDayDistance);
+						year = nextDay.year().get();
+						month = nextDay.monthOfYear().get();
+						day = nextDay.dayOfMonth().get();
+					}
+				}
+			}
+		}
+		if (!hasKeyword) {
+			DateTime start = parseTaskStart(parameter);
+			year = start.year().get();
+			month = start.monthOfYear().get();
+			day = start.dayOfMonth().get();
+			int hour = 23;
+			int min = 59;
+			return new DateTime(year,month,day,hour,min);
+		}
+		int time = parseTaskEndTime(parameter);
+		int hour = time/100;
+		int min = time%100;
+		return new DateTime(year,month,day,hour,min);
+	}
 }
