@@ -30,7 +30,7 @@ public class UserInterface extends JFrame { /**
 	private static final int DYNAMIC_HELP_TEXT_PARAMETERS = 4;
 	private static final int LEGEND_PARAMETERS = 5;
 	private static final int TODOLIST_SCROLLPANE_PARAMETERS = 6;
-	private static final int BUTTON_PARAMETERS = 7;
+	//private static final int BUTTON_PARAMETERS = 7;
 	
 	private JTextField commandEntryTextField;
 	private JLayeredPane layerPane = new JLayeredPane();
@@ -116,6 +116,7 @@ public class UserInterface extends JFrame { /**
 		toDoListTable.setPreferredSize(new Dimension(650,225));
 		adjustTableColumns(toDoListTable);
 		changeTableColors(toDoListTable);
+		toDoListTable.getTableHeader().setResizingAllowed(false);
 		//updateToDoListTable(toDoListTable,toDoListItems,toDoListHeaders);
 		
 		JScrollPane toDoList = new JScrollPane(toDoListTable)
@@ -183,7 +184,7 @@ public class UserInterface extends JFrame { /**
 	private void createBottomPanel(Container mainPanel){
 		JPanel bottomPanel = new JPanel(new GridBagLayout());
 		bottomPanel.setBackground(Color.WHITE);
-		bottomPanel.setPreferredSize(new Dimension(500,100));
+		bottomPanel.setPreferredSize(new Dimension(650,100));
 		GridBagConstraints parameters;
 		
 		parameters = setParameters(BOTTOM_PANEL_PARAMETERS);
@@ -389,7 +390,7 @@ public class UserInterface extends JFrame { /**
 		Insets commandEntryTextFieldInsets = new Insets(10,25,5,25);
 		Insets dynamicHelpTextInsets = new Insets(10,25,20,20);
 		Insets legendInsets = new Insets(0,0,0,10);
-		Insets buttonInsets = new Insets(10,0,0,20);
+		//Insets buttonInsets = new Insets(10,0,0,20);
 		
 		if(panelParameters == TODOLIST_PARAMETERS){
 			parameters = new GridBagConstraints(0,0,3,3,0.1,0.0,GridBagConstraints.NORTHWEST,GridBagConstraints.BOTH,toDoListInsets,0,0);
@@ -398,8 +399,6 @@ public class UserInterface extends JFrame { /**
 			return parameters;
 		}
 		
-		
-		
 		else if(panelParameters == BOTTOM_PANEL_PARAMETERS){
 			parameters = new GridBagConstraints(0,3,3,1,0.0,0.3,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
 			
@@ -407,25 +406,25 @@ public class UserInterface extends JFrame { /**
 		}
 		
 		else if(panelParameters == COMMAND_ENTRY_PARAMETERS){
-			parameters = new GridBagConstraints(0,0,6,1,0.1,0.0,GridBagConstraints.NORTHWEST,GridBagConstraints.BOTH,commandEntryTextFieldInsets,0,0);
+			parameters = new GridBagConstraints(0,0,3,1,0.1,0.0,GridBagConstraints.NORTHWEST,GridBagConstraints.BOTH,commandEntryTextFieldInsets,0,0);
 			
 			return parameters;
 		}
 		
 		else if(panelParameters == DYNAMIC_HELP_TEXT_PARAMETERS){
-			parameters = new GridBagConstraints(0,1,3,1,0.0,0.1,GridBagConstraints.CENTER,GridBagConstraints.BOTH,dynamicHelpTextInsets,0,0);
+			parameters = new GridBagConstraints(0,1,2,1,0.0,0.1,GridBagConstraints.CENTER,GridBagConstraints.BOTH,dynamicHelpTextInsets,0,0);
 			return parameters;
 		}
 		
 		else if(panelParameters == LEGEND_PARAMETERS){
-			parameters = new GridBagConstraints(3,1,2,1,0.0,0.1,GridBagConstraints.EAST,GridBagConstraints.BOTH,legendInsets,0,0);
+			parameters = new GridBagConstraints(2,1,1,1,0.0,0.1,GridBagConstraints.EAST,GridBagConstraints.BOTH,legendInsets,0,0);
 			return parameters;
 		}
 		
-		else if(panelParameters == BUTTON_PARAMETERS){
+		/*else if(panelParameters == BUTTON_PARAMETERS){
 			parameters = new GridBagConstraints(5,1,1,1,0.0,0.1,GridBagConstraints.EAST,GridBagConstraints.BOTH,buttonInsets,0,0);
 			return parameters;
-		}
+		}*/
 		
 		else if(panelParameters == TODOLIST_SCROLLPANE_PARAMETERS){
 			parameters = new GridBagConstraints(0,0,1,1,0.0,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
@@ -449,22 +448,19 @@ public class UserInterface extends JFrame { /**
 			
 			switch(columnHeaders){
 			case 0:
-				tableColumn.setPreferredWidth(20);
+				tableColumn.setPreferredWidth(30);
 				break;
 			case 1:
-				tableColumn.setPreferredWidth(100);
-				break;
-			case 2:
 				tableColumn.setPreferredWidth(180);
 				break;
+			case 2:
+				tableColumn.setPreferredWidth(210);
+				break;
 			case 3:
-				tableColumn.setPreferredWidth(70);
+				tableColumn.setPreferredWidth(180);
 				break;
 			case 4:
-				tableColumn.setPreferredWidth(20);
-				break;
-			case 5:
-				tableColumn.setPreferredWidth(30);
+				tableColumn.setPreferredWidth(50);
 				break;
 			}
 		}
