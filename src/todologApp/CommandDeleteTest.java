@@ -18,7 +18,7 @@ public class CommandDeleteTest {
 		assertEquals("Description", "Invalid task number. Cannot delete.",command.execute());
 		}
 		else{
-		assertEquals("Description", "Deleted " +taskList.get(3).getTaskName()+ " from toDoLog",command.execute());
+		assertEquals("Description", "Deleted " +taskList.get(2).getTaskName()+ " from toDoLog",command.execute());
 		}
 	}
 }
