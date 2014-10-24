@@ -3,11 +3,15 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 <<<<<<< HEAD
+<<<<<<< HEAD
 	<classpathentry kind="lib" path="C:/Users/Ben/Downloads/dom4j-1.6.1.jar"/>
 =======
 	<classpathentry kind="lib" path="/Users/Vani/Desktop/dom4j-1.6.jar"/>
 >>>>>>> edd8227c4689d0aa7cfec04613d1570756dfecbd
+=======
+	<classpathentry kind="lib" path="C:/Users/Stanley/Desktop/dom4j-1.6.1/dom4j-1.6.1/dom4j-1.6.1.jar"/>
+>>>>>>> origin/Stanley's_Branch
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="lib" path="/Users/Vani/Desktop/joda-time-2.5/joda-time-2.5.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Stanley/Desktop/joda-time-2.5-dist/joda-time-2.5/joda-time-2.5.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
