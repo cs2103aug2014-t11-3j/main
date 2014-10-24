@@ -24,8 +24,12 @@ public class Controller {
 
 	}
 	
-	public static void setHistoryStorage(History history) {
+	public static void setHistory(History history) {
 		_history = history;
+	}
+	public static History getHistory() {
+		return _history;
+
 	}
 	 
 	// unused
@@ -64,7 +68,9 @@ public class Controller {
 		Command command;
 		try {
 			command = Parser.createCommand(userCommand);
-			_history.addCommand(command);
+			if (!(command instanceof CommandUndo)){
+				_history.addCommand(command);
+			}
 			_feedback = command.execute();
 		} catch (Exception e) {
 			_feedback = e.getMessage();

@@ -42,7 +42,7 @@ public class CustomRenderer extends DefaultTableCellRenderer {
 			    }
 			};
 			((JComponent) cellComponent).setBackground(new Color(0,255,0,170));
-			((JComponent) cellComponent).setOpaque(false);
+			((JComponent) cellComponent).setOpaque(true);
 			((JComponent) cellComponent).add(color);
 		}
 		else {
