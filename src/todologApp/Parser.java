@@ -598,6 +598,30 @@ public class Parser {
 		int time = parseTaskEndTime(parameter);
 		int hour = time/100;
 		int min = time%100;
-		return new DateTime(year,month,day,hour,min);
+		
+		if (year > parseTaskStart(parameter).getYear()) {
+			return new DateTime(year,month,day,hour,min);
+		} else if (year == parseTaskStart(parameter).getYear() 
+				&& month > parseTaskStart(parameter).getMonthOfYear()) {
+			return new DateTime(year,month,day,hour,min);
+		} else if (year == parseTaskStart(parameter).getYear() 
+				&& month == parseTaskStart(parameter).getMonthOfYear()
+				&& day > parseTaskStart(parameter).getDayOfMonth()) {
+			return new DateTime(year,month,day,hour,min);
+		} else if (year == parseTaskStart(parameter).getYear() 
+				&& month == parseTaskStart(parameter).getMonthOfYear()
+				&& day == parseTaskStart(parameter).getDayOfMonth()
+				&& hour > parseTaskStart(parameter).getHourOfDay()) {
+			return new DateTime(year,month,day,hour,min);
+		} else if (year == parseTaskStart(parameter).getYear() 
+				&& month == parseTaskStart(parameter).getMonthOfYear()
+				&& day == parseTaskStart(parameter).getDayOfMonth()
+				&& hour == parseTaskStart(parameter).getHourOfDay()
+				&& min > parseTaskStart(parameter).getMinuteOfHour()) {
+			return new DateTime(year,month,day,hour,min);
+		}
+		else {
+		throw new Exception("End time cannot be earlier than Start time");
+		}
 	}
 }
