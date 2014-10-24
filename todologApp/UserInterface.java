@@ -30,6 +30,7 @@ public class UserInterface extends JFrame { /**
 	private static final int DYNAMIC_HELP_TEXT_PARAMETERS = 4;
 	private static final int LEGEND_PARAMETERS = 5;
 	private static final int TODOLIST_SCROLLPANE_PARAMETERS = 6;
+	private static final int CLOCK_PARAMETERS = 7;
 	//private static final int BUTTON_PARAMETERS = 7;
 	
 	private JTextField commandEntryTextField;
@@ -73,7 +74,7 @@ public class UserInterface extends JFrame { /**
 		
 		UserInterface.setTitle("ToDoLog");
 		UserInterface.setResizable(false);
-		UserInterface.setBounds(100,100,700, 450);					
+		UserInterface.setBounds(100,100,700, 570);					
 		UserInterface.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
@@ -83,13 +84,13 @@ public class UserInterface extends JFrame { /**
 		Container contentPane = UserInterface.getContentPane();
 		contentPane.add(layerPane);
 		JPanel mainPanel = new JPanel();
-		mainPanel.setBounds(0,0,700, 425);
+		mainPanel.setBounds(0,0,700, 550);
 		mainPanel.setLayout(new GridBagLayout());
 		BufferedImage img;
 		try {
-			img = ImageIO.read(new File("src/black-white.jpg"));
+			img = ImageIO.read(new File("src/seagull.jpg"));
 			JLabel background = new JLabel(new ImageIcon(img));
-			background.setBounds(0,0,700, 450);
+			background.setBounds(0,0,700, 570);
 			layerPane.add(background,new Integer(0));
 		} catch (IOException e) {
 			//TODO some notifying
@@ -98,22 +99,31 @@ public class UserInterface extends JFrame { /**
 		mainPanel.setOpaque(false);
 		createToDoListTable(mainPanel);
 		createBottomPanel(mainPanel); 
+		createClockPanel(mainPanel);
 		layerPane.add(mainPanel,new Integer(2));
 		
 		
+	}
+	
+	private void createClockPanel(Container mainPanel){
+		 DigitalClock clock = new DigitalClock();
+		 GridBagConstraints clockPanelParameters = setParameters(CLOCK_PARAMETERS);
+		 
+		 mainPanel.add(clock.getTime(),clockPanelParameters);
+		 clock.start();
 	}
 	
 	private void createToDoListTable(Container mainPanel){                        
 		JPanel toDoListHolder = new JPanel(new GridBagLayout());
 		GridBagConstraints panelParameters;      //panelParameters are values for how the top panel will fit into the main frame of ToDoLog
 		GridBagConstraints scrollPaneParameters; //scrollPaneParameters are values for how the scrollPane will be placed within the top panel,toDoListHolder
-		toDoListHolder.setPreferredSize(new Dimension(650, 225));
+		toDoListHolder.setPreferredSize(new Dimension(650, 300));
 		
 		panelParameters = setParameters(TODOLIST_PARAMETERS);
 		scrollPaneParameters = setParameters(TODOLIST_SCROLLPANE_PARAMETERS);
 		
 		toDoListTable = new JTable(new ToDoListTableModel(toDoListItems));    
-		toDoListTable.setPreferredSize(new Dimension(650,225));
+		toDoListTable.setPreferredSize(new Dimension(650,300));
 		adjustTableColumns(toDoListTable);
 		changeTableColors(toDoListTable);
 		toDoListTable.getTableHeader().setResizingAllowed(false);
@@ -134,7 +144,7 @@ public class UserInterface extends JFrame { /**
 		    }
 		};
 		toDoList.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-		toDoList.setPreferredSize(new Dimension(650,225));
+		toDoList.setPreferredSize(new Dimension(650,300));
 		toDoList.setOpaque(false);
 		toDoList.setBackground(new Color(255,255,255,220));
 		toDoListHolder.add(toDoList,scrollPaneParameters);
@@ -184,7 +194,7 @@ public class UserInterface extends JFrame { /**
 	private void createBottomPanel(Container mainPanel){
 		JPanel bottomPanel = new JPanel(new GridBagLayout());
 		bottomPanel.setBackground(Color.WHITE);
-		bottomPanel.setPreferredSize(new Dimension(650,100));
+		bottomPanel.setPreferredSize(new Dimension(650,170));
 		GridBagConstraints parameters;
 		
 		parameters = setParameters(BOTTOM_PANEL_PARAMETERS);
@@ -386,21 +396,27 @@ public class UserInterface extends JFrame { /**
 	private GridBagConstraints setParameters(int panelParameters){
 		GridBagConstraints parameters;
 		Insets insets = new Insets(0,0,0,0);
-		Insets toDoListInsets = new Insets(20,0,0,0);
+		Insets clockInsets = new Insets(0,0,0,0);
+		Insets toDoListInsets = new Insets(0,0,0,0);
 		Insets commandEntryTextFieldInsets = new Insets(10,25,5,25);
 		Insets dynamicHelpTextInsets = new Insets(10,25,20,20);
 		Insets legendInsets = new Insets(0,0,0,10);
 		//Insets buttonInsets = new Insets(10,0,0,20);
 		
-		if(panelParameters == TODOLIST_PARAMETERS){
-			parameters = new GridBagConstraints(0,0,3,3,0.1,0.0,GridBagConstraints.NORTHWEST,GridBagConstraints.BOTH,toDoListInsets,0,0);
+		if(panelParameters == CLOCK_PARAMETERS){
+			parameters = new GridBagConstraints(0,0,3,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,clockInsets,0,0);
+			
+			return parameters;
+		}
+		else if(panelParameters == TODOLIST_PARAMETERS){
+			parameters = new GridBagConstraints(0,1,3,4,0.1,0.0,GridBagConstraints.NORTHWEST,GridBagConstraints.BOTH,toDoListInsets,0,0);
 			
 			
 			return parameters;
 		}
 		
 		else if(panelParameters == BOTTOM_PANEL_PARAMETERS){
-			parameters = new GridBagConstraints(0,3,3,1,0.0,0.3,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
+			parameters = new GridBagConstraints(0,5,3,3,0.0,0.3,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
 			
 			return parameters;
 		}
