@@ -13,6 +13,9 @@ import org.dom4j.DocumentHelper;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import org.joda.time.*;
+import org.joda.time.format.*;
+
 import com.sun.xml.internal.txw2.Document;
 
 public class FileStorageTest {
@@ -67,6 +70,39 @@ public class FileStorageTest {
 		file.delete();
 	}
 	
+	@Test
+	public void testStoreTimed() throws IOException {
+		FileStorage fileStorageTest = new FileStorage("test.xml");
+		File file = new File("test.xml");
+		LinkedList <Task> tasks = new LinkedList<Task>();
+		tasks.add(createRandomTimedTask());
+		fileStorageTest.store(tasks);
+		assertTrue(file.exists());
+		FileStorage fileStorageTest2 = new FileStorage("test.xml");
+		LinkedList<Task> ctasks = fileStorageTest2.load();
+		for (int i = 0;i <tasks.size(); i++){
+			assertEquals(tasks.get(i).getTaskName(),ctasks.get(i).getTaskName());
+		}
+		file.delete();
+	}
+	
+	@Test
+	public void testStoreDeadline() throws IOException {
+		FileStorage fileStorageTest = new FileStorage("test.xml");
+		File file = new File("test.xml");
+		LinkedList <Task> tasks = new LinkedList<Task>();
+		tasks.add(createRandomDeadlineTask());
+		fileStorageTest.store(tasks);
+		assertTrue(file.exists());
+		FileStorage fileStorageTest2 = new FileStorage("test.xml");
+		LinkedList<Task> ctasks = fileStorageTest2.load();
+		for (int i = 0;i <tasks.size(); i++){
+			assertEquals(tasks.get(i).getTaskName(),ctasks.get(i).getTaskName());
+		}
+		file.delete();
+	}
+		
+	
 	private String createRandomString() {
 		char[] chars = "abcdefghijklmnopqrstuvwxyz01123456789".toCharArray();
 		StringBuilder sb = new StringBuilder();
@@ -86,7 +122,7 @@ public class FileStorageTest {
 		    sb.append(c);
 		}
 		String name = sb.toString();
-		return new Task(TaskType.FLOATING, name, false, "","");
+		return new Task(TaskType.FLOATING, name, false);
 	}
 	private Task createRandomTimedTask() {
 		//TODO
@@ -98,7 +134,7 @@ public class FileStorageTest {
 		    sb.append(c);
 		}
 		String name = sb.toString();
-		return new Task(TaskType.TIMED, name, false, "","");
+		return new Task(TaskType.TIMED, name, new DateTime(2014,12,2,8,0),new DateTime(2014,12,2,23,59),false);
 	}
 	private Task createRandomDeadlineTask() {
 		//TODO
@@ -110,6 +146,6 @@ public class FileStorageTest {
 		    sb.append(c);
 		}
 		String name = sb.toString();
-		return new Task(TaskType.DEADLINE, name, false, "", "");
+		return new Task(TaskType.DEADLINE, name,new DateTime(2014,12,2,23,59), false);
 	}
 }
