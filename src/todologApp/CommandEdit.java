@@ -23,7 +23,7 @@ public class CommandEdit implements Command {
 
 	private String formNewTask() throws Exception{
 		//change the name
-		_taskEdited = _taskExisting;
+		_taskEdited = _taskExisting.copy();
 		if (_editType.equalsIgnoreCase("Task Name")||_editType.equalsIgnoreCase("Name")) {
 			_taskEdited.setTaskName(_toBeEdited);
 			return "name";
@@ -31,8 +31,12 @@ public class CommandEdit implements Command {
 		
 		//change End day
 		 else if(_editType.equalsIgnoreCase("End Day")||_editType.equalsIgnoreCase("Day")){
-			 _taskEdited.setEndDay(_toBeEdited);
-			 return "end day";
+			 if (_taskEdited.getTaskType() != TaskType.FLOATING) {
+				 _taskEdited.setEndDay(_toBeEdited);
+				 return "end day";
+			 } else {
+				 throw new Exception("Cannot edit end day for floating tasks");
+			 }
 		 }
 		//change Start day
 		 else if(_editType.equalsIgnoreCase("Start Day")||_editType.equalsIgnoreCase("Day")){	
@@ -107,7 +111,13 @@ public class CommandEdit implements Command {
 		LinkedList<Task> tasks = _storage.load();
 		tasks.remove(_index);
 		tasks.add(_index, _taskExisting);
-		feedback = "Undone the edit command.";
+		try {
+			_storage.store(tasks);
+		} catch (IOException e) {
+			feedback = "Cannot store the list to ToDoLog";
+			return feedback;
+		}
+		feedback = "Undone edit the "+_editType+".";
 		return feedback;
 	}
 

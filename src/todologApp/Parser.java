@@ -84,7 +84,7 @@ public class Parser {
 			if (isInteger(restOfTheString)) {
 				int index = Integer.valueOf(restOfTheString);
 				CommandDelete command = new CommandDelete(index);
-				return command;
+				return command; 
 			} else {
 				if (restOfTheString.equalsIgnoreCase("all")) {
 					CommandDeleteAll command = new CommandDeleteAll();
@@ -129,7 +129,13 @@ public class Parser {
 			//		} else if (firstWord.equalsIgnoreCase("search")) {
 			//			CommandSearch command = new CommandSearch(restOfTheString);
 			//			return command;
-		} else {
+		} else if (firstWord.equalsIgnoreCase("undo")) {
+			History history = Controller.getHistory();
+			Command toBeUndone = history.removeCommand();
+			CommandUndo command = new CommandUndo(toBeUndone);
+			return command;
+		}
+		else {
 			throw new Exception("Invalid command.\n"+FEEDBACK_TYPE);
 		}
 	}

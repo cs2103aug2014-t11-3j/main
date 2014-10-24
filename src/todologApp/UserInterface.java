@@ -30,7 +30,7 @@ public class UserInterface extends JFrame { /**
 	private static final int DYNAMIC_HELP_TEXT_PARAMETERS = 4;
 	private static final int LEGEND_PARAMETERS = 5;
 	private static final int TODOLIST_SCROLLPANE_PARAMETERS = 6;
-//	private static final int BUTTON_PARAMETERS = 7;
+	//private static final int BUTTON_PARAMETERS = 7;
 	
 	private JTextField commandEntryTextField;
 	private JLayeredPane layerPane = new JLayeredPane();
@@ -116,6 +116,7 @@ public class UserInterface extends JFrame { /**
 		toDoListTable.setPreferredSize(new Dimension(650,225));
 		adjustTableColumns(toDoListTable);
 		changeTableColors(toDoListTable);
+		toDoListTable.getTableHeader().setResizingAllowed(false);
 		//updateToDoListTable(toDoListTable,toDoListItems,toDoListHeaders);
 		
 		JScrollPane toDoList = new JScrollPane(toDoListTable)
@@ -161,7 +162,7 @@ public class UserInterface extends JFrame { /**
 //		}
 		
 	}
-/*	private void createToDoList(Container mainPanel){
+	private void createToDoList(Container mainPanel){
 		JPanel toDoListHolder = new JPanel(new GridBagLayout());
 		toDoListHolder.setBackground(Color.WHITE);
 		GridBagConstraints panelParameters;      //panelParameters are values for how the top panel will fit into the main frame of ToDoLog
@@ -174,7 +175,7 @@ public class UserInterface extends JFrame { /**
 		toDoListText.setPreferredSize(new Dimension(532,225));
 		toDoListHolder.add(toDoListText,scrollPaneParameters);
 		mainPanel.add(toDoListHolder, panelParameters);
-	}*/
+	}
 	//private void updateToDoListTable(JTable toDoListTable,)
 	
 	
@@ -183,7 +184,7 @@ public class UserInterface extends JFrame { /**
 	private void createBottomPanel(Container mainPanel){
 		JPanel bottomPanel = new JPanel(new GridBagLayout());
 		bottomPanel.setBackground(Color.WHITE);
-		bottomPanel.setPreferredSize(new Dimension(500,100));
+		bottomPanel.setPreferredSize(new Dimension(650,100));
 		GridBagConstraints parameters;
 		
 		parameters = setParameters(BOTTOM_PANEL_PARAMETERS);
@@ -250,7 +251,7 @@ public class UserInterface extends JFrame { /**
 		
 		//this is the "priority: high" colored box
 		JPanel priorityHighPanel = new JPanel();
-		priorityHighPanel.setPreferredSize(new Dimension(30,5));
+		priorityHighPanel.setPreferredSize(new Dimension(20,5));
 		priorityHighPanel.setBackground(Color.RED);
 		
 		legendPanelLayout = new GridBagConstraints(0,0,1,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
@@ -258,7 +259,7 @@ public class UserInterface extends JFrame { /**
 		
 		//the text for "priority: high"
 		JTextField priorityHigh = new JTextField();
-		priorityHigh.setPreferredSize(new Dimension(70,15));
+		priorityHigh.setPreferredSize(new Dimension(30,15));
 		priorityHigh.setText("Priority: High");
 		priorityHigh.setFont(fontForLegend);
 		priorityHigh.setEnabled(false);
@@ -270,14 +271,14 @@ public class UserInterface extends JFrame { /**
         
 		//this is the "priority: medium" colored box
 		JPanel priorityMediumPanel = new JPanel();
-		priorityMediumPanel.setPreferredSize(new Dimension(30,5));
+		priorityMediumPanel.setPreferredSize(new Dimension(20,5));
 		priorityMediumPanel.setBackground(Color.PINK);
 		legendPanelLayout = new GridBagConstraints(0,1,1,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
 		legendMainPanel.add(priorityMediumPanel,legendPanelLayout);
 		
 		//the text for "priority: medium"
 		JTextField priorityMedium = new JTextField();
-		priorityMedium.setPreferredSize(new Dimension(70,15));
+		priorityMedium.setPreferredSize(new Dimension(30,15));
 		priorityMedium.setText("Priority: Medium");
 		priorityMedium.setFont(fontForLegend);
 		priorityMedium.setEnabled(false);
@@ -289,7 +290,7 @@ public class UserInterface extends JFrame { /**
 		
 		//this is the "priority: low" colored box
 		JPanel priorityLowPanel = new JPanel();
-		priorityLowPanel.setPreferredSize(new Dimension(30,5));
+		priorityLowPanel.setPreferredSize(new Dimension(20,5));
 		priorityLowPanel.setBackground(Color.WHITE);
 		Border borderLineForLow = new LineBorder(Color.BLACK);
 		priorityLowPanel.setBorder(borderLineForLow);
@@ -298,7 +299,7 @@ public class UserInterface extends JFrame { /**
 		
 		//the text for "priority: low"
 		JTextField priorityLow = new JTextField();
-		priorityLow.setPreferredSize(new Dimension(70,15));
+		priorityLow.setPreferredSize(new Dimension(30,15));
 		priorityLow.setText("Priority: Low");
 		priorityLow.setFont(fontForLegend);
 		priorityLow.setEnabled(false);
@@ -310,14 +311,14 @@ public class UserInterface extends JFrame { /**
 		
 		//this is the "done" colored box
 		JPanel donePanel = new JPanel();
-		donePanel.setPreferredSize(new Dimension(30,5));
+		donePanel.setPreferredSize(new Dimension(20,5));
 		donePanel.setBackground(Color.GREEN);
 		legendPanelLayout = new GridBagConstraints(0,3,1,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
 		legendMainPanel.add(donePanel,legendPanelLayout);
 		
 		//the text for "done"
 		JTextField done = new JTextField();
-		done.setPreferredSize(new Dimension(70,15));
+		done.setPreferredSize(new Dimension(30,15));
 		done.setText("Done");
 		done.setFont(fontForLegend);
 		done.setEnabled(false);
@@ -389,7 +390,7 @@ public class UserInterface extends JFrame { /**
 		Insets commandEntryTextFieldInsets = new Insets(10,25,5,25);
 		Insets dynamicHelpTextInsets = new Insets(10,25,20,20);
 		Insets legendInsets = new Insets(0,0,0,10);
-	//	Insets buttonInsets = new Insets(10,0,0,20);
+		//Insets buttonInsets = new Insets(10,0,0,20);
 		
 		if(panelParameters == TODOLIST_PARAMETERS){
 			parameters = new GridBagConstraints(0,0,3,3,0.1,0.0,GridBagConstraints.NORTHWEST,GridBagConstraints.BOTH,toDoListInsets,0,0);
@@ -397,8 +398,6 @@ public class UserInterface extends JFrame { /**
 			
 			return parameters;
 		}
-		
-		
 		
 		else if(panelParameters == BOTTOM_PANEL_PARAMETERS){
 			parameters = new GridBagConstraints(0,3,3,1,0.0,0.3,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
@@ -449,22 +448,19 @@ public class UserInterface extends JFrame { /**
 			
 			switch(columnHeaders){
 			case 0:
-				tableColumn.setPreferredWidth(20);
+				tableColumn.setPreferredWidth(30);
 				break;
 			case 1:
-				tableColumn.setPreferredWidth(100);
-				break;
-			case 2:
 				tableColumn.setPreferredWidth(180);
 				break;
+			case 2:
+				tableColumn.setPreferredWidth(210);
+				break;
 			case 3:
-				tableColumn.setPreferredWidth(70);
+				tableColumn.setPreferredWidth(180);
 				break;
 			case 4:
-				tableColumn.setPreferredWidth(20);
-				break;
-			case 5:
-				tableColumn.setPreferredWidth(30);
+				tableColumn.setPreferredWidth(50);
 				break;
 			}
 		}

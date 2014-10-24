@@ -21,7 +21,6 @@ public class Task {
 	private DateTime _taskEnd;
 	
 	private boolean _taskStatus;
-	
 	public Task(String parameter) throws Exception{
 		_taskName = Parser.parseTaskName(parameter);
 		_taskType = Parser.parseTaskType(parameter);
@@ -206,5 +205,12 @@ public class Task {
 	public String getEndTimeStr() {
 		LocalTime time = new LocalTime(getEndTime()/100,getEndTime()%100);
 		return time.toString("HH:mm");
+	}
+
+
+	public Task copy() {
+		// TODO Auto-generated method stub
+		return new Task(_taskType, _taskName, new DateTime(_taskStart), new DateTime(_taskEnd),
+				_taskStatus, _taskPerson, _taskVenue); 
 	}
 }
