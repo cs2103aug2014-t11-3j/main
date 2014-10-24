@@ -4,7 +4,9 @@ import javax.swing.*;
 import javax.swing.Timer;
 
 import java.util.*;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
@@ -33,6 +35,10 @@ public class DigitalClock {
                         reset();
                     }
                     time.setText( String.format("%s:%02d", sdf.format(calendar.getTime()), currentSecond ));
+                    time.setHorizontalAlignment(SwingConstants.CENTER);
+                    time.setForeground(Color.WHITE);
+                    Font font = new Font("SansSerif", Font.BOLD,18);
+                    time.setFont(font);
                     currentSecond++;
                 }
             });
