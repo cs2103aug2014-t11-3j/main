@@ -546,26 +546,27 @@ public class Parser {
 		int time = parseTaskStartTime(parameter);
 		int hour = time/100;
 		int min = time%100;
+		DateTime now = new DateTime();
 		
-		if (year > parseTaskStart(parameter).getYear()) {
+		if (year > now.getYear()) {
 			return new DateTime(year,month,day,hour,min);
-		} else if (year == parseTaskStart(parameter).getYear() 
-				&& month > parseTaskStart(parameter).getMonthOfYear()) {
+		} else if (year == now.getYear() 
+				&& month > now.getMonthOfYear()) {
 			return new DateTime(year,month,day,hour,min);
-		} else if (year == parseTaskStart(parameter).getYear() 
-				&& month == parseTaskStart(parameter).getMonthOfYear()
-				&& day > parseTaskStart(parameter).getDayOfMonth()) {
+		} else if (year == now.getYear() 
+				&& month == now.getMonthOfYear()
+				&& day > now.getDayOfMonth()) {
 			return new DateTime(year,month,day,hour,min);
-		} else if (year == parseTaskStart(parameter).getYear() 
-				&& month == parseTaskStart(parameter).getMonthOfYear()
-				&& day == parseTaskStart(parameter).getDayOfMonth()
-				&& hour > parseTaskStart(parameter).getHourOfDay()) {
+		} else if (year == now.getYear() 
+				&& month == now.getMonthOfYear()
+				&& day == now.getDayOfMonth()
+				&& hour > now.getHourOfDay()) {
 			return new DateTime(year,month,day,hour,min);
-		} else if (year == parseTaskStart(parameter).getYear() 
-				&& month == parseTaskStart(parameter).getMonthOfYear()
-				&& day == parseTaskStart(parameter).getDayOfMonth()
-				&& hour == parseTaskStart(parameter).getHourOfDay()
-				&& min > parseTaskStart(parameter).getMinuteOfHour()) {
+		} else if (year == now.getYear() 
+				&& month == now.getMonthOfYear()
+				&& day == now.getDayOfMonth()
+				&& hour == now.getHourOfDay()
+				&& min > now.getMinuteOfHour()) {
 			return new DateTime(year,month,day,hour,min);
 		} else {
 		throw new Exception("End time cannot be earlier than Start time");
@@ -624,28 +625,28 @@ public class Parser {
 		int hour = time/100;
 		int min = time%100;
 		
-//		if (year > parseTaskStart(parameter).getYear()) {
-//			return new DateTime(year,month,day,hour,min);
-//		} else if (year == parseTaskStart(parameter).getYear() 
-//				&& month > parseTaskStart(parameter).getMonthOfYear()) {
-//			return new DateTime(year,month,day,hour,min);
-//		} else if (year == parseTaskStart(parameter).getYear() 
-//				&& month == parseTaskStart(parameter).getMonthOfYear()
-//				&& day > parseTaskStart(parameter).getDayOfMonth()) {
-//			return new DateTime(year,month,day,hour,min);
-//		} else if (year == parseTaskStart(parameter).getYear() 
-//				&& month == parseTaskStart(parameter).getMonthOfYear()
-//				&& day == parseTaskStart(parameter).getDayOfMonth()
-//				&& hour > parseTaskStart(parameter).getHourOfDay()) {
-//			return new DateTime(year,month,day,hour,min);
-//		} else if (year == parseTaskStart(parameter).getYear() 
-//				&& month == parseTaskStart(parameter).getMonthOfYear()
-//				&& day == parseTaskStart(parameter).getDayOfMonth()
-//				&& hour == parseTaskStart(parameter).getHourOfDay()
-//				&& min > parseTaskStart(parameter).getMinuteOfHour()) {
+		if (year > parseTaskStart(parameter).getYear()) {
 			return new DateTime(year,month,day,hour,min);
-//		} else {
-//		throw new Exception("End time cannot be earlier than Start time");
-//		}
+		} else if (year == parseTaskStart(parameter).getYear() 
+				&& month > parseTaskStart(parameter).getMonthOfYear()) {
+			return new DateTime(year,month,day,hour,min);
+		} else if (year == parseTaskStart(parameter).getYear() 
+				&& month == parseTaskStart(parameter).getMonthOfYear()
+				&& day > parseTaskStart(parameter).getDayOfMonth()) {
+			return new DateTime(year,month,day,hour,min);
+		} else if (year == parseTaskStart(parameter).getYear() 
+				&& month == parseTaskStart(parameter).getMonthOfYear()
+				&& day == parseTaskStart(parameter).getDayOfMonth()
+				&& hour > parseTaskStart(parameter).getHourOfDay()) {
+			return new DateTime(year,month,day,hour,min);
+		} else if (year == parseTaskStart(parameter).getYear() 
+				&& month == parseTaskStart(parameter).getMonthOfYear()
+				&& day == parseTaskStart(parameter).getDayOfMonth()
+				&& hour == parseTaskStart(parameter).getHourOfDay()
+				&& min > parseTaskStart(parameter).getMinuteOfHour()) {
+			return new DateTime(year,month,day,hour,min);
+		} else {
+		throw new Exception("End time cannot be earlier than Start time");
+		}
 	}
 }
