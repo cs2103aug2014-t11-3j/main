@@ -250,7 +250,7 @@ public class UserInterface extends JFrame { /**
 		
 		//this is the "priority: high" colored box
 		JPanel priorityHighPanel = new JPanel();
-		priorityHighPanel.setPreferredSize(new Dimension(20,5));
+		priorityHighPanel.setPreferredSize(new Dimension(30,5));
 		priorityHighPanel.setBackground(Color.RED);
 		
 		legendPanelLayout = new GridBagConstraints(0,0,1,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
@@ -258,7 +258,7 @@ public class UserInterface extends JFrame { /**
 		
 		//the text for "priority: high"
 		JTextField priorityHigh = new JTextField();
-		priorityHigh.setPreferredSize(new Dimension(30,15));
+		priorityHigh.setPreferredSize(new Dimension(70,15));
 		priorityHigh.setText("Priority: High");
 		priorityHigh.setFont(fontForLegend);
 		priorityHigh.setEnabled(false);
@@ -270,14 +270,14 @@ public class UserInterface extends JFrame { /**
         
 		//this is the "priority: medium" colored box
 		JPanel priorityMediumPanel = new JPanel();
-		priorityMediumPanel.setPreferredSize(new Dimension(20,5));
+		priorityMediumPanel.setPreferredSize(new Dimension(30,5));
 		priorityMediumPanel.setBackground(Color.PINK);
 		legendPanelLayout = new GridBagConstraints(0,1,1,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
 		legendMainPanel.add(priorityMediumPanel,legendPanelLayout);
 		
 		//the text for "priority: medium"
 		JTextField priorityMedium = new JTextField();
-		priorityMedium.setPreferredSize(new Dimension(30,15));
+		priorityMedium.setPreferredSize(new Dimension(70,15));
 		priorityMedium.setText("Priority: Medium");
 		priorityMedium.setFont(fontForLegend);
 		priorityMedium.setEnabled(false);
@@ -289,7 +289,7 @@ public class UserInterface extends JFrame { /**
 		
 		//this is the "priority: low" colored box
 		JPanel priorityLowPanel = new JPanel();
-		priorityLowPanel.setPreferredSize(new Dimension(20,5));
+		priorityLowPanel.setPreferredSize(new Dimension(30,5));
 		priorityLowPanel.setBackground(Color.WHITE);
 		Border borderLineForLow = new LineBorder(Color.BLACK);
 		priorityLowPanel.setBorder(borderLineForLow);
@@ -298,7 +298,7 @@ public class UserInterface extends JFrame { /**
 		
 		//the text for "priority: low"
 		JTextField priorityLow = new JTextField();
-		priorityLow.setPreferredSize(new Dimension(30,15));
+		priorityLow.setPreferredSize(new Dimension(70,15));
 		priorityLow.setText("Priority: Low");
 		priorityLow.setFont(fontForLegend);
 		priorityLow.setEnabled(false);
@@ -310,14 +310,14 @@ public class UserInterface extends JFrame { /**
 		
 		//this is the "done" colored box
 		JPanel donePanel = new JPanel();
-		donePanel.setPreferredSize(new Dimension(20,5));
+		donePanel.setPreferredSize(new Dimension(30,5));
 		donePanel.setBackground(Color.GREEN);
 		legendPanelLayout = new GridBagConstraints(0,3,1,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
 		legendMainPanel.add(donePanel,legendPanelLayout);
 		
 		//the text for "done"
 		JTextField done = new JTextField();
-		done.setPreferredSize(new Dimension(30,15));
+		done.setPreferredSize(new Dimension(70,15));
 		done.setText("Done");
 		done.setFont(fontForLegend);
 		done.setEnabled(false);
@@ -407,7 +407,7 @@ public class UserInterface extends JFrame { /**
 		}
 		
 		else if(panelParameters == COMMAND_ENTRY_PARAMETERS){
-			parameters = new GridBagConstraints(0,0,6,1,0.1,0.0,GridBagConstraints.NORTHWEST,GridBagConstraints.BOTH,commandEntryTextFieldInsets,0,0);
+			parameters = new GridBagConstraints(0,0,3,1,0.1,0.0,GridBagConstraints.NORTHWEST,GridBagConstraints.BOTH,commandEntryTextFieldInsets,0,0);
 			
 			return parameters;
 		}
