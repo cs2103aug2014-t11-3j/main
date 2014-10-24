@@ -2,7 +2,7 @@ package todologApp;
 
 import java.util.LinkedList;
 
-public class CommandSearch {
+public class CommandSearch implements Command {
 	private static String _searchKey;
 	private static Storage _storage;
 
@@ -23,10 +23,16 @@ public class CommandSearch {
 	public LinkedList<Task> searchName(LinkedList<Task> storageList) {
 		LinkedList<Task> searchList = new LinkedList<Task>();
 		for (int i = 0; i < storageList.size(); i++) {
-			if (storageList.get(i).getTaskName().equalsIgnoreCase(_searchKey)) {
+			if (storageList.get(i).getTaskName().contains(_searchKey)) {
 				searchList.add(storageList.get(i));
 			}
 		}
 		return searchList;
+	}
+
+	@Override
+	public String undo() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
