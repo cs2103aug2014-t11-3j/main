@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path=""/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="C:/Users/Stanley/Desktop/dom4j-1.6.1/dom4j-1.6.1/dom4j-1.6.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="lib" path="C:/Users/Stanley/Desktop/joda-time-2.5-dist/joda-time-2.5/joda-time-2.5.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ben/Downloads/dom4j-1.6.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ben/Downloads/AFF540DC.Unpacker_v7353qx4kg3sa!App/joda-time-2.5-dist.tar/joda-time-2.5/joda-time-2.5.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
