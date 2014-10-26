@@ -16,7 +16,6 @@ public class CommandAdd implements Command {
 		LinkedList<Task> newList = new LinkedList<Task>();
 		newList=_storage.load();
 		sortByDate(newList);
-		//newList.add(_task);
 		try {
 			_storage.store(newList);
 		} catch (IOException e) {
