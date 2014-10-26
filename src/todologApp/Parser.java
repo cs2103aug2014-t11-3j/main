@@ -93,7 +93,7 @@ public class Parser {
 					throw new Exception(HELP_TEXT_DELETE);
 				}
 			}
-			
+
 		} else if (firstWord.equalsIgnoreCase("done")) {
 			String restOfTheString = getTheRestOfTheString(userCommand);
 			if (restOfTheString == null) {
@@ -103,10 +103,6 @@ public class Parser {
 			int index = Integer.valueOf(restOfTheString);
 			CommandMarkAsDone command = new CommandMarkAsDone(index);
 			return command;
-			//		} else if (firstWord.equalsIgnoreCase("display")) {
-			//			Task task = _dbStorage.load().get(index-1);
-			//			CommandDisplay command = new CommandDisplay(task);
-			//			return command;
 		} else if (firstWord.equalsIgnoreCase("edit")) {
 			String restOfTheString = getTheRestOfTheString(userCommand);
 			if (restOfTheString == null) {
@@ -126,9 +122,10 @@ public class Parser {
 			}
 			CommandEdit command = new CommandEdit(index, restOfTheString, editType);
 			return command;
-			//		} else if (firstWord.equalsIgnoreCase("search")) {
-			//			CommandSearch command = new CommandSearch(restOfTheString);
-			//			return command;
+		} else if (firstWord.equalsIgnoreCase("search")) {
+			String restOfTheString = getTheRestOfTheString(userCommand);
+			CommandSearch command = new CommandSearch(restOfTheString);
+			return command;
 		} else if (firstWord.equalsIgnoreCase("undo")) {
 			History history = Controller.getHistory();
 			Command toBeUndone = history.removeCommand();
@@ -155,16 +152,16 @@ public class Parser {
 		String firstWord = result[0];
 		return firstWord;
 	}
-	
+
 	private static String[] generateArray(String parameter) {
 		parameter = parameter.trim();
 		String[] array = parameter.split(SINGLE_SPACE);
 		return array;
 	}
-	
+
 	public static int parseTaskEndTime(String parameter) throws Exception {
 		String [] messageArray = generateArray(parameter);
-		
+
 		for (int i = 0; i<=messageArray.length-1; i++) {
 			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING)) {
 				for (int j=i+1; j<=messageArray.length-1; j++) {
@@ -190,7 +187,7 @@ public class Parser {
 
 	public static int parseTaskStartTime(String parameter) throws Exception  {
 		String [] messageArray = generateArray(parameter);
-		
+
 		for (int i = 0; i<=messageArray.length-1; i++) {
 			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING)
 					|| messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING_2)) {
@@ -213,7 +210,7 @@ public class Parser {
 				}
 			}
 		}
-		
+
 		return 0000;
 	}
 
@@ -243,9 +240,9 @@ public class Parser {
 			throw new Exception("Invalid Date Format");
 		}
 		return date;
-		
+
 	}
-	
+
 	public static int parseMonth(String dateInString) throws Exception {
 		int _month = 1;
 		_month = Integer.parseInt(dateInString);
@@ -412,7 +409,7 @@ public class Parser {
 		boolean hasKeyword = false;
 		for (int i = 0; i+1<=messageArray.length-1; i++) {
 			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) 
-			|| messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING_2)) {
+					|| messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING_2)) {
 				hasKeyword = true;
 				if (isInteger(messageArray[i+1])) {
 					year = parseYear(messageArray[i+1]);
@@ -460,32 +457,32 @@ public class Parser {
 		int time = parseTaskStartTime(parameter);
 		int hour = time/100;
 		int min = time%100;
-//		DateTime now = new DateTime();
-		
-//		if (year > now.getYear()) {
-//			return new DateTime(year,month,day,hour,min);
-//		} else if (year == now.getYear() 
-//				&& month > now.getMonthOfYear()) {
-//			return new DateTime(year,month,day,hour,min);
-//		} else if (year == now.getYear() 
-//				&& month == now.getMonthOfYear()
-//				&& day > now.getDayOfMonth()) {
-//			return new DateTime(year,month,day,hour,min);
-//		} else if (year == now.getYear() 
-//				&& month == now.getMonthOfYear()
-//				&& day == now.getDayOfMonth()
-//				&& hour > now.getHourOfDay()) {
-//			return new DateTime(year,month,day,hour,min);
-//		} else if (year == now.getYear() 
-//				&& month == now.getMonthOfYear()
-//				&& day == now.getDayOfMonth()
-//				&& hour == now.getHourOfDay()
-//				&& min > now.getMinuteOfHour()) {
-			return new DateTime(year,month,day,hour,min);
-//		} else {
-//		throw new Exception("End time cannot be earlier than Start time");
-//		}
-		
+		//		DateTime now = new DateTime();
+
+		//		if (year > now.getYear()) {
+		//			return new DateTime(year,month,day,hour,min);
+		//		} else if (year == now.getYear() 
+		//				&& month > now.getMonthOfYear()) {
+		//			return new DateTime(year,month,day,hour,min);
+		//		} else if (year == now.getYear() 
+		//				&& month == now.getMonthOfYear()
+		//				&& day > now.getDayOfMonth()) {
+		//			return new DateTime(year,month,day,hour,min);
+		//		} else if (year == now.getYear() 
+		//				&& month == now.getMonthOfYear()
+		//				&& day == now.getDayOfMonth()
+		//				&& hour > now.getHourOfDay()) {
+		//			return new DateTime(year,month,day,hour,min);
+		//		} else if (year == now.getYear() 
+		//				&& month == now.getMonthOfYear()
+		//				&& day == now.getDayOfMonth()
+		//				&& hour == now.getHourOfDay()
+		//				&& min > now.getMinuteOfHour()) {
+		return new DateTime(year,month,day,hour,min);
+		//		} else {
+		//		throw new Exception("End time cannot be earlier than Start time");
+		//		}
+
 	}
 
 	public static DateTime parseTaskEnd(String parameter) throws Exception {
@@ -494,7 +491,7 @@ public class Parser {
 		boolean hasKeyword = false;
 		for (int i = 0; i+1<=messageArray.length-1; i++) {
 			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING) 
-			|| messageArray[i].equalsIgnoreCase(KEYWORD_DEADLINE)) {
+					|| messageArray[i].equalsIgnoreCase(KEYWORD_DEADLINE)) {
 				hasKeyword = true;
 				if (isInteger(messageArray[i+1])) {
 					year = parseYear(messageArray[i+1]);
@@ -534,11 +531,11 @@ public class Parser {
 			int min = 59;
 			return new DateTime(year,month,day,hour,min);
 		}
-		
+
 		int time = parseTaskEndTime(parameter);
 		int hour = time/100;
 		int min = time%100;
-		
+
 		if (year > parseTaskStart(parameter).getYear()) {
 			return new DateTime(year,month,day,hour,min);
 		} else if (year == parseTaskStart(parameter).getYear() 
@@ -560,10 +557,10 @@ public class Parser {
 				&& min > parseTaskStart(parameter).getMinuteOfHour()) {
 			return new DateTime(year,month,day,hour,min);
 		} else if (parseTaskType(parameter) == TaskType.FLOATING 
-					||parseTaskType(parameter) == TaskType.DEADLINE) {
+				||parseTaskType(parameter) == TaskType.DEADLINE) {
 			return new DateTime(year,month,day,hour,min);
 		} else {
-		throw new Exception("End time cannot be earlier than Start time");
+			throw new Exception("End time cannot be earlier than Start time");
 		}
 	}
 }
