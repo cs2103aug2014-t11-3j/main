@@ -164,34 +164,6 @@ public class Parser {
 	
 	public static int parseTaskEndTime(String parameter) throws Exception {
 		String [] messageArray = generateArray(parameter);
-
-//		for (int i = 0; i+3<=messageArray.length; i++) {
-//			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING) && 
-//					messageArray[i+2].equalsIgnoreCase(SYMBOL_AT)){
-//				try {
-//					int endTime = Integer.parseInt(messageArray[i+3]);
-//					if (endTime >= 0000 && endTime <= 2359) {
-//						return endTime;
-//					} else {
-//						return 2359;
-//					}
-//				} catch (NumberFormatException nfe) {
-//					throw new Exception("Invalid time format");
-//				}
-//			} else if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING) && 
-//					messageArray[i+1].equalsIgnoreCase(SYMBOL_AT)){
-//				try {
-//					int endTime = Integer.parseInt(messageArray[i+2]);
-//					if (endTime >= 0000 && endTime <= 2359) {
-//						return endTime;
-//					} else {
-//						return 2359;
-//					}
-//				} catch (NumberFormatException nfe) {
-//					throw new Exception("Invalid Time Format");
-//				}
-//			}
-//		}
 		
 		for (int i = 0; i<=messageArray.length-1; i++) {
 			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING)) {
@@ -218,35 +190,6 @@ public class Parser {
 
 	public static int parseTaskStartTime(String parameter) throws Exception  {
 		String [] messageArray = generateArray(parameter);
-
-//		for (int i = 0; i+3<=messageArray.length; i++) {
-//			if ((messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING)
-//					|| messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING_2))
-//					&& messageArray[i+2].equalsIgnoreCase(SYMBOL_AT)) {
-//				try {
-//					int startTime = Integer.parseInt(messageArray[i+3]);
-//					if (startTime >= 0000 && startTime <= 2359) {
-//						return startTime;
-//					} else {
-//						return 0000;
-//					}
-//				} catch (NumberFormatException nfe) {
-//					throw new Exception("Invalid Time Format");
-//				}
-//			} else if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) && 
-//					messageArray[i+1].equalsIgnoreCase(SYMBOL_AT)) {
-//				try {
-//					int startTime = Integer.parseInt(messageArray[i+2]);
-//					if (startTime >= 0000 && startTime <= 2359) {
-//						return startTime;
-//					} else {
-//						return 0000;
-//					}
-//				} catch (NumberFormatException nfe) {
-//					throw new Exception("Invalid Time Format");
-//				}
-//			} 
-//		}
 		
 		for (int i = 0; i<=messageArray.length-1; i++) {
 			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING)
@@ -345,11 +288,6 @@ public class Parser {
 	}
 
 	public static TaskType parseTaskType (String parameter) {
-		//		String taskDateTime = parameter.substring(parameter.lastIndexOf(QUOTATION_MARK)+1);
-		//		taskDateTime = taskDateTime.trim();
-		//		System.out.println(parameter);
-		//		System.out.println(taskDateTime);
-		//		String[] analyseTask = taskDateTime.split(SINGLE_SPACE);
 		String [] messageArray = generateArray(parameter);
 		if (messageArray.length != 0) {
 			for (int i=0; i<=messageArray.length-1; i++) {
@@ -387,34 +325,6 @@ public class Parser {
 
 		return (TaskType.INVALID);
 	}
-
-	//			if (taskDateTime.length() == 0) {
-	//				return (TaskType.FLOATING);
-	//			} else if (analyseTask[0].equalsIgnoreCase(KEYWORD_DAY_STARTING) || analyseTask[0].equalsIgnoreCase(KEYWORD_DAY_ENDING)) {
-	//				return (TaskType.TIMED);
-	//			} else if (analyseTask[0].equalsIgnoreCase(KEYWORD_DEADLINE)) {
-	//				return (TaskType.DEADLINE);
-	//			} else if (analyseTask[0].equalsIgnoreCase(KEYWORD_RECURRING)) {
-	//				return (TaskType.RECURRING);
-	//			} else {
-	//				return (TaskType.INVALID);
-	//			}
-
-	//	public static String parseTaskName(String parameter) throws Exception{
-	//		int firstIndex = parameter.indexOf(QUOTATION_MARK);
-	//		int lastIndex = parameter.lastIndexOf(QUOTATION_MARK);
-	//
-	//		if (lastIndex > firstIndex) {
-	//			String taskName = parameter.substring(firstIndex+1, lastIndex);
-	//			return taskName;
-	//		} else if (lastIndex == firstIndex) {
-	//			throw new Exception("Invalid command. Missing task name.\nTask name must be inside quotation marks.");
-	//		} else if (lastIndex < firstIndex) {
-	//			throw new Error(); //never occurs
-	//		} else {
-	//			return null;
-	//		}	
-	//	}
 
 	public static String parseTaskName(String parameter) throws Exception {
 		String [] messageArray = generateArray(parameter);
@@ -495,44 +405,6 @@ public class Parser {
 		}
 		return taskVenue.trim();
 	}
-	
-//	public static void editTask (String parameter) {
-//		String [] messageArray = generateArray(parameter);
-//		int taskIndex = Integer.valueOf(messageArray[0]);
-//
-//		if (messageArray[1].equalsIgnoreCase("start") 
-//				&& messageArray[2].equalsIgnoreCase("time")) {
-//			int startTime = Integer.valueOf(messageArray[3]);
-//		} else if (messageArray[1].equalsIgnoreCase("end") 
-//				&& messageArray[2].equalsIgnoreCase("time")) {
-//			int endTime = Integer.valueOf(messageArray[3]);
-//		} else if (messageArray[1].equalsIgnoreCase("start") 
-//				&& messageArray[2].equalsIgnoreCase("day")) {
-//
-//		} else if (messageArray[1].equalsIgnoreCase("end") 
-//				&& messageArray[2].equalsIgnoreCase("day")) {
-//
-//		} else if (messageArray[1].equalsIgnoreCase("task") 
-//				&& messageArray[2].equalsIgnoreCase("name")) {
-//			String taskName = EMPTY_STRING;
-//			for (int i=3; i<= messageArray.length-1; i++) {
-//				taskName = messageArray[i] + SINGLE_SPACE;
-//			}
-//			taskName = taskName.trim();
-//		} else if (messageArray[1].equalsIgnoreCase("person")) {
-//			String taskPerson = EMPTY_STRING;
-//			for (int i=3; i<= messageArray.length-1; i++) {
-//				taskPerson = messageArray[i] + SINGLE_SPACE;
-//			}
-//			taskPerson = taskPerson.trim();
-//		} else if (messageArray[1].equalsIgnoreCase("venue")) {
-//			String taskVenue = EMPTY_STRING;
-//			for (int i=3; i<= messageArray.length-1; i++) {
-//				taskVenue = messageArray[i] + SINGLE_SPACE;
-//			}
-//			taskVenue = taskVenue.trim();
-//		}
-//	}
 
 	public static DateTime parseTaskStart(String parameter) throws Exception {
 		String[] messageArray = generateArray(parameter);
