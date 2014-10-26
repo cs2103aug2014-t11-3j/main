@@ -229,14 +229,29 @@ public class Parser {
 //		}
 		
 		for (int i = 0; i<=messageArray.length-1; i++) {
-			if ((messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING)
-					|| messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING_2))) {
-				for (int j=i+1; j<=messageArray.length-1) {
-					if (messageArray[j])
+			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING)
+					|| messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING_2)) {
+				for (int j=i+1; j<=messageArray.length-1; j++) {
+					if (messageArray[j].equalsIgnoreCase(KEYWORD_AT) 
+							&& isInteger(messageArray[j+1])) {
+						try {
+							int startTime = Integer.parseInt(messageArray[j+1]);
+							if (startTime >= 0000 && startTime <= 2359) {
+								return startTime;
+							} else {
+								return 0000;
+							}
+						} catch (NumberFormatException nfe) {
+							throw new Exception("Invalid Time Format");
+						} 
+					} else if (messageArray[j].equalsIgnoreCase(KEYWORD_DAY_ENDING)) {
+						return 0000;
+					}
 				}
 			}
 		}
-				return 0000;
+		
+		return 0000;
 	}
 
 	public static int parseYear(String dateInString) throws Exception {
