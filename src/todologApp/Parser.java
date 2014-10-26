@@ -165,30 +165,50 @@ public class Parser {
 	public static int parseTaskEndTime(String parameter) throws Exception {
 		String [] messageArray = generateArray(parameter);
 
-		for (int i = 0; i+3<=messageArray.length; i++) {
-			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING) && 
-					messageArray[i+2].equalsIgnoreCase(SYMBOL_AT)){
-				try {
-					int endTime = Integer.parseInt(messageArray[i+3]);
-					if (endTime >= 0000 && endTime <= 2359) {
-						return endTime;
-					} else {
-						return 2359;
+//		for (int i = 0; i+3<=messageArray.length; i++) {
+//			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING) && 
+//					messageArray[i+2].equalsIgnoreCase(SYMBOL_AT)){
+//				try {
+//					int endTime = Integer.parseInt(messageArray[i+3]);
+//					if (endTime >= 0000 && endTime <= 2359) {
+//						return endTime;
+//					} else {
+//						return 2359;
+//					}
+//				} catch (NumberFormatException nfe) {
+//					throw new Exception("Invalid time format");
+//				}
+//			} else if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING) && 
+//					messageArray[i+1].equalsIgnoreCase(SYMBOL_AT)){
+//				try {
+//					int endTime = Integer.parseInt(messageArray[i+2]);
+//					if (endTime >= 0000 && endTime <= 2359) {
+//						return endTime;
+//					} else {
+//						return 2359;
+//					}
+//				} catch (NumberFormatException nfe) {
+//					throw new Exception("Invalid Time Format");
+//				}
+//			}
+//		}
+		
+		for (int i = 0; i<=messageArray.length-1; i++) {
+			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING)) {
+				for (int j=i+1; j<=messageArray.length-1; j++) {
+					if (messageArray[j].equalsIgnoreCase(KEYWORD_AT) 
+							&& isInteger(messageArray[j+1])) {
+						try {
+							int endTime = Integer.parseInt(messageArray[j+1]);
+							if (endTime >= 0000 && endTime <= 2359) {
+								return endTime;
+							} else {
+								return 2359;
+							}
+						} catch (NumberFormatException nfe) {
+							throw new Exception("Invalid Time Format");
+						} 
 					}
-				} catch (NumberFormatException nfe) {
-					throw new Exception("Invalid time format");
-				}
-			} else if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING) && 
-					messageArray[i+1].equalsIgnoreCase(SYMBOL_AT)){
-				try {
-					int endTime = Integer.parseInt(messageArray[i+2]);
-					if (endTime >= 0000 && endTime <= 2359) {
-						return endTime;
-					} else {
-						return 2359;
-					}
-				} catch (NumberFormatException nfe) {
-					throw new Exception("Invalid Time Format");
 				}
 			}
 		}
@@ -467,7 +487,7 @@ public class Parser {
 						&& !messageArray[j].equalsIgnoreCase(KEYWORD_DEADLINE)
 						&& !messageArray[j].equalsIgnoreCase(KEYWORD_RECURRING)
 						&& !messageArray[j].equalsIgnoreCase(KEYWORD_WITH)
-						&& !messageArray[j].equalsIgnoreCase(SYMBOL_AT)
+						&& !messageArray[j].equalsIgnoreCase(KEYWORD_AT)
 						&& !isInteger(messageArray[j])) {
 					taskVenue = taskVenue + messageArray[j] + SINGLE_SPACE;
 				} else {
