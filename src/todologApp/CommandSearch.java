@@ -29,10 +29,12 @@ public class CommandSearch implements Command {
 		}
 		return searchList;
 	}
-
-	@Override
-	public String undo() {
-		// TODO Auto-generated method stub
-		return null;
+	
+	public String undo(){
+		return "unexpected error";
 	}
+	public boolean isUndoable(){
+		return false;
+	}
+
 }
