@@ -6,7 +6,7 @@ import java.util.LinkedList;
 public class CommandDeleteAll implements Command {
 	private LinkedList<Task> _tasks;
 	private DBStorage _storage;
-	private int _index;
+	private boolean validity;
 
 	public CommandDeleteAll() {
 	}
@@ -19,9 +19,11 @@ public class CommandDeleteAll implements Command {
 			_storage.store(new LinkedList<Task>());
 		} catch (IOException e) {
 			feedback = "Cannot store the list to ToDoLog";
+			validity=false;
 			return feedback;
 		}
 		feedback = "Deleted all tasks";
+		validity=true;
 		return feedback;
 	}
 
@@ -36,6 +38,10 @@ public class CommandDeleteAll implements Command {
 		feedback = "Undone the delete command";
 		return feedback;
 
+	}
+	
+	public boolean isUndoable(){
+		return validity;
 	}
 
 }
