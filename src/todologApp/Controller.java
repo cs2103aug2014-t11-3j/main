@@ -68,10 +68,10 @@ public class Controller {
 		Command command;
 		try {
 			command = Parser.createCommand(userCommand);
-			if (!(command instanceof CommandUndo)){
+			_feedback = command.execute();
+			if (!(command instanceof CommandUndo) && !(command instanceof CommandRedo)){
 				_history.addCommand(command);
 			}
-			_feedback = command.execute();
 		} catch (Exception e) {
 			_feedback = e.getMessage();
 		}

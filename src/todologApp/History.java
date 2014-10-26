@@ -17,13 +17,23 @@ public class History {
 		_position ++;
 		return _commands.add(command);
 	}
-	public Command removeCommand() throws Exception {
+	public Command goBackwards() throws Exception {
 		if (_position >= 0) {
 			Command toBeUndone = _commands.get(_position);
 			_position--;
 			return toBeUndone;
 		} else {
-			throw new Exception("No more to undo!");
+			throw new Exception("No commands to undo!");
+		}
+	}
+	public Command goForwards() throws Exception {
+		_position++;
+		if (_position < _commands.size()) {			
+			Command toBeRedone = _commands.get(_position);
+			return toBeRedone;
+		} else {
+			_position--;
+			throw new Exception("No commands to redo!");
 		}
 	}
 }
