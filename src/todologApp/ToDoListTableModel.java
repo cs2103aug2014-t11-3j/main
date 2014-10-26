@@ -25,6 +25,8 @@ public class ToDoListTableModel extends AbstractTableModel{
 	
 	private final static String[] columnNames = {"No.","Name","Time","Person / Venue","Done"};
 	private LinkedList<Task> tableData;
+	private final static int pageSize = 17;
+	private int pageOffSet = 0;
 	
 	public ToDoListTableModel(LinkedList<Task> toDoListItems){
 		tableData = toDoListItems;
@@ -37,15 +39,18 @@ public class ToDoListTableModel extends AbstractTableModel{
 		return columnNames.length;
 	}
 	
+	
 	public int getRowCount(){
 		return tableData.size();
+		//return Math.min(pageSize, tableData.size());
 	}
 	
 	public String getColumnName(int col){
 		return columnNames[col];
 	}
 	public Object getValueAt(int row,int col){
-
+		
+		int actualRow = row + (pageOffSet * pageSize);
 		Task task = tableData.get(row);
 		
 		if(task == null){
@@ -100,4 +105,26 @@ public class ToDoListTableModel extends AbstractTableModel{
 			
 		}
 	}
+	
+	public int getPageOffSet(){
+		return pageOffSet;
+	}
+	
+	public int getPageCount() {
+	    return (int) Math.ceil((double) tableData.size() / pageSize);
+	}
+	
+	 public void pageDown() {
+		    if (pageOffSet < getPageCount() - 1) {
+		      pageOffSet++;
+		      fireTableDataChanged();
+		    }
+		  }
+
+	 public void pageUp() {
+		    if (pageOffSet > 0) {
+		      pageOffSet--;
+		      fireTableDataChanged();
+		    }
+		  }
 }
