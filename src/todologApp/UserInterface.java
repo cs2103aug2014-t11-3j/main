@@ -60,6 +60,7 @@ public class UserInterface extends JFrame { /**
 					UserInterface window = new UserInterface();
 					window.setVisible(true);   
 					
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -367,6 +368,7 @@ public class UserInterface extends JFrame { /**
 		adjustTableColumns(toDoListTable);
 		dynamicHelpText.setText(Controller.getFeedback());
 		changeTableColors(toDoListTable);
+		
 		// create more here
 	}
 	
@@ -398,6 +400,11 @@ public class UserInterface extends JFrame { /**
 		
 		@Override
 		public void keyPressed(KeyEvent e){
+			
+		}
+		
+		@Override
+		public void keyReleased(KeyEvent e){
 			int keyCode = e.getKeyCode();
 			if(keyCode == KeyEvent.VK_UP){
 			toDoListTableModel.pageUp();
@@ -406,10 +413,6 @@ public class UserInterface extends JFrame { /**
 			if(keyCode == KeyEvent.VK_DOWN){
 				toDoListTableModel.pageDown();
 			}
-		}
-		
-		@Override
-		public void keyReleased(KeyEvent e){
 			
 		}
 		
@@ -420,12 +423,12 @@ public class UserInterface extends JFrame { /**
 			switch(keyCode){
 			case KeyEvent.VK_UP:
 				toDoListTableModel.pageUp();
-				toDoListTableModel.fireTableDataChanged();
+				
 				break;
 				
 			case KeyEvent.VK_DOWN:
 				toDoListTableModel.pageDown();
-				toDoListTableModel.fireTableDataChanged();
+				
 				break;
 			}
 			
