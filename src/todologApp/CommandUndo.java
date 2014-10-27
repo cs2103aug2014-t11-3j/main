@@ -15,5 +15,9 @@ public class CommandUndo implements Command {
 		// TODO Auto-generated method stub
 		return "Unexpected Error!";
 	}
+	
+	public boolean isUndoable(){
+		return false;
+	}
 
 }

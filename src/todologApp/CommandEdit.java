@@ -10,6 +10,7 @@ public class CommandEdit implements Command {
 	private Task _taskEdited;
 	private int _index;
 	private DBStorage _storage;
+	private boolean validity;
 
 	// private static Storage _storage;
 
@@ -86,6 +87,7 @@ public class CommandEdit implements Command {
 		try {
 			editedField = formNewTask();
 		} catch (Exception e1) {
+			validity=false;
 			feedback = e1.getMessage();
 			return feedback;
 		}
@@ -95,13 +97,16 @@ public class CommandEdit implements Command {
 			_storage.store(tasks);
 		} catch (IOException e) {
 			feedback = "Cannot store the list to ToDoLog";
+			validity=false;
 			return feedback;
 		}
 		if(editedField.equals("invalid")){
 			feedback = "Invalid input";
+			validity=false;
 		}
 		else{
-			feedback = "Edited " + editedField + " of the task.";	
+			feedback = "Edited " + editedField + " of the task.";
+			validity=true;
 		}
 		return feedback;
 	}
@@ -120,7 +125,10 @@ public class CommandEdit implements Command {
 		feedback = "Undone edit the "+_editType+".";
 		return feedback;
 	}
-
+	
+	public boolean isUndoable(){
+		return validity;
+	}
 
 }
 

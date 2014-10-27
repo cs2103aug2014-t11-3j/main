@@ -6,6 +6,7 @@ import java.util.LinkedList;
 public class CommandAdd implements Command {
 	private Task _task;
 	private DBStorage _storage;
+	private boolean validity;
 	public CommandAdd(Task task) {
 		_task = task;
 		}
@@ -20,9 +21,11 @@ public class CommandAdd implements Command {
 			_storage.store(newList);
 		} catch (IOException e) {
 			feedback = "Cannot store the list to ToDoLog";
+			validity=false;
 			return feedback;
 		}
 		feedback = "Added " + _task.getTaskName() + " to ToDoLog";
+		validity=true;
 		return feedback;
 	}
 	
@@ -52,7 +55,6 @@ public class CommandAdd implements Command {
 	    }
 	}
 	
-
 	public String undo() {
 		String feedback;
 		_storage = Controller.getDBStorage();
@@ -66,11 +68,14 @@ public class CommandAdd implements Command {
 		}
 		if (isRemoved) {
 			feedback = "Undone adding "+ _task.getTaskName();
-		} else {
+		} 
+		else {
 			feedback = "Cannot undo adding "+ _task.getTaskName(); 
 		}
 		return feedback;
-
+	}
+	public boolean isUndoable(){
+		return validity;
 	}
 
 }
