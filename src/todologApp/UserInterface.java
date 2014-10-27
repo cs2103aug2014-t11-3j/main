@@ -393,11 +393,14 @@ public class UserInterface extends JFrame { /**
 			toDoListItems = Controller.getDBStorage().load();
 			toDoListTableModel.setTableData(toDoListItems);
 			toDoListTableModel.fireTableDataChanged();
+			
+			//I want the screen to show the previous screen if the next screen has no more items to display
 			if(Parser.getFirstWord(commandString).equalsIgnoreCase("delete") && ((toDoListTableModel.getActualRowCount() % toDoListTableModel.getPageSize()) == 0) && toDoListTableModel.getActualRowCount() > 0){
 				toDoListTableModel.pageUp();
 				
 			}
 			
+			//show the screen where the new item has been added
 			if(Parser.getFirstWord(commandString).equalsIgnoreCase("add") && toDoListTableModel.getPageCount() >= 2){
 				int i = 1;
 				while( i < toDoListTableModel.getPageCount()){
