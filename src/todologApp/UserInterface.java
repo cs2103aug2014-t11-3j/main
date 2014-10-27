@@ -413,7 +413,7 @@ public class UserInterface extends JFrame { /**
 		}
 	}
 	
-	private class ToDoListTableListener implements KeyListener{
+	private class ToDoListTableListener implements KeyListener {
 		
 		@Override
 		public void keyPressed(KeyEvent e){
@@ -431,26 +431,33 @@ public class UserInterface extends JFrame { /**
 				toDoListTableModel.pageDown();
 			}
 			
+			if (keyCode == KeyEvent.VK_UP) {
+				System.out.print("4");
+			}
+			
+			if (keyCode == KeyEvent.VK_DOWN) {
+				System.out.print("5");
+			}
+			
 		}
 		
 		@Override
 		public void keyTyped(KeyEvent e){
-			int keyCode = e.getKeyCode();
-			
-			switch(keyCode){
-			case KeyEvent.VK_PAGE_UP:
-				toDoListTableModel.pageUp();
-				
-				break;
-				
-			case KeyEvent.VK_PAGE_DOWN:
-				toDoListTableModel.pageDown();
-				
-				break;
-			}
-			
-			
+//			int keyCode = e.getKeyCode();
+//			
+//			switch(keyCode){
+//			case KeyEvent.VK_PAGE_UP:
+//				toDoListTableModel.pageUp();
+//				
+//				break;
+//				
+//			case KeyEvent.VK_PAGE_DOWN:
+//				toDoListTableModel.pageDown();
+//				
+//				break;
+//			}
 		}
+		
 	}
 	
 	//this method is to set up the parameters of the gridbagconstraints
