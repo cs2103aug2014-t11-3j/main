@@ -114,7 +114,12 @@ public class ToDoListTableModel extends AbstractTableModel{
 			return col4;
 		}
 		case 4:
-			return task.getTaskStatus();
+			if(task.getTaskStatus() == true){
+				return "done";
+			}
+			else{
+				return "";
+			}
 			
 		default:
 			return null;
