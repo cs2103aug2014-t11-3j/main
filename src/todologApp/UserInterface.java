@@ -406,11 +406,11 @@ public class UserInterface extends JFrame { /**
 		@Override
 		public void keyReleased(KeyEvent e){
 			int keyCode = e.getKeyCode();
-			if(keyCode == KeyEvent.VK_UP){
+			if(keyCode == KeyEvent.VK_PAGE_UP){
 			toDoListTableModel.pageUp();
 			}
 			
-			if(keyCode == KeyEvent.VK_DOWN){
+			if(keyCode == KeyEvent.VK_PAGE_DOWN){
 				toDoListTableModel.pageDown();
 			}
 			
@@ -421,12 +421,12 @@ public class UserInterface extends JFrame { /**
 			int keyCode = e.getKeyCode();
 			
 			switch(keyCode){
-			case KeyEvent.VK_UP:
+			case KeyEvent.VK_PAGE_UP:
 				toDoListTableModel.pageUp();
 				
 				break;
 				
-			case KeyEvent.VK_DOWN:
+			case KeyEvent.VK_PAGE_DOWN:
 				toDoListTableModel.pageDown();
 				
 				break;
