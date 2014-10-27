@@ -385,7 +385,7 @@ public class UserInterface extends JFrame { /**
 //			commandEntryTextField.setText("");
 //			toDoListText.setText(Controller.getOutput());
 //			dynamicHelpText.setText(Controller.getFeedBack());
-
+			PreviousCommand.addInput(commandString);
 			Controller.acceptUserCommand(commandString);
 			commandEntryTextField.setText("");
 			dynamicHelpText.setText(Controller.getFeedback());	
@@ -432,11 +432,21 @@ public class UserInterface extends JFrame { /**
 			}
 			
 			if (keyCode == KeyEvent.VK_UP) {
-				commandEntryTextField.setText("abcdef");
+				try {
+					commandEntryTextField.setText(PreviousCommand.UpArrow());
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 			
 			if (keyCode == KeyEvent.VK_DOWN) {
-				commandEntryTextField.setText("dfknklgner");
+				try {
+					commandEntryTextField.setText(PreviousCommand.DownArrow());
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 			
 		}
