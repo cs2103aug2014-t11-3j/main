@@ -13,17 +13,17 @@ public class Controller {
 
 	private static String _feedback;
 	private static final String FEEDBACK_START = "To start, enter a command: add, delete, edit, done.";
-	
+
 	public static void setStorage(DBStorage DBstorage) {
 		_dbStorage = DBstorage;
 	}
-	
+
 
 	public static DBStorage getDBStorage() {
 		return _dbStorage;
 
 	}
-	
+
 	public static void setHistory(History history) {
 		_history = history;
 	}
@@ -31,7 +31,7 @@ public class Controller {
 		return _history;
 
 	}
-	 
+
 	// unused
 	// code for TextGUI display
 	public static String createNewDisplay() {
@@ -40,26 +40,26 @@ public class Controller {
 		for (int i = 0; i< tasks.size(); i++) {
 			Task task = tasks.get(i);
 			switch (task.getTaskType()) {
-				case FLOATING:
-					display += String.valueOf(i+1)+". "+ task.getTaskName()+" "
-							+ String.valueOf(task.getTaskStatus()) +'\n';
-					break;
-				case TIMED:
-					display += String.valueOf(i+1)+". "+ task.getTaskName()+
-						" "+task.getStartDay()+" "+task.getStartTime()+" "+
-						task.getEndDay()+" "+task.getEndTime()+" "
-						+ String.valueOf(task.getTaskStatus())+'\n';
-					break;
-				case DEADLINE:
-					display += String.valueOf(i+1)+". "+ task.getTaskName()+
-						" "+task.getEndDay()+" "+task.getEndTime()+" "
-						+ String.valueOf(task.getTaskStatus())+'\n';
-					break;
-				default:
-					display += "invalid"+'\n';
-					break;
+			case FLOATING:
+				display += String.valueOf(i+1)+". "+ task.getTaskName()+" "
+						+ String.valueOf(task.getTaskStatus()) +'\n';
+				break;
+			case TIMED:
+				display += String.valueOf(i+1)+". "+ task.getTaskName()+
+				" "+task.getStartDay()+" "+task.getStartTime()+" "+
+				task.getEndDay()+" "+task.getEndTime()+" "
+				+ String.valueOf(task.getTaskStatus())+'\n';
+				break;
+			case DEADLINE:
+				display += String.valueOf(i+1)+". "+ task.getTaskName()+
+				" "+task.getEndDay()+" "+task.getEndTime()+" "
+				+ String.valueOf(task.getTaskStatus())+'\n';
+				break;
+			default:
+				display += "invalid"+'\n';
+				break;
 			}
-			
+
 		}
 		return display;
 	}
