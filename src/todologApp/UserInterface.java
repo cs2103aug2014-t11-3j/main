@@ -432,11 +432,11 @@ public class UserInterface extends JFrame { /**
 			}
 			
 			if (keyCode == KeyEvent.VK_UP) {
-				System.out.print("4");
+				commandEntryTextField.setText("abcdef");
 			}
 			
 			if (keyCode == KeyEvent.VK_DOWN) {
-				System.out.print("5");
+				commandEntryTextField.setText("dfknklgner");
 			}
 			
 		}
