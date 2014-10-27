@@ -251,19 +251,19 @@ public class UserInterface extends JFrame { /**
 		//legendMainPanel.setBorder(borderLineForLegend);
 		legendMainPanel.setPreferredSize(new Dimension(100,100));
 		
-		arrangeLegend(legendMainPanel);
+//		arrangeLegend(legendMainPanel);
 		
 		bottomPanel.add(legendMainPanel, LegendParameters);
 		legendMainPanel.setOpaque(false);
 	}
 	
-	private void arrangeLegend(JPanel legendMainPanel){
-		Font fontForLegend = new Font("SansSerif",Font.BOLD,8);
-		Border borderLineForText = new EmptyBorder(0,0,0,0);
-		GridBagConstraints legendPanelLayout;
-		GridBagConstraints legendTextLayout;
-		Insets insets = new Insets(5,5,5,5);
-		
+//	private void arrangeLegend(JPanel legendMainPanel){
+//		Font fontForLegend = new Font("SansSerif",Font.BOLD,8);
+//		Border borderLineForText = new EmptyBorder(0,0,0,0);
+//		GridBagConstraints legendPanelLayout;
+//		GridBagConstraints legendTextLayout;
+//		Insets insets = new Insets(5,5,5,5);
+//		
 //		//this is the "priority: high" colored box
 //		JPanel priorityHighPanel = new JPanel();
 //		priorityHighPanel.setPreferredSize(new Dimension(20,5));
@@ -324,24 +324,24 @@ public class UserInterface extends JFrame { /**
 //		legendMainPanel.add(priorityLow,legendTextLayout); 
 //		
 		//this is the "done" colored box
-		JPanel donePanel = new JPanel();
-		donePanel.setPreferredSize(new Dimension(20,5));
-		donePanel.setBackground(Color.GREEN);
-		legendPanelLayout = new GridBagConstraints(0,3,1,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
-		legendMainPanel.add(donePanel,legendPanelLayout);
+//		JPanel donePanel = new JPanel();
+//		donePanel.setPreferredSize(new Dimension(20,5));
+//		donePanel.setBackground(Color.GREEN);
+//		legendPanelLayout = new GridBagConstraints(0,3,1,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
+//		legendMainPanel.add(donePanel,legendPanelLayout);
 		
 		//the text for "done"
-		JTextField done = new JTextField();
-		done.setPreferredSize(new Dimension(30,15));
-		done.setText("Done");
-		done.setFont(fontForLegend);
-		done.setEnabled(false);
-		done.setDisabledTextColor(Color.WHITE);
-		done.setBorder(borderLineForText);
-		done.setOpaque(false);
-		legendTextLayout = new GridBagConstraints(1,3,5,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
-		legendMainPanel.add(done,legendTextLayout); 
-	}
+//		JTextField done = new JTextField();
+//		done.setPreferredSize(new Dimension(30,15));
+//		done.setText("Done");
+//		done.setFont(fontForLegend);
+//		done.setEnabled(false);
+//		done.setDisabledTextColor(Color.WHITE);
+//		done.setBorder(borderLineForText);
+//		done.setOpaque(false);
+//		legendTextLayout = new GridBagConstraints(1,3,5,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
+//		legendMainPanel.add(done,legendTextLayout); 
+//	}
 	
 	/*	private void createButton(JPanel bottomPanel){
 			GridBagConstraints buttonParameters = setParameters(BUTTON_PARAMETERS);
