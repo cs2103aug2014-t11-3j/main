@@ -5,6 +5,7 @@
 package todologApp;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -58,6 +59,7 @@ public class UserInterface extends JFrame { /**
 				try {
 					UserInterface window = new UserInterface();
 					window.setVisible(true);   
+					
 					
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -122,11 +124,13 @@ public class UserInterface extends JFrame { /**
 		panelParameters = setParameters(TODOLIST_PARAMETERS);
 		scrollPaneParameters = setParameters(TODOLIST_SCROLLPANE_PARAMETERS);
 		
-		toDoListTable = new JTable(new ToDoListTableModel(toDoListItems));    
+		toDoListTableModel = new ToDoListTableModel(toDoListItems);
+		toDoListTable = new JTable(toDoListTableModel);    
 		toDoListTable.setPreferredSize(new Dimension(650,300));
 		adjustTableColumns(toDoListTable);
 		changeTableColors(toDoListTable);
 		toDoListTable.getTableHeader().setResizingAllowed(false);
+		//toDoListTable.addKeyListener(new ToDoListTableListener());
 		//updateToDoListTable(toDoListTable,toDoListItems,toDoListHeaders);
 		
 		JScrollPane toDoList = new JScrollPane(toDoListTable)
@@ -215,6 +219,7 @@ public class UserInterface extends JFrame { /**
 		commandEntryTextField = new JTextField(20);
 		bottomPanel.add(commandEntryTextField,bottomPanelParameters);
 		commandEntryTextField.addActionListener(new CommandEntryTextFieldListener());
+		commandEntryTextField.addKeyListener(new ToDoListTableListener());
 	}
 	
 	private void createTextArea(JPanel bottomPanel){
@@ -363,6 +368,7 @@ public class UserInterface extends JFrame { /**
 		adjustTableColumns(toDoListTable);
 		dynamicHelpText.setText(Controller.getFeedback());
 		changeTableColors(toDoListTable);
+		
 		// create more here
 	}
 	
@@ -387,6 +393,46 @@ public class UserInterface extends JFrame { /**
 			toDoListTableModel.setTableData(toDoListItems);
 			toDoListTableModel.fireTableDataChanged();
 
+		}
+	}
+	
+	private class ToDoListTableListener implements KeyListener{
+		
+		@Override
+		public void keyPressed(KeyEvent e){
+			
+		}
+		
+		@Override
+		public void keyReleased(KeyEvent e){
+			int keyCode = e.getKeyCode();
+			if(keyCode == KeyEvent.VK_UP){
+			toDoListTableModel.pageUp();
+			}
+			
+			if(keyCode == KeyEvent.VK_DOWN){
+				toDoListTableModel.pageDown();
+			}
+			
+		}
+		
+		@Override
+		public void keyTyped(KeyEvent e){
+			int keyCode = e.getKeyCode();
+			
+			switch(keyCode){
+			case KeyEvent.VK_UP:
+				toDoListTableModel.pageUp();
+				
+				break;
+				
+			case KeyEvent.VK_DOWN:
+				toDoListTableModel.pageDown();
+				
+				break;
+			}
+			
+			
 		}
 	}
 	
