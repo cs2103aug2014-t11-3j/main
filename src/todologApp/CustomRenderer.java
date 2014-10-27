@@ -26,7 +26,7 @@ public class CustomRenderer extends DefaultTableCellRenderer {
 		else if (((String) table.getValueAt(row, 3)).equalsIgnoreCase("Medium")) {
 			cellComponent.setBackground(Color.PINK);
 		}
-		else if (((Boolean) table.getValueAt(row, 4)) == true) {
+		else if (((String) table.getValueAt(row, 4)).equalsIgnoreCase("done")) {
 			JPanel color = new JPanel()
 			{
 				/**
