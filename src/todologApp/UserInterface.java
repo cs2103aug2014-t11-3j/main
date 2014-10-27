@@ -380,7 +380,8 @@ public class UserInterface extends JFrame { /**
 			//(I think for this is when typing (to guess the input)
 			// and for pressing enter then send the text to Parser)
 			String commandString = commandEntryTextField.getText();
-
+			
+		
 //			Controller.acceptUserCommand(commandString);	    
 //			commandEntryTextField.setText("");
 //			toDoListText.setText(Controller.getOutput());
@@ -392,6 +393,20 @@ public class UserInterface extends JFrame { /**
 			toDoListItems = Controller.getDBStorage().load();
 			toDoListTableModel.setTableData(toDoListItems);
 			toDoListTableModel.fireTableDataChanged();
+			if(Parser.getFirstWord(commandString).equalsIgnoreCase("delete") && ((toDoListTableModel.getActualRowCount() % toDoListTableModel.getPageSize()) == 0) && toDoListTableModel.getActualRowCount() > 0){
+				toDoListTableModel.pageUp();
+				
+			}
+			
+			if(Parser.getFirstWord(commandString).equalsIgnoreCase("add") && toDoListTableModel.getPageCount() >= 2){
+				int i = 1;
+				while( i < toDoListTableModel.getPageCount()){
+				toDoListTableModel.pageDown();
+				i++;
+				}
+			}
+			
+			
 
 		}
 	}

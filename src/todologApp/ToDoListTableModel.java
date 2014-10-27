@@ -42,7 +42,7 @@ public class ToDoListTableModel extends AbstractTableModel{
 	
 	public int getRowCount(){
 		//return tableData.size();
-		if(pageOffSet == getPageCount() -1){
+		if(pageOffSet == getPageCount() -1){  
 			if(tableData.size() % pageSize == 0){
 				return pageSize;
 			}
@@ -54,6 +54,13 @@ public class ToDoListTableModel extends AbstractTableModel{
 		return Math.min(pageSize, tableData.size());
 	}
 	
+	public int getActualRowCount(){
+		return tableData.size();
+	}
+	
+	public int getPageSize(){
+		return pageSize;
+	}
 	public String getColumnName(int col){
 		return columnNames[col];
 	}
