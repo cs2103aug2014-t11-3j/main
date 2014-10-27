@@ -128,8 +128,13 @@ public class Parser {
 			return command;
 		} else if (firstWord.equalsIgnoreCase("undo")) {
 			History history = Controller.getHistory();
-			Command toBeUndone = history.removeCommand();
+			Command toBeUndone = history.goBackwards();
 			CommandUndo command = new CommandUndo(toBeUndone);
+			return command;
+		} else if (firstWord.equalsIgnoreCase("redo")) {
+			History history = Controller.getHistory();
+			Command toBeUndone = history.goForwards();
+			CommandRedo command = new CommandRedo(toBeUndone);
 			return command;
 		}
 		else {
