@@ -264,66 +264,65 @@ public class UserInterface extends JFrame { /**
 		GridBagConstraints legendTextLayout;
 		Insets insets = new Insets(5,5,5,5);
 		
-		//this is the "priority: high" colored box
-		JPanel priorityHighPanel = new JPanel();
-		priorityHighPanel.setPreferredSize(new Dimension(20,5));
-		priorityHighPanel.setBackground(Color.RED);
-		
-		legendPanelLayout = new GridBagConstraints(0,0,1,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
-		legendMainPanel.add(priorityHighPanel,legendPanelLayout);
-		
-		//the text for "priority: high"
-		JTextField priorityHigh = new JTextField();
-		priorityHigh.setPreferredSize(new Dimension(30,15));
-		priorityHigh.setText("Priority: High");
-		priorityHigh.setFont(fontForLegend);
-		priorityHigh.setEnabled(false);
-		priorityHigh.setDisabledTextColor(Color.WHITE);
-		priorityHigh.setBorder(borderLineForText);
-		priorityHigh.setOpaque(false);
-		legendTextLayout = new GridBagConstraints(1,0,5,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
-		legendMainPanel.add(priorityHigh,legendTextLayout);
-        
-		//this is the "priority: medium" colored box
-		JPanel priorityMediumPanel = new JPanel();
-		priorityMediumPanel.setPreferredSize(new Dimension(20,5));
-		priorityMediumPanel.setBackground(Color.PINK);
-		legendPanelLayout = new GridBagConstraints(0,1,1,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
-		legendMainPanel.add(priorityMediumPanel,legendPanelLayout);
-		
-		//the text for "priority: medium"
-		JTextField priorityMedium = new JTextField();
-		priorityMedium.setPreferredSize(new Dimension(30,15));
-		priorityMedium.setText("Priority: Medium");
-		priorityMedium.setFont(fontForLegend);
-		priorityMedium.setEnabled(false);
-		priorityMedium.setDisabledTextColor(Color.WHITE);
-		priorityMedium.setBorder(borderLineForText);
-		priorityMedium.setOpaque(false);
-		legendTextLayout = new GridBagConstraints(1,1,5,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
-		legendMainPanel.add(priorityMedium,legendTextLayout);
-		
-		//this is the "priority: low" colored box
-		JPanel priorityLowPanel = new JPanel();
-		priorityLowPanel.setPreferredSize(new Dimension(20,5));
-		priorityLowPanel.setBackground(Color.WHITE);
-		Border borderLineForLow = new LineBorder(Color.BLACK);
-		priorityLowPanel.setBorder(borderLineForLow);
-		legendPanelLayout = new GridBagConstraints(0,2,1,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
-		legendMainPanel.add(priorityLowPanel,legendPanelLayout);
-		
-		//the text for "priority: low"
-		JTextField priorityLow = new JTextField();
-		priorityLow.setPreferredSize(new Dimension(30,15));
-		priorityLow.setText("Priority: Low");
-		priorityLow.setFont(fontForLegend);
-		priorityLow.setEnabled(false);
-		priorityLow.setDisabledTextColor(Color.WHITE);
-		priorityLow.setBorder(borderLineForText);
-		priorityLow.setOpaque(false);
-		legendTextLayout = new GridBagConstraints(1,2,5,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
-		legendMainPanel.add(priorityLow,legendTextLayout); 
-		
+//		//this is the "priority: high" colored box
+//		JPanel priorityHighPanel = new JPanel();
+//		priorityHighPanel.setPreferredSize(new Dimension(20,5));
+//		priorityHighPanel.setBackground(Color.RED);	
+//		legendPanelLayout = new GridBagConstraints(0,0,1,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
+//		legendMainPanel.add(priorityHighPanel,legendPanelLayout);
+//	
+//		//the text for "priority: high"
+//		JTextField priorityHigh = new JTextField();
+//		priorityHigh.setPreferredSize(new Dimension(30,15));
+//		priorityHigh.setText("Priority: High");
+//		priorityHigh.setFont(fontForLegend);
+//		priorityHigh.setEnabled(false);
+//		priorityHigh.setDisabledTextColor(Color.WHITE);
+//		priorityHigh.setBorder(borderLineForText);
+//		priorityHigh.setOpaque(false);
+//		legendTextLayout = new GridBagConstraints(1,0,5,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
+//		legendMainPanel.add(priorityHigh,legendTextLayout);
+//        
+//		//this is the "priority: medium" colored box
+//		JPanel priorityMediumPanel = new JPanel();
+//		priorityMediumPanel.setPreferredSize(new Dimension(20,5));
+//		priorityMediumPanel.setBackground(Color.PINK);
+//		legendPanelLayout = new GridBagConstraints(0,1,1,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
+//		legendMainPanel.add(priorityMediumPanel,legendPanelLayout);
+//		
+//		//the text for "priority: medium"
+//		JTextField priorityMedium = new JTextField();
+//		priorityMedium.setPreferredSize(new Dimension(30,15));
+//		priorityMedium.setText("Priority: Medium");
+//		priorityMedium.setFont(fontForLegend);
+//		priorityMedium.setEnabled(false);
+//		priorityMedium.setDisabledTextColor(Color.WHITE);
+//		priorityMedium.setBorder(borderLineForText);
+//		priorityMedium.setOpaque(false);
+//		legendTextLayout = new GridBagConstraints(1,1,5,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
+//		legendMainPanel.add(priorityMedium,legendTextLayout);
+//		
+//		//this is the "priority: low" colored box
+//		JPanel priorityLowPanel = new JPanel();
+//		priorityLowPanel.setPreferredSize(new Dimension(20,5));
+//		priorityLowPanel.setBackground(Color.WHITE);
+//		Border borderLineForLow = new LineBorder(Color.BLACK);
+//		priorityLowPanel.setBorder(borderLineForLow);
+//		legendPanelLayout = new GridBagConstraints(0,2,1,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
+//		legendMainPanel.add(priorityLowPanel,legendPanelLayout);
+//		
+//		//the text for "priority: low"
+//		JTextField priorityLow = new JTextField();
+//		priorityLow.setPreferredSize(new Dimension(30,15));
+//		priorityLow.setText("Priority: Low");
+//		priorityLow.setFont(fontForLegend);
+//		priorityLow.setEnabled(false);
+//		priorityLow.setDisabledTextColor(Color.WHITE);
+//		priorityLow.setBorder(borderLineForText);
+//		priorityLow.setOpaque(false);
+//		legendTextLayout = new GridBagConstraints(1,2,5,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
+//		legendMainPanel.add(priorityLow,legendTextLayout); 
+//		
 		//this is the "done" colored box
 		JPanel donePanel = new JPanel();
 		donePanel.setPreferredSize(new Dimension(20,5));
