@@ -18,8 +18,11 @@ public class CommandRedo implements Command {
 
 	@Override
 	public String undo() {
-		// TODO Auto-generated method stub
 		return "Unexpected Error!";
+	}
+	@Override
+	public boolean isUndoable() {
+		return false;
 	}
 
 }
