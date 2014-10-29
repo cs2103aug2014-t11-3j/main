@@ -128,11 +128,13 @@ public class Task {
 	public boolean getTaskStatus() {
 		return _taskStatus;
 	}
-	public String getStart() {
-		return _taskStart.toString(ISODateTimeFormat.dateTime());
+	public DateTime getStart() {
+		//return _taskStart.toString(ISODateTimeFormat.dateTime());
+		return _taskStart;
 	}
-	public String getEnd() {
-		return _taskEnd.toString(ISODateTimeFormat.dateTime());
+	public DateTime getEnd() {
+		//return _taskEnd.toString(ISODateTimeFormat.dateTime());
+		return _taskEnd;
 	}
 
 	public void toggleTaskStatus() {

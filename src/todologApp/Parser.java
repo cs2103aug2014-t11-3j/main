@@ -218,6 +218,20 @@ public class Parser {
 
 		return 0000;
 	}
+	public static boolean checkDateFormat(String dateInString){
+		int year,month,day;
+		try{
+			year=parseYear(dateInString);
+			month=parseMonth(dateInString);
+			day=parseDayOfMonth(dateInString);
+		}
+		catch(Exception e){
+			return false;
+		}
+		return true;
+		
+		
+	}
 
 	public static int parseYear(String dateInString) throws Exception {
 		int _year = 14;

@@ -3,7 +3,7 @@ package todologApp;
 import java.util.LinkedList;
 
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeConstants;
+//import org.joda.time.DateTimeConstants;
 
 
 public class CommandView implements Command {
@@ -123,6 +123,7 @@ public class CommandView implements Command {
 			endDay.withMinuteOfHour(0);
 			formViewList(startDay,endDay);
 		}
+		return "Displaying tasks for "+_toView;
 		
 		
 	}
