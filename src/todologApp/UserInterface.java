@@ -395,7 +395,7 @@ public class UserInterface extends JFrame { /**
 			toDoListTableModel.fireTableDataChanged();
 			
 			//I want the screen to show the previous screen if the next screen has no more items to display
-			if(Parser.getFirstWord(commandString).equalsIgnoreCase("delete") && ((toDoListTableModel.getActualRowCount() % toDoListTableModel.getPageSize()) == 0) && toDoListTableModel.getActualRowCount() > 0){
+			if(Parser.getFirstWord(commandString).equalsIgnoreCase("delete") && ((toDoListTableModel.getActualRowCount() % toDoListTableModel.getPageSize()) == 0) && toDoListTableModel.getActualRowCount() > 0 && (toDoListTableModel.getPageOffSet() == toDoListTableModel.getPageCount())){
 				toDoListTableModel.pageUp();
 				
 			}
