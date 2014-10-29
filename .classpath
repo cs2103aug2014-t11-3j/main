@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry excluding="src/todologApp/|src/" kind="src" path=""/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-<<<<<<< HEAD
+	<classpathentry kind="lib" path="/Users/Vani/Desktop/dom4j-1.6.jar"/>
 	<classpathentry kind="lib" path="/Users/Vani/Desktop/joda-time-2.5/joda-time-2.5.jar"/>
-	<classpathentry kind="lib" path="/Users/Vani/Documents/workspace/TodoLog/dom4j-1.6.1/dom4j-1.6.1.jar"/>
-=======
-	<classpathentry kind="lib" path="/Users/NhatLinh/Documents/Study Materials/WorkSpace/TodoLog/joda-time-2.5/joda-time-2.5.jar"/>
-	<classpathentry kind="lib" path="/Users/NhatLinh/Documents/Study Materials/WorkSpace/TodoLog/dom4j-1.6.1/dom4j-1.6.1.jar"/>
->>>>>>> f5e5e3b72642f0a622a0965ea33e6516a60a6f8c
 	<classpathentry kind="output" path="bin"/>
 </classpath>

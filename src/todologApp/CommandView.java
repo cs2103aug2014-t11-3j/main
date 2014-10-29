@@ -1,5 +1,7 @@
 package todologApp;
 
+import java.util.LinkedList;
+
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
 
@@ -7,6 +9,7 @@ import org.joda.time.DateTimeConstants;
 public class CommandView implements Command {
 	private String _toView;
 	private DBStorage _storage;
+	private static LinkedList<Task> _returnList;
 	private boolean validity;
 	private int monthInIntegers;
 	private static String DAY_KEYWORD_TODAY = "Today";
@@ -37,7 +40,7 @@ public class CommandView implements Command {
 		if(_toView.equalsIgnoreCase(DAY_KEYWORD_TODAY)||_toView.equalsIgnoreCase(DAY_KEYWORD_THIS_DAY)){
 			startDay=new DateTime(year,month,day,0,0);
 			endDay=new DateTime(year,month,day,0,0);
-			viewList(startDay,endDay);
+			formViewList(startDay,endDay);
 		}
 		//checking for tomorrow/tmr/next day
 		else if(_toView.equalsIgnoreCase(DAY_KEYWORD_TOMORROW)
@@ -49,7 +52,7 @@ public class CommandView implements Command {
 			day=startDay.getDayOfMonth();
 			startDay=new DateTime(year,month,day,0,0);
 			endDay=new DateTime(year,month,day,23,59);
-			viewList(startDay,endDay);
+			formViewList(startDay,endDay);
 		}
 		//checking for days 
 		else if(isWeekDay()){
@@ -66,7 +69,7 @@ public class CommandView implements Command {
 			day=startDay.getDayOfMonth();
 			startDay=new DateTime(year,month,day,0,0);
 			endDay=new DateTime(year,month,day,23,59);
-			viewList(startDay,endDay);	
+			formViewList(startDay,endDay);	
 		}
 		//checking for date
 		else if(Parser.checkDateFormat(_toView)){
@@ -76,7 +79,7 @@ public class CommandView implements Command {
 			day=(ddmmyy/10000);
 			startDay=new DateTime(year,month,day,0,0);
 			endDay=new DateTime(year,month,day,23,59);
-			viewList(startDay,endDay);
+			formViewList(startDay,endDay);
 		}
 		//checking for this week
 		else if(_toView.equalsIgnoreCase(DAY_KEYWORD_THIS_WEEK)){
@@ -87,7 +90,7 @@ public class CommandView implements Command {
 			startDay.withMinuteOfHour(0);
 			endDay.withHourOfDay(0);
 			endDay.withMinuteOfHour(0);
-			viewList(startDay,endDay);
+			formViewList(startDay,endDay);
 		}
 		//checking for next week
 		else if(_toView.equalsIgnoreCase(DAY_KEYWORD_NEXT_WEEK)){
@@ -99,7 +102,7 @@ public class CommandView implements Command {
 			startDay.withMinuteOfHour(0);
 			endDay.withHourOfDay(0);
 			endDay.withMinuteOfHour(0);
-			viewList(startDay,endDay);
+			formViewList(startDay,endDay);
 		}
 		//checking for month 
 		else if(isMonth()){
@@ -118,7 +121,7 @@ public class CommandView implements Command {
 			startDay.withMinuteOfHour(0);
 			endDay.withHourOfDay(0);
 			endDay.withMinuteOfHour(0);
-			viewList(startDay,endDay);
+			formViewList(startDay,endDay);
 		}
 		
 		
@@ -196,8 +199,33 @@ public class CommandView implements Command {
 	}
 
 	
-	public void viewList(DateTime startDay, DateTime endDay){
+	public void formViewList(DateTime startDay, DateTime endDay){
+		_storage = Controller.getDBStorage();
+		LinkedList<Task> storageList = _storage.load();
+		LinkedList<Task> viewList=new LinkedList<Task>();
+		for (int i = 0; i < storageList.size(); i++){
+			if(((storageList.get(i).getStart().isAfter(startDay))||(storageList.get(i).getStart().isEqual(startDay)))
+					&&((storageList.get(i).getStart().isBefore(endDay))||(storageList.get(i).getStart().isEqual(endDay)))){
+				
+				viewList.add(storageList.get(i));
+			}
+			else if(((storageList.get(i).getEnd().isAfter(startDay))||(storageList.get(i).getEnd().isEqual(startDay)))
+					&&((storageList.get(i).getEnd().isBefore(endDay))||(storageList.get(i).getEnd().isEqual(endDay)))){
+				
+				viewList.add(storageList.get(i));	
+			}
+		}
+		setReturnList(viewList);
 		
+		
+	}
+	
+	private void setReturnList(LinkedList<Task> list) {
+		_returnList = list;
+	}
+
+	public LinkedList<Task> getReturnList() {
+		return _returnList;
 	}
 
 	@Override
