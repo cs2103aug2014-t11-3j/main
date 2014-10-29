@@ -10,7 +10,7 @@ public class Controller {
 
 	private static History _history;
 	private static String _textDisplay;
-
+	private static LinkedList<Task> _displayList; 
 	private static String _feedback;
 	private static final String FEEDBACK_START = "To start, enter a command: add, delete, edit, done.";
 	
@@ -18,12 +18,13 @@ public class Controller {
 		_dbStorage = DBstorage;
 	}
 	
-
 	public static DBStorage getDBStorage() {
 		return _dbStorage;
-
 	}
 	
+	public static LinkedList<Task> getDisplayList() {
+		return _displayList;
+	}
 	public static void setHistory(History history) {
 		_history = history;
 	}
@@ -69,7 +70,12 @@ public class Controller {
 		try {
 			command = Parser.createCommand(userCommand);
 			_feedback = command.execute();
-			if (!(command instanceof CommandUndo) && !(command instanceof CommandRedo)){
+			if (command instanceof CommandSearch) {
+				_displayList = ((CommandSearch) command).getReturnList();
+			} else {
+				_displayList = _dbStorage.load();
+			}
+			if (!(command instanceof CommandUndo) && !(command instanceof CommandRedo) && !(command instanceof CommandSearch)){
 				_history.addCommand(command);
 			}
 		} catch (Exception e) {
