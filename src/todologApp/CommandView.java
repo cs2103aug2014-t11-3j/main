@@ -39,9 +39,9 @@ public class CommandView implements Command {
 		
 		
 		//checking for today/this day 
-		if(_toView.equalsIgnoreCase("DAY_KEYWORD_TODAY")||_toView.equalsIgnoreCase(DAY_KEYWORD_THIS_DAY)){
+		if(_toView.equalsIgnoreCase(DAY_KEYWORD_TODAY)||_toView.equalsIgnoreCase(DAY_KEYWORD_THIS_DAY)){
 			startDay=new DateTime(year,month,day,0,0);
-			endDay=new DateTime(year,month,day,0,0);
+			endDay=new DateTime(year,month,day,23,59);
 			formViewList(startDay,endDay);
 		}
 		//checking for tomorrow/tmr/next day
@@ -209,27 +209,34 @@ public class CommandView implements Command {
 	public void formViewList(DateTime startDay, DateTime endDay){
 		_storage = Controller.getDBStorage();
 		LinkedList<Task> storageList = _storage.load();
-		//LinkedList<Task> viewList=new LinkedList<Task>();
+
 		for (int i = 0; i < storageList.size(); i++){
-			if(((storageList.get(i).getStart().isAfter(startDay))||(storageList.get(i).getStart().isEqual(startDay)))
-					&&((storageList.get(i).getStart().isBefore(endDay))||(storageList.get(i).getStart().isEqual(endDay)))){
-				
-				_returnList.add(storageList.get(i));
+			if(storageList.get(i).getTaskType().equals("TIMED")){
+				if(((storageList.get(i).getStart().isAfter(startDay))||(storageList.get(i).getStart().isEqual(startDay)))
+						&&((storageList.get(i).getStart().isBefore(endDay))||(storageList.get(i).getStart().isEqual(endDay)))){
+					
+					_returnList.add(storageList.get(i));
+				}
+				else if(((storageList.get(i).getEnd().isAfter(startDay))||(storageList.get(i).getEnd().isEqual(startDay)))
+						&&((storageList.get(i).getEnd().isBefore(endDay))||(storageList.get(i).getEnd().isEqual(endDay)))){
+					
+					_returnList.add(storageList.get(i));	
+				}
 			}
-			else if(((storageList.get(i).getEnd().isAfter(startDay))||(storageList.get(i).getEnd().isEqual(startDay)))
-					&&((storageList.get(i).getEnd().isBefore(endDay))||(storageList.get(i).getEnd().isEqual(endDay)))){
+			else if(storageList.get(i).getTaskType().equals("DEADLINE")){
+				if(((storageList.get(i).getEnd().isAfter(startDay))||(storageList.get(i).getEnd().isEqual(startDay)))
+						&&((storageList.get(i).getEnd().isBefore(endDay))||(storageList.get(i).getEnd().isEqual(endDay)))){
+					
+					_returnList.add(storageList.get(i));	
+				}
 				
-				_returnList.add(storageList.get(i));	
 			}
+			
 		}
-		//setReturnList(viewList);
-		
+	
 		
 	}
 	
-	//private void setReturnList(LinkedList<Task> list) {
-		//_returnList = list;
-	//}
 
 	public LinkedList<Task> getReturnList() {
 		return _returnList;
