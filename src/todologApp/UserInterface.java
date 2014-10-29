@@ -5,7 +5,6 @@
 package todologApp;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -19,7 +18,7 @@ import java.util.*;
 //import java.lang.Object;
 
 
-public class UserInterface extends JFrame { /**
+public class UserInterface extends JFrame implements WindowListener { /**
 	 * 
 	 */
 	private static final long serialVersionUID = 4308151724219875078L;
@@ -58,15 +57,16 @@ public class UserInterface extends JFrame { /**
 			public void run() {  
 				try {
 					UserInterface window = new UserInterface();
-					window.setVisible(true);   
-					
+					window.setVisible(true);   		
+			//		window.addKeyListener(new UserInterfaceListener());
 					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-			}
+			}	
 		});
 	}
+	
 	/**
 	 * Initialize the contents of the frame.
 	 */
@@ -385,7 +385,7 @@ public class UserInterface extends JFrame { /**
 //			commandEntryTextField.setText("");
 //			toDoListText.setText(Controller.getOutput());
 //			dynamicHelpText.setText(Controller.getFeedBack());
-			PreviousCommand.addInput(commandString);
+			//PreviousCommand.addInput(commandString);
 			Controller.acceptUserCommand(commandString);
 			commandEntryTextField.setText("");
 			dynamicHelpText.setText(Controller.getFeedback());	
@@ -431,23 +431,23 @@ public class UserInterface extends JFrame { /**
 				toDoListTableModel.pageDown();
 			}
 			
-			if (keyCode == KeyEvent.VK_UP) {
-				try {
-					commandEntryTextField.setText(PreviousCommand.UpArrow());
-				} catch (Exception e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			}
-			
-			if (keyCode == KeyEvent.VK_DOWN) {
-				try {
-					commandEntryTextField.setText(PreviousCommand.DownArrow());
-				} catch (Exception e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			}
+//			if (keyCode == KeyEvent.VK_UP) {
+//				try {
+//					commandEntryTextField.setText(PreviousCommand.UpArrow());
+//				} catch (Exception e1) {
+//					// TODO Auto-generated catch block
+//					e1.printStackTrace();
+//				}
+//			}
+//			
+//			if (keyCode == KeyEvent.VK_DOWN) {
+//				try {
+//					commandEntryTextField.setText(PreviousCommand.DownArrow());
+//				} catch (Exception e1) {
+//					// TODO Auto-generated catch block
+//					e1.printStackTrace();
+//				}
+//			}
 			
 		}
 		
@@ -568,6 +568,48 @@ public class UserInterface extends JFrame { /**
 		toDoListTable.getColumnModel().getColumn(2).setCellRenderer(new CustomRenderer());
 		toDoListTable.getColumnModel().getColumn(3).setCellRenderer(new CustomRenderer());
 		toDoListTable.getColumnModel().getColumn(4).setCellRenderer(new CustomRenderer());
+		
+	}
+
+	@Override
+	public void windowActivated(WindowEvent e) {
+		System.out.println("Windows Opened");
+		
+	}
+
+	@Override
+	public void windowClosed(WindowEvent e) {
+		System.out.println("Windows Closed");
+		
+	}
+
+	@Override
+	public void windowClosing(WindowEvent e) {
+		System.out.println("Windows Closing");
+		
+	}
+
+	@Override
+	public void windowDeactivated(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowDeiconified(WindowEvent e) {
+		System.out.println("Windows Maximised");
+		
+	}
+
+	@Override
+	public void windowIconified(WindowEvent e) {
+		System.out.println("Windows Minimized");
+		
+	}
+
+	@Override
+	public void windowOpened(WindowEvent e) {
+		// TODO Auto-generated method stub
 		
 	}
 
