@@ -128,7 +128,7 @@ public class Parser {
 			return command;
 		} else if (firstWord.equalsIgnoreCase("view")) {
 			String restOfTheString = getTheRestOfTheString(userCommand);
-			CommandSearch command = new CommandSearch(restOfTheString);
+			CommandView command = new CommandView(restOfTheString);
 			return command;
 		} else if (firstWord.equalsIgnoreCase("undo")) {
 			History history = Controller.getHistory();

@@ -74,7 +74,7 @@ public class Controller {
 				_displayList = ((CommandSearch) command).getReturnList();
 			} else if (command instanceof CommandView) {
 				_displayList = ((CommandView) command).getReturnList();
-			}{
+			}else{
 				_displayList = _dbStorage.load();
 			}
 			if (!(command instanceof CommandUndo) && !(command instanceof CommandRedo) 
