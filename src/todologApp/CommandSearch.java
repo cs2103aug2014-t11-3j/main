@@ -14,21 +14,25 @@ public class CommandSearch implements Command {
 		String feedback;
 		_storage = Controller.getDBStorage();
 		LinkedList<Task> storageList = _storage.load();
-		searchName(storageList);
+		searchName(storageList,_searchKey);
 		feedback = "Searching for \"" + _searchKey + "\" is completed";
 		return feedback;
 	}
 	
-	public void searchName(LinkedList<Task> storageList) {
+	public void searchName(LinkedList<Task> storageList, String searchKey) {
 		LinkedList<Task> searchList = new LinkedList<Task>();
 		for (int i = 0; i < storageList.size(); i++) {
-			if (storageList.get(i).getTaskName().contains(_searchKey)) {
+			if (storageList.get(i).getTaskName().contains(searchKey)) {
 				searchList.add(storageList.get(i));
 			}
 		}
-		_returnList = searchList;
+		setReturnList(searchList);
 	}
 	
+	private void setReturnList(LinkedList<Task> list) {
+		_returnList = list;
+	}
+
 	public LinkedList<Task> getReturnList() {
 		return _returnList;
 	}

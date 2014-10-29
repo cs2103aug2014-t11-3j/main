@@ -75,7 +75,7 @@ public class Controller {
 			} else {
 				_displayList = _dbStorage.load();
 			}
-			if (!(command instanceof CommandUndo) && !(command instanceof CommandRedo)){
+			if (!(command instanceof CommandUndo) && !(command instanceof CommandRedo) && !(command instanceof CommandSearch)){
 				_history.addCommand(command);
 			}
 		} catch (Exception e) {
