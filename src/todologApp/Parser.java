@@ -5,15 +5,16 @@ import org.joda.time.DateTimeConstants;
 
 public class Parser {
 
-	private static String INVALID_MESSAGE = "Invalid Input!";
+//	private static String INVALID_MESSAGE = "Invalid Input!";
 
 	//MISC
 	private static String EMPTY_STRING = "";
 	private static String SINGLE_SPACE = " ";
-	private static String DATE_SEPARATOR = "/";
-	private static String SYMBOL_DASH = "-";
-	private static String SYMBOL_AT = "@";
-	private static String QUOTATION_MARK = "\"";
+//	private static String DATE_SEPARATOR = "/";
+//	private static String SYMBOL_BACKSLASH = "\\";
+//	private static String SYMBOL_DASH = "-";
+//	private static String SYMBOL_AT = "@";
+//	private static String QUOTATION_MARK = "\"";
 
 	//KEYWORDS
 	private static String KEYWORD_DAY_STARTING = "from";
@@ -47,7 +48,6 @@ public class Parser {
 	private static String DAY_KEYWORD_SAT = "sat";
 	private static String DAY_KEYWORD_SUNDAY = "Sunday";
 	private static String DAY_KEYWORD_SUN = "sun";
-
 
 	private static final String FEEDBACK_TYPE = "Type in a command: add, delete, edit, done.";
 
@@ -346,7 +346,7 @@ public class Parser {
 				break;
 			}
 		}
-
+		taskName = taskName.replaceAll("/", "");
 		return taskName.trim();
 	}
 
@@ -380,6 +380,7 @@ public class Parser {
 				}
 			}
 		}
+		taskPerson = taskPerson.replaceAll("/", "");
 		return taskPerson.trim();
 	}
 
@@ -400,11 +401,15 @@ public class Parser {
 						&& !messageArray[j].equalsIgnoreCase(KEYWORD_AT)
 						&& !isInteger(messageArray[j])) {
 					taskVenue = taskVenue + messageArray[j] + SINGLE_SPACE;
+					
 				} else {
 					break;
 				}
 			}
 		}
+		
+		taskVenue = taskVenue.replaceAll("/", "");
+		
 		return taskVenue.trim();
 	}
 
@@ -487,7 +492,6 @@ public class Parser {
 		//		} else {
 		//		throw new Exception("End time cannot be earlier than Start time");
 		//		}
-
 	}
 
 	public static DateTime parseTaskEnd(String parameter) throws Exception {
