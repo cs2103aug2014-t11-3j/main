@@ -5,59 +5,55 @@ import org.joda.time.DateTimeConstants;
 
 public class Parser {
 
-	private static String INVALID_MESSAGE = "Invalid Input!";
+	private static final String INVALID_MESSAGE = "Invalid Input!";
 
 	//MISC
-	private static String EMPTY_STRING = "";
-	private static String SINGLE_SPACE = " ";
-	private static String DATE_SEPARATOR = "/";
-	private static String SYMBOL_DASH = "-";
-	private static String SYMBOL_AT = "@";
-	private static String QUOTATION_MARK = "\"";
+	private static final String EMPTY_STRING = "";
+	private static final String SINGLE_SPACE = " ";
+	private static final String DATE_SEPARATOR = "/";
+	private static final String SYMBOL_DASH = "-";
+	private static final String SYMBOL_AT = "@";
+	private static final String QUOTATION_MARK = "\"";
 
 	//KEYWORDS
-	private static String KEYWORD_DAY_STARTING = "from";
-	private static String KEYWORD_DAY_STARTING_2 = "on";
-	private static String KEYWORD_DAY_ENDING = "to";
-	private static String KEYWORD_DEADLINE = "by";
-	private static String KEYWORD_RECURRING = "every";
-	private static String KEYWORD_WITH = "with";
-	private static String KEYWORD_AT = "at";
-	private static String KEYWORD_IN = "in";
+	private static final String KEYWORD_DAY_STARTING = "from";
+	private static final String KEYWORD_DAY_STARTING_2 = "on";
+	private static final String KEYWORD_DAY_ENDING = "to";
+	private static final String KEYWORD_DEADLINE = "by";
+	private static final String KEYWORD_RECURRING = "every";
+	private static final String KEYWORD_WITH = "with";
+	private static final String KEYWORD_AT = "at";
+	private static final String KEYWORD_IN = "in";
 
 	//DAY KEYWORDS
-	private static String DAY_KEYWORD_TODAY = "Today";
-	private static String DAY_KEYWORD_TDY = "Tdy";
-	private static String DAY_KEYWORD_TOMORROW = "Tomorrow";
-	private static String DAY_KEYWORD_TMR = "tmr";
-	private static String DAY_KEYWORD_MONDAY = "Monday";
-	private static String DAY_KEYWORD_MON = "mon";
-	private static String DAY_KEYWORD_TUESDAY = "Tuesday";
-	private static String DAY_KEYWORD_TUES = "tues";
-	private static String DAY_KEYWORD_TUE = "tue";
-	private static String DAY_KEYWORD_WEDNESDAY = "Wednesday";
-	private static String DAY_KEYWORD_WED = "wed";
-	private static String DAY_KEYWORD_THURSDAY = "Thursday";
-	private static String DAY_KEYWORD_THURS = "thurs";
-	private static String DAY_KEYWORD_THUR = "thur";
-	private static String DAY_KEYWORD_THU = "thu";
-	private static String DAY_KEYWORD_FRIDAY = "Friday";
-	private static String DAY_KEYWORD_FRI = "fri";
-	private static String DAY_KEYWORD_SATURDAY = "Saturday";
-	private static String DAY_KEYWORD_SAT = "sat";
-	private static String DAY_KEYWORD_SUNDAY = "Sunday";
-	private static String DAY_KEYWORD_SUN = "sun";
+	private static final String DAY_KEYWORD_TODAY = "Today";
+	private static final String DAY_KEYWORD_TDY = "Tdy";
+	private static final String DAY_KEYWORD_TOMORROW = "Tomorrow";
+	private static final String DAY_KEYWORD_TMR = "tmr";
+	private static final String DAY_KEYWORD_MONDAY = "Monday";
+	private static final String DAY_KEYWORD_MON = "mon";
+	private static final String DAY_KEYWORD_TUESDAY = "Tuesday";
+	private static final String DAY_KEYWORD_TUES = "tues";
+	private static final String DAY_KEYWORD_TUE = "tue";
+	private static final String DAY_KEYWORD_WEDNESDAY = "Wednesday";
+	private static final String DAY_KEYWORD_WED = "wed";
+	private static final String DAY_KEYWORD_THURSDAY = "Thursday";
+	private static final String DAY_KEYWORD_THURS = "thurs";
+	private static final String DAY_KEYWORD_THUR = "thur";
+	private static final String DAY_KEYWORD_THU = "thu";
+	private static final String DAY_KEYWORD_FRIDAY = "Friday";
+	private static final String DAY_KEYWORD_FRI = "fri";
+	private static final String DAY_KEYWORD_SATURDAY = "Saturday";
+	private static final String DAY_KEYWORD_SAT = "sat";
+	private static final String DAY_KEYWORD_SUNDAY = "Sunday";
+	private static final String DAY_KEYWORD_SUN = "sun";
 
 
 	private static final String FEEDBACK_TYPE = "Type in a command: add, delete, edit, done.";
-
 	private static final String HELP_TEXT_ADD = "To add, enter:\n - add \"[task name]\" (from [date] @ [time] to "
 			+ "[date] @ [time]).\n - add \"[task name]\" by [date] @ [time] if you want to create a\ndeadline.";
-
 	private static final String HELP_TEXT_DELETE = "To delete, enter:\n - delete [task number].";
-
 	private static final String HELP_TEXT_DONE = "To mark/unmark a task as done, enter:\n - done [task number].";
-
 	private static final String HELP_TEXT_EDIT = "To edit task name, enter:\n - edit [task number] \"[new name]\"";
 
 	private static final int TODAY = 0;
@@ -68,13 +64,13 @@ public class Parser {
 		userCommand = userCommand.trim();
 		String firstWord = getFirstWord(userCommand);
 		if (firstWord.equalsIgnoreCase("add")) {
-			String restOfTheString = getTheRestOfTheString(userCommand);
-			if (restOfTheString == null) {
+			try {
+				Task task = createTask(userCommand);
+				CommandAdd command = new CommandAdd(task);
+				return command;
+			} catch (Exception e){
 				throw new Exception(HELP_TEXT_ADD);
 			}
-			Task task = new Task(restOfTheString);
-			CommandAdd command = new CommandAdd(task);
-			return command;
 		} else if (firstWord.equalsIgnoreCase("delete")) {
 			String restOfTheString = getTheRestOfTheString(userCommand);
 			if (restOfTheString == null) {
@@ -145,7 +141,16 @@ public class Parser {
 			throw new Exception("Invalid command.\n"+FEEDBACK_TYPE);
 		}
 	}
-
+	public static Task createTask(String userInput) throws Exception{
+		String restOfTheString = getTheRestOfTheString(userInput);
+		if (restOfTheString == null) {
+			throw new Exception();
+		}
+		Task task = new Task(restOfTheString);
+		return task;
+	}
+	
+	
 	public static String getTheRestOfTheString(String userCommand) throws Exception {
 		try {
 			String[] result = userCommand.split(" ", 2);
