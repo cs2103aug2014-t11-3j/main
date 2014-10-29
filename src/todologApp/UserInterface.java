@@ -37,6 +37,7 @@ public class UserInterface extends JFrame implements WindowListener { /**
 	private JLayeredPane layerPane = new JLayeredPane();
 	private JTextArea dynamicHelpText;
 	private JTextArea toDoListText;
+	private JTextArea feedBackBox;
 	private JTable toDoListTable;
 	//private Controller controller;
 	private LinkedList <Task> toDoListItems = new LinkedList<Task>();
@@ -205,7 +206,8 @@ public class UserInterface extends JFrame implements WindowListener { /**
 		
 		createCommandEntryTextBox(bottomPanel);
 		createTextArea(bottomPanel);
-		createLegend(bottomPanel);
+		createFeedBackBox(bottomPanel);
+		//createLegend(bottomPanel);
 		//createButton(bottomPanel);
 		mainPanel.add(bottomPanel, parameters);
 		bottomPanel.setOpaque(false);
@@ -257,6 +259,25 @@ public class UserInterface extends JFrame implements WindowListener { /**
 		legendMainPanel.setOpaque(false);
 	}
 	
+	private void createFeedBackBox(JPanel bottomPanel){
+		GridBagConstraints feedBackParameters;
+		feedBackParameters = setParameters(LEGEND_PARAMETERS);
+		Border feedBackBoxBorder = new LineBorder(Color.WHITE);
+		feedBackBox = new JTextArea(2,10);
+		feedBackBox.setMaximumSize(feedBackBox.getSize());
+		feedBackBox.setBorder(feedBackBoxBorder);
+		feedBackBox.setLineWrap(true);
+		feedBackBox.setText("Feedback:");
+		feedBackBox.setBackground(Color.BLACK);
+		feedBackBox.setForeground(Color.WHITE);
+		Font font = new Font("SansSerif", Font.BOLD,12);
+		feedBackBox.setFont(font);
+		
+		//put the dynamic area into a scroll pane
+		JScrollPane feedBackBoxScrollPane = new JScrollPane(feedBackBox);
+		feedBackBoxScrollPane.setBorder(feedBackBoxBorder);
+		bottomPanel.add(feedBackBoxScrollPane,feedBackParameters);
+	}
 //	private void arrangeLegend(JPanel legendMainPanel){
 //		Font fontForLegend = new Font("SansSerif",Font.BOLD,8);
 //		Border borderLineForText = new EmptyBorder(0,0,0,0);
@@ -480,7 +501,7 @@ public class UserInterface extends JFrame implements WindowListener { /**
 		Insets toDoListInsets = new Insets(0,0,0,0);
 		Insets commandEntryTextFieldInsets = new Insets(10,25,5,25);
 		Insets dynamicHelpTextInsets = new Insets(10,25,20,20);
-		Insets legendInsets = new Insets(0,0,0,10);
+		Insets legendInsets = new Insets(10,25,20,20);
 		//Insets buttonInsets = new Insets(10,0,0,20);
 		
 		if(panelParameters == CLOCK_PARAMETERS){
