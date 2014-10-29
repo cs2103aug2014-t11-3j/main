@@ -72,14 +72,18 @@ public class Controller {
 			_feedback = command.execute();
 			if (command instanceof CommandSearch) {
 				_displayList = ((CommandSearch) command).getReturnList();
-			} else {
+			} else if (command instanceof CommandView) {
+				_displayList = ((CommandView) command).getReturnList();
+			}{
 				_displayList = _dbStorage.load();
 			}
-			if (!(command instanceof CommandUndo) && !(command instanceof CommandRedo) && !(command instanceof CommandSearch)){
+			if (!(command instanceof CommandUndo) && !(command instanceof CommandRedo) 
+					&& !(command instanceof CommandSearch) && !(command instanceof CommandView)){
 				_history.addCommand(command);
 			}
 		} catch (Exception e) {
 			_feedback = e.getMessage();
+			_displayList = _dbStorage.load();
 		}
 		_textDisplay = createNewDisplay();
 	}

@@ -126,6 +126,10 @@ public class Parser {
 			String restOfTheString = getTheRestOfTheString(userCommand);
 			CommandSearch command = new CommandSearch(restOfTheString);
 			return command;
+		} else if (firstWord.equalsIgnoreCase("view")) {
+			String restOfTheString = getTheRestOfTheString(userCommand);
+			CommandSearch command = new CommandSearch(restOfTheString);
+			return command;
 		} else if (firstWord.equalsIgnoreCase("undo")) {
 			History history = Controller.getHistory();
 			Command toBeUndone = history.goBackwards();

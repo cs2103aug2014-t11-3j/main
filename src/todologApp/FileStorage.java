@@ -182,7 +182,7 @@ public class FileStorage implements Storage{
 		Element newTask = root.addElement("task");
 		newTask.addElement("type").setText(task.getTaskType().toString());
 		newTask.addElement("name").setText(task.getTaskName());
-		newTask.addElement("end").setText(task.getEnd());
+		newTask.addElement("end").setText(task.getEnd().toString());
 		newTask.addElement("status").setText(String.valueOf(task.getTaskStatus()));
 		newTask.addElement("person").setText(task.getTaskPerson());
 		newTask.addElement("venue").setText(task.getTaskVenue());
@@ -192,8 +192,8 @@ public class FileStorage implements Storage{
 		Element newTask = root.addElement("task");
 		newTask.addElement("type").setText(task.getTaskType().toString());
 		newTask.addElement("name").setText(task.getTaskName());
-		newTask.addElement("start").setText(task.getStart());
-		newTask.addElement("end").setText(task.getEnd());
+		newTask.addElement("start").setText(task.getStart().toString());
+		newTask.addElement("end").setText(task.getEnd().toString());
 		newTask.addElement("status").setText(String.valueOf(task.getTaskStatus()));
 		newTask.addElement("person").setText(task.getTaskPerson());
 		newTask.addElement("venue").setText(task.getTaskVenue());
