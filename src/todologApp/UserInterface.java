@@ -389,7 +389,7 @@ public class UserInterface extends JFrame { /**
 			Controller.acceptUserCommand(commandString);
 			commandEntryTextField.setText("");
 			dynamicHelpText.setText(Controller.getFeedback());	
-			toDoListItems = Controller.getDBStorage().load();
+			toDoListItems = Controller.getDisplayList();
 			toDoListTableModel.setTableData(toDoListItems);
 			toDoListTableModel.fireTableDataChanged();
 
