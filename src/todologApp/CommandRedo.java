@@ -21,5 +21,10 @@ public class CommandRedo implements Command {
 		// TODO Auto-generated method stub
 		return "Unexpected Error!";
 	}
+	
+	public boolean isUndoable(){
+		return false;
+		
+	}
 
 }
