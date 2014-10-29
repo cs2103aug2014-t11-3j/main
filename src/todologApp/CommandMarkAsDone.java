@@ -7,6 +7,7 @@ public class CommandMarkAsDone implements Command {
 	private Task _task;
 	private DBStorage _storage;
 	private int _index;
+	private boolean validity;
 
 	public CommandMarkAsDone(int index) {
 		_index = index - 1;
@@ -21,23 +22,31 @@ public class CommandMarkAsDone implements Command {
 			taskList.get(_index).toggleTaskStatus();
 			if (_task.getTaskStatus()) {
 				feedback = _task.getTaskName() + " is mark as completed";
+				validity=true;
 			} else {
 				feedback = _task.getTaskName() + " is mark as not completed";
+				validity=true;;
 			}
 		} catch (IndexOutOfBoundsException ioobe) {
 			feedback = "Invalid task number. Cannot mark.";
+			validity=false;
 		}
 
 		try {
 			_storage.store(taskList);
 		} catch (IOException e) {
-			feedback = "Cannot store the list to ToDoLog";
+			feedback="Cannot store the list to ToDoLog";
+			validity=false;
+			
 		}
 		return feedback;
 	}
 
 	public String undo() {
 		return execute();
+	}
+	public boolean isUndoable(){
+		return validity;
 	}
 
 }
