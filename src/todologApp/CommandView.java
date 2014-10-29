@@ -37,9 +37,10 @@ public class CommandView implements Command {
 		
 		feedback="Displaying tasks for "+ _toView;
 		
-		
+	
 		//checking for today/this day 
 		if(_toView.equalsIgnoreCase(DAY_KEYWORD_TODAY)||_toView.equalsIgnoreCase(DAY_KEYWORD_THIS_DAY)){
+			
 			startDay=new DateTime(year,month,day,0,0);
 			endDay=new DateTime(year,month,day,23,59);
 			formViewList(startDay,endDay);
@@ -48,6 +49,7 @@ public class CommandView implements Command {
 		else if(_toView.equalsIgnoreCase(DAY_KEYWORD_TOMORROW)
 				||_toView.equalsIgnoreCase(DAY_KEYWORD_TMR)
 				||_toView.equalsIgnoreCase(DAY_KEYWORD_NEXT_DAY)){
+		
 			startDay=startDay.plusDays(1);
 			year=startDay.getYear();
 			month=startDay.getMonthOfYear();
@@ -58,6 +60,7 @@ public class CommandView implements Command {
 		}
 		//checking for days 
 		else if(isWeekDay()){
+			
 			int currentWeekDay=startDay.getDayOfWeek();
 			int givenWeekDay=Parser.parseDayOfWeek(_toView);
 			if(givenWeekDay>=currentWeekDay){
@@ -75,8 +78,9 @@ public class CommandView implements Command {
 		}
 		//checking for date
 		else if(Parser.checkDateFormat(_toView)){
+		
 			int ddmmyy=Integer.parseInt(_toView);
-			year=ddmmyy%100;
+			year=ddmmyy%100+2000;
 			month=(ddmmyy/100)%100;
 			day=(ddmmyy/10000);
 			startDay=new DateTime(year,month,day,0,0);
@@ -85,6 +89,7 @@ public class CommandView implements Command {
 		}
 		//checking for this week
 		else if(_toView.equalsIgnoreCase(DAY_KEYWORD_THIS_WEEK)){
+		
 			startDay=startDay.weekOfWeekyear().roundFloorCopy();
 			startDay=new DateTime(year,month,day,0,0);
 			endDay=endDay.weekOfWeekyear().roundCeilingCopy();
@@ -96,6 +101,7 @@ public class CommandView implements Command {
 		}
 		//checking for next week
 		else if(_toView.equalsIgnoreCase(DAY_KEYWORD_NEXT_WEEK)){
+			
 			//changing to next week by adding 7 days
 			DateTime nextWeekDay=startDay.plusDays(7);
 			startDay=nextWeekDay.weekOfWeekyear().roundFloorCopy();
@@ -108,16 +114,17 @@ public class CommandView implements Command {
 		}
 		//checking for month 
 		else if(isMonth()){
+			
 			DateTime startOfThisMonth=startDay.dayOfMonth().withMinimumValue().withTimeAtStartOfDay();
 			int currentMonth=startOfThisMonth.getMonthOfYear();
 			if(monthInIntegers>=currentMonth){
-				startDay=startOfThisMonth.plusMonths(month-currentMonth).dayOfMonth().withMinimumValue();
+				startDay=startOfThisMonth.plusMonths(monthInIntegers-currentMonth).dayOfMonth().withMinimumValue();
 
-				endDay=startOfThisMonth.plusMonths(month-currentMonth).dayOfMonth().withMaximumValue();	
+				endDay=startOfThisMonth.plusMonths(monthInIntegers-currentMonth).dayOfMonth().withMaximumValue();	
 			}
 			else {
-				startDay=startOfThisMonth.minusMonths(currentMonth-month).dayOfMonth().withMinimumValue();
-				endDay=startOfThisMonth.minusMonths(currentMonth-month).dayOfMonth().withMaximumValue();	
+				startDay=startOfThisMonth.minusMonths(currentMonth-monthInIntegers).dayOfMonth().withMinimumValue();
+				endDay=startOfThisMonth.minusMonths(currentMonth-monthInIntegers).dayOfMonth().withMaximumValue();	
 			}
 			startDay.withHourOfDay(0);
 			startDay.withMinuteOfHour(0);
@@ -126,6 +133,7 @@ public class CommandView implements Command {
 			formViewList(startDay,endDay);
 		}
 		else{
+			
 			feedback="invalid command";
 		}
 		
@@ -135,6 +143,7 @@ public class CommandView implements Command {
 	}
 
 	public boolean isWeekDay(){
+	
 		if(_toView.equalsIgnoreCase("monday")||_toView.equalsIgnoreCase("mon")
 				||_toView.equalsIgnoreCase("tuesday")||_toView.equalsIgnoreCase("tues")
 				||_toView.equalsIgnoreCase("wednesday")||_toView.equalsIgnoreCase("wed")
@@ -151,6 +160,7 @@ public class CommandView implements Command {
 	}
 	
 	public boolean isMonth() {
+		
 		if(_toView.equalsIgnoreCase("january")||_toView.equalsIgnoreCase("jan")){
 			monthInIntegers=1;
 			return true;
@@ -207,36 +217,46 @@ public class CommandView implements Command {
 
 	
 	public void formViewList(DateTime startDay, DateTime endDay){
+		
 		_storage = Controller.getDBStorage();
 		LinkedList<Task> storageList = _storage.load();
+		LinkedList<Task> viewList=new LinkedList<Task>();
 
 		for (int i = 0; i < storageList.size(); i++){
-			if(storageList.get(i).getTaskType().equals("TIMED")){
+			if(storageList.get(i).getTaskType()==TaskType.TIMED){
+				
 				if(((storageList.get(i).getStart().isAfter(startDay))||(storageList.get(i).getStart().isEqual(startDay)))
 						&&((storageList.get(i).getStart().isBefore(endDay))||(storageList.get(i).getStart().isEqual(endDay)))){
 					
-					_returnList.add(storageList.get(i));
+					viewList.add(storageList.get(i));
 				}
 				else if(((storageList.get(i).getEnd().isAfter(startDay))||(storageList.get(i).getEnd().isEqual(startDay)))
 						&&((storageList.get(i).getEnd().isBefore(endDay))||(storageList.get(i).getEnd().isEqual(endDay)))){
 					
-					_returnList.add(storageList.get(i));	
+					viewList.add(storageList.get(i));	
 				}
 			}
-			else if(storageList.get(i).getTaskType().equals("DEADLINE")){
-				if(((storageList.get(i).getEnd().isAfter(startDay))||(storageList.get(i).getEnd().isEqual(startDay)))
-						&&((storageList.get(i).getEnd().isBefore(endDay))||(storageList.get(i).getEnd().isEqual(endDay)))){
-					
-					_returnList.add(storageList.get(i));	
-				}
+			else if(storageList.get(i).getTaskType()==TaskType.DEADLINE){
+			
+				if(storageList.get(i).getEnd()!=null){
 				
+					if(((storageList.get(i).getEnd().isAfter(startDay))||(storageList.get(i).getEnd().isEqual(startDay)))
+							&&((storageList.get(i).getEnd().isBefore(endDay))||(storageList.get(i).getEnd().isEqual(endDay)))){
+					
+						viewList.add(storageList.get(i));
+						
+					}
+				}
 			}
 			
 		}
+		setReturnList(viewList);
 	
 		
 	}
-	
+	private void setReturnList(LinkedList<Task> list) {
+		_returnList = list;
+	}
 
 	public LinkedList<Task> getReturnList() {
 		return _returnList;
