@@ -10,7 +10,6 @@ public class CommandView implements Command {
 	private String _toView;
 	private DBStorage _storage;
 	private static LinkedList<Task> _returnList;
-	private boolean validity;
 	private int monthInIntegers;
 	private static String DAY_KEYWORD_TODAY = "Today";
 	private static String DAY_KEYWORD_THIS_DAY = "This day ";
@@ -236,7 +235,7 @@ public class CommandView implements Command {
 
 	@Override
 	public boolean isUndoable() {
-		return validity;
+		return false;
 	}
 
 	
