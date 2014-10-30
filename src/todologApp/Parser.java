@@ -2,7 +2,7 @@ package todologApp;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
-//testing
+
 public class Parser {
 
 //	private static String INVALID_MESSAGE = "Invalid Input!";
@@ -171,6 +171,23 @@ public class Parser {
 			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING)) {
 				for (int j=i+1; j<=messageArray.length-1; j++) {
 					if (messageArray[j].equalsIgnoreCase(KEYWORD_AT) 
+							&& isInteger(messageArray[j+1])) {
+						try {
+							int endTime = Integer.parseInt(messageArray[j+1]);
+							if (endTime >= 0000 && endTime <= 2359) {
+								return endTime;
+							} else {
+								return 2359;
+							}
+						} catch (NumberFormatException nfe) {
+							throw new Exception("Invalid Time Format");
+						} 
+					}
+				}
+			} else if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) 
+					|| messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING_2) ) {
+				for (int j=i+1; j<=messageArray.length-1; j++) {
+					if (messageArray[j].equalsIgnoreCase(KEYWORD_DAY_ENDING) 
 							&& isInteger(messageArray[j+1])) {
 						try {
 							int endTime = Integer.parseInt(messageArray[j+1]);
