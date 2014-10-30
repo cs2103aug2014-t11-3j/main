@@ -5,6 +5,7 @@ import org.joda.time.DateTimeConstants;
 
 public class Parser {
 
+<<<<<<< HEAD
 	private static final String INVALID_MESSAGE = "Invalid Input!";
 
 	//MISC
@@ -14,6 +15,18 @@ public class Parser {
 	private static final String SYMBOL_DASH = "-";
 	private static final String SYMBOL_AT = "@";
 	private static final String QUOTATION_MARK = "\"";
+=======
+//	private static String INVALID_MESSAGE = "Invalid Input!";
+
+	//MISC
+	private static String EMPTY_STRING = "";
+	private static String SINGLE_SPACE = " ";
+//	private static String DATE_SEPARATOR = "/";
+//	private static String SYMBOL_BACKSLASH = "\\";
+//	private static String SYMBOL_DASH = "-";
+//	private static String SYMBOL_AT = "@";
+	private static String QUOTATION_MARK = "\"";
+>>>>>>> 56833daabd4e6b343ab93e1d98c7b4bdb85ef724
 
 	//KEYWORDS
 	private static final String KEYWORD_DAY_STARTING = "from";
@@ -47,7 +60,6 @@ public class Parser {
 	private static final String DAY_KEYWORD_SAT = "sat";
 	private static final String DAY_KEYWORD_SUNDAY = "Sunday";
 	private static final String DAY_KEYWORD_SUN = "sun";
-
 
 	private static final String FEEDBACK_TYPE = "Type in a command: add, delete, edit, done.";
 	private static final String HELP_TEXT_ADD = "To add, enter:\n - add \"[task name]\" (from [date] @ [time] to "
@@ -369,7 +381,62 @@ public class Parser {
 				break;
 			}
 		}
+	
+		String [] taskNameArray = generateArray(taskName);
+		for (int j=0; j<=taskNameArray.length-1; j++) {
+			if (taskNameArray[j].indexOf(QUOTATION_MARK) == 0 
+					&& taskNameArray[j].lastIndexOf(QUOTATION_MARK) == taskNameArray[j].length()-1) {
+				String temp = taskNameArray[j].substring(1,taskNameArray[j].length()-1);
+				if (temp.equalsIgnoreCase(KEYWORD_DAY_STARTING) 
+						|| temp.equalsIgnoreCase(KEYWORD_DAY_STARTING_2)
+						|| temp.equalsIgnoreCase(KEYWORD_DAY_ENDING)
+						|| temp.equalsIgnoreCase(KEYWORD_DEADLINE)
+						|| temp.equalsIgnoreCase(KEYWORD_RECURRING)
+						|| temp.equalsIgnoreCase(KEYWORD_WITH)
+						|| temp.equalsIgnoreCase(KEYWORD_AT)
+						|| temp.equalsIgnoreCase(KEYWORD_IN)) {
+					taskNameArray[j] = temp;
+				} else {
+					break;
+				}
+			}
+		}
 
+		taskName = EMPTY_STRING;
+		for (int k=0; k<=taskNameArray.length-1; k++) {
+			taskName = taskName + SINGLE_SPACE + taskNameArray[k];
+		}
+		
+//		taskName = taskName.replaceAll("\"KEYWORD_DAY_STARTING\"", "KEYWORD_DAY_STARTING");
+//		String checkKeyWord = EMPTY_STRING;
+//		int index_slash = -1;
+//		for (int i=0; i<taskName.length()-1; i++){
+//			if (taskName.substring(i, i+1).equalsIgnoreCase("/")) {
+//				index_slash = i;
+//				for (int j=i; j<taskName.length(); i++) {
+//					if (taskName.substring(j, j+1).equalsIgnoreCase(SINGLE_SPACE)) {
+//						break;
+//					} else {
+//						checkKeyWord = checkKeyWord + taskName.substring(i, i+1);
+//					}
+//				}
+//
+//				if (checkKeyWord.equalsIgnoreCase(KEYWORD_DAY_STARTING)
+//						|| checkKeyWord.equalsIgnoreCase(KEYWORD_DAY_STARTING_2)
+//						|| checkKeyWord.equalsIgnoreCase(KEYWORD_DAY_ENDING)
+//						|| checkKeyWord.equalsIgnoreCase(KEYWORD_DEADLINE)
+//						|| checkKeyWord.equalsIgnoreCase(KEYWORD_RECURRING)
+//						|| checkKeyWord.equalsIgnoreCase(KEYWORD_WITH)
+//						|| checkKeyWord.equalsIgnoreCase(KEYWORD_AT)
+//						|| checkKeyWord.equalsIgnoreCase(KEYWORD_IN)) {
+//					taskName = taskName.substring(0,index_slash-1) + taskName.substring(index_slash, taskName.length()-1);
+//					index_slash = -1;
+//					checkKeyWord = EMPTY_STRING;
+//				} else {
+//					break;
+//				}
+//			}
+//		}
 		return taskName.trim();
 	}
 
@@ -403,6 +470,33 @@ public class Parser {
 				}
 			}
 		}
+		//taskPerson = taskPerson.replaceAll("/", "");
+	
+		String [] taskPersonArray = generateArray(taskPerson);
+		for (int j=0; j<=taskPersonArray.length-1; j++) {
+			if (taskPersonArray[j].indexOf(QUOTATION_MARK) == 0 
+					&& taskPersonArray[j].lastIndexOf(QUOTATION_MARK) == taskPersonArray[j].length()-1) {
+				String temp = taskPersonArray[j].substring(1,taskPersonArray[j].length()-1);
+				if (temp.equalsIgnoreCase(KEYWORD_DAY_STARTING) 
+						|| temp.equalsIgnoreCase(KEYWORD_DAY_STARTING_2)
+						|| temp.equalsIgnoreCase(KEYWORD_DAY_ENDING)
+						|| temp.equalsIgnoreCase(KEYWORD_DEADLINE)
+						|| temp.equalsIgnoreCase(KEYWORD_RECURRING)
+						|| temp.equalsIgnoreCase(KEYWORD_WITH)
+						|| temp.equalsIgnoreCase(KEYWORD_AT)
+						|| temp.equalsIgnoreCase(KEYWORD_IN)) {
+					taskPersonArray[j] = temp;
+				} else {
+					break;
+				}
+			}
+		}
+
+		taskPerson = EMPTY_STRING;
+		for (int k=0; k<=taskPersonArray.length-1; k++) {
+			taskPerson = taskPerson + SINGLE_SPACE + taskPersonArray[k];
+		}
+
 		return taskPerson.trim();
 	}
 
@@ -423,11 +517,41 @@ public class Parser {
 						&& !messageArray[j].equalsIgnoreCase(KEYWORD_AT)
 						&& !isInteger(messageArray[j])) {
 					taskVenue = taskVenue + messageArray[j] + SINGLE_SPACE;
+					
 				} else {
 					break;
 				}
 			}
 		}
+//		taskVenue = taskVenue.replaceAll("\"KEYWORD_DAY_STARTING\"", KEYWORD_DAY_STARTING);
+//		taskVenue = taskVenue.replaceAll("/", "");		
+
+		String [] taskVenueArray = generateArray(taskVenue);
+		for (int j=0; j<=taskVenueArray.length-1; j++) {
+			if (taskVenueArray[j].indexOf(QUOTATION_MARK) == 0 
+					&& taskVenueArray[j].lastIndexOf(QUOTATION_MARK) == taskVenueArray[j].length()-1) {
+				String temp = taskVenueArray[j].substring(1,taskVenueArray[j].length()-1);
+				if (temp.equalsIgnoreCase(KEYWORD_DAY_STARTING) 
+						|| temp.equalsIgnoreCase(KEYWORD_DAY_STARTING_2)
+						|| temp.equalsIgnoreCase(KEYWORD_DAY_ENDING)
+						|| temp.equalsIgnoreCase(KEYWORD_DEADLINE)
+						|| temp.equalsIgnoreCase(KEYWORD_RECURRING)
+						|| temp.equalsIgnoreCase(KEYWORD_WITH)
+						|| temp.equalsIgnoreCase(KEYWORD_AT)
+						|| temp.equalsIgnoreCase(KEYWORD_IN)) {
+					taskVenueArray[j] = temp;
+				} else {
+					break;
+				}
+			}
+		}
+
+		taskVenue = EMPTY_STRING;
+		for (int k=0; k<=taskVenueArray.length-1; k++) {
+			taskVenue = taskVenue + SINGLE_SPACE + taskVenueArray[k];
+		}
+
+		
 		return taskVenue.trim();
 	}
 
@@ -510,7 +634,6 @@ public class Parser {
 		//		} else {
 		//		throw new Exception("End time cannot be earlier than Start time");
 		//		}
-
 	}
 
 	public static DateTime parseTaskEnd(String parameter) throws Exception {
