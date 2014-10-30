@@ -38,7 +38,7 @@ public class CommandView implements Command {
 		month=startDay.getMonthOfYear();
 		day=startDay.getDayOfMonth();
 		
-		feedback="Displaying tasks for "+ _toView;
+		//feedback="Displaying tasks for "+ _toView;
 		
 	
 		//checking for today/this day 
@@ -47,6 +47,7 @@ public class CommandView implements Command {
 			startDay=new DateTime(year,month,day,0,0);
 			endDay=new DateTime(year,month,day,23,59);
 			formViewList(startDay,endDay);
+			feedback="Displaying all tasks for TODAY";
 		}
 		//checking for tomorrow/tmr/next day
 		else if(_toView.equalsIgnoreCase(DAY_KEYWORD_TOMORROW)
@@ -60,6 +61,7 @@ public class CommandView implements Command {
 			startDay=new DateTime(year,month,day,0,0);
 			endDay=new DateTime(year,month,day,23,59);
 			formViewList(startDay,endDay);
+			feedback="Displaying all the tasks for TOMORROW";
 		}
 		//checking for days 
 		else if(isWeekDay()){
@@ -78,6 +80,8 @@ public class CommandView implements Command {
 			startDay=new DateTime(year,month,day,0,0);
 			endDay=new DateTime(year,month,day,23,59);
 			formViewList(startDay,endDay);	
+			feedback="Displaying tasks for "+_toView+" that is "+startDay.getDayOfMonth()+"/"
+						+startDay.getMonthOfYear()+"/"+startDay.getYear();
 		}
 		//checking for date
 		else if(Parser.checkDateFormat(_toView)){
@@ -89,6 +93,7 @@ public class CommandView implements Command {
 			startDay=new DateTime(year,month,day,0,0);
 			endDay=new DateTime(year,month,day,23,59);
 			formViewList(startDay,endDay);
+			feedback="Displaying tasks for "+_toView;
 		}
 		//checking for this week
 		else if(_toView.equalsIgnoreCase(DAY_KEYWORD_THIS_WEEK)){
@@ -99,6 +104,7 @@ public class CommandView implements Command {
 			endDay.withHourOfDay(23);
 			endDay.withMinuteOfHour(59);
 			formViewList(startDay,endDay);
+			feedback="Displaying tasks for this week";
 		}
 		//checking for next week
 		else if(_toView.equalsIgnoreCase(DAY_KEYWORD_NEXT_WEEK)){
@@ -112,6 +118,7 @@ public class CommandView implements Command {
 			endDay.withHourOfDay(23);
 			endDay.withMinuteOfHour(59);
 			formViewList(startDay,endDay);
+			feedback="Displaying tasks for next week";
 		}
 		//checking for month 
 		else if(isMonth()){
@@ -132,13 +139,16 @@ public class CommandView implements Command {
 			endDay.withHourOfDay(23);
 			endDay.withMinuteOfHour(59);
 			formViewList(startDay,endDay);
+			feedback="Displaying tasks for the month of " + _toView;
 		}
 		else if(_toView.equalsIgnoreCase("all")){
 			setReturnList(storageList);
+			feedback="Displaying all tasks";
 		}
 		else if(_toView.equalsIgnoreCase("overdue")||_toView.equalsIgnoreCase("pending")){
 			endDay=startDay.minusMinutes(1);
 			viewOverDueTasks(endDay);
+			feedback="OVERDUE TASKS";
 		}
 		else{
 			feedback="invalid command";
