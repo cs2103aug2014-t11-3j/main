@@ -417,18 +417,7 @@ public class UserInterface extends JFrame implements WindowListener { /**
 		
 		@Override
 		public void keyPressed(KeyEvent e){
-			String commandString = commandEntryTextField.getText();
-			LinkedList<String> entryHelper = Controller.getCommandEntryHelperDetailsFromInput(commandString);
-			String helperText = dynamicHelpText.getText();
-			if (!entryHelper.isEmpty()) {
-				helperText += "\n";
-				String commandType = entryHelper.poll();
-				if (commandType.equals("add")) {
-					helperText = UIFeedbackHelper.createCmdAddHelpText(entryHelper);
-				} else if (commandType.equals("edit")) {
-					helperText = UIFeedbackHelper.createCmdEditHelpText(entryHelper);
-				}
-			}
+			String helperText = readKeyForHelperFeedback();
 			dynamicHelpText.setText(helperText);
 		}
 		
@@ -442,39 +431,30 @@ public class UserInterface extends JFrame implements WindowListener { /**
 			if(keyCode == KeyEvent.VK_PAGE_DOWN){
 				toDoListTableModel.pageDown();
 			}
-			String commandString = commandEntryTextField.getText();
-			LinkedList<String> entryHelper = Controller.getCommandEntryHelperDetailsFromInput(commandString);
-			String helperText = dynamicHelpText.getText();
-			if (!entryHelper.isEmpty()) {
-				helperText += "\n";
-				String commandType = entryHelper.poll();
-				if (commandType.equals("add")) {
-					helperText = UIFeedbackHelper.createCmdAddHelpText(entryHelper);
-				} else if (commandType.equals("edit")) {
-					helperText = UIFeedbackHelper.createCmdEditHelpText(entryHelper);
-				}
-			}
-			dynamicHelpText.setText(helperText);
-			
-		}
-		
-		@Override
-		public void keyTyped(KeyEvent e){
-			String commandString = commandEntryTextField.getText();
-			LinkedList<String> entryHelper = Controller.getCommandEntryHelperDetailsFromInput(commandString);
-			String helperText = dynamicHelpText.getText();
-			if (!entryHelper.isEmpty()) {
-				helperText += "\n";
-				String commandType = entryHelper.poll();
-				if (commandType.equals("add")) {
-					helperText = UIFeedbackHelper.createCmdAddHelpText(entryHelper);
-				} else if (commandType.equals("edit")) {
-					helperText = UIFeedbackHelper.createCmdEditHelpText(entryHelper);
-				}
-			}
-			dynamicHelpText.setText(helperText);
+			String helperText = readKeyForHelperFeedback();
+			dynamicHelpText.setText(helperText);	
 		}
 
+		@Override
+		public void keyTyped(KeyEvent e){
+			String helperText = readKeyForHelperFeedback();
+			dynamicHelpText.setText(helperText);
+		}
+		private String readKeyForHelperFeedback() {
+			String commandString = commandEntryTextField.getText();
+			LinkedList<String> entryHelper = Controller.getCommandEntryHelperDetailsFromInput(commandString);
+			String helperText = dynamicHelpText.getText();
+			if (!entryHelper.isEmpty()) {
+				helperText += "\n";
+				String commandType = entryHelper.poll();
+				if (commandType.equals("add")) {
+					helperText = UIFeedbackHelper.createCmdAddHelpText(entryHelper);
+				} else if (commandType.equals("edit")) {
+					helperText = UIFeedbackHelper.createCmdEditHelpText(entryHelper);
+				}
+			}
+			return helperText;
+		}
 		
 	}
 	
