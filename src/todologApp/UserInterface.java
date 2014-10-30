@@ -19,7 +19,11 @@ import java.util.*;
 //import java.lang.Object;
 
 
-public class UserInterface extends JFrame implements WindowListener { /**
+public class UserInterface extends JFrame implements WindowListener { 
+	private static final float TABLE_FONT_SIZE = 12f;
+	private static final float ENTRY_TEXT_FIELD_FONT_SIZE = 20f;
+	private static final float HELP_TEXT_FONT_SIZE = 15f;
+/**
 	 * 
 	 */
 	private static final long serialVersionUID = 4308151724219875078L;
@@ -91,7 +95,7 @@ public class UserInterface extends JFrame implements WindowListener { /**
 		mainPanel.setLayout(new GridBagLayout());
 		BufferedImage img;
 		try {
-			img = ImageIO.read(new File("src/seagull.jpg"));
+			img = ImageIO.read(new File("src/photos/seagull.jpg"));
 			JLabel background = new JLabel(new ImageIcon(img));
 			background.setBounds(0,0,700, 570);
 			layerPane.add(background,new Integer(0));
@@ -131,6 +135,8 @@ public class UserInterface extends JFrame implements WindowListener { /**
 		adjustTableColumns(toDoListTable);
 		changeTableColors(toDoListTable);
 		toDoListTable.getTableHeader().setResizingAllowed(false);
+		toDoListTable.getTableHeader().setBackground(new Color(0,0,0,0));
+		toDoListTable.getTableHeader().setReorderingAllowed(false);
 		//toDoListTable.addKeyListener(new ToDoListTableListener());
 		//updateToDoListTable(toDoListTable,toDoListItems,toDoListHeaders);
 		
@@ -163,6 +169,21 @@ public class UserInterface extends JFrame implements WindowListener { /**
 		
 		toDoListTable.setShowGrid(false);
 		toDoListTable.setIntercellSpacing(new Dimension(0, 0));
+		
+		File fontFile = new File("src/fonts/OpenSans-Regular.ttf");
+		try {
+			Font font;
+			font = Font.createFont(Font.TRUETYPE_FONT, fontFile);
+			Font sizedFont = font.deriveFont(TABLE_FONT_SIZE);
+			toDoListTable.setFont(sizedFont);
+			toDoListTable.getTableHeader().setFont(sizedFont);
+		} catch (FontFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 //		BufferedImage img;
 //		try {
 //			img = ImageIO.read(new File("src/black-white.jpg"));
@@ -219,6 +240,20 @@ public class UserInterface extends JFrame implements WindowListener { /**
 		bottomPanelParameters = setParameters(COMMAND_ENTRY_PARAMETERS);
 		commandEntryTextField = new JTextField(20);
 		bottomPanel.add(commandEntryTextField,bottomPanelParameters);
+		File fontFile = new File("src/fonts/BPmono.ttf");
+		try {
+			Font font;
+			font = Font.createFont(Font.TRUETYPE_FONT, fontFile);
+			Font sizedFont = font.deriveFont(ENTRY_TEXT_FIELD_FONT_SIZE);
+			commandEntryTextField.setFont(sizedFont);
+		} catch (FontFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		commandEntryTextField.addActionListener(new CommandEntryTextFieldActionListener());
 		commandEntryTextField.addKeyListener(new CommandEntryTextFieldKeyListener());
 		commandEntryTextField.getDocument().addDocumentListener(new CommandEntryTextFieldDocumentListener());
@@ -235,7 +270,19 @@ public class UserInterface extends JFrame implements WindowListener { /**
 		dynamicHelpText.setMaximumSize(dynamicHelpText.getSize());
 		dynamicHelpText.setBorder(dynamicHelpTextBorder);
 		dynamicHelpText.setLineWrap(true);
-		
+		File fontFile = new File("src/fonts/OpenSans-Regular.ttf");
+		try {
+			Font font;
+			font = Font.createFont(Font.TRUETYPE_FONT, fontFile);
+			Font sizedFont = font.deriveFont(HELP_TEXT_FONT_SIZE);
+			dynamicHelpText.setFont(sizedFont);
+		} catch (FontFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		//put the dynamic area into a scroll pane
 		JScrollPane dynamicHelpTextScrollPane = new JScrollPane(dynamicHelpText);
 		dynamicHelpTextScrollPane.setBorder(dynamicHelpTextBorder);
