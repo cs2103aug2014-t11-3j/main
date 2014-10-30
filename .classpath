@@ -4,7 +4,12 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+<<<<<<< HEAD
 	<classpathentry kind="lib" path="C:/Users/Stanley/Desktop/dom4j-1.6.1/dom4j-1.6.1/dom4j-1.6.1.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Stanley/Desktop/joda-time-2.5-dist/joda-time-2.5/joda-time-2.5.jar"/>
+=======
+	<classpathentry kind="lib" path="C:/Users/Ben/Downloads/dom4j-1.6.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ben/Downloads/AFF540DC.Unpacker_v7353qx4kg3sa!App/joda-time-2.5-dist.tar/joda-time-2.5/joda-time-2.5.jar"/>
+>>>>>>> parent of 6d3dec5... removed comment
 	<classpathentry kind="output" path="bin"/>
 </classpath>
