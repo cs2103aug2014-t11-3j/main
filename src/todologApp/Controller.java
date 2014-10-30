@@ -106,7 +106,7 @@ public class Controller {
 				LinkedList<String> details = new LinkedList<String>(currentTaskDetails);
 				details.addAll(newTaskDetails);
 				return details;
-			} 
+			}
 			 else {
 				return new LinkedList<String>();
 			}
