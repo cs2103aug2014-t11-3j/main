@@ -273,7 +273,7 @@ public class UserInterface extends JFrame implements WindowListener { /**
 		Font font = new Font("SansSerif", Font.BOLD,12);
 		feedBackBox.setFont(font);
 		
-		//put the dynamic area into a scroll pane
+		
 		JScrollPane feedBackBoxScrollPane = new JScrollPane(feedBackBox);
 		feedBackBoxScrollPane.setBorder(feedBackBoxBorder);
 		bottomPanel.add(feedBackBoxScrollPane,feedBackParameters);
