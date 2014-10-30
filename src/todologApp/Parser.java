@@ -5,55 +5,59 @@ import org.joda.time.DateTimeConstants;
 
 public class Parser {
 
-	private static final String INVALID_MESSAGE = "Invalid Input!";
+//	private static String INVALID_MESSAGE = "Invalid Input!";
 
 	//MISC
-	private static final String EMPTY_STRING = "";
-	private static final String SINGLE_SPACE = " ";
-	private static final String DATE_SEPARATOR = "/";
-	private static final String SYMBOL_DASH = "-";
-	private static final String SYMBOL_AT = "@";
-	private static final String QUOTATION_MARK = "\"";
+	private static String EMPTY_STRING = "";
+	private static String SINGLE_SPACE = " ";
+//	private static String DATE_SEPARATOR = "/";
+//	private static String SYMBOL_BACKSLASH = "\\";
+//	private static String SYMBOL_DASH = "-";
+//	private static String SYMBOL_AT = "@";
+	private static String QUOTATION_MARK = "\"";
 
 	//KEYWORDS
-	private static final String KEYWORD_DAY_STARTING = "from";
-	private static final String KEYWORD_DAY_STARTING_2 = "on";
-	private static final String KEYWORD_DAY_ENDING = "to";
-	private static final String KEYWORD_DEADLINE = "by";
-	private static final String KEYWORD_RECURRING = "every";
-	private static final String KEYWORD_WITH = "with";
-	private static final String KEYWORD_AT = "at";
-	private static final String KEYWORD_IN = "in";
+	private static String KEYWORD_DAY_STARTING = "from";
+	private static String KEYWORD_DAY_STARTING_2 = "on";
+	private static String KEYWORD_DAY_ENDING = "to";
+	private static String KEYWORD_DEADLINE = "by";
+	private static String KEYWORD_RECURRING = "every";
+	private static String KEYWORD_WITH = "with";
+	private static String KEYWORD_AT = "at";
+	private static String KEYWORD_IN = "in";
 
 	//DAY KEYWORDS
-	private static final String DAY_KEYWORD_TODAY = "Today";
-	private static final String DAY_KEYWORD_TDY = "Tdy";
-	private static final String DAY_KEYWORD_TOMORROW = "Tomorrow";
-	private static final String DAY_KEYWORD_TMR = "tmr";
-	private static final String DAY_KEYWORD_MONDAY = "Monday";
-	private static final String DAY_KEYWORD_MON = "mon";
-	private static final String DAY_KEYWORD_TUESDAY = "Tuesday";
-	private static final String DAY_KEYWORD_TUES = "tues";
-	private static final String DAY_KEYWORD_TUE = "tue";
-	private static final String DAY_KEYWORD_WEDNESDAY = "Wednesday";
-	private static final String DAY_KEYWORD_WED = "wed";
-	private static final String DAY_KEYWORD_THURSDAY = "Thursday";
-	private static final String DAY_KEYWORD_THURS = "thurs";
-	private static final String DAY_KEYWORD_THUR = "thur";
-	private static final String DAY_KEYWORD_THU = "thu";
-	private static final String DAY_KEYWORD_FRIDAY = "Friday";
-	private static final String DAY_KEYWORD_FRI = "fri";
-	private static final String DAY_KEYWORD_SATURDAY = "Saturday";
-	private static final String DAY_KEYWORD_SAT = "sat";
-	private static final String DAY_KEYWORD_SUNDAY = "Sunday";
-	private static final String DAY_KEYWORD_SUN = "sun";
-
+	private static String DAY_KEYWORD_TODAY = "Today";
+	private static String DAY_KEYWORD_TDY = "Tdy";
+	private static String DAY_KEYWORD_TOMORROW = "Tomorrow";
+	private static String DAY_KEYWORD_TMR = "tmr";
+	private static String DAY_KEYWORD_MONDAY = "Monday";
+	private static String DAY_KEYWORD_MON = "mon";
+	private static String DAY_KEYWORD_TUESDAY = "Tuesday";
+	private static String DAY_KEYWORD_TUES = "tues";
+	private static String DAY_KEYWORD_TUE = "tue";
+	private static String DAY_KEYWORD_WEDNESDAY = "Wednesday";
+	private static String DAY_KEYWORD_WED = "wed";
+	private static String DAY_KEYWORD_THURSDAY = "Thursday";
+	private static String DAY_KEYWORD_THURS = "thurs";
+	private static String DAY_KEYWORD_THUR = "thur";
+	private static String DAY_KEYWORD_THU = "thu";
+	private static String DAY_KEYWORD_FRIDAY = "Friday";
+	private static String DAY_KEYWORD_FRI = "fri";
+	private static String DAY_KEYWORD_SATURDAY = "Saturday";
+	private static String DAY_KEYWORD_SAT = "sat";
+	private static String DAY_KEYWORD_SUNDAY = "Sunday";
+	private static String DAY_KEYWORD_SUN = "sun";
 
 	private static final String FEEDBACK_TYPE = "Type in a command: add, delete, edit, done.";
+
 	private static final String HELP_TEXT_ADD = "To add, enter:\n - add \"[task name]\" (from [date] @ [time] to "
 			+ "[date] @ [time]).\n - add \"[task name]\" by [date] @ [time] if you want to create a\ndeadline.";
+
 	private static final String HELP_TEXT_DELETE = "To delete, enter:\n - delete [task number].";
+
 	private static final String HELP_TEXT_DONE = "To mark/unmark a task as done, enter:\n - done [task number].";
+
 	private static final String HELP_TEXT_EDIT = "To edit task name, enter:\n - edit [task number] \"[new name]\"";
 
 	private static final int TODAY = 0;
@@ -64,13 +68,13 @@ public class Parser {
 		userCommand = userCommand.trim();
 		String firstWord = getFirstWord(userCommand);
 		if (firstWord.equalsIgnoreCase("add")) {
-			try {
-				Task task = createTask(userCommand);
-				CommandAdd command = new CommandAdd(task);
-				return command;
-			} catch (Exception e){
+			String restOfTheString = getTheRestOfTheString(userCommand);
+			if (restOfTheString == null) {
 				throw new Exception(HELP_TEXT_ADD);
 			}
+			Task task = new Task(restOfTheString);
+			CommandAdd command = new CommandAdd(task);
+			return command;
 		} else if (firstWord.equalsIgnoreCase("delete")) {
 			String restOfTheString = getTheRestOfTheString(userCommand);
 			if (restOfTheString == null) {
@@ -122,10 +126,6 @@ public class Parser {
 			String restOfTheString = getTheRestOfTheString(userCommand);
 			CommandSearch command = new CommandSearch(restOfTheString);
 			return command;
-		} else if (firstWord.equalsIgnoreCase("view")) {
-			String restOfTheString = getTheRestOfTheString(userCommand);
-			CommandView command = new CommandView(restOfTheString);
-			return command;
 		} else if (firstWord.equalsIgnoreCase("undo")) {
 			History history = Controller.getHistory();
 			Command toBeUndone = history.goBackwards();
@@ -141,16 +141,7 @@ public class Parser {
 			throw new Exception("Invalid command.\n"+FEEDBACK_TYPE);
 		}
 	}
-	public static Task createTask(String userInput) throws Exception{
-		String restOfTheString = getTheRestOfTheString(userInput);
-		if (restOfTheString == null) {
-			throw new Exception();
-		}
-		Task task = new Task(restOfTheString);
-		return task;
-	}
-	
-	
+
 	public static String getTheRestOfTheString(String userCommand) throws Exception {
 		try {
 			String[] result = userCommand.split(" ", 2);
@@ -226,20 +217,6 @@ public class Parser {
 		}
 
 		return 0000;
-	}
-	public static boolean checkDateFormat(String dateInString){
-		int year,month,day;
-		try{
-			year=parseYear(dateInString);
-			month=parseMonth(dateInString);
-			day=parseDayOfMonth(dateInString);
-		}
-		catch(Exception e){
-			return false;
-		}
-		return true;
-		
-		
 	}
 
 	public static int parseYear(String dateInString) throws Exception {
@@ -369,7 +346,62 @@ public class Parser {
 				break;
 			}
 		}
+	
+		String [] taskNameArray = generateArray(taskName);
+		for (int j=0; j<=taskNameArray.length-1; j++) {
+			if (taskNameArray[j].indexOf(QUOTATION_MARK) == 0 
+					&& taskNameArray[j].lastIndexOf(QUOTATION_MARK) == taskNameArray[j].length()-1) {
+				String temp = taskNameArray[j].substring(1,taskNameArray[j].length()-1);
+				if (temp.equalsIgnoreCase(KEYWORD_DAY_STARTING) 
+						|| temp.equalsIgnoreCase(KEYWORD_DAY_STARTING_2)
+						|| temp.equalsIgnoreCase(KEYWORD_DAY_ENDING)
+						|| temp.equalsIgnoreCase(KEYWORD_DEADLINE)
+						|| temp.equalsIgnoreCase(KEYWORD_RECURRING)
+						|| temp.equalsIgnoreCase(KEYWORD_WITH)
+						|| temp.equalsIgnoreCase(KEYWORD_AT)
+						|| temp.equalsIgnoreCase(KEYWORD_IN)) {
+					taskNameArray[j] = temp;
+				} else {
+					break;
+				}
+			}
+		}
 
+		taskName = EMPTY_STRING;
+		for (int k=0; k<=taskNameArray.length-1; k++) {
+			taskName = taskName + SINGLE_SPACE + taskNameArray[k];
+		}
+		
+//		taskName = taskName.replaceAll("\"KEYWORD_DAY_STARTING\"", "KEYWORD_DAY_STARTING");
+//		String checkKeyWord = EMPTY_STRING;
+//		int index_slash = -1;
+//		for (int i=0; i<taskName.length()-1; i++){
+//			if (taskName.substring(i, i+1).equalsIgnoreCase("/")) {
+//				index_slash = i;
+//				for (int j=i; j<taskName.length(); i++) {
+//					if (taskName.substring(j, j+1).equalsIgnoreCase(SINGLE_SPACE)) {
+//						break;
+//					} else {
+//						checkKeyWord = checkKeyWord + taskName.substring(i, i+1);
+//					}
+//				}
+//
+//				if (checkKeyWord.equalsIgnoreCase(KEYWORD_DAY_STARTING)
+//						|| checkKeyWord.equalsIgnoreCase(KEYWORD_DAY_STARTING_2)
+//						|| checkKeyWord.equalsIgnoreCase(KEYWORD_DAY_ENDING)
+//						|| checkKeyWord.equalsIgnoreCase(KEYWORD_DEADLINE)
+//						|| checkKeyWord.equalsIgnoreCase(KEYWORD_RECURRING)
+//						|| checkKeyWord.equalsIgnoreCase(KEYWORD_WITH)
+//						|| checkKeyWord.equalsIgnoreCase(KEYWORD_AT)
+//						|| checkKeyWord.equalsIgnoreCase(KEYWORD_IN)) {
+//					taskName = taskName.substring(0,index_slash-1) + taskName.substring(index_slash, taskName.length()-1);
+//					index_slash = -1;
+//					checkKeyWord = EMPTY_STRING;
+//				} else {
+//					break;
+//				}
+//			}
+//		}
 		return taskName.trim();
 	}
 
@@ -403,6 +435,33 @@ public class Parser {
 				}
 			}
 		}
+		//taskPerson = taskPerson.replaceAll("/", "");
+	
+		String [] taskPersonArray = generateArray(taskPerson);
+		for (int j=0; j<=taskPersonArray.length-1; j++) {
+			if (taskPersonArray[j].indexOf(QUOTATION_MARK) == 0 
+					&& taskPersonArray[j].lastIndexOf(QUOTATION_MARK) == taskPersonArray[j].length()-1) {
+				String temp = taskPersonArray[j].substring(1,taskPersonArray[j].length()-1);
+				if (temp.equalsIgnoreCase(KEYWORD_DAY_STARTING) 
+						|| temp.equalsIgnoreCase(KEYWORD_DAY_STARTING_2)
+						|| temp.equalsIgnoreCase(KEYWORD_DAY_ENDING)
+						|| temp.equalsIgnoreCase(KEYWORD_DEADLINE)
+						|| temp.equalsIgnoreCase(KEYWORD_RECURRING)
+						|| temp.equalsIgnoreCase(KEYWORD_WITH)
+						|| temp.equalsIgnoreCase(KEYWORD_AT)
+						|| temp.equalsIgnoreCase(KEYWORD_IN)) {
+					taskPersonArray[j] = temp;
+				} else {
+					break;
+				}
+			}
+		}
+
+		taskPerson = EMPTY_STRING;
+		for (int k=0; k<=taskPersonArray.length-1; k++) {
+			taskPerson = taskPerson + SINGLE_SPACE + taskPersonArray[k];
+		}
+
 		return taskPerson.trim();
 	}
 
@@ -423,11 +482,41 @@ public class Parser {
 						&& !messageArray[j].equalsIgnoreCase(KEYWORD_AT)
 						&& !isInteger(messageArray[j])) {
 					taskVenue = taskVenue + messageArray[j] + SINGLE_SPACE;
+					
 				} else {
 					break;
 				}
 			}
 		}
+//		taskVenue = taskVenue.replaceAll("\"KEYWORD_DAY_STARTING\"", KEYWORD_DAY_STARTING);
+//		taskVenue = taskVenue.replaceAll("/", "");		
+
+		String [] taskVenueArray = generateArray(taskVenue);
+		for (int j=0; j<=taskVenueArray.length-1; j++) {
+			if (taskVenueArray[j].indexOf(QUOTATION_MARK) == 0 
+					&& taskVenueArray[j].lastIndexOf(QUOTATION_MARK) == taskVenueArray[j].length()-1) {
+				String temp = taskVenueArray[j].substring(1,taskVenueArray[j].length()-1);
+				if (temp.equalsIgnoreCase(KEYWORD_DAY_STARTING) 
+						|| temp.equalsIgnoreCase(KEYWORD_DAY_STARTING_2)
+						|| temp.equalsIgnoreCase(KEYWORD_DAY_ENDING)
+						|| temp.equalsIgnoreCase(KEYWORD_DEADLINE)
+						|| temp.equalsIgnoreCase(KEYWORD_RECURRING)
+						|| temp.equalsIgnoreCase(KEYWORD_WITH)
+						|| temp.equalsIgnoreCase(KEYWORD_AT)
+						|| temp.equalsIgnoreCase(KEYWORD_IN)) {
+					taskVenueArray[j] = temp;
+				} else {
+					break;
+				}
+			}
+		}
+
+		taskVenue = EMPTY_STRING;
+		for (int k=0; k<=taskVenueArray.length-1; k++) {
+			taskVenue = taskVenue + SINGLE_SPACE + taskVenueArray[k];
+		}
+
+		
 		return taskVenue.trim();
 	}
 
@@ -510,7 +599,6 @@ public class Parser {
 		//		} else {
 		//		throw new Exception("End time cannot be earlier than Start time");
 		//		}
-
 	}
 
 	public static DateTime parseTaskEnd(String parameter) throws Exception {
