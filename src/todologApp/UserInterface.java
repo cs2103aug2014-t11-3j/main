@@ -46,7 +46,7 @@ public class UserInterface extends JFrame implements WindowListener {
 	//private Controller controller;
 	private LinkedList <Task> toDoListItems = new LinkedList<Task>();
 	private ToDoListTableModel toDoListTableModel;
-	
+	private static UserInterface window;
 	/**
 	 * Launch the application.
 	 */
@@ -61,9 +61,11 @@ public class UserInterface extends JFrame implements WindowListener {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {  
 				try {
-					UserInterface window = new UserInterface();
-					window.setVisible(true);   		
-			//		window.addKeyListener(new UserInterfaceListener());
+					window = new UserInterface(); 		
+					window.dispose();
+					window.setUndecorated(true);
+					window.setVisible(true);
+					//window.addKeyListener(new UserInterfaceListener());
 					
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -81,7 +83,7 @@ public class UserInterface extends JFrame implements WindowListener {
 		
 		UserInterface.setTitle("ToDoLog");
 		UserInterface.setResizable(false);
-		UserInterface.setBounds(100,100,700, 570);					
+		UserInterface.setBounds(100,100,700, 600);					
 		UserInterface.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
@@ -91,13 +93,13 @@ public class UserInterface extends JFrame implements WindowListener {
 		Container contentPane = UserInterface.getContentPane();
 		contentPane.add(layerPane);
 		JPanel mainPanel = new JPanel();
-		mainPanel.setBounds(0,0,700, 550);
+		mainPanel.setBounds(0, 15, 700, 580);
 		mainPanel.setLayout(new GridBagLayout());
 		BufferedImage img;
 		try {
 			img = ImageIO.read(new File("src/photos/seagull.jpg"));
 			JLabel background = new JLabel(new ImageIcon(img));
-			background.setBounds(0,0,700, 570);
+			background.setBounds(0,0,700, 600);
 			layerPane.add(background,new Integer(0));
 		} catch (IOException e) {
 			//TODO some notifying
@@ -162,6 +164,7 @@ public class UserInterface extends JFrame implements WindowListener {
 		mainPanel.add(toDoListHolder, panelParameters);
 		toDoListHolder.setOpaque(false);
 		toDoListTable.setOpaque(false);
+		toDoListTable.setEnabled(false);
 		((DefaultTableCellRenderer)toDoListTable.getDefaultRenderer(Object.class)).setOpaque(false);
 	
 		toDoList.getViewport().setOpaque(false);
@@ -265,11 +268,13 @@ public class UserInterface extends JFrame implements WindowListener {
 		dynamicHelpTextParameters = setParameters(DYNAMIC_HELP_TEXT_PARAMETERS);
 		
 		//characterize the text area box into the bottom panel
-		Border dynamicHelpTextBorder = new LineBorder(Color.BLUE);
+		Border dynamicHelpTextBorder = new LineBorder(Color.GRAY);
 		dynamicHelpText = new JTextArea(3,33);
 		dynamicHelpText.setMaximumSize(dynamicHelpText.getSize());
 		dynamicHelpText.setBorder(dynamicHelpTextBorder);
 		dynamicHelpText.setLineWrap(true);
+		dynamicHelpText.setWrapStyleWord(false);
+		dynamicHelpText.setEditable(false);
 		File fontFile = new File("src/fonts/OpenSans-Regular.ttf");
 		try {
 			Font font;
@@ -284,9 +289,8 @@ public class UserInterface extends JFrame implements WindowListener {
 			e.printStackTrace();
 		}
 		//put the dynamic area into a scroll pane
-		JScrollPane dynamicHelpTextScrollPane = new JScrollPane(dynamicHelpText);
-		dynamicHelpTextScrollPane.setBorder(dynamicHelpTextBorder);
-		bottomPanel.add(dynamicHelpTextScrollPane,dynamicHelpTextParameters);
+		dynamicHelpText.setBorder(dynamicHelpTextBorder);
+		bottomPanel.add(dynamicHelpText,dynamicHelpTextParameters);
 		//dynamicHelpText.addActionListener(new DynamicHelpTextAreaListener());
 	
 	}
@@ -462,6 +466,7 @@ public class UserInterface extends JFrame implements WindowListener {
 
 		}
 	}
+
 	private class CommandEntryTextFieldDocumentListener implements DocumentListener {
 		@Override
 		public void insertUpdate(DocumentEvent e) {
@@ -496,25 +501,40 @@ public class UserInterface extends JFrame implements WindowListener {
 	}
 	
 	private class CommandEntryTextFieldKeyListener implements KeyListener {
-		
 		@Override
 		public void keyPressed(KeyEvent e){
 
+			int keyCode = e.getKeyCode();
+			int modifiers = e.getModifiers();
+			if ((keyCode == KeyEvent.VK_PAGE_UP) || (keyCode == KeyEvent.VK_F9)){
+				toDoListTableModel.pageUp();
+			}
+			String helperText = readKeyForHelperFeedback();
+			dynamicHelpText.setText(helperText);
+			// META_MASK: Mac's Command key.
+			if (((keyCode == KeyEvent.VK_B) && ((modifiers & KeyEvent.META_MASK)!=0)) ||
+					((keyCode == KeyEvent.VK_B) && ((modifiers & KeyEvent.ALT_MASK)!=0))) {
+				
+				window.setOpacity(0.5f);
+			}
+
 		}
-		
+	
 		@Override
 		public void keyReleased(KeyEvent e){
 			int keyCode = e.getKeyCode();
 			if(keyCode == KeyEvent.VK_PAGE_UP){
 			toDoListTableModel.pageUp();
+
 			}
 			
-			if(keyCode == KeyEvent.VK_PAGE_DOWN){
+			if ((keyCode == KeyEvent.VK_PAGE_DOWN) || (keyCode == KeyEvent.VK_F10)){
 				toDoListTableModel.pageDown();
 			}
-
 		}
-
+			
+	
+			
 		@Override
 		public void keyTyped(KeyEvent e){
 
@@ -544,7 +564,7 @@ public class UserInterface extends JFrame implements WindowListener {
 		GridBagConstraints parameters;
 		Insets insets = new Insets(0,0,0,0);
 		Insets clockInsets = new Insets(0,0,0,0);
-		Insets toDoListInsets = new Insets(0,0,0,0);
+		Insets toDoListInsets = new Insets(10,0,0,0);
 		Insets commandEntryTextFieldInsets = new Insets(10,25,5,25);
 		Insets dynamicHelpTextInsets = new Insets(10,25,20,20);
 		Insets legendInsets = new Insets(0,0,0,10);
@@ -575,7 +595,7 @@ public class UserInterface extends JFrame implements WindowListener {
 		}
 		
 		else if(panelParameters == DYNAMIC_HELP_TEXT_PARAMETERS){
-			parameters = new GridBagConstraints(0,1,2,1,0.0,0.1,GridBagConstraints.CENTER,GridBagConstraints.BOTH,dynamicHelpTextInsets,0,0);
+			parameters = new GridBagConstraints(0,1,3,1,0.0,0.1,GridBagConstraints.CENTER,GridBagConstraints.BOTH,dynamicHelpTextInsets,0,0);
 			return parameters;
 		}
 		
@@ -684,5 +704,4 @@ public class UserInterface extends JFrame implements WindowListener {
 		// TODO Auto-generated method stub
 		
 	}
-
 }
