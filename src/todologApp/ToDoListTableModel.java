@@ -23,9 +23,10 @@ public class ToDoListTableModel extends AbstractTableModel{
 	 * 
 	 */
 	
-	private final static String[] columnNames = {"No.","Name","Time","Person / Venue","Done"};
+	private final static String[] columnNames = {"No.","Name","Time","Person / Venue","Done","<hidden>"};
 	private LinkedList<Task> tableData;
 	private final static int pageSize = 17;
+	private static final int NOT_DEADLINE = -1;
 	private int pageOffSet = 0;
 	
 	public ToDoListTableModel(LinkedList<Task> toDoListItems){
@@ -109,18 +110,33 @@ public class ToDoListTableModel extends AbstractTableModel{
 				col4 = col4.concat("with ").concat(task.getTaskPerson().concat(" "));
 			}
 			if (!task.getTaskVenue().isEmpty()) {
-				col4 = col4.concat("@").concat(task.getTaskVenue());
+				col4 = col4.concat("@ ").concat(task.getTaskVenue());
 			}
 			return col4;
 		}
 		case 4:
 			if(task.getTaskStatus() == true){
-				return "done";
+				return "Done";
 			}
 			else{
+				int duePeriod = task.duePeriod();
+				if (duePeriod == NOT_DEADLINE) {
+					return "";
+				}
+				if (duePeriod < 7) {
+					if (duePeriod == 0) {
+						return "Due today";
+					} else if (duePeriod == 1) {
+						return "Due tomorrow";
+					} else {
+						return String.format("Due in %d days",duePeriod);
+					}
+				}
 				return "";
-			}
-			
+				
+			} 
+		case 5:
+			return task.duePeriod();
 		default:
 			return null;
 			

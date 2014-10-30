@@ -8,10 +8,11 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.*;
 
 import java.util.*;
@@ -220,6 +221,8 @@ public class UserInterface extends JFrame implements WindowListener { /**
 		bottomPanel.add(commandEntryTextField,bottomPanelParameters);
 		commandEntryTextField.addActionListener(new CommandEntryTextFieldActionListener());
 		commandEntryTextField.addKeyListener(new CommandEntryTextFieldKeyListener());
+		commandEntryTextField.getDocument().addDocumentListener(new CommandEntryTextFieldDocumentListener());
+		commandEntryTextField.getDocument().putProperty("name", "Text Field");
 	}
 	
 	private void createTextArea(JPanel bottomPanel){
@@ -412,13 +415,44 @@ public class UserInterface extends JFrame implements WindowListener { /**
 
 		}
 	}
+	private class CommandEntryTextFieldDocumentListener implements DocumentListener {
+		@Override
+		public void insertUpdate(DocumentEvent e) {
+			String helperText = readKeyForHelperFeedback();
+			dynamicHelpText.setText(helperText);
+		}
+		@Override
+		public void removeUpdate(DocumentEvent e) {
+			String helperText = readKeyForHelperFeedback();
+			dynamicHelpText.setText(helperText);
+		}
+		@Override
+		public void changedUpdate(DocumentEvent e) {
+			
+		}
+		private String readKeyForHelperFeedback() {
+			String commandString = commandEntryTextField.getText();
+			LinkedList<String> entryHelper = Controller.getCommandEntryHelperDetailsFromInput(commandString);
+			String helperText = dynamicHelpText.getText();
+			if (!entryHelper.isEmpty()) {
+				helperText += "\n";
+				String commandType = entryHelper.poll();
+				if (commandType.equals("add")) {
+					helperText = UIFeedbackHelper.createCmdAddHelpText(entryHelper);
+				} else if (commandType.equals("edit")) {
+					helperText = UIFeedbackHelper.createCmdEditHelpText(entryHelper);
+				}
+			}
+			return helperText;
+		}
+		
+	}
 	
 	private class CommandEntryTextFieldKeyListener implements KeyListener {
 		
 		@Override
 		public void keyPressed(KeyEvent e){
-			String helperText = readKeyForHelperFeedback();
-			dynamicHelpText.setText(helperText);
+
 		}
 		
 		@Override
@@ -431,14 +465,12 @@ public class UserInterface extends JFrame implements WindowListener { /**
 			if(keyCode == KeyEvent.VK_PAGE_DOWN){
 				toDoListTableModel.pageDown();
 			}
-			String helperText = readKeyForHelperFeedback();
-			dynamicHelpText.setText(helperText);	
+
 		}
 
 		@Override
 		public void keyTyped(KeyEvent e){
-			String helperText = readKeyForHelperFeedback();
-			dynamicHelpText.setText(helperText);
+
 		}
 		private String readKeyForHelperFeedback() {
 			String commandString = commandEntryTextField.getText();
@@ -527,7 +559,7 @@ public class UserInterface extends JFrame implements WindowListener { /**
 	private void adjustTableColumns(JTable toDoListTable){
 		TableColumn tableColumn = null;
 		
-		for(int columnHeaders = 0; columnHeaders < 5;columnHeaders++){
+		for(int columnHeaders = 0; columnHeaders < 6;columnHeaders++){
 			tableColumn = toDoListTable.getColumnModel().getColumn(columnHeaders);
 			
 			switch(columnHeaders){
@@ -541,10 +573,15 @@ public class UserInterface extends JFrame implements WindowListener { /**
 				tableColumn.setPreferredWidth(210);
 				break;
 			case 3:
-				tableColumn.setPreferredWidth(180);
+				tableColumn.setPreferredWidth(140);
 				break;
 			case 4:
-				tableColumn.setPreferredWidth(50);
+				tableColumn.setPreferredWidth(90);
+				break;
+			case 5:
+				tableColumn.setPreferredWidth(0);
+				tableColumn.setMinWidth(0);
+				tableColumn.setMaxWidth(0);
 				break;
 			}
 		}
