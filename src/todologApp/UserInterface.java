@@ -8,6 +8,7 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.*;
@@ -15,11 +16,15 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.*;
 
+import com.apple.eawt.Application;
+
 import java.util.*;
 //import java.lang.Object;
 
 
 public class UserInterface extends JFrame implements WindowListener { 
+	
+
 	private static final float TABLE_FONT_SIZE = 12f;
 	private static final float ENTRY_TEXT_FIELD_FONT_SIZE = 20f;
 	private static final float HELP_TEXT_FONT_SIZE = 15f;
@@ -37,15 +42,23 @@ public class UserInterface extends JFrame implements WindowListener {
 	private static final int TODOLIST_SCROLLPANE_PARAMETERS = 6;
 	private static final int CLOCK_PARAMETERS = 7;
 	//private static final int BUTTON_PARAMETERS = 7;
+	private static final int BUTTON_PANEL_PARAMETERS = 9;
+	private static final int TOP_PANEL_PARAMETERS = 8;
+	private static final int CLOSE_BUTTON_PARAMETERS = 11;
+	private static final int BLANK_SPACE_BUTTON_PARAMETERS = 10;
+	private static final int MINIMIZE_BUTTON_PARAMETERS = 11;
 	
 	private JTextField commandEntryTextField;
 	private JLayeredPane layerPane = new JLayeredPane();
 	private JTextArea dynamicHelpText;
 	private JTextArea toDoListText;
 	private JTable toDoListTable;
+	private JButton closeButton;
+	private JButton minimizeButton;
 	//private Controller controller;
 	private LinkedList <Task> toDoListItems = new LinkedList<Task>();
 	private ToDoListTableModel toDoListTableModel;
+	
 	private static UserInterface window;
 	/**
 	 * Launch the application.
@@ -93,7 +106,7 @@ public class UserInterface extends JFrame implements WindowListener {
 		Container contentPane = UserInterface.getContentPane();
 		contentPane.add(layerPane);
 		JPanel mainPanel = new JPanel();
-		mainPanel.setBounds(0, 15, 700, 580);
+		mainPanel.setBounds(0, 0, 700, 580);
 		mainPanel.setLayout(new GridBagLayout());
 		BufferedImage img;
 		try {
@@ -108,18 +121,100 @@ public class UserInterface extends JFrame implements WindowListener {
 		mainPanel.setOpaque(false);
 		createToDoListTable(mainPanel);
 		createBottomPanel(mainPanel); 
-		createClockPanel(mainPanel);
+		createTopPanel(mainPanel);
 		layerPane.add(mainPanel,new Integer(2));
-		
 		
 	}
 	
-	private void createClockPanel(Container mainPanel){
+	private void createClockPanel(Container topPanel){
 		 DigitalClock clock = new DigitalClock();
 		 GridBagConstraints clockPanelParameters = setParameters(CLOCK_PARAMETERS);
-		 
-		 mainPanel.add(clock.getTime(),clockPanelParameters);
+		 JLabel clockLabel = clock.getTime();
+		 topPanel.add(clockLabel,clockPanelParameters);
 		 clock.start();
+	}
+	private void colorComponent(Component component, Color color) {
+		JPanel colorCell = new JPanel()
+		{
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+			@Override
+			protected void paintComponent(Graphics g)
+		    {
+		        g.setColor( getBackground() );
+		        g.fillRect(0, 0, getWidth(), getHeight());
+		        super.paintComponent(g);
+		    }
+		};
+		((JComponent) component).setBackground(color);
+		((JComponent) component).setOpaque(false);
+		((JComponent) component).add(colorCell);
+	}
+	private void createButtonPanel(Container topPanel) {
+		
+		JPanel buttonPanel = new JPanel(new GridBagLayout());
+		closeButton = new JButton() {
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 1L;
+				@Override
+				protected void paintComponent(Graphics g)
+			    {
+			        g.setColor( getBackground() );
+			        g.fillRect(0, 0, getWidth(), getHeight());
+			        super.paintComponent(g);
+			    }
+			};
+		minimizeButton = new JButton() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+			@Override
+			protected void paintComponent(Graphics g)
+		    {
+		        g.setColor( getBackground() );
+		        g.fillRect(0, 0, getWidth(), getHeight());
+		        super.paintComponent(g);
+		    }
+		};
+		closeButton.setBackground(new Color(255,0,0,255));
+		closeButton.setOpaque(false);
+		colorComponent(closeButton,new Color(255,0,0,255));
+		colorComponent(minimizeButton,new Color(255,255,0,255));
+		closeButton.setPreferredSize(new Dimension(23,23));
+		minimizeButton.setPreferredSize(new Dimension(23,23));
+		closeButton.addActionListener(new CloseButtonActionListener());
+		minimizeButton.addActionListener(new MinimizeButtonActionListener());
+		GridBagConstraints padParameters =
+				new GridBagConstraints(0,0,3,1,1.0,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,new Insets(0,0,0,0),0,0);
+		GridBagConstraints minimizeButtonParameters = 
+				new GridBagConstraints(3,0,1,1,0.0,0.0,GridBagConstraints.NORTHEAST,GridBagConstraints.NONE,new Insets(0,0,5,5),0,0);
+		GridBagConstraints closeButtonParameters =
+				new GridBagConstraints(4,0,1,1,0.0,0.0,GridBagConstraints.NORTHEAST,GridBagConstraints.NONE,new Insets(0,0,5,10),0,0);
+		buttonPanel.add(Box.createGlue(),padParameters);
+		buttonPanel.add(minimizeButton,minimizeButtonParameters);
+		buttonPanel.add(closeButton,closeButtonParameters);
+		buttonPanel.setOpaque(false);
+		GridBagConstraints ButtonPanelParameters = setParameters(BUTTON_PANEL_PARAMETERS);
+		topPanel.add(buttonPanel,ButtonPanelParameters);
+	}
+	private void createTopPanel(Container mainPanel){
+		JPanel topPanel = new JPanel(new GridBagLayout());
+		topPanel.setBackground(Color.WHITE);
+		topPanel.setPreferredSize(new Dimension(650,50));
+		GridBagConstraints parameters;
+		
+		parameters = setParameters(TOP_PANEL_PARAMETERS);
+		
+		createClockPanel(topPanel);
+		createButtonPanel(topPanel);
+		//createButton(bottomPanel);
+		mainPanel.add(topPanel, parameters);
+		topPanel.setOpaque(false);
 	}
 	
 	private void createToDoListTable(Container mainPanel){                        
@@ -410,7 +505,11 @@ public class UserInterface extends JFrame implements WindowListener {
 	 * Create the application.
 	 */
 	public UserInterface() {
-		
+		ImageIcon img = new ImageIcon("src/ToDoLog logo.gif");
+		this.setIconImage(img.getImage());
+		Application application = Application.getApplication();
+		Image image = Toolkit.getDefaultToolkit().getImage("src/ToDoLog logo.gif");
+		application.setDockIconImage(image);
 		initialize(this); 
 		fillUpTheJFrame(this);
 		
@@ -556,37 +655,63 @@ public class UserInterface extends JFrame implements WindowListener {
 		}
 		
 	}
-	
+	public class MinimizeButtonActionListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			window.setState(Frame.ICONIFIED);
+
+		}
+
+	}
+
+	public class CloseButtonActionListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			window.dispatchEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSING));
+
+		}
+
+	}
 	//this method is to set up the parameters of the gridbagconstraints
 	//to put the different panels into the right positions on the JFrame
 	//here we use the constructor GridBagConstraints(gridx,gridy,gridwidth,gridheight,weightx,weighty,anchor,fill,insets,ipadx,ipady)
 	private GridBagConstraints setParameters(int panelParameters){
 		GridBagConstraints parameters;
-		Insets insets = new Insets(0,0,0,0);
-		Insets clockInsets = new Insets(0,0,0,0);
+		Insets topPanelInsets = new Insets(0,0,0,0);
+		Insets bottomPanelInsets = new Insets(0,0,0,0);
+		Insets buttonPanelInsets = new Insets(0,0,0,0);
+		Insets closebuttonInsets = new Insets(0,0,0,0);
+		Insets clockInsets = new Insets(15,0,0,0);
 		Insets toDoListInsets = new Insets(10,0,0,0);
+		Insets toDoListScrollPaneInsets = new Insets(0,0,0,0);
 		Insets commandEntryTextFieldInsets = new Insets(10,25,5,25);
 		Insets dynamicHelpTextInsets = new Insets(10,25,20,20);
 		Insets legendInsets = new Insets(0,0,0,10);
 		//Insets buttonInsets = new Insets(10,0,0,20);
 		
 		if(panelParameters == CLOCK_PARAMETERS){
-			parameters = new GridBagConstraints(0,0,3,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,clockInsets,0,0);
-			
+			parameters = new GridBagConstraints(1,0,1,1,1.0,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,clockInsets,0,0);
 			return parameters;
 		}
 		else if(panelParameters == TODOLIST_PARAMETERS){
 			parameters = new GridBagConstraints(0,1,3,4,0.1,0.0,GridBagConstraints.NORTHWEST,GridBagConstraints.BOTH,toDoListInsets,0,0);
-			
-			
+			return parameters;
+		}
+		else if(panelParameters == TOP_PANEL_PARAMETERS){
+			parameters = new GridBagConstraints(0,0,1,1,0.1,0.0,GridBagConstraints.NORTHEAST,GridBagConstraints.BOTH,topPanelInsets,0,0);
+			return parameters;
+		}
+		else if(panelParameters == BUTTON_PANEL_PARAMETERS){
+			parameters = new GridBagConstraints(3,0,1,1,0.1,0.0,GridBagConstraints.NORTHEAST,GridBagConstraints.BOTH,buttonPanelInsets,0,0);
+			return parameters;
+		}
+		else if(panelParameters == BOTTOM_PANEL_PARAMETERS){
+			parameters = new GridBagConstraints(0,5,3,3,0.0,0.3,GridBagConstraints.CENTER,GridBagConstraints.BOTH,bottomPanelInsets,0,0);
 			return parameters;
 		}
 		
-		else if(panelParameters == BOTTOM_PANEL_PARAMETERS){
-			parameters = new GridBagConstraints(0,5,3,3,0.0,0.3,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
-			
-			return parameters;
-		}
 		
 		else if(panelParameters == COMMAND_ENTRY_PARAMETERS){
 			parameters = new GridBagConstraints(0,0,3,1,0.1,0.0,GridBagConstraints.NORTHWEST,GridBagConstraints.BOTH,commandEntryTextFieldInsets,0,0);
@@ -610,7 +735,7 @@ public class UserInterface extends JFrame implements WindowListener {
 		}*/
 		
 		else if(panelParameters == TODOLIST_SCROLLPANE_PARAMETERS){
-			parameters = new GridBagConstraints(0,0,1,1,0.0,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
+			parameters = new GridBagConstraints(0,0,1,1,0.0,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,toDoListScrollPaneInsets,0,0);
 			return parameters;
 		}
 		
