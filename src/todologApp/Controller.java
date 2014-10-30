@@ -1,6 +1,9 @@
 package todologApp;
 
+import java.util.Collection;
 import java.util.LinkedList;
+
+import org.joda.time.format.DateTimeFormat;
 
 // remember to write unit test as you code
 
@@ -66,15 +69,14 @@ public class Controller {
 	}
 
 	public static void acceptUserCommand(String userCommand) {
-		Command command;
 		try {
-			command = Parser.createCommand(userCommand);
+			Command command = Parser.createCommand(userCommand);
 			_feedback = command.execute();
 			if (command instanceof CommandSearch) {
 				_displayList = ((CommandSearch) command).getReturnList();
 			} else if (command instanceof CommandView) {
 				_displayList = ((CommandView) command).getReturnList();
-			}else{
+			} else {
 				_displayList = _dbStorage.load();
 			}
 			if (!(command instanceof CommandUndo) && !(command instanceof CommandRedo) 
@@ -87,6 +89,32 @@ public class Controller {
 		}
 		_textDisplay = createNewDisplay();
 	}
+	
+	public static LinkedList<String> getCommandEntryHelperDetailsFromInput(String userCurrentInput) {
+		try {			
+			if (Parser.getFirstWord(userCurrentInput).equalsIgnoreCase("add")) {
+				Task task = Parser.createTask(userCurrentInput);
+				LinkedList<String> details = ControllerFeedbackHelper.createHelperTexts("add",task);
+				return details;
+			} else if (Parser.getFirstWord(userCurrentInput).equalsIgnoreCase("edit")) {
+				Command command = Parser.createCommand(userCurrentInput);
+				((CommandEdit) command).fakeExecute();
+				Task task = ((CommandEdit) command).getCurrentTask();
+				LinkedList<String> currentTaskDetails = ControllerFeedbackHelper.createHelperTexts("edit",task);
+				task = ((CommandEdit) command).getEditedTask();
+				LinkedList<String> newTaskDetails = ControllerFeedbackHelper.createHelperTexts("edit",task);
+				LinkedList<String> details = new LinkedList<String>(currentTaskDetails);
+				details.addAll(newTaskDetails);
+				return details;
+			}
+			 else {
+				return new LinkedList<String>();
+			}
+		} catch (Exception e) {
+			return new LinkedList<String>();
+		}
+	}
+
 
 	public static String getPlainTextOutput() {
 		return _textDisplay;

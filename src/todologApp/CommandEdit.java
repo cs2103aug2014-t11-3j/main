@@ -78,6 +78,12 @@ public class CommandEdit implements Command {
 			 throw new Exception("Incorrect input for edit");
 		 }
 	}
+	public Task getCurrentTask() {
+		return _taskExisting;
+	}
+	public Task getEditedTask() {
+		return _taskEdited;
+	}
 
 	public String execute() {
 		String feedback;
@@ -110,7 +116,28 @@ public class CommandEdit implements Command {
 		}
 		return feedback;
 	}
-
+	public String fakeExecute() {
+		String feedback;
+		String editedField;
+		LinkedList<Task> tasks = _storage.load();
+		_taskExisting = tasks.get(_index);
+		try {
+			editedField = formNewTask();
+		} catch (Exception e1) {
+			validity=false;
+			feedback = e1.getMessage();
+			return feedback;
+		}
+		if(editedField.equals("invalid")){
+			feedback = "Invalid input";
+			validity=false;
+		}
+		else{
+			feedback = "Edited " + editedField + " of the task.";
+			validity=true;
+		}
+		return feedback;
+	}
 	public String undo() {
 		String feedback;
 		LinkedList<Task> tasks = _storage.load();
@@ -129,6 +156,8 @@ public class CommandEdit implements Command {
 	public boolean isUndoable(){
 		return validity;
 	}
+
+	
 
 }
 

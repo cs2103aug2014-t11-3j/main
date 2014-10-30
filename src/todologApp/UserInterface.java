@@ -220,8 +220,8 @@ public class UserInterface extends JFrame implements WindowListener { /**
 		bottomPanelParameters = setParameters(COMMAND_ENTRY_PARAMETERS);
 		commandEntryTextField = new JTextField(20);
 		bottomPanel.add(commandEntryTextField,bottomPanelParameters);
-		commandEntryTextField.addActionListener(new CommandEntryTextFieldListener());
-		commandEntryTextField.addKeyListener(new ToDoListTableListener());
+		commandEntryTextField.addActionListener(new CommandEntryTextFieldActionListener());
+		commandEntryTextField.addKeyListener(new CommandEntryTextFieldKeyListener());
 	}
 	
 	private void createTextArea(JPanel bottomPanel){
@@ -393,7 +393,7 @@ public class UserInterface extends JFrame implements WindowListener { /**
 	}
 	
 	// remember to write unit test as you code
-	private class CommandEntryTextFieldListener implements ActionListener{
+	private class CommandEntryTextFieldActionListener implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent evt) {
 			//TODO This is for actions and stuffs, sending the action
@@ -434,11 +434,23 @@ public class UserInterface extends JFrame implements WindowListener { /**
 		}
 	}
 	
-	private class ToDoListTableListener implements KeyListener {
+	private class CommandEntryTextFieldKeyListener implements KeyListener {
 		
 		@Override
 		public void keyPressed(KeyEvent e){
-			
+			String commandString = commandEntryTextField.getText();
+			LinkedList<String> entryHelper = Controller.getCommandEntryHelperDetailsFromInput(commandString);
+			String helperText = dynamicHelpText.getText();
+			if (!entryHelper.isEmpty()) {
+				helperText += "\n";
+				String commandType = entryHelper.poll();
+				if (commandType.equals("add")) {
+					helperText = UIFeedbackHelper.createCmdAddHelpText(entryHelper);
+				} else if (commandType.equals("edit")) {
+					helperText = UIFeedbackHelper.createCmdEditHelpText(entryHelper);
+				}
+			}
+			dynamicHelpText.setText(helperText);
 		}
 		
 		@Override
@@ -451,43 +463,39 @@ public class UserInterface extends JFrame implements WindowListener { /**
 			if(keyCode == KeyEvent.VK_PAGE_DOWN){
 				toDoListTableModel.pageDown();
 			}
-			
-//			if (keyCode == KeyEvent.VK_UP) {
-//				try {
-//					commandEntryTextField.setText(PreviousCommand.UpArrow());
-//				} catch (Exception e1) {
-//					// TODO Auto-generated catch block
-//					e1.printStackTrace();
-//				}
-//			}
-//			
-//			if (keyCode == KeyEvent.VK_DOWN) {
-//				try {
-//					commandEntryTextField.setText(PreviousCommand.DownArrow());
-//				} catch (Exception e1) {
-//					// TODO Auto-generated catch block
-//					e1.printStackTrace();
-//				}
-//			}
+			String commandString = commandEntryTextField.getText();
+			LinkedList<String> entryHelper = Controller.getCommandEntryHelperDetailsFromInput(commandString);
+			String helperText = dynamicHelpText.getText();
+			if (!entryHelper.isEmpty()) {
+				helperText += "\n";
+				String commandType = entryHelper.poll();
+				if (commandType.equals("add")) {
+					helperText = UIFeedbackHelper.createCmdAddHelpText(entryHelper);
+				} else if (commandType.equals("edit")) {
+					helperText = UIFeedbackHelper.createCmdEditHelpText(entryHelper);
+				}
+			}
+			dynamicHelpText.setText(helperText);
 			
 		}
 		
 		@Override
 		public void keyTyped(KeyEvent e){
-//			int keyCode = e.getKeyCode();
-//			
-//			switch(keyCode){
-//			case KeyEvent.VK_PAGE_UP:
-//				toDoListTableModel.pageUp();
-//				
-//				break;
-//				
-//			case KeyEvent.VK_PAGE_DOWN:
-//				toDoListTableModel.pageDown();
-//				
-//				break;
-//			}
+			String commandString = commandEntryTextField.getText();
+			LinkedList<String> entryHelper = Controller.getCommandEntryHelperDetailsFromInput(commandString);
+			String helperText = dynamicHelpText.getText();
+			if (!entryHelper.isEmpty()) {
+				helperText += "\n";
+				String commandType = entryHelper.poll();
+				if (commandType.equals("add")) {
+					helperText = UIFeedbackHelper.createCmdAddHelpText(entryHelper);
+				} else if (commandType.equals("edit")) {
+					helperText = UIFeedbackHelper.createCmdEditHelpText(entryHelper);
+				}
+			}
+			dynamicHelpText.setText(helperText);
 		}
+
 		
 	}
 	
