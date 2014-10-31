@@ -16,7 +16,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.*;
 
-import com.apple.eawt.Application;
+//import com.apple.eawt.Application;
 
 import java.util.*;
 //import java.lang.Object;
@@ -507,9 +507,9 @@ public class UserInterface extends JFrame implements WindowListener {
 	public UserInterface() {
 		ImageIcon img = new ImageIcon("src/ToDoLog logo.gif");
 		this.setIconImage(img.getImage());
-		Application application = Application.getApplication();
+	//	Application application = Application.getApplication();
 		Image image = Toolkit.getDefaultToolkit().getImage("src/ToDoLog logo.gif");
-		application.setDockIconImage(image);
+	//	application.setDockIconImage(image);
 		initialize(this); 
 		fillUpTheJFrame(this);
 		
