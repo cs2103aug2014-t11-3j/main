@@ -12,13 +12,23 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.*;
+
+//import com.apple.eawt.Application;
 
 import java.util.*;
 //import java.lang.Object;
 
 
-public class UserInterface extends JFrame implements WindowListener { /**
+public class UserInterface extends JFrame implements WindowListener { 
+	
+
+	private static final float TABLE_FONT_SIZE = 12f;
+	private static final float ENTRY_TEXT_FIELD_FONT_SIZE = 20f;
+	private static final float HELP_TEXT_FONT_SIZE = 15f;
+/**
 	 * 
 	 */
 	private static final long serialVersionUID = 4308151724219875078L;
@@ -32,17 +42,24 @@ public class UserInterface extends JFrame implements WindowListener { /**
 	private static final int TODOLIST_SCROLLPANE_PARAMETERS = 6;
 	private static final int CLOCK_PARAMETERS = 7;
 	//private static final int BUTTON_PARAMETERS = 7;
+	private static final int BUTTON_PANEL_PARAMETERS = 9;
+	private static final int TOP_PANEL_PARAMETERS = 8;
+	private static final int CLOSE_BUTTON_PARAMETERS = 11;
+	private static final int BLANK_SPACE_BUTTON_PARAMETERS = 10;
+	private static final int MINIMIZE_BUTTON_PARAMETERS = 11;
 	
 	private JTextField commandEntryTextField;
 	private JLayeredPane layerPane = new JLayeredPane();
 	private JTextArea dynamicHelpText;
 	private JTextArea toDoListText;
-	private JTextArea feedBackBox;
 	private JTable toDoListTable;
+	private JButton closeButton;
+	private JButton minimizeButton;
 	//private Controller controller;
 	private LinkedList <Task> toDoListItems = new LinkedList<Task>();
 	private ToDoListTableModel toDoListTableModel;
 	
+	private static UserInterface window;
 	/**
 	 * Launch the application.
 	 */
@@ -57,9 +74,11 @@ public class UserInterface extends JFrame implements WindowListener { /**
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {  
 				try {
-					UserInterface window = new UserInterface();
-					window.setVisible(true);   		
-			//		window.addKeyListener(new UserInterfaceListener());
+					window = new UserInterface(); 		
+					window.dispose();
+					window.setUndecorated(true);
+					window.setVisible(true);
+					//window.addKeyListener(new UserInterfaceListener());
 					
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -77,7 +96,7 @@ public class UserInterface extends JFrame implements WindowListener { /**
 		
 		UserInterface.setTitle("ToDoLog");
 		UserInterface.setResizable(false);
-		UserInterface.setBounds(100,100,700, 570);					
+		UserInterface.setBounds(100,100,700, 600);					
 		UserInterface.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
@@ -87,13 +106,13 @@ public class UserInterface extends JFrame implements WindowListener { /**
 		Container contentPane = UserInterface.getContentPane();
 		contentPane.add(layerPane);
 		JPanel mainPanel = new JPanel();
-		mainPanel.setBounds(0,0,700, 550);
+		mainPanel.setBounds(0, 0, 700, 580);
 		mainPanel.setLayout(new GridBagLayout());
 		BufferedImage img;
 		try {
-			img = ImageIO.read(new File("src/seagull.jpg"));
+			img = ImageIO.read(new File("src/photos/seagull.jpg"));
 			JLabel background = new JLabel(new ImageIcon(img));
-			background.setBounds(0,0,700, 570);
+			background.setBounds(0,0,700, 600);
 			layerPane.add(background,new Integer(0));
 		} catch (IOException e) {
 			//TODO some notifying
@@ -102,18 +121,100 @@ public class UserInterface extends JFrame implements WindowListener { /**
 		mainPanel.setOpaque(false);
 		createToDoListTable(mainPanel);
 		createBottomPanel(mainPanel); 
-		createClockPanel(mainPanel);
+		createTopPanel(mainPanel);
 		layerPane.add(mainPanel,new Integer(2));
-		
 		
 	}
 	
-	private void createClockPanel(Container mainPanel){
+	private void createClockPanel(Container topPanel){
 		 DigitalClock clock = new DigitalClock();
 		 GridBagConstraints clockPanelParameters = setParameters(CLOCK_PARAMETERS);
-		 
-		 mainPanel.add(clock.getTime(),clockPanelParameters);
+		 JLabel clockLabel = clock.getTime();
+		 topPanel.add(clockLabel,clockPanelParameters);
 		 clock.start();
+	}
+	private void colorComponent(Component component, Color color) {
+		JPanel colorCell = new JPanel()
+		{
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+			@Override
+			protected void paintComponent(Graphics g)
+		    {
+		        g.setColor( getBackground() );
+		        g.fillRect(0, 0, getWidth(), getHeight());
+		        super.paintComponent(g);
+		    }
+		};
+		((JComponent) component).setBackground(color);
+		((JComponent) component).setOpaque(false);
+		((JComponent) component).add(colorCell);
+	}
+	private void createButtonPanel(Container topPanel) {
+		
+		JPanel buttonPanel = new JPanel(new GridBagLayout());
+		closeButton = new JButton() {
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 1L;
+				@Override
+				protected void paintComponent(Graphics g)
+			    {
+			        g.setColor( getBackground() );
+			        g.fillRect(0, 0, getWidth(), getHeight());
+			        super.paintComponent(g);
+			    }
+			};
+		minimizeButton = new JButton() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+			@Override
+			protected void paintComponent(Graphics g)
+		    {
+		        g.setColor( getBackground() );
+		        g.fillRect(0, 0, getWidth(), getHeight());
+		        super.paintComponent(g);
+		    }
+		};
+		closeButton.setBackground(new Color(255,0,0,255));
+		closeButton.setOpaque(false);
+		colorComponent(closeButton,new Color(255,0,0,255));
+		colorComponent(minimizeButton,new Color(255,255,0,255));
+		closeButton.setPreferredSize(new Dimension(23,23));
+		minimizeButton.setPreferredSize(new Dimension(23,23));
+		closeButton.addActionListener(new CloseButtonActionListener());
+		minimizeButton.addActionListener(new MinimizeButtonActionListener());
+		GridBagConstraints padParameters =
+				new GridBagConstraints(0,0,3,1,1.0,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,new Insets(0,0,0,0),0,0);
+		GridBagConstraints minimizeButtonParameters = 
+				new GridBagConstraints(3,0,1,1,0.0,0.0,GridBagConstraints.NORTHEAST,GridBagConstraints.NONE,new Insets(0,0,5,5),0,0);
+		GridBagConstraints closeButtonParameters =
+				new GridBagConstraints(4,0,1,1,0.0,0.0,GridBagConstraints.NORTHEAST,GridBagConstraints.NONE,new Insets(0,0,5,10),0,0);
+		buttonPanel.add(Box.createGlue(),padParameters);
+		buttonPanel.add(minimizeButton,minimizeButtonParameters);
+		buttonPanel.add(closeButton,closeButtonParameters);
+		buttonPanel.setOpaque(false);
+		GridBagConstraints ButtonPanelParameters = setParameters(BUTTON_PANEL_PARAMETERS);
+		topPanel.add(buttonPanel,ButtonPanelParameters);
+	}
+	private void createTopPanel(Container mainPanel){
+		JPanel topPanel = new JPanel(new GridBagLayout());
+		topPanel.setBackground(Color.WHITE);
+		topPanel.setPreferredSize(new Dimension(650,50));
+		GridBagConstraints parameters;
+		
+		parameters = setParameters(TOP_PANEL_PARAMETERS);
+		
+		createClockPanel(topPanel);
+		createButtonPanel(topPanel);
+		//createButton(bottomPanel);
+		mainPanel.add(topPanel, parameters);
+		topPanel.setOpaque(false);
 	}
 	
 	private void createToDoListTable(Container mainPanel){                        
@@ -131,6 +232,8 @@ public class UserInterface extends JFrame implements WindowListener { /**
 		adjustTableColumns(toDoListTable);
 		changeTableColors(toDoListTable);
 		toDoListTable.getTableHeader().setResizingAllowed(false);
+		toDoListTable.getTableHeader().setBackground(new Color(0,0,0,0));
+		toDoListTable.getTableHeader().setReorderingAllowed(false);
 		//toDoListTable.addKeyListener(new ToDoListTableListener());
 		//updateToDoListTable(toDoListTable,toDoListItems,toDoListHeaders);
 		
@@ -156,6 +259,7 @@ public class UserInterface extends JFrame implements WindowListener { /**
 		mainPanel.add(toDoListHolder, panelParameters);
 		toDoListHolder.setOpaque(false);
 		toDoListTable.setOpaque(false);
+		toDoListTable.setEnabled(false);
 		((DefaultTableCellRenderer)toDoListTable.getDefaultRenderer(Object.class)).setOpaque(false);
 	
 		toDoList.getViewport().setOpaque(false);
@@ -163,6 +267,21 @@ public class UserInterface extends JFrame implements WindowListener { /**
 		
 		toDoListTable.setShowGrid(false);
 		toDoListTable.setIntercellSpacing(new Dimension(0, 0));
+		
+		File fontFile = new File("src/fonts/OpenSans-Regular.ttf");
+		try {
+			Font font;
+			font = Font.createFont(Font.TRUETYPE_FONT, fontFile);
+			Font sizedFont = font.deriveFont(TABLE_FONT_SIZE);
+			toDoListTable.setFont(sizedFont);
+			toDoListTable.getTableHeader().setFont(sizedFont);
+		} catch (FontFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 //		BufferedImage img;
 //		try {
 //			img = ImageIO.read(new File("src/black-white.jpg"));
@@ -206,8 +325,7 @@ public class UserInterface extends JFrame implements WindowListener { /**
 		
 		createCommandEntryTextBox(bottomPanel);
 		createTextArea(bottomPanel);
-		createFeedBackBox(bottomPanel);
-		//createLegend(bottomPanel);
+		createLegend(bottomPanel);
 		//createButton(bottomPanel);
 		mainPanel.add(bottomPanel, parameters);
 		bottomPanel.setOpaque(false);
@@ -220,8 +338,24 @@ public class UserInterface extends JFrame implements WindowListener { /**
 		bottomPanelParameters = setParameters(COMMAND_ENTRY_PARAMETERS);
 		commandEntryTextField = new JTextField(20);
 		bottomPanel.add(commandEntryTextField,bottomPanelParameters);
+		File fontFile = new File("src/fonts/BPmono.ttf");
+		try {
+			Font font;
+			font = Font.createFont(Font.TRUETYPE_FONT, fontFile);
+			Font sizedFont = font.deriveFont(ENTRY_TEXT_FIELD_FONT_SIZE);
+			commandEntryTextField.setFont(sizedFont);
+		} catch (FontFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		commandEntryTextField.addActionListener(new CommandEntryTextFieldActionListener());
 		commandEntryTextField.addKeyListener(new CommandEntryTextFieldKeyListener());
+		commandEntryTextField.getDocument().addDocumentListener(new CommandEntryTextFieldDocumentListener());
+		commandEntryTextField.getDocument().putProperty("name", "Text Field");
 	}
 	
 	private void createTextArea(JPanel bottomPanel){
@@ -229,16 +363,29 @@ public class UserInterface extends JFrame implements WindowListener { /**
 		dynamicHelpTextParameters = setParameters(DYNAMIC_HELP_TEXT_PARAMETERS);
 		
 		//characterize the text area box into the bottom panel
-		Border dynamicHelpTextBorder = new LineBorder(Color.BLUE);
+		Border dynamicHelpTextBorder = new LineBorder(Color.GRAY);
 		dynamicHelpText = new JTextArea(3,33);
 		dynamicHelpText.setMaximumSize(dynamicHelpText.getSize());
 		dynamicHelpText.setBorder(dynamicHelpTextBorder);
 		dynamicHelpText.setLineWrap(true);
-		
+		dynamicHelpText.setWrapStyleWord(false);
+		dynamicHelpText.setEditable(false);
+		File fontFile = new File("src/fonts/OpenSans-Regular.ttf");
+		try {
+			Font font;
+			font = Font.createFont(Font.TRUETYPE_FONT, fontFile);
+			Font sizedFont = font.deriveFont(HELP_TEXT_FONT_SIZE);
+			dynamicHelpText.setFont(sizedFont);
+		} catch (FontFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		//put the dynamic area into a scroll pane
-		JScrollPane dynamicHelpTextScrollPane = new JScrollPane(dynamicHelpText);
-		dynamicHelpTextScrollPane.setBorder(dynamicHelpTextBorder);
-		bottomPanel.add(dynamicHelpTextScrollPane,dynamicHelpTextParameters);
+		dynamicHelpText.setBorder(dynamicHelpTextBorder);
+		bottomPanel.add(dynamicHelpText,dynamicHelpTextParameters);
 		//dynamicHelpText.addActionListener(new DynamicHelpTextAreaListener());
 	
 	}
@@ -259,25 +406,6 @@ public class UserInterface extends JFrame implements WindowListener { /**
 		legendMainPanel.setOpaque(false);
 	}
 	
-	private void createFeedBackBox(JPanel bottomPanel){
-		GridBagConstraints feedBackParameters;
-		feedBackParameters = setParameters(LEGEND_PARAMETERS);
-		Border feedBackBoxBorder = new LineBorder(Color.WHITE);
-		feedBackBox = new JTextArea(2,10);
-		feedBackBox.setMaximumSize(feedBackBox.getSize());
-		feedBackBox.setBorder(feedBackBoxBorder);
-		feedBackBox.setLineWrap(true);
-		feedBackBox.setText("Feedback:");
-		feedBackBox.setBackground(Color.BLACK);
-		feedBackBox.setForeground(Color.WHITE);
-		Font font = new Font("SansSerif", Font.BOLD,12);
-		feedBackBox.setFont(font);
-		
-		
-		JScrollPane feedBackBoxScrollPane = new JScrollPane(feedBackBox);
-		feedBackBoxScrollPane.setBorder(feedBackBoxBorder);
-		bottomPanel.add(feedBackBoxScrollPane,feedBackParameters);
-	}
 //	private void arrangeLegend(JPanel legendMainPanel){
 //		Font fontForLegend = new Font("SansSerif",Font.BOLD,8);
 //		Border borderLineForText = new EmptyBorder(0,0,0,0);
@@ -377,7 +505,11 @@ public class UserInterface extends JFrame implements WindowListener { /**
 	 * Create the application.
 	 */
 	public UserInterface() {
-		
+		ImageIcon img = new ImageIcon("src/ToDoLog logo.gif");
+		this.setIconImage(img.getImage());
+	//	Application application = Application.getApplication();
+		Image image = Toolkit.getDefaultToolkit().getImage("src/ToDoLog logo.gif");
+	//	application.setDockIconImage(image);
 		initialize(this); 
 		fillUpTheJFrame(this);
 		
@@ -415,7 +547,7 @@ public class UserInterface extends JFrame implements WindowListener { /**
 			toDoListTableModel.fireTableDataChanged();
 			
 			//I want the screen to show the previous screen if the next screen has no more items to display
-			if(Parser.getFirstWord(commandString).equalsIgnoreCase("delete") && ((toDoListTableModel.getActualRowCount() % toDoListTableModel.getPageSize()) == 0) && toDoListTableModel.getActualRowCount() > 0 && (toDoListTableModel.getPageOffSet() == toDoListTableModel.getPageCount())){
+			if(Parser.getFirstWord(commandString).equalsIgnoreCase("delete") && ((toDoListTableModel.getActualRowCount() % toDoListTableModel.getPageSize()) == 0) && toDoListTableModel.getActualRowCount() > 0){
 				toDoListTableModel.pageUp();
 				
 			}
@@ -433,11 +565,23 @@ public class UserInterface extends JFrame implements WindowListener { /**
 
 		}
 	}
-	
-	private class CommandEntryTextFieldKeyListener implements KeyListener {
-		
+
+	private class CommandEntryTextFieldDocumentListener implements DocumentListener {
 		@Override
-		public void keyPressed(KeyEvent e){
+		public void insertUpdate(DocumentEvent e) {
+			String helperText = readKeyForHelperFeedback();
+			dynamicHelpText.setText(helperText);
+		}
+		@Override
+		public void removeUpdate(DocumentEvent e) {
+			String helperText = readKeyForHelperFeedback();
+			dynamicHelpText.setText(helperText);
+		}
+		@Override
+		public void changedUpdate(DocumentEvent e) {
+			
+		}
+		private String readKeyForHelperFeedback() {
 			String commandString = commandEntryTextField.getText();
 			LinkedList<String> entryHelper = Controller.getCommandEntryHelperDetailsFromInput(commandString);
 			String helperText = dynamicHelpText.getText();
@@ -450,37 +594,51 @@ public class UserInterface extends JFrame implements WindowListener { /**
 					helperText = UIFeedbackHelper.createCmdEditHelpText(entryHelper);
 				}
 			}
-			dynamicHelpText.setText(helperText);
+			return helperText;
 		}
 		
+	}
+	
+	private class CommandEntryTextFieldKeyListener implements KeyListener {
+		@Override
+		public void keyPressed(KeyEvent e){
+
+			int keyCode = e.getKeyCode();
+			int modifiers = e.getModifiers();
+			if ((keyCode == KeyEvent.VK_PAGE_UP) || (keyCode == KeyEvent.VK_F9)){
+				toDoListTableModel.pageUp();
+			}
+			String helperText = readKeyForHelperFeedback();
+			dynamicHelpText.setText(helperText);
+			// META_MASK: Mac's Command key.
+			if (((keyCode == KeyEvent.VK_B) && ((modifiers & KeyEvent.META_MASK)!=0)) ||
+					((keyCode == KeyEvent.VK_B) && ((modifiers & KeyEvent.ALT_MASK)!=0))) {
+				
+				window.setOpacity(0.5f);
+			}
+
+		}
+	
 		@Override
 		public void keyReleased(KeyEvent e){
 			int keyCode = e.getKeyCode();
 			if(keyCode == KeyEvent.VK_PAGE_UP){
 			toDoListTableModel.pageUp();
+
 			}
 			
-			if(keyCode == KeyEvent.VK_PAGE_DOWN){
+			if ((keyCode == KeyEvent.VK_PAGE_DOWN) || (keyCode == KeyEvent.VK_F10)){
 				toDoListTableModel.pageDown();
 			}
-			String commandString = commandEntryTextField.getText();
-			LinkedList<String> entryHelper = Controller.getCommandEntryHelperDetailsFromInput(commandString);
-			String helperText = dynamicHelpText.getText();
-			if (!entryHelper.isEmpty()) {
-				helperText += "\n";
-				String commandType = entryHelper.poll();
-				if (commandType.equals("add")) {
-					helperText = UIFeedbackHelper.createCmdAddHelpText(entryHelper);
-				} else if (commandType.equals("edit")) {
-					helperText = UIFeedbackHelper.createCmdEditHelpText(entryHelper);
-				}
-			}
-			dynamicHelpText.setText(helperText);
-			
 		}
-		
+			
+	
+			
 		@Override
 		public void keyTyped(KeyEvent e){
+
+		}
+		private String readKeyForHelperFeedback() {
 			String commandString = commandEntryTextField.getText();
 			LinkedList<String> entryHelper = Controller.getCommandEntryHelperDetailsFromInput(commandString);
 			String helperText = dynamicHelpText.getText();
@@ -493,42 +651,67 @@ public class UserInterface extends JFrame implements WindowListener { /**
 					helperText = UIFeedbackHelper.createCmdEditHelpText(entryHelper);
 				}
 			}
-			dynamicHelpText.setText(helperText);
+			return helperText;
 		}
-
 		
 	}
-	
+	public class MinimizeButtonActionListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			window.setState(Frame.ICONIFIED);
+
+		}
+
+	}
+
+	public class CloseButtonActionListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			window.dispatchEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSING));
+
+		}
+
+	}
 	//this method is to set up the parameters of the gridbagconstraints
 	//to put the different panels into the right positions on the JFrame
 	//here we use the constructor GridBagConstraints(gridx,gridy,gridwidth,gridheight,weightx,weighty,anchor,fill,insets,ipadx,ipady)
 	private GridBagConstraints setParameters(int panelParameters){
 		GridBagConstraints parameters;
-		Insets insets = new Insets(0,0,0,0);
-		Insets clockInsets = new Insets(0,0,0,0);
-		Insets toDoListInsets = new Insets(0,0,0,0);
+		Insets topPanelInsets = new Insets(0,0,0,0);
+		Insets bottomPanelInsets = new Insets(0,0,0,0);
+		Insets buttonPanelInsets = new Insets(0,0,0,0);
+		Insets closebuttonInsets = new Insets(0,0,0,0);
+		Insets clockInsets = new Insets(15,0,0,0);
+		Insets toDoListInsets = new Insets(10,0,0,0);
+		Insets toDoListScrollPaneInsets = new Insets(0,0,0,0);
 		Insets commandEntryTextFieldInsets = new Insets(10,25,5,25);
 		Insets dynamicHelpTextInsets = new Insets(10,25,20,20);
-		Insets legendInsets = new Insets(10,25,20,20);
+		Insets legendInsets = new Insets(0,0,0,10);
 		//Insets buttonInsets = new Insets(10,0,0,20);
 		
 		if(panelParameters == CLOCK_PARAMETERS){
-			parameters = new GridBagConstraints(0,0,3,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,clockInsets,0,0);
-			
+			parameters = new GridBagConstraints(1,0,1,1,1.0,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,clockInsets,0,0);
 			return parameters;
 		}
 		else if(panelParameters == TODOLIST_PARAMETERS){
 			parameters = new GridBagConstraints(0,1,3,4,0.1,0.0,GridBagConstraints.NORTHWEST,GridBagConstraints.BOTH,toDoListInsets,0,0);
-			
-			
+			return parameters;
+		}
+		else if(panelParameters == TOP_PANEL_PARAMETERS){
+			parameters = new GridBagConstraints(0,0,1,1,0.1,0.0,GridBagConstraints.NORTHEAST,GridBagConstraints.BOTH,topPanelInsets,0,0);
+			return parameters;
+		}
+		else if(panelParameters == BUTTON_PANEL_PARAMETERS){
+			parameters = new GridBagConstraints(3,0,1,1,0.1,0.0,GridBagConstraints.NORTHEAST,GridBagConstraints.BOTH,buttonPanelInsets,0,0);
+			return parameters;
+		}
+		else if(panelParameters == BOTTOM_PANEL_PARAMETERS){
+			parameters = new GridBagConstraints(0,5,3,3,0.0,0.3,GridBagConstraints.CENTER,GridBagConstraints.BOTH,bottomPanelInsets,0,0);
 			return parameters;
 		}
 		
-		else if(panelParameters == BOTTOM_PANEL_PARAMETERS){
-			parameters = new GridBagConstraints(0,5,3,3,0.0,0.3,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
-			
-			return parameters;
-		}
 		
 		else if(panelParameters == COMMAND_ENTRY_PARAMETERS){
 			parameters = new GridBagConstraints(0,0,3,1,0.1,0.0,GridBagConstraints.NORTHWEST,GridBagConstraints.BOTH,commandEntryTextFieldInsets,0,0);
@@ -537,7 +720,7 @@ public class UserInterface extends JFrame implements WindowListener { /**
 		}
 		
 		else if(panelParameters == DYNAMIC_HELP_TEXT_PARAMETERS){
-			parameters = new GridBagConstraints(0,1,2,1,0.0,0.1,GridBagConstraints.CENTER,GridBagConstraints.BOTH,dynamicHelpTextInsets,0,0);
+			parameters = new GridBagConstraints(0,1,3,1,0.0,0.1,GridBagConstraints.CENTER,GridBagConstraints.BOTH,dynamicHelpTextInsets,0,0);
 			return parameters;
 		}
 		
@@ -552,7 +735,7 @@ public class UserInterface extends JFrame implements WindowListener { /**
 		}*/
 		
 		else if(panelParameters == TODOLIST_SCROLLPANE_PARAMETERS){
-			parameters = new GridBagConstraints(0,0,1,1,0.0,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
+			parameters = new GridBagConstraints(0,0,1,1,0.0,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,toDoListScrollPaneInsets,0,0);
 			return parameters;
 		}
 		
@@ -568,7 +751,7 @@ public class UserInterface extends JFrame implements WindowListener { /**
 	private void adjustTableColumns(JTable toDoListTable){
 		TableColumn tableColumn = null;
 		
-		for(int columnHeaders = 0; columnHeaders < 5;columnHeaders++){
+		for(int columnHeaders = 0; columnHeaders < 6;columnHeaders++){
 			tableColumn = toDoListTable.getColumnModel().getColumn(columnHeaders);
 			
 			switch(columnHeaders){
@@ -582,10 +765,15 @@ public class UserInterface extends JFrame implements WindowListener { /**
 				tableColumn.setPreferredWidth(210);
 				break;
 			case 3:
-				tableColumn.setPreferredWidth(180);
+				tableColumn.setPreferredWidth(140);
 				break;
 			case 4:
-				tableColumn.setPreferredWidth(50);
+				tableColumn.setPreferredWidth(90);
+				break;
+			case 5:
+				tableColumn.setPreferredWidth(0);
+				tableColumn.setMinWidth(0);
+				tableColumn.setMaxWidth(0);
 				break;
 			}
 		}
@@ -641,5 +829,4 @@ public class UserInterface extends JFrame implements WindowListener { /**
 		// TODO Auto-generated method stub
 		
 	}
-
 }
