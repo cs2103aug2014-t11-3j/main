@@ -68,13 +68,13 @@ public class Parser {
 		userCommand = userCommand.trim();
 		String firstWord = getFirstWord(userCommand);
 		if (firstWord.equalsIgnoreCase("add")) {
-			String restOfTheString = getTheRestOfTheString(userCommand);
-			if (restOfTheString == null) {
+			try {
+				Task task = createTask(userCommand);
+				CommandAdd command = new CommandAdd(task);
+				return command;
+			} catch (Exception e){
 				throw new Exception(HELP_TEXT_ADD);
 			}
-			Task task = new Task(restOfTheString);
-			CommandAdd command = new CommandAdd(task);
-			return command;
 		} else if (firstWord.equalsIgnoreCase("delete")) {
 			String restOfTheString = getTheRestOfTheString(userCommand);
 			if (restOfTheString == null) {
@@ -141,7 +141,14 @@ public class Parser {
 			throw new Exception("Invalid command.\n"+FEEDBACK_TYPE);
 		}
 	}
-
+	public static Task createTask(String userInput) throws Exception{
+		String restOfTheString = getTheRestOfTheString(userInput);
+		if (restOfTheString == null) {
+			throw new Exception();
+		}
+		Task task = new Task(restOfTheString);
+		return task;
+	}
 	public static String getTheRestOfTheString(String userCommand) throws Exception {
 		try {
 			String[] result = userCommand.split(" ", 2);
@@ -232,7 +239,20 @@ public class Parser {
 
 		return 0000;
 	}
-
+	public static boolean checkDateFormat(String dateInString){
+		int year,month,day;
+		try{
+			year=parseYear(dateInString);
+			month=parseMonth(dateInString);
+			day=parseDayOfMonth(dateInString);
+		}
+		catch(Exception e){
+			return false;
+		}
+		return true;
+		
+		
+	}
 	public static int parseYear(String dateInString) throws Exception {
 		int _year = 14;
 		_year = Integer.parseInt(dateInString);
