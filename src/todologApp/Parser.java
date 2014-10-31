@@ -90,7 +90,6 @@ public class Parser {
 				}
 			}
 
-			
 		} else if (firstWord.equalsIgnoreCase("done")) {
 			String restOfTheString = getTheRestOfTheString(userCommand);
 			if (restOfTheString == null) {
