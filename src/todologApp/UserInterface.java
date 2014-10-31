@@ -8,10 +8,11 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.*;
 
 import java.util.*;
@@ -37,7 +38,6 @@ public class UserInterface extends JFrame implements WindowListener { /**
 	private JLayeredPane layerPane = new JLayeredPane();
 	private JTextArea dynamicHelpText;
 	private JTextArea toDoListText;
-	private JTextArea feedBackBox;
 	private JTable toDoListTable;
 	//private Controller controller;
 	private LinkedList <Task> toDoListItems = new LinkedList<Task>();
@@ -206,8 +206,7 @@ public class UserInterface extends JFrame implements WindowListener { /**
 		
 		createCommandEntryTextBox(bottomPanel);
 		createTextArea(bottomPanel);
-		createFeedBackBox(bottomPanel);
-		//createLegend(bottomPanel);
+		createLegend(bottomPanel);
 		//createButton(bottomPanel);
 		mainPanel.add(bottomPanel, parameters);
 		bottomPanel.setOpaque(false);
@@ -222,6 +221,8 @@ public class UserInterface extends JFrame implements WindowListener { /**
 		bottomPanel.add(commandEntryTextField,bottomPanelParameters);
 		commandEntryTextField.addActionListener(new CommandEntryTextFieldActionListener());
 		commandEntryTextField.addKeyListener(new CommandEntryTextFieldKeyListener());
+		commandEntryTextField.getDocument().addDocumentListener(new CommandEntryTextFieldDocumentListener());
+		commandEntryTextField.getDocument().putProperty("name", "Text Field");
 	}
 	
 	private void createTextArea(JPanel bottomPanel){
@@ -259,25 +260,6 @@ public class UserInterface extends JFrame implements WindowListener { /**
 		legendMainPanel.setOpaque(false);
 	}
 	
-	private void createFeedBackBox(JPanel bottomPanel){
-		GridBagConstraints feedBackParameters;
-		feedBackParameters = setParameters(LEGEND_PARAMETERS);
-		Border feedBackBoxBorder = new LineBorder(Color.WHITE);
-		feedBackBox = new JTextArea(2,10);
-		feedBackBox.setMaximumSize(feedBackBox.getSize());
-		feedBackBox.setBorder(feedBackBoxBorder);
-		feedBackBox.setLineWrap(true);
-		feedBackBox.setText("Feedback:");
-		feedBackBox.setBackground(Color.BLACK);
-		feedBackBox.setForeground(Color.WHITE);
-		Font font = new Font("SansSerif", Font.BOLD,12);
-		feedBackBox.setFont(font);
-		
-		
-		JScrollPane feedBackBoxScrollPane = new JScrollPane(feedBackBox);
-		feedBackBoxScrollPane.setBorder(feedBackBoxBorder);
-		bottomPanel.add(feedBackBoxScrollPane,feedBackParameters);
-	}
 //	private void arrangeLegend(JPanel legendMainPanel){
 //		Font fontForLegend = new Font("SansSerif",Font.BOLD,8);
 //		Border borderLineForText = new EmptyBorder(0,0,0,0);
@@ -415,7 +397,7 @@ public class UserInterface extends JFrame implements WindowListener { /**
 			toDoListTableModel.fireTableDataChanged();
 			
 			//I want the screen to show the previous screen if the next screen has no more items to display
-			if(Parser.getFirstWord(commandString).equalsIgnoreCase("delete") && ((toDoListTableModel.getActualRowCount() % toDoListTableModel.getPageSize()) == 0) && toDoListTableModel.getActualRowCount() > 0 && (toDoListTableModel.getPageOffSet() == toDoListTableModel.getPageCount())){
+			if(Parser.getFirstWord(commandString).equalsIgnoreCase("delete") && ((toDoListTableModel.getActualRowCount() % toDoListTableModel.getPageSize()) == 0) && toDoListTableModel.getActualRowCount() > 0){
 				toDoListTableModel.pageUp();
 				
 			}
@@ -433,11 +415,22 @@ public class UserInterface extends JFrame implements WindowListener { /**
 
 		}
 	}
-	
-	private class CommandEntryTextFieldKeyListener implements KeyListener {
-		
+	private class CommandEntryTextFieldDocumentListener implements DocumentListener {
 		@Override
-		public void keyPressed(KeyEvent e){
+		public void insertUpdate(DocumentEvent e) {
+			String helperText = readKeyForHelperFeedback();
+			dynamicHelpText.setText(helperText);
+		}
+		@Override
+		public void removeUpdate(DocumentEvent e) {
+			String helperText = readKeyForHelperFeedback();
+			dynamicHelpText.setText(helperText);
+		}
+		@Override
+		public void changedUpdate(DocumentEvent e) {
+			
+		}
+		private String readKeyForHelperFeedback() {
 			String commandString = commandEntryTextField.getText();
 			LinkedList<String> entryHelper = Controller.getCommandEntryHelperDetailsFromInput(commandString);
 			String helperText = dynamicHelpText.getText();
@@ -450,7 +443,16 @@ public class UserInterface extends JFrame implements WindowListener { /**
 					helperText = UIFeedbackHelper.createCmdEditHelpText(entryHelper);
 				}
 			}
-			dynamicHelpText.setText(helperText);
+			return helperText;
+		}
+		
+	}
+	
+	private class CommandEntryTextFieldKeyListener implements KeyListener {
+		
+		@Override
+		public void keyPressed(KeyEvent e){
+
 		}
 		
 		@Override
@@ -463,39 +465,28 @@ public class UserInterface extends JFrame implements WindowListener { /**
 			if(keyCode == KeyEvent.VK_PAGE_DOWN){
 				toDoListTableModel.pageDown();
 			}
-			String commandString = commandEntryTextField.getText();
-			LinkedList<String> entryHelper = Controller.getCommandEntryHelperDetailsFromInput(commandString);
-			String helperText = dynamicHelpText.getText();
-			if (!entryHelper.isEmpty()) {
-				helperText += "\n";
-				String commandType = entryHelper.poll();
-				if (commandType.equals("add")) {
-					helperText = UIFeedbackHelper.createCmdAddHelpText(entryHelper);
-				} else if (commandType.equals("edit")) {
-					helperText = UIFeedbackHelper.createCmdEditHelpText(entryHelper);
-				}
-			}
-			dynamicHelpText.setText(helperText);
-			
-		}
-		
-		@Override
-		public void keyTyped(KeyEvent e){
-			String commandString = commandEntryTextField.getText();
-			LinkedList<String> entryHelper = Controller.getCommandEntryHelperDetailsFromInput(commandString);
-			String helperText = dynamicHelpText.getText();
-			if (!entryHelper.isEmpty()) {
-				helperText += "\n";
-				String commandType = entryHelper.poll();
-				if (commandType.equals("add")) {
-					helperText = UIFeedbackHelper.createCmdAddHelpText(entryHelper);
-				} else if (commandType.equals("edit")) {
-					helperText = UIFeedbackHelper.createCmdEditHelpText(entryHelper);
-				}
-			}
-			dynamicHelpText.setText(helperText);
+
 		}
 
+		@Override
+		public void keyTyped(KeyEvent e){
+
+		}
+		private String readKeyForHelperFeedback() {
+			String commandString = commandEntryTextField.getText();
+			LinkedList<String> entryHelper = Controller.getCommandEntryHelperDetailsFromInput(commandString);
+			String helperText = dynamicHelpText.getText();
+			if (!entryHelper.isEmpty()) {
+				helperText += "\n";
+				String commandType = entryHelper.poll();
+				if (commandType.equals("add")) {
+					helperText = UIFeedbackHelper.createCmdAddHelpText(entryHelper);
+				} else if (commandType.equals("edit")) {
+					helperText = UIFeedbackHelper.createCmdEditHelpText(entryHelper);
+				}
+			}
+			return helperText;
+		}
 		
 	}
 	
@@ -509,7 +500,7 @@ public class UserInterface extends JFrame implements WindowListener { /**
 		Insets toDoListInsets = new Insets(0,0,0,0);
 		Insets commandEntryTextFieldInsets = new Insets(10,25,5,25);
 		Insets dynamicHelpTextInsets = new Insets(10,25,20,20);
-		Insets legendInsets = new Insets(10,25,20,20);
+		Insets legendInsets = new Insets(0,0,0,10);
 		//Insets buttonInsets = new Insets(10,0,0,20);
 		
 		if(panelParameters == CLOCK_PARAMETERS){
@@ -568,7 +559,7 @@ public class UserInterface extends JFrame implements WindowListener { /**
 	private void adjustTableColumns(JTable toDoListTable){
 		TableColumn tableColumn = null;
 		
-		for(int columnHeaders = 0; columnHeaders < 5;columnHeaders++){
+		for(int columnHeaders = 0; columnHeaders < 6;columnHeaders++){
 			tableColumn = toDoListTable.getColumnModel().getColumn(columnHeaders);
 			
 			switch(columnHeaders){
@@ -582,10 +573,15 @@ public class UserInterface extends JFrame implements WindowListener { /**
 				tableColumn.setPreferredWidth(210);
 				break;
 			case 3:
-				tableColumn.setPreferredWidth(180);
+				tableColumn.setPreferredWidth(140);
 				break;
 			case 4:
-				tableColumn.setPreferredWidth(50);
+				tableColumn.setPreferredWidth(90);
+				break;
+			case 5:
+				tableColumn.setPreferredWidth(0);
+				tableColumn.setMinWidth(0);
+				tableColumn.setMaxWidth(0);
 				break;
 			}
 		}
