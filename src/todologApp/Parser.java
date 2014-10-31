@@ -169,7 +169,8 @@ public class Parser {
 
 		for (int i = 0; i<=messageArray.length-1; i++) {
 			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING) 
-					&& isInteger(messageArray[i+1])){
+					&& isInteger(messageArray[i+1])
+					&& messageArray[i+1].length() == 4){
 				try {
 					int endTime = Integer.parseInt(messageArray[i+1]);
 					if (endTime >= 0000 && endTime <= 2359) {
@@ -622,7 +623,8 @@ public class Parser {
 			if ((messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING) 
 					|| messageArray[i].equalsIgnoreCase(KEYWORD_DEADLINE))) {
 				hasKeyword = true;
-				if (isInteger(messageArray[i+1])) {
+				if (isInteger(messageArray[i+1]) 
+						&& messageArray[i+1].length() == 6) {
 					year = parseYear(messageArray[i+1]);
 					month = parseMonth(messageArray[i+1]);
 					day = parseDayOfMonth(messageArray[i+1]);	
