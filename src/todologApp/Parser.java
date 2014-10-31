@@ -168,7 +168,20 @@ public class Parser {
 		String [] messageArray = generateArray(parameter);
 
 		for (int i = 0; i<=messageArray.length-1; i++) {
-			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING)) {
+			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING) 
+					&& isInteger(messageArray[i+1])){
+				try {
+					int endTime = Integer.parseInt(messageArray[i+1]);
+					if (endTime >= 0000 && endTime <= 2359) {
+						return endTime;
+					} else {
+						return 2359;
+					}
+				} catch (NumberFormatException nfe) {
+					throw new Exception("Invalid Time Format");
+				} 
+			} else if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING) 
+					&& !isInteger(messageArray[i+1])) {
 				for (int j=i+1; j<=messageArray.length-1; j++) {
 					if (messageArray[j].equalsIgnoreCase(KEYWORD_AT) 
 							&& isInteger(messageArray[j+1])) {
@@ -606,8 +619,8 @@ public class Parser {
 		int year = 1, month = 1, day = 1;
 		boolean hasKeyword = false;
 		for (int i = 0; i+1<=messageArray.length-1; i++) {
-			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING) 
-					|| messageArray[i].equalsIgnoreCase(KEYWORD_DEADLINE)) {
+			if ((messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING) 
+					|| messageArray[i].equalsIgnoreCase(KEYWORD_DEADLINE))) {
 				hasKeyword = true;
 				if (isInteger(messageArray[i+1])) {
 					year = parseYear(messageArray[i+1]);
@@ -636,8 +649,15 @@ public class Parser {
 						day = nextDay.dayOfMonth().get();
 					}
 				}
-			}
+			} 
+//			else if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING) 
+//					&& isInteger(messageArray[i+1])) {
+//				year = parseTaskStart(parameter).getYear();
+//				month = parseTaskStart(parameter).getMonthOfYear();
+//				day = parseTaskStart(parameter).getDayOfMonth();	
+//			}
 		}
+		
 		if (!hasKeyword) {
 			DateTime start = parseTaskStart(parameter);
 			year = start.year().get();
