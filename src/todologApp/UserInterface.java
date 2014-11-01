@@ -500,9 +500,11 @@ public class UserInterface extends JFrame {
 	/**
 	 * Create the application.
 	 */
+	
 	public UserInterface() {
 		initialize(this); 
 		fillUpTheJFrame(this);
+		useJIntellitype();
 		makeTrayIcon(this);
 		this.addWindowListener(new ToDoLogWindowListener());
 		Controller.init();
@@ -516,6 +518,28 @@ public class UserInterface extends JFrame {
 		// create more here
 	}
 	
+	private void useJIntellitype() {
+	// TODO Auto-generated method stub
+		try {
+			JIntellitype.getInstance();
+			JIntellitype.getInstance().registerHotKey(1, JIntellitype.MOD_ALT, (int) 'B');;
+			JIntellitype.getInstance().addHotKeyListener(new HotkeyListener() {
+	            @Override
+	            public void onHotKey(int combination) {
+	                // TODO Auto-generated method stub
+	                if (combination == 1)
+	                	if (window.getState() == JFrame.ICONIFIED) {
+	                		window.setState(JFrame.NORMAL);
+	                	} else {
+	                		window.setState(JFrame.ICONIFIED);
+	                	}
+	            }
+			});
+		} catch (JIntellitypeException jie) {
+			dynamicHelpText.append("\nCannot load hotkey settings");
+		}
+	}
+
 	private void makeTrayIcon(JFrame userInterface) {
 		//Check the SystemTray is supported
         if (!SystemTray.isSupported()) {
