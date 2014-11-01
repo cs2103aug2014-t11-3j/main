@@ -31,18 +31,18 @@ public class CommandEdit implements Command {
 		}
 		
 		//change End day
-		 else if(_editType.equalsIgnoreCase("End Day")||_editType.equalsIgnoreCase("Day")){
+		 else if(_editType.equalsIgnoreCase("End Date")||_editType.equalsIgnoreCase("Date")){
 			 if (_taskEdited.getTaskType() != TaskType.FLOATING) {
-				 _taskEdited.setEndDay(_toBeEdited);
-				 return "end day";
+				 _taskEdited.setEndDate(_toBeEdited);
+				 return "end date";
 			 } else {
 				 throw new Exception("Cannot edit end day for floating tasks");
 			 }
 		 }
 		//change Start day
-		 else if(_editType.equalsIgnoreCase("Start Day")||_editType.equalsIgnoreCase("Day")){	
-			 _taskEdited.setStartDay(_toBeEdited);
-			 return "start day";
+		 else if(_editType.equalsIgnoreCase("Start Date")||_editType.equalsIgnoreCase("Date")){	
+			 _taskEdited.setStartDate(_toBeEdited);
+			 return "start date";
 			 
 		 }
 		
