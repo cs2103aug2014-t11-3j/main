@@ -53,6 +53,7 @@ public class UserInterface extends JFrame implements WindowListener {
 	private LinkedList <Task> toDoListItems = new LinkedList<Task>();
 	private ToDoListTableModel toDoListTableModel;
 	
+	private TrayIcon trayIcon;
 	private static UserInterface window;
 	/**
 	 * Launch the application.
@@ -520,11 +521,11 @@ public class UserInterface extends JFrame implements WindowListener {
             System.out.println("SystemTray is not supported");
             return;
         }
-        ImageIcon img = new ImageIcon("src/ToDoLog logo.gif");
-        final PopupMenu popup = new PopupMenu();
-        final TrayIcon trayIcon =
+        ImageIcon img = new ImageIcon("src/icon-16x16.gif");
+        PopupMenu popup = new PopupMenu();
+        trayIcon =
                 new TrayIcon(img.getImage());
-        final SystemTray tray = SystemTray.getSystemTray();
+        SystemTray tray = SystemTray.getSystemTray();
        
         // Create a pop-up menu components
         MenuItem aboutItem = new MenuItem("About");
