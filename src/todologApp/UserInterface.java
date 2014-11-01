@@ -20,8 +20,7 @@ import javax.swing.table.*;
 import java.util.*;
 //import java.lang.Object;
 
-
-public class UserInterface extends JFrame implements WindowListener { 
+public class UserInterface extends JFrame { 
 	
 
 	private static final float TABLE_FONT_SIZE = 12f;
@@ -52,9 +51,10 @@ public class UserInterface extends JFrame implements WindowListener {
 	//private Controller controller;
 	private LinkedList <Task> toDoListItems = new LinkedList<Task>();
 	private ToDoListTableModel toDoListTableModel;
-	
 	private TrayIcon trayIcon;
+	private boolean firstMinimize;
 	private static UserInterface window;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -504,6 +504,7 @@ public class UserInterface extends JFrame implements WindowListener {
 		initialize(this); 
 		fillUpTheJFrame(this);
 		makeTrayIcon(this);
+		this.addWindowListener(new ToDoLogWindowListener());
 		Controller.init();
 		toDoListItems = Controller.getDBStorage().load();
 		toDoListTableModel = new ToDoListTableModel(toDoListItems);
@@ -558,7 +559,7 @@ public class UserInterface extends JFrame implements WindowListener {
         } catch (AWTException e) {
             System.out.println("TrayIcon could not be added.");
         }
-		
+        firstMinimize = false;
 	}
 
 	// remember to write unit test as you code
@@ -752,6 +753,55 @@ public class UserInterface extends JFrame implements WindowListener {
 	//this method is to set up the parameters of the gridbagconstraints
 	//to put the different panels into the right positions on the JFrame
 	//here we use the constructor GridBagConstraints(gridx,gridy,gridwidth,gridheight,weightx,weighty,anchor,fill,insets,ipadx,ipady)
+	
+	private class ToDoLogWindowListener implements WindowListener{
+		public void windowActivated(WindowEvent e) {
+			System.out.println("Windows Opened");
+			
+		}
+
+		@Override
+		public void windowClosed(WindowEvent e) {
+			System.out.println("Windows Closed");
+			
+		}
+
+		@Override
+		public void windowClosing(WindowEvent e) {
+			System.out.println("Windows Closing");
+			
+		}
+
+		@Override
+		public void windowDeactivated(WindowEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void windowDeiconified(WindowEvent e) {
+			System.out.println("Windows Maximised");
+			
+		}
+
+		@Override
+		public void windowIconified(WindowEvent e) {
+			System.out.println("Windows Minimized");
+			
+			if (!firstMinimize) {
+				trayIcon.displayMessage("ToDoLog", 
+					"ToDoLog is minimized. To open use combination ALT+B", TrayIcon.MessageType.INFO);
+				firstMinimize = true;
+			}
+			
+		}
+
+		@Override
+		public void windowOpened(WindowEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+	}
 	private GridBagConstraints setParameters(int panelParameters){
 		GridBagConstraints parameters;
 		Insets topPanelInsets = new Insets(0,0,0,0);
@@ -866,45 +916,6 @@ public class UserInterface extends JFrame implements WindowListener {
 		
 	}
 
-	@Override
-	public void windowActivated(WindowEvent e) {
-		System.out.println("Windows Opened");
-		
-	}
-
-	@Override
-	public void windowClosed(WindowEvent e) {
-		System.out.println("Windows Closed");
-		
-	}
-
-	@Override
-	public void windowClosing(WindowEvent e) {
-		System.out.println("Windows Closing");
-		
-	}
-
-	@Override
-	public void windowDeactivated(WindowEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void windowDeiconified(WindowEvent e) {
-		System.out.println("Windows Maximised");
-		
-	}
-
-	@Override
-	public void windowIconified(WindowEvent e) {
-		System.out.println("Windows Minimized");
-		
-	}
-
-	@Override
-	public void windowOpened(WindowEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
+	
+	
 }
