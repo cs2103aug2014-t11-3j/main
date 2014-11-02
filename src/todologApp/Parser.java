@@ -566,6 +566,11 @@ public class Parser {
 					year = parseYear(messageArray[i+1]);
 					month = parseMonth(messageArray[i+1]);
 					day = parseDayOfMonth(messageArray[i+1]);	
+				} else if (isInteger(messageArray[i+1])
+							&& messageArray[i+1].length() == 4) {
+						year = taskStart.getYear();
+						month = taskStart.getMonthOfYear();
+						day = taskStart.getDayOfMonth();	 
 				} else {
 					int dayOfWeek = parseDayOfWeek(messageArray[i+1]);
 					DateTime today = new DateTime();
