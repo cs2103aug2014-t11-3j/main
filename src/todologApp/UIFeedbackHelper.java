@@ -49,14 +49,14 @@ public class UIFeedbackHelper {
 				helperText += "Name: " + oldName + " --> " + newName + "\n";
 			}
 			if (oldPerson.equals(newPerson)) {
-				helperText += "Name: " + oldPerson + "\n";
+				helperText += "Person: " + oldPerson + "\n";
 			} else {
-				helperText += "Name: " + oldPerson + " --> " + newPerson + "\n";
+				helperText += "Person: " + oldPerson + " --> " + newPerson + "\n";
 			}
 			if (oldVenue.equals(newVenue)) {
-				helperText += "Name: " + oldVenue + "\n";
+				helperText += "Venue: " + oldVenue + "\n";
 			} else {
-				helperText += "Name: " + oldVenue + " --> " + newVenue + "\n";
+				helperText += "Venue: " + oldVenue + " --> " + newVenue + "\n";
 			}
 			return helperText;
 		} catch (NoSuchElementException nsee) {
