@@ -90,7 +90,7 @@ public class Parser {
 				}
 			}
 
-			
+
 		} else if (firstWord.equalsIgnoreCase("done")) {
 			String restOfTheString = getTheRestOfTheString(userCommand);
 			if (restOfTheString == null) {
@@ -150,8 +150,8 @@ public class Parser {
 		Task task = new Task(restOfTheString);
 		return task;
 	}
-	
-	
+
+
 	public static String getTheRestOfTheString(String userCommand) throws Exception {
 		try {
 			String[] result = userCommand.split(" ", 2);
@@ -211,7 +211,7 @@ public class Parser {
 					}
 				}
 			} else if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) 
-						|| messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING_2)) {
+					|| messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING_2)) {
 				for (int j=i+1; j<=messageArray.length-1; j++) {
 					if (messageArray[j].equalsIgnoreCase(KEYWORD_DAY_ENDING) 
 							&& isInteger(messageArray[j+1])
@@ -272,8 +272,8 @@ public class Parser {
 			return false;
 		}
 		return true;
-		
-		
+
+
 	}
 
 	public static int parseYear(String dateInString) throws Exception {
@@ -560,7 +560,19 @@ public class Parser {
 					year = parseYear(messageArray[i+1]);
 					month = parseMonth(messageArray[i+1]);
 					day = parseDayOfMonth(messageArray[i+1]);	
-				} else {
+				}
+
+				else if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING) 
+						|| messageArray[i].equalsIgnoreCase(KEYWORD_DEADLINE)) {
+					hasKeyword = true;
+					if (isInteger(messageArray[i+1])
+							&& messageArray[i+1].length() == 4) {
+						year = parseTaskStart(parameter).getYear();
+						month = parseTaskStart(parameter).getMonthOfYear();
+						day = parseTaskStart(parameter).getDayOfMonth();	
+					}
+				}
+				else {
 					int dayOfWeek = parseDayOfWeek(messageArray[i+1]);
 					DateTime today = new DateTime();
 					if (dayOfWeek == TODAY) {
