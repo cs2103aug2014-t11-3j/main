@@ -3,37 +3,74 @@
 //enough
 
 package todologApp;
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.AWTException;
+import java.awt.CheckboxMenuItem;
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.FontFormatException;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Image;
+import java.awt.Insets;
+import java.awt.Menu;
+import java.awt.MenuItem;
+import java.awt.PopupMenu;
+import java.awt.RenderingHints;
+import java.awt.SystemTray;
+import java.awt.Toolkit;
+import java.awt.TrayIcon;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedList;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
-import javax.swing.border.*;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.table.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableColumn;
 
-import com.apple.eawt.Application;
+import com.melloware.jintellitype.HotkeyListener;
+import com.melloware.jintellitype.JIntellitype;
+import com.melloware.jintellitype.JIntellitypeException;
 
-import java.util.*;
-//import java.lang.Object;
-
-
-public class UserInterface extends JFrame implements WindowListener { 
+public class UserInterface extends JFrame { 
 	
 
 	private static final float TABLE_FONT_SIZE = 12f;
 	private static final float ENTRY_TEXT_FIELD_FONT_SIZE = 20f;
-	private static final float HELP_TEXT_FONT_SIZE = 15f;
+	private static final float HELP_TEXT_FONT_SIZE = 13f;
 /**
 	 * 
 	 */
-	private static final long serialVersionUID = 4308151724219875078L;
-//also I wanna put the action listener elsewhere
-	
+	private static final long serialVersionUID = 4308151724219875078L;	
 	private static final int TODOLIST_PARAMETERS = 1;
 	private static final int BOTTOM_PANEL_PARAMETERS = 2;
 	private static final int COMMAND_ENTRY_PARAMETERS = 3;
@@ -41,25 +78,24 @@ public class UserInterface extends JFrame implements WindowListener {
 	private static final int LEGEND_PARAMETERS = 5;
 	private static final int TODOLIST_SCROLLPANE_PARAMETERS = 6;
 	private static final int CLOCK_PARAMETERS = 7;
-	//private static final int BUTTON_PARAMETERS = 7;
-	private static final int BUTTON_PANEL_PARAMETERS = 9;
 	private static final int TOP_PANEL_PARAMETERS = 8;
-	private static final int CLOSE_BUTTON_PARAMETERS = 11;
-	private static final int BLANK_SPACE_BUTTON_PARAMETERS = 10;
-	private static final int MINIMIZE_BUTTON_PARAMETERS = 11;
+	private static final int BUTTON_PANEL_PARAMETERS = 9;
+	private static final int ICON_PARAMETERS = 10;
 	
 	private JTextField commandEntryTextField;
 	private JLayeredPane layerPane = new JLayeredPane();
 	private JTextArea dynamicHelpText;
-	private JTextArea toDoListText;
+	//private JTextArea toDoListText;
 	private JTable toDoListTable;
-	private JButton closeButton;
-	private JButton minimizeButton;
+	private JLabel closeButton;
+	private JLabel minimizeButton;
 	//private Controller controller;
 	private LinkedList <Task> toDoListItems = new LinkedList<Task>();
 	private ToDoListTableModel toDoListTableModel;
-	
+	private TrayIcon trayIcon;
+	private boolean firstMinimize;
 	private static UserInterface window;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -93,13 +129,17 @@ public class UserInterface extends JFrame implements WindowListener {
 	//this initialize method sets up the main frame for ToDoLog
 	private void initialize(JFrame UserInterface) { 
 		//initializeLinkedList();
-		
+		ArrayList<Image> images = new ArrayList<Image>();
+		Image image = Toolkit.getDefaultToolkit().getImage("src/icon-16x16.gif");
+		images.add(image);
+		image = Toolkit.getDefaultToolkit().getImage("src/icon-32x32.gif");
+		images.add(image);
+		UserInterface.setIconImages(images);
 		UserInterface.setTitle("ToDoLog");
 		UserInterface.setResizable(false);
 		UserInterface.setBounds(100,100,700, 600);					
 		UserInterface.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
-	
 	
 	//this method consists of setting the different sections within the frame of ToDoLog
 	private void fillUpTheJFrame(JFrame UserInterface){
@@ -116,7 +156,7 @@ public class UserInterface extends JFrame implements WindowListener {
 			layerPane.add(background,new Integer(0));
 		} catch (IOException e) {
 			//TODO some notifying
-			dynamicHelpText.setText("Cannot load image");
+			dynamicHelpText.append("Cannot load image");
 		}
 		mainPanel.setOpaque(false);
 		createToDoListTable(mainPanel);
@@ -133,42 +173,25 @@ public class UserInterface extends JFrame implements WindowListener {
 		 topPanel.add(clockLabel,clockPanelParameters);
 		 clock.start();
 	}
-	private void colorComponent(Component component, Color color) {
-		JPanel colorCell = new JPanel()
-		{
-			/**
-			 * 
-			 */
-			private static final long serialVersionUID = 1L;
-			@Override
-			protected void paintComponent(Graphics g)
-		    {
-		        g.setColor( getBackground() );
-		        g.fillRect(0, 0, getWidth(), getHeight());
-		        super.paintComponent(g);
-		    }
-		};
-		((JComponent) component).setBackground(color);
-		((JComponent) component).setOpaque(false);
-		((JComponent) component).add(colorCell);
-	}
+	
 	private void createButtonPanel(Container topPanel) {
 		
 		JPanel buttonPanel = new JPanel(new GridBagLayout());
-		closeButton = new JButton() {
+		closeButton = new JLabel() {
 				/**
 				 * 
 				 */
 				private static final long serialVersionUID = 1L;
 				@Override
-				protected void paintComponent(Graphics g)
-			    {
+				protected void paintComponent(Graphics g){
 			        g.setColor( getBackground() );
-			        g.fillRect(0, 0, getWidth(), getHeight());
+			        ((Graphics2D) g).setRenderingHint (RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			        g.fillOval(0, 0, getWidth(), getHeight());
 			        super.paintComponent(g);
 			    }
+				
 			};
-		minimizeButton = new JButton() {
+		minimizeButton = new JLabel() {
 			/**
 			 * 
 			 */
@@ -177,24 +200,27 @@ public class UserInterface extends JFrame implements WindowListener {
 			protected void paintComponent(Graphics g)
 		    {
 		        g.setColor( getBackground() );
-		        g.fillRect(0, 0, getWidth(), getHeight());
+		        ((Graphics2D) g).setRenderingHint (RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		        g.fillOval(0, 0, getWidth(), getHeight());
 		        super.paintComponent(g);
 		    }
 		};
-		closeButton.setBackground(new Color(255,0,0,255));
+		closeButton.setBackground(new Color(242, 38, 19, 255));
 		closeButton.setOpaque(false);
-		colorComponent(closeButton,new Color(255,0,0,255));
-		colorComponent(minimizeButton,new Color(255,255,0,255));
-		closeButton.setPreferredSize(new Dimension(23,23));
-		minimizeButton.setPreferredSize(new Dimension(23,23));
-		closeButton.addActionListener(new CloseButtonActionListener());
-		minimizeButton.addActionListener(new MinimizeButtonActionListener());
+		minimizeButton.setBackground(new Color(241, 196, 15, 255));
+		minimizeButton.setOpaque(false);
+		//colorComponent(closeButton,new Color(255,0,0,255));
+		//colorComponent(minimizeButton,new Color(255,255,0,255));
+		closeButton.setPreferredSize(new Dimension(17,17));
+		minimizeButton.setPreferredSize(new Dimension(17,17));
+		closeButton.addMouseListener(new CloseButtonMouseListener());
+		minimizeButton.addMouseListener(new MinimizeButtonMouseListener());
 		GridBagConstraints padParameters =
 				new GridBagConstraints(0,0,3,1,1.0,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,new Insets(0,0,0,0),0,0);
 		GridBagConstraints minimizeButtonParameters = 
-				new GridBagConstraints(3,0,1,1,0.0,0.0,GridBagConstraints.NORTHEAST,GridBagConstraints.NONE,new Insets(0,0,5,5),0,0);
+				new GridBagConstraints(3,0,1,1,0.0,0.0,GridBagConstraints.NORTHEAST,GridBagConstraints.NONE,new Insets(0,0,10,7),0,0);
 		GridBagConstraints closeButtonParameters =
-				new GridBagConstraints(4,0,1,1,0.0,0.0,GridBagConstraints.NORTHEAST,GridBagConstraints.NONE,new Insets(0,0,5,10),0,0);
+				new GridBagConstraints(4,0,1,1,0.0,0.0,GridBagConstraints.NORTHEAST,GridBagConstraints.NONE,new Insets(0,0,10,10),0,0);
 		buttonPanel.add(Box.createGlue(),padParameters);
 		buttonPanel.add(minimizeButton,minimizeButtonParameters);
 		buttonPanel.add(closeButton,closeButtonParameters);
@@ -202,6 +228,7 @@ public class UserInterface extends JFrame implements WindowListener {
 		GridBagConstraints ButtonPanelParameters = setParameters(BUTTON_PANEL_PARAMETERS);
 		topPanel.add(buttonPanel,ButtonPanelParameters);
 	}
+	
 	private void createTopPanel(Container mainPanel){
 		JPanel topPanel = new JPanel(new GridBagLayout());
 		topPanel.setBackground(Color.WHITE);
@@ -209,7 +236,7 @@ public class UserInterface extends JFrame implements WindowListener {
 		GridBagConstraints parameters;
 		
 		parameters = setParameters(TOP_PANEL_PARAMETERS);
-		
+		createIcon(topPanel);
 		createClockPanel(topPanel);
 		createButtonPanel(topPanel);
 		//createButton(bottomPanel);
@@ -217,6 +244,16 @@ public class UserInterface extends JFrame implements WindowListener {
 		topPanel.setOpaque(false);
 	}
 	
+	private void createIcon(JPanel topPanel) {
+		JLabel iconPanel = new JLabel();
+		ImageIcon icon = new ImageIcon("src/icon-40x40.gif");
+		iconPanel.setIcon(icon);
+		GridBagConstraints parameters;
+		parameters = setParameters(ICON_PARAMETERS);
+		topPanel.add(iconPanel,parameters);
+		
+	}
+
 	private void createToDoListTable(Container mainPanel){                        
 		JPanel toDoListHolder = new JPanel(new GridBagLayout());
 		GridBagConstraints panelParameters;      //panelParameters are values for how the top panel will fit into the main frame of ToDoLog
@@ -296,7 +333,8 @@ public class UserInterface extends JFrame implements WindowListener {
 //		}
 		
 	}
-	private void createToDoList(Container mainPanel){
+	
+	/*private void createToDoList(Container mainPanel){
 		JPanel toDoListHolder = new JPanel(new GridBagLayout());
 		toDoListHolder.setBackground(Color.WHITE);
 		GridBagConstraints panelParameters;      //panelParameters are values for how the top panel will fit into the main frame of ToDoLog
@@ -309,12 +347,11 @@ public class UserInterface extends JFrame implements WindowListener {
 		toDoListText.setPreferredSize(new Dimension(532,225));
 		toDoListHolder.add(toDoListText,scrollPaneParameters);
 		mainPanel.add(toDoListHolder, panelParameters);
-	}
-	//private void updateToDoListTable(JTable toDoListTable,)
-	
-	
-	//this method creates the bottom section of ToDoLog which consists of the command entry
-	//line, the dynamic help text area and the legend
+	}*/
+
+	/* this method creates the bottom section of ToDoLog which consists of the command entry
+	 *	line, the dynamic help text area and the legend
+	 */
 	private void createBottomPanel(Container mainPanel){
 		JPanel bottomPanel = new JPanel(new GridBagLayout());
 		bottomPanel.setBackground(Color.WHITE);
@@ -364,7 +401,7 @@ public class UserInterface extends JFrame implements WindowListener {
 		
 		//characterize the text area box into the bottom panel
 		Border dynamicHelpTextBorder = new LineBorder(Color.GRAY);
-		dynamicHelpText = new JTextArea(3,33);
+		dynamicHelpText = new JTextArea(5,33);
 		dynamicHelpText.setMaximumSize(dynamicHelpText.getSize());
 		dynamicHelpText.setBorder(dynamicHelpTextBorder);
 		dynamicHelpText.setLineWrap(true);
@@ -406,135 +443,155 @@ public class UserInterface extends JFrame implements WindowListener {
 		legendMainPanel.setOpaque(false);
 	}
 	
-//	private void arrangeLegend(JPanel legendMainPanel){
-//		Font fontForLegend = new Font("SansSerif",Font.BOLD,8);
-//		Border borderLineForText = new EmptyBorder(0,0,0,0);
-//		GridBagConstraints legendPanelLayout;
-//		GridBagConstraints legendTextLayout;
-//		Insets insets = new Insets(5,5,5,5);
-//		
-//		//this is the "priority: high" colored box
-//		JPanel priorityHighPanel = new JPanel();
-//		priorityHighPanel.setPreferredSize(new Dimension(20,5));
-//		priorityHighPanel.setBackground(Color.RED);	
-//		legendPanelLayout = new GridBagConstraints(0,0,1,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
-//		legendMainPanel.add(priorityHighPanel,legendPanelLayout);
-//	
-//		//the text for "priority: high"
-//		JTextField priorityHigh = new JTextField();
-//		priorityHigh.setPreferredSize(new Dimension(30,15));
-//		priorityHigh.setText("Priority: High");
-//		priorityHigh.setFont(fontForLegend);
-//		priorityHigh.setEnabled(false);
-//		priorityHigh.setDisabledTextColor(Color.WHITE);
-//		priorityHigh.setBorder(borderLineForText);
-//		priorityHigh.setOpaque(false);
-//		legendTextLayout = new GridBagConstraints(1,0,5,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
-//		legendMainPanel.add(priorityHigh,legendTextLayout);
-//        
-//		//this is the "priority: medium" colored box
-//		JPanel priorityMediumPanel = new JPanel();
-//		priorityMediumPanel.setPreferredSize(new Dimension(20,5));
-//		priorityMediumPanel.setBackground(Color.PINK);
-//		legendPanelLayout = new GridBagConstraints(0,1,1,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
-//		legendMainPanel.add(priorityMediumPanel,legendPanelLayout);
-//		
-//		//the text for "priority: medium"
-//		JTextField priorityMedium = new JTextField();
-//		priorityMedium.setPreferredSize(new Dimension(30,15));
-//		priorityMedium.setText("Priority: Medium");
-//		priorityMedium.setFont(fontForLegend);
-//		priorityMedium.setEnabled(false);
-//		priorityMedium.setDisabledTextColor(Color.WHITE);
-//		priorityMedium.setBorder(borderLineForText);
-//		priorityMedium.setOpaque(false);
-//		legendTextLayout = new GridBagConstraints(1,1,5,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
-//		legendMainPanel.add(priorityMedium,legendTextLayout);
-//		
-//		//this is the "priority: low" colored box
-//		JPanel priorityLowPanel = new JPanel();
-//		priorityLowPanel.setPreferredSize(new Dimension(20,5));
-//		priorityLowPanel.setBackground(Color.WHITE);
-//		Border borderLineForLow = new LineBorder(Color.BLACK);
-//		priorityLowPanel.setBorder(borderLineForLow);
-//		legendPanelLayout = new GridBagConstraints(0,2,1,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
-//		legendMainPanel.add(priorityLowPanel,legendPanelLayout);
-//		
-//		//the text for "priority: low"
-//		JTextField priorityLow = new JTextField();
-//		priorityLow.setPreferredSize(new Dimension(30,15));
-//		priorityLow.setText("Priority: Low");
-//		priorityLow.setFont(fontForLegend);
-//		priorityLow.setEnabled(false);
-//		priorityLow.setDisabledTextColor(Color.WHITE);
-//		priorityLow.setBorder(borderLineForText);
-//		priorityLow.setOpaque(false);
-//		legendTextLayout = new GridBagConstraints(1,2,5,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
-//		legendMainPanel.add(priorityLow,legendTextLayout); 
-//		
+/*	private void arrangeLegend(JPanel legendMainPanel){
+		Font fontForLegend = new Font("SansSerif",Font.BOLD,8);
+		Border borderLineForText = new EmptyBorder(0,0,0,0);
+		GridBagConstraints legendPanelLayout;
+		GridBagConstraints legendTextLayout;
+		Insets insets = new Insets(5,5,5,5);
+		
+		//this is the "priority: high" colored box
+		JPanel priorityHighPanel = new JPanel();
+		priorityHighPanel.setPreferredSize(new Dimension(20,5));
+		priorityHighPanel.setBackground(Color.RED);	
+		legendPanelLayout = new GridBagConstraints(0,0,1,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
+		legendMainPanel.add(priorityHighPanel,legendPanelLayout);
+	
+		//the text for "priority: high"
+		JTextField priorityHigh = new JTextField();
+		priorityHigh.setPreferredSize(new Dimension(30,15));
+		priorityHigh.setText("Priority: High");
+		priorityHigh.setFont(fontForLegend);
+		priorityHigh.setEnabled(false);
+		priorityHigh.setDisabledTextColor(Color.WHITE);
+		priorityHigh.setBorder(borderLineForText);
+		priorityHigh.setOpaque(false);
+		legendTextLayout = new GridBagConstraints(1,0,5,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
+		legendMainPanel.add(priorityHigh,legendTextLayout);
+        
+		//this is the "priority: medium" colored box
+		JPanel priorityMediumPanel = new JPanel();
+		priorityMediumPanel.setPreferredSize(new Dimension(20,5));
+		priorityMediumPanel.setBackground(Color.PINK);
+		legendPanelLayout = new GridBagConstraints(0,1,1,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
+		legendMainPanel.add(priorityMediumPanel,legendPanelLayout);
+		
+		//the text for "priority: medium"
+		JTextField priorityMedium = new JTextField();
+		priorityMedium.setPreferredSize(new Dimension(30,15));
+		priorityMedium.setText("Priority: Medium");
+		priorityMedium.setFont(fontForLegend);
+		priorityMedium.setEnabled(false);
+		priorityMedium.setDisabledTextColor(Color.WHITE);
+		priorityMedium.setBorder(borderLineForText);
+		priorityMedium.setOpaque(false);
+		legendTextLayout = new GridBagConstraints(1,1,5,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
+		legendMainPanel.add(priorityMedium,legendTextLayout);
+		
+		//this is the "priority: low" colored box
+		JPanel priorityLowPanel = new JPanel();
+		priorityLowPanel.setPreferredSize(new Dimension(20,5));
+		priorityLowPanel.setBackground(Color.WHITE);
+		Border borderLineForLow = new LineBorder(Color.BLACK);
+		priorityLowPanel.setBorder(borderLineForLow);
+		legendPanelLayout = new GridBagConstraints(0,2,1,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
+		legendMainPanel.add(priorityLowPanel,legendPanelLayout);
+		
+		//the text for "priority: low"
+		JTextField priorityLow = new JTextField();
+		priorityLow.setPreferredSize(new Dimension(30,15));
+		priorityLow.setText("Priority: Low");
+		priorityLow.setFont(fontForLegend);
+		priorityLow.setEnabled(false);
+		priorityLow.setDisabledTextColor(Color.WHITE);
+		priorityLow.setBorder(borderLineForText);
+		priorityLow.setOpaque(false);
+		legendTextLayout = new GridBagConstraints(1,2,5,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
+		legendMainPanel.add(priorityLow,legendTextLayout); 
+		
 		//this is the "done" colored box
-//		JPanel donePanel = new JPanel();
-//		donePanel.setPreferredSize(new Dimension(20,5));
-//		donePanel.setBackground(Color.GREEN);
-//		legendPanelLayout = new GridBagConstraints(0,3,1,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
-//		legendMainPanel.add(donePanel,legendPanelLayout);
+		JPanel donePanel = new JPanel();
+		donePanel.setPreferredSize(new Dimension(20,5));
+		donePanel.setBackground(Color.GREEN);
+		legendPanelLayout = new GridBagConstraints(0,3,1,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
+		legendMainPanel.add(donePanel,legendPanelLayout);
 		
 		//the text for "done"
-//		JTextField done = new JTextField();
-//		done.setPreferredSize(new Dimension(30,15));
-//		done.setText("Done");
-//		done.setFont(fontForLegend);
-//		done.setEnabled(false);
-//		done.setDisabledTextColor(Color.WHITE);
-//		done.setBorder(borderLineForText);
-//		done.setOpaque(false);
-//		legendTextLayout = new GridBagConstraints(1,3,5,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
-//		legendMainPanel.add(done,legendTextLayout); 
-//	}
+		JTextField done = new JTextField();
+		done.setPreferredSize(new Dimension(30,15));
+		done.setText("Done");
+		done.setFont(fontForLegend);
+		done.setEnabled(false);
+		done.setDisabledTextColor(Color.WHITE);
+		done.setBorder(borderLineForText);
+		done.setOpaque(false);
+		legendTextLayout = new GridBagConstraints(1,3,5,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
+		legendMainPanel.add(done,legendTextLayout); 
+	}*/
 	
-	/*	private void createButton(JPanel bottomPanel){
-			GridBagConstraints buttonParameters = setParameters(BUTTON_PARAMETERS);
-			JButton magicButton = new JButton("");
-			magicButton.setPreferredSize(new Dimension(10,10));
-			
-			bottomPanel.add(magicButton,buttonParameters);
-		}
+/*	private void createButton(JPanel bottomPanel){
+		GridBagConstraints buttonParameters = setParameters(BUTTON_PARAMETERS);
+		JLabel magicButton = new JLabel("");
+		magicButton.setPreferredSize(new Dimension(10,10));
+
+		bottomPanel.add(magicButton,buttonParameters);
+	}
 		
 	/*	
 	/**
 	 * Create the application.
 	 */
+	
 	public UserInterface() {
-		ImageIcon img = new ImageIcon("src/ToDoLog logo.gif");
-		this.setIconImage(img.getImage());
-		Application application = Application.getApplication();
-		Image image = Toolkit.getDefaultToolkit().getImage("src/ToDoLog.gif");
-		application.setDockIconImage(image);
 		initialize(this); 
 		fillUpTheJFrame(this);
+		useJIntellitype();
 		makeTrayIcon(this);
+		this.addWindowListener(new ToDoLogWindowListener());
 		Controller.init();
 		toDoListItems = Controller.getDBStorage().load();
 		toDoListTableModel = new ToDoListTableModel(toDoListItems);
 		toDoListTable.setModel(toDoListTableModel);
 		adjustTableColumns(toDoListTable);
-		dynamicHelpText.setText(Controller.getFeedback());
+		dynamicHelpText.append(Controller.getFeedback());
 		changeTableColors(toDoListTable);
 		
 		// create more here
 	}
 	
+	private void useJIntellitype() {
+	// TODO Auto-generated method stub
+		try {
+			JIntellitype.getInstance();
+			JIntellitype.getInstance().registerHotKey(1, JIntellitype.MOD_ALT, (int) 'B');;
+			JIntellitype.getInstance().addHotKeyListener(new HotkeyListener() {
+	            @Override
+	            public void onHotKey(int combination) {
+	                // TODO Auto-generated method stub
+	                if (combination == 1)
+	                	if (window.getState() == JFrame.ICONIFIED) {
+	                		window.setState(JFrame.NORMAL);
+	                	} else {
+	                		window.setState(JFrame.ICONIFIED);
+	                	}
+	            }
+			});
+		} catch (JIntellitypeException jie) {
+			dynamicHelpText.append("Cannot load hotkey settings.\n");
+		}
+	}
+
 	private void makeTrayIcon(JFrame userInterface) {
 		//Check the SystemTray is supported
         if (!SystemTray.isSupported()) {
             System.out.println("SystemTray is not supported");
             return;
         }
-        ImageIcon img = new ImageIcon("src/ToDoLog logo.gif");
-        final PopupMenu popup = new PopupMenu();
-        final TrayIcon trayIcon =
+        ImageIcon img = new ImageIcon("src/icon-16x16.gif");
+        PopupMenu popup = new PopupMenu();
+        trayIcon =
                 new TrayIcon(img.getImage());
-        final SystemTray tray = SystemTray.getSystemTray();
+        SystemTray tray = SystemTray.getSystemTray();
        
         // Create a pop-up menu components
         MenuItem aboutItem = new MenuItem("About");
@@ -567,7 +624,7 @@ public class UserInterface extends JFrame implements WindowListener {
         } catch (AWTException e) {
             System.out.println("TrayIcon could not be added.");
         }
-		
+        firstMinimize = false;
 	}
 
 	// remember to write unit test as you code
@@ -638,8 +695,9 @@ public class UserInterface extends JFrame implements WindowListener {
 					helperText = UIFeedbackHelper.createCmdAddHelpText(entryHelper);
 				} else if (commandType.equals("edit")) {
 					helperText = UIFeedbackHelper.createCmdEditHelpText(entryHelper);
-				}
-			}
+				} 
+			} else
+				helperText = "";
 			return helperText;
 		}
 		
@@ -647,98 +705,170 @@ public class UserInterface extends JFrame implements WindowListener {
 	
 	private class CommandEntryTextFieldKeyListener implements KeyListener {
 		@Override
-		public void keyPressed(KeyEvent e){
-
+		public void keyPressed(KeyEvent e) {
 			int keyCode = e.getKeyCode();
-			int modifiers = e.getModifiers();
 			if ((keyCode == KeyEvent.VK_PAGE_UP) || (keyCode == KeyEvent.VK_F9)){
 				toDoListTableModel.pageUp();
 			}
-			String helperText = readKeyForHelperFeedback();
-			dynamicHelpText.setText(helperText);
-			// META_MASK: Mac's Command key.
-			if (((keyCode == KeyEvent.VK_B) && ((modifiers & KeyEvent.META_MASK)!=0)) ||
-					((keyCode == KeyEvent.VK_B) && ((modifiers & KeyEvent.ALT_MASK)!=0))) {
-				
-				window.setOpacity(0.5f);
-			}
-
-		}
-	
-		@Override
-		public void keyReleased(KeyEvent e){
-			int keyCode = e.getKeyCode();
-			if(keyCode == KeyEvent.VK_PAGE_UP){
-			toDoListTableModel.pageUp();
-
-			}
-			
 			if ((keyCode == KeyEvent.VK_PAGE_DOWN) || (keyCode == KeyEvent.VK_F10)){
 				toDoListTableModel.pageDown();
 			}
 		}
-			
 	
+		@Override
+		public void keyReleased(KeyEvent e) {
+			int keyCode = e.getKeyCode();
+			if(keyCode == KeyEvent.VK_PAGE_UP) {
+				toDoListTableModel.pageUp();
+			}
+			if ((keyCode == KeyEvent.VK_PAGE_DOWN) || (keyCode == KeyEvent.VK_F10)) {
+				toDoListTableModel.pageDown();
+			}
+		}
 			
 		@Override
 		public void keyTyped(KeyEvent e){
 
 		}
-		private String readKeyForHelperFeedback() {
-			String commandString = commandEntryTextField.getText();
-			LinkedList<String> entryHelper = Controller.getCommandEntryHelperDetailsFromInput(commandString);
-			String helperText = dynamicHelpText.getText();
-			if (!entryHelper.isEmpty()) {
-				helperText += "\n";
-				String commandType = entryHelper.poll();
-				if (commandType.equals("add")) {
-					helperText = UIFeedbackHelper.createCmdAddHelpText(entryHelper);
-				} else if (commandType.equals("edit")) {
-					helperText = UIFeedbackHelper.createCmdEditHelpText(entryHelper);
-				}
-			}
-			return helperText;
-		}
-		
 	}
-	public class MinimizeButtonActionListener implements ActionListener {
+	
+	public class MinimizeButtonMouseListener implements MouseListener {
 
 		@Override
-		public void actionPerformed(ActionEvent e) {
-			window.setState(Frame.ICONIFIED);
-
+		public void mouseClicked(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
 		}
+
+		@Override
+		public void mousePressed(MouseEvent e) {
+			minimizeButton.setBackground(minimizeButton.getBackground().darker());
+			repaint();
+		}
+
+		@Override
+		public void mouseReleased(MouseEvent e) {
+			minimizeButton.setBackground(new Color(241, 196, 15, 255));
+			repaint();
+			
+			window.setState(JFrame.ICONIFIED);
+		}
+
+		@Override
+		public void mouseEntered(MouseEvent e) {
+			minimizeButton.setBackground(minimizeButton.getBackground().brighter());
+			repaint();
+		}
+
+		@Override
+		public void mouseExited(MouseEvent e) {
+			minimizeButton.setBackground(new  Color(241, 196, 15, 255));
+			repaint();
+		}
+
+	
 
 	}
 
-	public class CloseButtonActionListener implements ActionListener {
+	public class CloseButtonMouseListener implements MouseListener {
 
 		@Override
-		public void actionPerformed(ActionEvent e) {
+		public void mouseClicked(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void mousePressed(MouseEvent e) {
+			closeButton.setBackground(closeButton.getBackground().darker());
+			repaint();
+		}
+
+		@Override
+		public void mouseReleased(MouseEvent e) {
+			closeButton.setBackground(new Color(242, 38, 19, 255));
+			repaint();
 			window.dispatchEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSING));
-
 		}
+
+		@Override
+		public void mouseEntered(MouseEvent e) {
+			closeButton.setBackground(closeButton.getBackground().brighter());
+			repaint();
+		}
+
+		@Override
+		public void mouseExited(MouseEvent e) {
+			closeButton.setBackground(new Color(242, 38, 19, 255));
+			repaint();
+		}
+
+		
 
 	}
 	//this method is to set up the parameters of the gridbagconstraints
 	//to put the different panels into the right positions on the JFrame
 	//here we use the constructor GridBagConstraints(gridx,gridy,gridwidth,gridheight,weightx,weighty,anchor,fill,insets,ipadx,ipady)
+	
+	private class ToDoLogWindowListener implements WindowListener{
+		public void windowActivated(WindowEvent e) {
+	
+		}
+
+		@Override
+		public void windowClosed(WindowEvent e) {
+			
+		}
+
+		@Override
+		public void windowClosing(WindowEvent e) {
+			
+		}
+
+		@Override
+		public void windowDeactivated(WindowEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void windowDeiconified(WindowEvent e) {
+			
+		}
+
+		@Override
+		public void windowIconified(WindowEvent e) {
+			if (!firstMinimize) {
+				trayIcon.displayMessage("ToDoLog", 
+					"ToDoLog is minimized. To open use combination ALT+B", TrayIcon.MessageType.INFO);
+				firstMinimize = true;
+			}
+			
+		}
+
+		@Override
+		public void windowOpened(WindowEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+	}
+	
 	private GridBagConstraints setParameters(int panelParameters){
 		GridBagConstraints parameters;
 		Insets topPanelInsets = new Insets(0,0,0,0);
 		Insets bottomPanelInsets = new Insets(0,0,0,0);
 		Insets buttonPanelInsets = new Insets(0,0,0,0);
-		Insets closebuttonInsets = new Insets(0,0,0,0);
-		Insets clockInsets = new Insets(15,0,0,0);
+		Insets iconInsets = new Insets(10,30,0,0);
+		Insets clockInsets = new Insets(15,0,0,53);
 		Insets toDoListInsets = new Insets(10,0,0,0);
 		Insets toDoListScrollPaneInsets = new Insets(0,0,0,0);
 		Insets commandEntryTextFieldInsets = new Insets(10,25,5,25);
-		Insets dynamicHelpTextInsets = new Insets(10,25,20,20);
+		Insets dynamicHelpTextInsets = new Insets(10,25,10,20);
 		Insets legendInsets = new Insets(0,0,0,10);
 		//Insets buttonInsets = new Insets(10,0,0,20);
 		
 		if(panelParameters == CLOCK_PARAMETERS){
-			parameters = new GridBagConstraints(1,0,1,1,1.0,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,clockInsets,0,0);
+			parameters = new GridBagConstraints(1,0,1,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,clockInsets,0,0);
 			return parameters;
 		}
 		else if(panelParameters == TODOLIST_PARAMETERS){
@@ -750,7 +880,11 @@ public class UserInterface extends JFrame implements WindowListener {
 			return parameters;
 		}
 		else if(panelParameters == BUTTON_PANEL_PARAMETERS){
-			parameters = new GridBagConstraints(3,0,1,1,0.1,0.0,GridBagConstraints.NORTHEAST,GridBagConstraints.BOTH,buttonPanelInsets,0,0);
+			parameters = new GridBagConstraints(2,0,1,1,0.2,0.0,GridBagConstraints.NORTHEAST,GridBagConstraints.BOTH,buttonPanelInsets,0,0);
+			return parameters;
+		}
+		else if(panelParameters == ICON_PARAMETERS){
+			parameters = new GridBagConstraints(0,0,1,1,0.2,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,iconInsets,0,0);
 			return parameters;
 		}
 		else if(panelParameters == BOTTOM_PANEL_PARAMETERS){
@@ -792,7 +926,6 @@ public class UserInterface extends JFrame implements WindowListener {
 	
 	//convert linked lists into data for the table, go find out how to
 	//dynamic help text will also be 
-
 	
 	private void adjustTableColumns(JTable toDoListTable){
 		TableColumn tableColumn = null;
@@ -834,45 +967,6 @@ public class UserInterface extends JFrame implements WindowListener {
 		
 	}
 
-	@Override
-	public void windowActivated(WindowEvent e) {
-		System.out.println("Windows Opened");
-		
-	}
-
-	@Override
-	public void windowClosed(WindowEvent e) {
-		System.out.println("Windows Closed");
-		
-	}
-
-	@Override
-	public void windowClosing(WindowEvent e) {
-		System.out.println("Windows Closing");
-		
-	}
-
-	@Override
-	public void windowDeactivated(WindowEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void windowDeiconified(WindowEvent e) {
-		System.out.println("Windows Maximised");
-		
-	}
-
-	@Override
-	public void windowIconified(WindowEvent e) {
-		System.out.println("Windows Minimized");
-		
-	}
-
-	@Override
-	public void windowOpened(WindowEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
+	
+	
 }

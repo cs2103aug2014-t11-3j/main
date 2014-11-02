@@ -147,7 +147,7 @@ public class Task {
 		
 	}
 
-	public void setStartDay(String editInfo) throws Exception{
+	public void setStartDate(String editInfo) throws Exception{
 		int year = Parser.parseYear(editInfo);
 		int month = Parser.parseMonth(editInfo);
 		int day = Parser.parseDayOfMonth(editInfo);
@@ -157,7 +157,7 @@ public class Task {
 		_taskStart = new DateTime(year,month,day,hour,min);
 	}
 	
-	public void setEndDay(String editInfo) throws Exception {
+	public void setEndDate(String editInfo) throws Exception {
 		int year = Parser.parseYear(editInfo);
 		int month = Parser.parseMonth(editInfo);
 		int day = Parser.parseDayOfMonth(editInfo);
@@ -188,11 +188,11 @@ public class Task {
 	}
 	
 	public void setVenue(String _toBeEdited){
-		_taskVenue = Parser.parseTaskVenue(_toBeEdited);
+		_taskVenue = _toBeEdited;
 	}
 	
 	public void setPerson(String _toBeEdited){
-		_taskPerson = Parser.parseTaskPerson(_toBeEdited);
+		_taskPerson = _toBeEdited;
 	}
 
 	// for sorting in CommandAdd

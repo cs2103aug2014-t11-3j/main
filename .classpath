@@ -3,8 +3,18 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+<<<<<<< HEAD
 	<classpathentry kind="lib" path="C:/Users/Stanley/Desktop/joda-time-2.5-dist/joda-time-2.5/joda-time-2.5.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Stanley/Desktop/dom4j-1.6.1/dom4j-1.6.1/dom4j-1.6.1.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Ben/Downloads/jintellitype-1.3.9.jar"/>
+=======
+	<classpathentry kind="lib" path="/Users/NhatLinh/Documents/Study Materials/WorkSpace/TodoLog/dom4j-1.6.1/dom4j-1.6.1.jar"/>
+	<classpathentry kind="lib" path="/Users/NhatLinh/Documents/Study Materials/WorkSpace/TodoLog/joda-time-2.5/joda-time-2.5.jar"/>
+	<classpathentry kind="lib" path="/Users/NhatLinh/Documents/Study Materials/WorkSpace/TodoLog/jintellitype-1.3.9/jintellitype-1.3.9.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="/Users/NhatLinh/Documents/Study Materials/WorkSpace/TodoLog/jintellitype-1.3.9"/>
+		</attributes>
+	</classpathentry>
+>>>>>>> d4c63a0c37240658c15f8b593796664c36a7e6a4
 	<classpathentry kind="output" path="bin"/>
 </classpath>
