@@ -87,15 +87,15 @@ public class ToDoListTableModel extends AbstractTableModel{
 				case FLOATING:
 					return "-";
 				case TIMED:
-					return task.getStartDate()+"/"
-							+ task.getStartMonth()+" @" 
+					return String.format("%02d",task.getStartDate())+"/"
+							+ task.getStartMonth()+" " 
 							+ task.getStartTimeStr() + " - " 
-							+ task.getEndDate()+"/"
-							+ task.getEndMonth()+" @"
+							+ String.format("%02d",task.getEndDate())+"/"
+							+ task.getEndMonth()+" "
 							+ task.getEndTimeStr();
 				case DEADLINE:
-					return "by "+ task.getEndDate()+"/"
-					+ task.getEndMonth()+" @"
+					return "by "+ String.format("%02d",task.getEndDate())+"/"
+					+ task.getEndMonth()+" "
 					+ task.getEndTimeStr();
 				case RECURRING:
 					break;
