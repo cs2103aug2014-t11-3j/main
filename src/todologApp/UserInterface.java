@@ -66,7 +66,7 @@ public class UserInterface extends JFrame {
 
 	private static final float TABLE_FONT_SIZE = 12f;
 	private static final float ENTRY_TEXT_FIELD_FONT_SIZE = 20f;
-	private static final float HELP_TEXT_FONT_SIZE = 15f;
+	private static final float HELP_TEXT_FONT_SIZE = 13f;
 /**
 	 * 
 	 */
@@ -401,7 +401,7 @@ public class UserInterface extends JFrame {
 		
 		//characterize the text area box into the bottom panel
 		Border dynamicHelpTextBorder = new LineBorder(Color.GRAY);
-		dynamicHelpText = new JTextArea(3,33);
+		dynamicHelpText = new JTextArea(5,33);
 		dynamicHelpText.setMaximumSize(dynamicHelpText.getSize());
 		dynamicHelpText.setBorder(dynamicHelpTextBorder);
 		dynamicHelpText.setLineWrap(true);
@@ -695,8 +695,9 @@ public class UserInterface extends JFrame {
 					helperText = UIFeedbackHelper.createCmdAddHelpText(entryHelper);
 				} else if (commandType.equals("edit")) {
 					helperText = UIFeedbackHelper.createCmdEditHelpText(entryHelper);
-				}
-			}
+				} 
+			} else
+				helperText = "";
 			return helperText;
 		}
 		
@@ -862,7 +863,7 @@ public class UserInterface extends JFrame {
 		Insets toDoListInsets = new Insets(10,0,0,0);
 		Insets toDoListScrollPaneInsets = new Insets(0,0,0,0);
 		Insets commandEntryTextFieldInsets = new Insets(10,25,5,25);
-		Insets dynamicHelpTextInsets = new Insets(10,25,20,20);
+		Insets dynamicHelpTextInsets = new Insets(10,25,10,20);
 		Insets legendInsets = new Insets(0,0,0,10);
 		//Insets buttonInsets = new Insets(10,0,0,20);
 		

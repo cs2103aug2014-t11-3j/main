@@ -1,9 +1,6 @@
 package todologApp;
 
-import java.util.Collection;
 import java.util.LinkedList;
-
-import org.joda.time.format.DateTimeFormat;
 
 // remember to write unit test as you code
 
@@ -15,7 +12,7 @@ public class Controller {
 	private static String _textDisplay;
 	private static LinkedList<Task> _displayList; 
 	private static String _feedback;
-	private static final String FEEDBACK_START = "To start, enter a command: add, delete, edit, done.";
+	private static final String FEEDBACK_START = "To start, enter a command: add, delete, edit, done.\n";
 	
 	public static void setStorage(DBStorage DBstorage) {
 		_dbStorage = DBstorage;
@@ -87,7 +84,7 @@ public class Controller {
 			_feedback = e.getMessage();
 			_displayList = _dbStorage.load();
 		}
-		_textDisplay = createNewDisplay();
+		//_textDisplay = createNewDisplay();
 	}
 	
 	public static LinkedList<String> getCommandEntryHelperDetailsFromInput(String userCurrentInput) {
@@ -115,14 +112,15 @@ public class Controller {
 		}
 	}
 
-
+	// unused
+	// code for TextGUI display
 	public static String getPlainTextOutput() {
 		return _textDisplay;
 	}
 
 	public static void init() {
 		_dbStorage = new DBStorage();
-		_textDisplay = createNewDisplay();
+		//_textDisplay = createNewDisplay();
 		_history = new History();
 		_feedback = FEEDBACK_START;
 	}
