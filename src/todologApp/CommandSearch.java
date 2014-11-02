@@ -14,6 +14,7 @@ public class CommandSearch implements Command {
 		String feedback;
 		_storage = Controller.getDBStorage();
 		LinkedList<Task> storageList = _storage.load();
+		Controller.setFocusTask(null); // set focus task to change UI's page
 		searchName(storageList,_searchKey);
 		feedback = "Searching for \"" + _searchKey + "\" is completed";
 		return feedback;

@@ -649,26 +649,24 @@ public class UserInterface extends JFrame {
 			toDoListTableModel.setTableData(toDoListItems);
 			toDoListTableModel.fireTableDataChanged();
 			
-			//I want the screen to show the previous screen if the next screen has no more items to display
-			if(Parser.getFirstWord(commandString).equalsIgnoreCase("delete") && ((toDoListTableModel.getActualRowCount() % toDoListTableModel.getPageSize()) == 0) && toDoListTableModel.getActualRowCount() > 0){
-				toDoListTableModel.pageUp();
-				
-			}
-			
-			//show the screen where the new item has been added
-			if(Parser.getFirstWord(commandString).equalsIgnoreCase("add") && toDoListTableModel.getPageCount() >= 2){
-				int i = 1;
-				while( i < toDoListTableModel.getPageCount()){
-				toDoListTableModel.pageDown();
-				i++;
-				}
-			}
-			
-			
+			//I want the toDoListItems to show the previous screen if the next screen has no more items to display
+			flipPages();
 
 		}
 	}
-
+	private void flipPages() {
+		if (Controller.getFocusTask() == null) {
+			toDoListTableModel.goToPage(0);
+			return;
+		}
+		Task focusTask = Controller.getFocusTask();
+		for (int index = 0; index < toDoListItems.size(); index ++){
+			Task task = toDoListItems.get(index);
+			if (task == focusTask) {
+				toDoListTableModel.goToPage((index)/17);
+			}
+		}
+	}
 	private class CommandEntryTextFieldDocumentListener implements DocumentListener {
 		@Override
 		public void insertUpdate(DocumentEvent e) {
@@ -694,10 +692,10 @@ public class UserInterface extends JFrame {
 				if (commandType.equals("add")) {
 					helperText = UIFeedbackHelper.createCmdAddHelpText(entryHelper);
 				} else if (commandType.equals("edit")) {
+					flipPages();
 					helperText = UIFeedbackHelper.createCmdEditHelpText(entryHelper);
 				} 
-			} else
-				helperText = "";
+			} 
 			return helperText;
 		}
 		

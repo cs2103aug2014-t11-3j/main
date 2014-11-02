@@ -64,13 +64,11 @@ public class Parser {
 		userCommand = userCommand.trim();
 		String firstWord = getFirstWord(userCommand);
 		if (firstWord.equalsIgnoreCase("add")) {
-			try {
+			
 				Task task = createTask(userCommand);
 				CommandAdd command = new CommandAdd(task);
 				return command;
-			} catch (Exception e){
-				throw new Exception(HELP_TEXT_ADD);
-			}
+			
 		} else if (firstWord.equalsIgnoreCase("delete")) {
 			String restOfTheString = getTheRestOfTheString(userCommand);
 			if (restOfTheString == null) {
@@ -131,12 +129,12 @@ public class Parser {
 			return command;
 		} else if (firstWord.equalsIgnoreCase("undo")) {
 			History history = Controller.getHistory();
-			Command toBeUndone = history.goBackwards();
+			Command toBeUndone = history.getBackwards();
 			CommandUndo command = new CommandUndo(toBeUndone);
 			return command;
 		} else if (firstWord.equalsIgnoreCase("redo")) {
 			History history = Controller.getHistory();
-			Command toBeUndone = history.goForwards();
+			Command toBeUndone = history.getForwards();
 			CommandRedo command = new CommandRedo(toBeUndone);
 			return command;
 		} else if (firstWord.equalsIgnoreCase("load")) {
@@ -151,7 +149,7 @@ public class Parser {
 	public static Task createTask(String userInput) throws Exception{
 		String restOfTheString = getTheRestOfTheString(userInput);
 		if (restOfTheString == null) {
-			throw new Exception();
+			return null;
 		}
 		Task task = new Task(restOfTheString);
 		return task;

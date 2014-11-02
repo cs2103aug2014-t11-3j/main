@@ -136,7 +136,7 @@ public class CommandView implements Command {
 			
 			feedback="invalid command";
 		}
-		
+		Controller.setFocusTask(null); // set focus task to change UI's page
 		return feedback;
 		
 		

@@ -12,13 +12,14 @@ public class CommandLoad implements Command {
 	@Override
 	public String execute() {
 		Controller.init(_newFileName);
+		Controller.setFocusTask(null); // set focus task to change UI's page
 		return "Loaded/created \""+_newFileName+"\"";
-		
 	}
 
 	@Override
 	public String undo() {
 		Controller.init(_oldFileName);
+		Controller.setFocusTask(null); // set focus task to change UI's page
 		return "Loaded \""+_oldFileName+"\"";
 	}
 

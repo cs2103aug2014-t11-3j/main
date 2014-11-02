@@ -22,6 +22,7 @@ public class CommandDeleteAll implements Command {
 			validity=false;
 			return feedback;
 		}
+		Controller.setFocusTask(null);
 		feedback = "Deleted all tasks";
 		validity=true;
 		return feedback;
