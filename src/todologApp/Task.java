@@ -28,7 +28,7 @@ public class Task {
 		_taskPerson = Parser.parseTaskPerson(parameter);
 		_taskVenue = Parser.parseTaskVenue(parameter);
 		_taskStart = Parser.parseTaskStart(parameter);
-		_taskEnd = Parser.parseTaskEnd(parameter);
+		_taskEnd = Parser.parseTaskEnd(_taskStart,parameter);
 	}
 
 	

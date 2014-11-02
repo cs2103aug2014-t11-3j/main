@@ -8,6 +8,9 @@ public class ControllerFeedbackHelper {
 	public static LinkedList<String> createHelperTexts(String commandType, Task task) {
 		LinkedList<String> helperTexts = new LinkedList<String>();
 		helperTexts.add(commandType);
+		if (task == null) { 
+			return helperTexts; 
+		}
 		switch (task.getTaskType()) {
 			case TIMED:
 				helperTexts.addAll(createTimedTaskHelper(task));

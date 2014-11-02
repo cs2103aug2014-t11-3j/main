@@ -9,9 +9,13 @@ public class CommandAdd implements Command {
 	private boolean validity;
 	public CommandAdd(Task task) {
 		_task = task;
-		}
+	}
 
 	public String execute(){
+		if (_task == null) {
+			validity = false;
+			return "Please enter task details";
+		}
 		String feedback;
 		_storage= Controller.getDBStorage();
 		LinkedList<Task> newList = new LinkedList<Task>();
@@ -76,6 +80,26 @@ public class CommandAdd implements Command {
 	}
 	public boolean isUndoable(){
 		return validity;
+	}
+
+	public String fakeExecute() {
+		if (_task == null) {
+			validity = false;
+			return "Please enter task details";
+		}
+		String feedback;
+		_storage= Controller.getDBStorage();
+		LinkedList<Task> newList = new LinkedList<Task>(_storage.load());
+		sortByDate(newList);
+		feedback = "Added " + _task.getTaskName() + " to ToDoLog";
+		validity=true;
+		return feedback;
+		
+	}
+
+	public Task getAddedTask() {
+		// TODO Auto-generated method stub
+		return _task;
 	}
 
 }
