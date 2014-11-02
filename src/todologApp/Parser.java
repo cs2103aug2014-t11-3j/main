@@ -250,14 +250,18 @@ public class Parser {
 	}
 
 	public static int parseYear(String dateInString) throws Exception {
-		int _year = 14;
-		_year = Integer.parseInt(dateInString);
-		_year = _year % 100 + 2000 ;
-		if (_year >= 2014) {
+		int _year = DateTime.now().year().get();
+		try {
+			_year = Integer.parseInt(dateInString);
+		} catch (NumberFormatException nfe) {
 			return _year;
-		} else {
-			throw new Exception("You added a day in the past!");
 		}
+		if (_year<65) {
+		_year = _year % 100 + 2000 ;
+		} else {
+			_year = _year %100 + 1900;
+		}
+		return _year;
 	}
 	public static int parseDayOfMonth(String dateInString) throws Exception {
 		int month = parseMonth(dateInString);
