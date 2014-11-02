@@ -16,13 +16,11 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.*;
 
-import com.apple.eawt.Application;
 
 import java.util.*;
 //import java.lang.Object;
 
-
-public class UserInterface extends JFrame implements WindowListener { 
+public class UserInterface extends JFrame { 
 	
 
 	private static final float TABLE_FONT_SIZE = 12f;
@@ -31,9 +29,7 @@ public class UserInterface extends JFrame implements WindowListener {
 /**
 	 * 
 	 */
-	private static final long serialVersionUID = 4308151724219875078L;
-//also I wanna put the action listener elsewhere
-	
+	private static final long serialVersionUID = 4308151724219875078L;	
 	private static final int TODOLIST_PARAMETERS = 1;
 	private static final int BOTTOM_PANEL_PARAMETERS = 2;
 	private static final int COMMAND_ENTRY_PARAMETERS = 3;
@@ -41,25 +37,24 @@ public class UserInterface extends JFrame implements WindowListener {
 	private static final int LEGEND_PARAMETERS = 5;
 	private static final int TODOLIST_SCROLLPANE_PARAMETERS = 6;
 	private static final int CLOCK_PARAMETERS = 7;
-	//private static final int BUTTON_PARAMETERS = 7;
-	private static final int BUTTON_PANEL_PARAMETERS = 9;
 	private static final int TOP_PANEL_PARAMETERS = 8;
-	private static final int CLOSE_BUTTON_PARAMETERS = 11;
-	private static final int BLANK_SPACE_BUTTON_PARAMETERS = 10;
-	private static final int MINIMIZE_BUTTON_PARAMETERS = 11;
+	private static final int BUTTON_PANEL_PARAMETERS = 9;
+	private static final int ICON_PARAMETERS = 10;
 	
 	private JTextField commandEntryTextField;
 	private JLayeredPane layerPane = new JLayeredPane();
 	private JTextArea dynamicHelpText;
 	private JTextArea toDoListText;
 	private JTable toDoListTable;
-	private JButton closeButton;
-	private JButton minimizeButton;
+	private JLabel closeButton;
+	private JLabel minimizeButton;
 	//private Controller controller;
 	private LinkedList <Task> toDoListItems = new LinkedList<Task>();
 	private ToDoListTableModel toDoListTableModel;
-	
+	private TrayIcon trayIcon;
+	private boolean firstMinimize;
 	private static UserInterface window;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -93,13 +88,17 @@ public class UserInterface extends JFrame implements WindowListener {
 	//this initialize method sets up the main frame for ToDoLog
 	private void initialize(JFrame UserInterface) { 
 		//initializeLinkedList();
-		
+		ArrayList<Image> images = new ArrayList<Image>();
+		Image image = Toolkit.getDefaultToolkit().getImage("src/icon-16x16.gif");
+		images.add(image);
+		image = Toolkit.getDefaultToolkit().getImage("src/icon-32x32.gif");
+		images.add(image);
+		UserInterface.setIconImages(images);
 		UserInterface.setTitle("ToDoLog");
 		UserInterface.setResizable(false);
 		UserInterface.setBounds(100,100,700, 600);					
 		UserInterface.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
-	
 	
 	//this method consists of setting the different sections within the frame of ToDoLog
 	private void fillUpTheJFrame(JFrame UserInterface){
@@ -133,42 +132,25 @@ public class UserInterface extends JFrame implements WindowListener {
 		 topPanel.add(clockLabel,clockPanelParameters);
 		 clock.start();
 	}
-	private void colorComponent(Component component, Color color) {
-		JPanel colorCell = new JPanel()
-		{
-			/**
-			 * 
-			 */
-			private static final long serialVersionUID = 1L;
-			@Override
-			protected void paintComponent(Graphics g)
-		    {
-		        g.setColor( getBackground() );
-		        g.fillRect(0, 0, getWidth(), getHeight());
-		        super.paintComponent(g);
-		    }
-		};
-		((JComponent) component).setBackground(color);
-		((JComponent) component).setOpaque(false);
-		((JComponent) component).add(colorCell);
-	}
+	
 	private void createButtonPanel(Container topPanel) {
 		
 		JPanel buttonPanel = new JPanel(new GridBagLayout());
-		closeButton = new JButton() {
+		closeButton = new JLabel() {
 				/**
 				 * 
 				 */
 				private static final long serialVersionUID = 1L;
 				@Override
-				protected void paintComponent(Graphics g)
-			    {
+				protected void paintComponent(Graphics g){
 			        g.setColor( getBackground() );
-			        g.fillRect(0, 0, getWidth(), getHeight());
+			        ((Graphics2D) g).setRenderingHint (RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			        g.fillOval(0, 0, getWidth(), getHeight());
 			        super.paintComponent(g);
 			    }
+				
 			};
-		minimizeButton = new JButton() {
+		minimizeButton = new JLabel() {
 			/**
 			 * 
 			 */
@@ -177,24 +159,27 @@ public class UserInterface extends JFrame implements WindowListener {
 			protected void paintComponent(Graphics g)
 		    {
 		        g.setColor( getBackground() );
-		        g.fillRect(0, 0, getWidth(), getHeight());
+		        ((Graphics2D) g).setRenderingHint (RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		        g.fillOval(0, 0, getWidth(), getHeight());
 		        super.paintComponent(g);
 		    }
 		};
-		closeButton.setBackground(new Color(255,0,0,255));
+		closeButton.setBackground(new Color(242, 38, 19, 255));
 		closeButton.setOpaque(false);
-		colorComponent(closeButton,new Color(255,0,0,255));
-		colorComponent(minimizeButton,new Color(255,255,0,255));
-		closeButton.setPreferredSize(new Dimension(23,23));
-		minimizeButton.setPreferredSize(new Dimension(23,23));
-		closeButton.addActionListener(new CloseButtonActionListener());
-		minimizeButton.addActionListener(new MinimizeButtonActionListener());
+		minimizeButton.setBackground(new Color(241, 196, 15, 255));
+		minimizeButton.setOpaque(false);
+		//colorComponent(closeButton,new Color(255,0,0,255));
+		//colorComponent(minimizeButton,new Color(255,255,0,255));
+		closeButton.setPreferredSize(new Dimension(17,17));
+		minimizeButton.setPreferredSize(new Dimension(17,17));
+		closeButton.addMouseListener(new CloseButtonMouseListener());
+		minimizeButton.addMouseListener(new MinimizeButtonMouseListener());
 		GridBagConstraints padParameters =
 				new GridBagConstraints(0,0,3,1,1.0,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,new Insets(0,0,0,0),0,0);
 		GridBagConstraints minimizeButtonParameters = 
-				new GridBagConstraints(3,0,1,1,0.0,0.0,GridBagConstraints.NORTHEAST,GridBagConstraints.NONE,new Insets(0,0,5,5),0,0);
+				new GridBagConstraints(3,0,1,1,0.0,0.0,GridBagConstraints.NORTHEAST,GridBagConstraints.NONE,new Insets(0,0,10,7),0,0);
 		GridBagConstraints closeButtonParameters =
-				new GridBagConstraints(4,0,1,1,0.0,0.0,GridBagConstraints.NORTHEAST,GridBagConstraints.NONE,new Insets(0,0,5,10),0,0);
+				new GridBagConstraints(4,0,1,1,0.0,0.0,GridBagConstraints.NORTHEAST,GridBagConstraints.NONE,new Insets(0,0,10,10),0,0);
 		buttonPanel.add(Box.createGlue(),padParameters);
 		buttonPanel.add(minimizeButton,minimizeButtonParameters);
 		buttonPanel.add(closeButton,closeButtonParameters);
@@ -202,6 +187,7 @@ public class UserInterface extends JFrame implements WindowListener {
 		GridBagConstraints ButtonPanelParameters = setParameters(BUTTON_PANEL_PARAMETERS);
 		topPanel.add(buttonPanel,ButtonPanelParameters);
 	}
+	
 	private void createTopPanel(Container mainPanel){
 		JPanel topPanel = new JPanel(new GridBagLayout());
 		topPanel.setBackground(Color.WHITE);
@@ -209,7 +195,7 @@ public class UserInterface extends JFrame implements WindowListener {
 		GridBagConstraints parameters;
 		
 		parameters = setParameters(TOP_PANEL_PARAMETERS);
-		
+		createIcon(topPanel);
 		createClockPanel(topPanel);
 		createButtonPanel(topPanel);
 		//createButton(bottomPanel);
@@ -217,6 +203,16 @@ public class UserInterface extends JFrame implements WindowListener {
 		topPanel.setOpaque(false);
 	}
 	
+	private void createIcon(JPanel topPanel) {
+		JLabel iconPanel = new JLabel();
+		ImageIcon icon = new ImageIcon("src/icon-40x40.gif");
+		iconPanel.setIcon(icon);
+		GridBagConstraints parameters;
+		parameters = setParameters(ICON_PARAMETERS);
+		topPanel.add(iconPanel,parameters);
+		
+	}
+
 	private void createToDoListTable(Container mainPanel){                        
 		JPanel toDoListHolder = new JPanel(new GridBagLayout());
 		GridBagConstraints panelParameters;      //panelParameters are values for how the top panel will fit into the main frame of ToDoLog
@@ -505,14 +501,10 @@ public class UserInterface extends JFrame implements WindowListener {
 	 * Create the application.
 	 */
 	public UserInterface() {
-		ImageIcon img = new ImageIcon("src/ToDoLog logo.gif");
-		this.setIconImage(img.getImage());
-		Application application = Application.getApplication();
-		Image image = Toolkit.getDefaultToolkit().getImage("src/ToDoLog.gif");
-		application.setDockIconImage(image);
 		initialize(this); 
 		fillUpTheJFrame(this);
 		makeTrayIcon(this);
+		this.addWindowListener(new ToDoLogWindowListener());
 		Controller.init();
 		toDoListItems = Controller.getDBStorage().load();
 		toDoListTableModel = new ToDoListTableModel(toDoListItems);
@@ -530,11 +522,11 @@ public class UserInterface extends JFrame implements WindowListener {
             System.out.println("SystemTray is not supported");
             return;
         }
-        ImageIcon img = new ImageIcon("src/ToDoLog logo.gif");
-        final PopupMenu popup = new PopupMenu();
-        final TrayIcon trayIcon =
+        ImageIcon img = new ImageIcon("src/icon-16x16.gif");
+        PopupMenu popup = new PopupMenu();
+        trayIcon =
                 new TrayIcon(img.getImage());
-        final SystemTray tray = SystemTray.getSystemTray();
+        SystemTray tray = SystemTray.getSystemTray();
        
         // Create a pop-up menu components
         MenuItem aboutItem = new MenuItem("About");
@@ -567,7 +559,7 @@ public class UserInterface extends JFrame implements WindowListener {
         } catch (AWTException e) {
             System.out.println("TrayIcon could not be added.");
         }
-		
+        firstMinimize = false;
 	}
 
 	// remember to write unit test as you code
@@ -678,58 +670,145 @@ public class UserInterface extends JFrame implements WindowListener {
 			}
 		}
 			
-	
-			
 		@Override
 		public void keyTyped(KeyEvent e){
 
 		}
-		private String readKeyForHelperFeedback() {
-			String commandString = commandEntryTextField.getText();
-			LinkedList<String> entryHelper = Controller.getCommandEntryHelperDetailsFromInput(commandString);
-			String helperText = dynamicHelpText.getText();
-			if (!entryHelper.isEmpty()) {
-				helperText += "\n";
-				String commandType = entryHelper.poll();
-				if (commandType.equals("add")) {
-					helperText = UIFeedbackHelper.createCmdAddHelpText(entryHelper);
-				} else if (commandType.equals("edit")) {
-					helperText = UIFeedbackHelper.createCmdEditHelpText(entryHelper);
-				}
-			}
-			return helperText;
-		}
-		
 	}
-	public class MinimizeButtonActionListener implements ActionListener {
+	
+	public class MinimizeButtonMouseListener implements MouseListener {
 
 		@Override
-		public void actionPerformed(ActionEvent e) {
-			window.setState(Frame.ICONIFIED);
-
+		public void mouseClicked(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
 		}
+
+		@Override
+		public void mousePressed(MouseEvent e) {
+			minimizeButton.setBackground(minimizeButton.getBackground().darker());
+			repaint();
+		}
+
+		@Override
+		public void mouseReleased(MouseEvent e) {
+			minimizeButton.setBackground(new Color(241, 196, 15, 255));
+			repaint();
+			
+			window.setState(JFrame.ICONIFIED);
+		}
+
+		@Override
+		public void mouseEntered(MouseEvent e) {
+			minimizeButton.setBackground(minimizeButton.getBackground().brighter());
+			repaint();
+		}
+
+		@Override
+		public void mouseExited(MouseEvent e) {
+			minimizeButton.setBackground(new  Color(241, 196, 15, 255));
+			repaint();
+		}
+
+	
 
 	}
 
-	public class CloseButtonActionListener implements ActionListener {
+	public class CloseButtonMouseListener implements MouseListener {
 
 		@Override
-		public void actionPerformed(ActionEvent e) {
+		public void mouseClicked(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void mousePressed(MouseEvent e) {
+			closeButton.setBackground(closeButton.getBackground().darker());
+			repaint();
+		}
+
+		@Override
+		public void mouseReleased(MouseEvent e) {
+			closeButton.setBackground(new Color(242, 38, 19, 255));
+			repaint();
 			window.dispatchEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSING));
-
 		}
+
+		@Override
+		public void mouseEntered(MouseEvent e) {
+			closeButton.setBackground(closeButton.getBackground().brighter());
+			repaint();
+		}
+
+		@Override
+		public void mouseExited(MouseEvent e) {
+			closeButton.setBackground(new Color(242, 38, 19, 255));
+			repaint();
+		}
+
+		
 
 	}
 	//this method is to set up the parameters of the gridbagconstraints
 	//to put the different panels into the right positions on the JFrame
 	//here we use the constructor GridBagConstraints(gridx,gridy,gridwidth,gridheight,weightx,weighty,anchor,fill,insets,ipadx,ipady)
+	
+	private class ToDoLogWindowListener implements WindowListener{
+		public void windowActivated(WindowEvent e) {
+			System.out.println("Windows Opened");
+			
+		}
+
+		@Override
+		public void windowClosed(WindowEvent e) {
+			System.out.println("Windows Closed");
+			
+		}
+
+		@Override
+		public void windowClosing(WindowEvent e) {
+			System.out.println("Windows Closing");
+			
+		}
+
+		@Override
+		public void windowDeactivated(WindowEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void windowDeiconified(WindowEvent e) {
+			System.out.println("Windows Maximised");
+			
+		}
+
+		@Override
+		public void windowIconified(WindowEvent e) {
+			System.out.println("Windows Minimized");
+			
+			if (!firstMinimize) {
+				trayIcon.displayMessage("ToDoLog", 
+					"ToDoLog is minimized. To open use combination ALT+B", TrayIcon.MessageType.INFO);
+				firstMinimize = true;
+			}
+			
+		}
+
+		@Override
+		public void windowOpened(WindowEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+	}
 	private GridBagConstraints setParameters(int panelParameters){
 		GridBagConstraints parameters;
 		Insets topPanelInsets = new Insets(0,0,0,0);
 		Insets bottomPanelInsets = new Insets(0,0,0,0);
 		Insets buttonPanelInsets = new Insets(0,0,0,0);
-		Insets closebuttonInsets = new Insets(0,0,0,0);
-		Insets clockInsets = new Insets(15,0,0,0);
+		Insets iconInsets = new Insets(10,30,0,0);
+		Insets clockInsets = new Insets(15,0,0,53);
 		Insets toDoListInsets = new Insets(10,0,0,0);
 		Insets toDoListScrollPaneInsets = new Insets(0,0,0,0);
 		Insets commandEntryTextFieldInsets = new Insets(10,25,5,25);
@@ -738,7 +817,7 @@ public class UserInterface extends JFrame implements WindowListener {
 		//Insets buttonInsets = new Insets(10,0,0,20);
 		
 		if(panelParameters == CLOCK_PARAMETERS){
-			parameters = new GridBagConstraints(1,0,1,1,1.0,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,clockInsets,0,0);
+			parameters = new GridBagConstraints(1,0,1,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,clockInsets,0,0);
 			return parameters;
 		}
 		else if(panelParameters == TODOLIST_PARAMETERS){
@@ -750,7 +829,11 @@ public class UserInterface extends JFrame implements WindowListener {
 			return parameters;
 		}
 		else if(panelParameters == BUTTON_PANEL_PARAMETERS){
-			parameters = new GridBagConstraints(3,0,1,1,0.1,0.0,GridBagConstraints.NORTHEAST,GridBagConstraints.BOTH,buttonPanelInsets,0,0);
+			parameters = new GridBagConstraints(2,0,1,1,0.2,0.0,GridBagConstraints.NORTHEAST,GridBagConstraints.BOTH,buttonPanelInsets,0,0);
+			return parameters;
+		}
+		else if(panelParameters == ICON_PARAMETERS){
+			parameters = new GridBagConstraints(0,0,1,1,0.2,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,iconInsets,0,0);
 			return parameters;
 		}
 		else if(panelParameters == BOTTOM_PANEL_PARAMETERS){
@@ -792,7 +875,6 @@ public class UserInterface extends JFrame implements WindowListener {
 	
 	//convert linked lists into data for the table, go find out how to
 	//dynamic help text will also be 
-
 	
 	private void adjustTableColumns(JTable toDoListTable){
 		TableColumn tableColumn = null;
@@ -834,45 +916,6 @@ public class UserInterface extends JFrame implements WindowListener {
 		
 	}
 
-	@Override
-	public void windowActivated(WindowEvent e) {
-		System.out.println("Windows Opened");
-		
-	}
-
-	@Override
-	public void windowClosed(WindowEvent e) {
-		System.out.println("Windows Closed");
-		
-	}
-
-	@Override
-	public void windowClosing(WindowEvent e) {
-		System.out.println("Windows Closing");
-		
-	}
-
-	@Override
-	public void windowDeactivated(WindowEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void windowDeiconified(WindowEvent e) {
-		System.out.println("Windows Maximised");
-		
-	}
-
-	@Override
-	public void windowIconified(WindowEvent e) {
-		System.out.println("Windows Minimized");
-		
-	}
-
-	@Override
-	public void windowOpened(WindowEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
+	
+	
 }
