@@ -151,6 +151,10 @@ public class ToDoListTableModel extends AbstractTableModel{
 	    return (int) Math.ceil((double) tableData.size() / pageSize);
 	}
 	
+	public void setPageOffSet(int input){
+		pageOffSet = input;
+	}
+	
 	 public void pageDown() {
 		    if (pageOffSet < getPageCount() - 1) {
 		      pageOffSet++;

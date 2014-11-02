@@ -664,6 +664,10 @@ public class UserInterface extends JFrame {
 				}
 			}
 			
+			if(Parser.getFirstWord(commandString).equalsIgnoreCase("search")){
+				toDoListTableModel.setPageOffSet(0);
+			}
+			
 			
 
 		}
@@ -706,13 +710,9 @@ public class UserInterface extends JFrame {
 	private class CommandEntryTextFieldKeyListener implements KeyListener {
 		@Override
 		public void keyPressed(KeyEvent e) {
-			int keyCode = e.getKeyCode();
-			if ((keyCode == KeyEvent.VK_PAGE_UP) || (keyCode == KeyEvent.VK_F9)){
-				toDoListTableModel.pageUp();
-			}
-			if ((keyCode == KeyEvent.VK_PAGE_DOWN) || (keyCode == KeyEvent.VK_F10)){
-				toDoListTableModel.pageDown();
-			}
+			
+			
+			
 		}
 	
 		@Override
