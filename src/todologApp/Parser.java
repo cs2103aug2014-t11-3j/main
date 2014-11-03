@@ -388,7 +388,7 @@ public class Parser {
 	public static String parseTaskName(String parameter) throws Exception {
 		String [] messageArray = generateArray(parameter);
 		String taskName = EMPTY_STRING;
-
+		
 		for (int i=0; i<=messageArray.length-1; i++) {
 			if (!messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) 
 					&& !messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING_2)
