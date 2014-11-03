@@ -199,9 +199,42 @@ public class Parser {
 						} 
 					}
 				}
+			} else if (messageArray[i].equalsIgnoreCase(KEYWORD_DEADLINE)) {
+				for (int j=i+1; j<=messageArray.length-1; j++) {
+					if (messageArray[j].equalsIgnoreCase(KEYWORD_AT) 
+							&& isInteger(messageArray[j+1])) {
+						try {
+							int endTime = Integer.parseInt(messageArray[j+1]);
+							if (endTime >= 0000 && endTime <= 2359) {
+								return endTime;
+							} else {
+								return 2359;
+							}
+						} catch (NumberFormatException nfe) {
+							throw new Exception("Invalid Time Format");
+						} 
+					}
+				}
+			} else if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) 
+						|| messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING_2)) {
+				for (int j=i+1; j<=messageArray.length-1; j++) {
+					if (messageArray[j].equalsIgnoreCase(KEYWORD_DAY_ENDING) 
+							&& isInteger(messageArray[j+1])
+							&& messageArray[j+1].length() == 4) {
+						try {
+							int endTime = Integer.parseInt(messageArray[j+1]);
+							if (endTime >= 0000 && endTime <= 2359) {
+								return endTime;
+							} else {
+								return 2359;
+							}
+						} catch (NumberFormatException nfe) {
+							throw new Exception("Invalid Time Format");
+						} 
+					}
+				}
 			}
 		}
-
 		return 2359;
 	}
 
@@ -529,10 +562,16 @@ public class Parser {
 			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING) 
 					|| messageArray[i].equalsIgnoreCase(KEYWORD_DEADLINE)) {
 				hasKeyword = true;
-				if (isInteger(messageArray[i+1])) {
+				if (isInteger(messageArray[i+1])
+						&& messageArray[i+1].length() == 6) {
 					year = parseYear(messageArray[i+1]);
 					month = parseMonth(messageArray[i+1]);
 					day = parseDayOfMonth(messageArray[i+1]);	
+				} else if (isInteger(messageArray[i+1])
+							&& messageArray[i+1].length() == 4) {
+						year = taskStart.getYear();
+						month = taskStart.getMonthOfYear();
+						day = taskStart.getDayOfMonth();	 
 				} else {
 					int dayOfWeek = parseDayOfWeek(messageArray[i+1]);
 					DateTime today = new DateTime();
@@ -584,6 +623,32 @@ public class Parser {
 		int min = time%100;
 		DateTime taskEnd = new DateTime(year,month,day,hour,min);
 		if (taskEnd.compareTo(taskStart)<0) {
+//
+//		if (year > parseTaskStart(parameter).getYear()) {
+//			return new DateTime(year,month,day,hour,min);
+//		} else if (year == parseTaskStart(parameter).getYear() 
+//				&& month > parseTaskStart(parameter).getMonthOfYear()) {
+//			return new DateTime(year,month,day,hour,min);
+//		} else if (year == parseTaskStart(parameter).getYear() 
+//				&& month == parseTaskStart(parameter).getMonthOfYear()
+//				&& day > parseTaskStart(parameter).getDayOfMonth()) {
+//			return new DateTime(year,month,day,hour,min);
+//		} else if (year == parseTaskStart(parameter).getYear() 
+//				&& month == parseTaskStart(parameter).getMonthOfYear()
+//				&& day == parseTaskStart(parameter).getDayOfMonth()
+//				&& hour > parseTaskStart(parameter).getHourOfDay()) {
+//			return new DateTime(year,month,day,hour,min);
+//		} else if (year == parseTaskStart(parameter).getYear() 
+//				&& month == parseTaskStart(parameter).getMonthOfYear()
+//				&& day == parseTaskStart(parameter).getDayOfMonth()
+//				&& hour == parseTaskStart(parameter).getHourOfDay()
+//				&& min > parseTaskStart(parameter).getMinuteOfHour()) {
+//			return new DateTime(year,month,day,hour,min);
+//		} else if (parseTaskType(parameter) == TaskType.FLOATING 
+//				|| parseTaskType(parameter) == TaskType.DEADLINE) {
+//			return new DateTime(year,month,day,hour,min);
+//		} else {
+
 			throw new Exception("End time cannot be earlier than Start time");
 		}
 		return taskEnd;
