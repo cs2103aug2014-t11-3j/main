@@ -5,15 +5,15 @@ import org.joda.time.DateTimeConstants;
 
 public class Parser {
 
-	private static final String INVALID_MESSAGE = "Invalid Input!";
+	//private static final String INVALID_MESSAGE = "Invalid Input!";
 
 	//MISC
 	private static final String EMPTY_STRING = "";
 	private static final String SINGLE_SPACE = " ";
-	private static final String DATE_SEPARATOR = "/";
-	private static final String SYMBOL_DASH = "-";
-	private static final String SYMBOL_AT = "@";
-	private static final String QUOTATION_MARK = "\"";
+//	private static final String DATE_SEPARATOR = "/";
+//	private static final String SYMBOL_DASH = "-";
+//	private static final String SYMBOL_AT = "@";
+//	private static final String QUOTATION_MARK = "\"";
 
 	//KEYWORDS
 	private static final String KEYWORD_DAY_STARTING = "from";
@@ -50,11 +50,11 @@ public class Parser {
 
 
 	private static final String FEEDBACK_TYPE = "Type in a command: add, delete, edit, done.";
-	private static final String HELP_TEXT_ADD = "To add, enter:\n - add \"[task name]\" (from [date] @ [time] to "
-			+ "[date] @ [time]).\n - add \"[task name]\" by [date] @ [time] if you want to create a\ndeadline.";
+	//private static final String HELP_TEXT_ADD = "To add, enter:\n - add \"[task name]\" (from [date] @ [time] to "
+	//		+ "[date] @ [time]).\n - add \"[task name]\" by [date] @ [time] if you want to create a\ndeadline.";
 	private static final String HELP_TEXT_DELETE = "To delete, enter:\n - delete [task number].";
 	private static final String HELP_TEXT_DONE = "To mark/unmark a task as done, enter:\n - done [task number].";
-	private static final String HELP_TEXT_EDIT = "To edit task name, enter:\n - edit [task number] \"[new name]\"";
+	//private static final String HELP_TEXT_EDIT = "To edit task name, enter:\n - edit [task number] \"[new name]\"";
 
 	private static final int TODAY = 0;
 	private static final int TOMORROW = -1;
@@ -267,11 +267,10 @@ public class Parser {
 		return 0000;
 	}
 	public static boolean checkDateFormat(String dateInString){
-		int year,month,day;
 		try{
-			year=parseYear(dateInString);
-			month=parseMonth(dateInString);
-			day=parseDayOfMonth(dateInString);
+			parseYear(dateInString);
+			parseMonth(dateInString);
+			parseDayOfMonth(dateInString);
 		}
 		catch(Exception e){
 			return false;
@@ -288,10 +287,11 @@ public class Parser {
 		} catch (NumberFormatException nfe) {
 			return _year;
 		}
+		_year = _year %100;
 		if (_year<65) {
-		_year = _year % 100 + 2000 ;
+		_year = _year + 2000 ;
 		} else {
-			_year = _year %100 + 1900;
+			_year = _year + 1900;
 		}
 		return _year;
 	}
@@ -562,16 +562,16 @@ public class Parser {
 			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING) 
 					|| messageArray[i].equalsIgnoreCase(KEYWORD_DEADLINE)) {
 				hasKeyword = true;
-				if (isInteger(messageArray[i+1])
-						&& messageArray[i+1].length() == 6) {
-					year = parseYear(messageArray[i+1]);
-					month = parseMonth(messageArray[i+1]);
-					day = parseDayOfMonth(messageArray[i+1]);	
-				} else if (isInteger(messageArray[i+1])
-							&& messageArray[i+1].length() == 4) {
+				if (isInteger(messageArray[i+1])) {
+					if (messageArray[i+1].length() == 6) { 
+						year = parseYear(messageArray[i+1]);
+						month = parseMonth(messageArray[i+1]);
+						day = parseDayOfMonth(messageArray[i+1]);	
+					} else if (messageArray[i+1].length() == 4) {
 						year = taskStart.getYear();
 						month = taskStart.getMonthOfYear();
 						day = taskStart.getDayOfMonth();	 
+					}
 				} else {
 					int dayOfWeek = parseDayOfWeek(messageArray[i+1]);
 					DateTime today = new DateTime();

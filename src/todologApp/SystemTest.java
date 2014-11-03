@@ -1,13 +1,9 @@
 package todologApp;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.LinkedList;
 import java.util.Random;
 
-import org.joda.time.DateTime;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

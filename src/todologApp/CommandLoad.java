@@ -1,7 +1,5 @@
 package todologApp;
 
-import java.io.IOException;
-
 public class CommandLoad implements Command {
 	private String _newFileName;
 	private String _oldFileName;

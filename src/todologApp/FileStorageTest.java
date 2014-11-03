@@ -1,22 +1,16 @@
 package todologApp;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Random;
 
-import org.dom4j.DocumentHelper;
-import org.junit.BeforeClass;
+import org.joda.time.DateTime;
 import org.junit.Test;
-
-import org.joda.time.*;
-import org.joda.time.format.*;
-
-import com.sun.xml.internal.txw2.Document;
 
 public class FileStorageTest {
 	
