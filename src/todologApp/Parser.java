@@ -140,6 +140,10 @@ public class Parser {
 			Command toBeUndone = history.goForwards();
 			CommandRedo command = new CommandRedo(toBeUndone);
 			return command;
+		} else if (firstWord.equalsIgnoreCase("load")) {
+			String restOfTheString = getTheRestOfTheString(userCommand);
+			CommandLoad command = new CommandLoad(restOfTheString);
+			return command;
 		}
 		else {
 			throw new Exception("Invalid command.\n"+FEEDBACK_TYPE);

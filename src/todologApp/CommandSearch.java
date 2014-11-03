@@ -22,7 +22,7 @@ public class CommandSearch implements Command {
 	public void searchName(LinkedList<Task> storageList, String searchKey) {
 		LinkedList<Task> searchList = new LinkedList<Task>();
 		for (int i = 0; i < storageList.size(); i++) {
-			if (storageList.get(i).getTaskName().contains(searchKey)) {
+			if (storageList.get(i).getTaskName().toUpperCase().contains(searchKey.toUpperCase())) {
 				searchList.add(storageList.get(i));
 			}
 		}
