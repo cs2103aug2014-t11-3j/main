@@ -16,6 +16,7 @@ public class CommandEdit implements Command {
 	public CommandEdit() {
 		_index = -1;
 		
+		
 	}
 	public CommandEdit(int index, String toBeEdited, String editType) {
 		_index = index-1;
@@ -136,12 +137,14 @@ public class CommandEdit implements Command {
 		} else if (_editType == null) {
 			LinkedList<Task> tasks = _storage.load();
 			_taskExisting = tasks.get(_index);
+			Controller.setFocusTask(_taskExisting); // set focus task to change UI's page
 			return "Please specify edit type and the details.";
 		}
 		String feedback;
 		String editedField;
 		LinkedList<Task> tasks = _storage.load();
 		_taskExisting = tasks.get(_index);
+		Controller.setFocusTask(_taskExisting); // set focus task to change UI's page
 		try {
 			editedField = formNewTask();
 		} catch (Exception e1) {
@@ -164,6 +167,7 @@ public class CommandEdit implements Command {
 		LinkedList<Task> tasks = _storage.load();
 		tasks.remove(_index);
 		tasks.add(_index, _taskExisting);
+		Controller.setFocusTask(_taskExisting); // set focus task to change UI's page
 		try {
 			_storage.store(tasks);
 		} catch (IOException e) {

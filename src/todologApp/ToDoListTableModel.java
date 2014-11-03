@@ -168,4 +168,10 @@ public class ToDoListTableModel extends AbstractTableModel{
 		      fireTableDataChanged();
 		    }
 		  }
+
+	public void goToPage(int page) {
+		pageOffSet = page;
+		fireTableDataChanged();
+		
+	}
 }

@@ -9,7 +9,6 @@ import org.joda.time.DateTime;
 public class CommandView implements Command {
 	private String _toView;
 	private DBStorage _storage;
-	private LinkedList<Task> storageList;
 	private static LinkedList<Task> _returnList;
 	private int monthInIntegers;
 	private static String DAY_KEYWORD_TODAY = "Today";
@@ -24,8 +23,6 @@ public class CommandView implements Command {
 	
 	public CommandView(String toView ) {
 		_toView = toView;
-		_storage=Controller.getDBStorage();
-		storageList=_storage.load();
 		}
 
 	@Override
@@ -38,7 +35,7 @@ public class CommandView implements Command {
 		month=startDay.getMonthOfYear();
 		day=startDay.getDayOfMonth();
 		
-		//feedback="Displaying tasks for "+ _toView;
+		feedback="Displaying tasks for "+ _toView;
 		
 	
 		//checking for today/this day 
@@ -47,7 +44,6 @@ public class CommandView implements Command {
 			startDay=new DateTime(year,month,day,0,0);
 			endDay=new DateTime(year,month,day,23,59);
 			formViewList(startDay,endDay);
-			feedback="Displaying all tasks for TODAY";
 		}
 		//checking for tomorrow/tmr/next day
 		else if(_toView.equalsIgnoreCase(DAY_KEYWORD_TOMORROW)
@@ -61,7 +57,6 @@ public class CommandView implements Command {
 			startDay=new DateTime(year,month,day,0,0);
 			endDay=new DateTime(year,month,day,23,59);
 			formViewList(startDay,endDay);
-			feedback="Displaying all the tasks for TOMORROW";
 		}
 		//checking for days 
 		else if(isWeekDay()){
@@ -69,10 +64,10 @@ public class CommandView implements Command {
 			int currentWeekDay=startDay.getDayOfWeek();
 			int givenWeekDay=Parser.parseDayOfWeek(_toView);
 			if(givenWeekDay>=currentWeekDay){
-				startDay=startDay.plusDays((givenWeekDay-currentWeekDay));	
+				startDay=startDay.plusDays(givenWeekDay-currentWeekDay);	
 			}
 			else {
-				startDay=startDay.plusDays(givenWeekDay-currentWeekDay+7);
+				startDay=startDay.minusDays(currentWeekDay-givenWeekDay);
 			}
 			year=startDay.getYear();
 			month=startDay.getMonthOfYear();
@@ -80,8 +75,6 @@ public class CommandView implements Command {
 			startDay=new DateTime(year,month,day,0,0);
 			endDay=new DateTime(year,month,day,23,59);
 			formViewList(startDay,endDay);	
-			feedback="Displaying tasks for "+_toView+" that is "+startDay.getDayOfMonth()+"/"
-						+startDay.getMonthOfYear()+"/"+startDay.getYear();
 		}
 		//checking for date
 		else if(Parser.checkDateFormat(_toView)){
@@ -93,32 +86,31 @@ public class CommandView implements Command {
 			startDay=new DateTime(year,month,day,0,0);
 			endDay=new DateTime(year,month,day,23,59);
 			formViewList(startDay,endDay);
-			feedback="Displaying tasks for "+_toView;
 		}
 		//checking for this week
 		else if(_toView.equalsIgnoreCase(DAY_KEYWORD_THIS_WEEK)){
 		
-			endDay=startDay.plusDays(7);
+			startDay=startDay.weekOfWeekyear().roundFloorCopy();
+			startDay=new DateTime(year,month,day,0,0);
+			endDay=endDay.weekOfWeekyear().roundCeilingCopy();
 			startDay.withHourOfDay(0);
 			startDay.withMinuteOfHour(0);
-			endDay.withHourOfDay(23);
-			endDay.withMinuteOfHour(59);
+			endDay.withHourOfDay(0);
+			endDay.withMinuteOfHour(0);
 			formViewList(startDay,endDay);
-			feedback="Displaying tasks for this week";
 		}
 		//checking for next week
 		else if(_toView.equalsIgnoreCase(DAY_KEYWORD_NEXT_WEEK)){
 			
 			//changing to next week by adding 7 days
-		
-			startDay=startDay.plusDays(8);
-			endDay=endDay.plusDays(15);
+			DateTime nextWeekDay=startDay.plusDays(7);
+			startDay=nextWeekDay.weekOfWeekyear().roundFloorCopy();
+			endDay=nextWeekDay.weekOfWeekyear().roundCeilingCopy();
 			startDay.withHourOfDay(0);
 			startDay.withMinuteOfHour(0);
-			endDay.withHourOfDay(23);
-			endDay.withMinuteOfHour(59);
+			endDay.withHourOfDay(0);
+			endDay.withMinuteOfHour(0);
 			formViewList(startDay,endDay);
-			feedback="Displaying tasks for next week";
 		}
 		//checking for month 
 		else if(isMonth()){
@@ -136,24 +128,18 @@ public class CommandView implements Command {
 			}
 			startDay.withHourOfDay(0);
 			startDay.withMinuteOfHour(0);
-			endDay.withHourOfDay(23);
-			endDay.withMinuteOfHour(59);
+			endDay.withHourOfDay(0);
+			endDay.withMinuteOfHour(0);
 			formViewList(startDay,endDay);
-			feedback="Displaying tasks for the month of " + _toView;
-		}
-		else if(_toView.equalsIgnoreCase("all")){
-			setReturnList(storageList);
-			feedback="Displaying all tasks";
-		}
-		else if(_toView.equalsIgnoreCase("overdue")||_toView.equalsIgnoreCase("pending")){
-			endDay=startDay.minusMinutes(1);
-			viewOverDueTasks(endDay);
-			feedback="OVERDUE TASKS";
 		}
 		else{
+			
 			feedback="invalid command";
 		}
-		return feedback;	
+		Controller.setFocusTask(null); // set focus task to change UI's page
+		return feedback;
+		
+		
 	}
 
 	public boolean isWeekDay(){
@@ -232,7 +218,8 @@ public class CommandView implements Command {
 	
 	public void formViewList(DateTime startDay, DateTime endDay){
 		
-		
+		_storage = Controller.getDBStorage();
+		LinkedList<Task> storageList = _storage.load();
 		LinkedList<Task> viewList=new LinkedList<Task>();
 
 		for (int i = 0; i < storageList.size(); i++){
@@ -266,16 +253,6 @@ public class CommandView implements Command {
 		setReturnList(viewList);
 	
 		
-	}
-	public void viewOverDueTasks(DateTime endDay){
-		LinkedList<Task> viewList= new LinkedList<Task>();
-		for(int i=0;i<storageList.size();i++){
-			if(((storageList.get(i).getEnd().isBefore(endDay))||(storageList.get(i).getEnd().isEqual(endDay)))
-					&&(storageList.get(i).getTaskStatus()==false)){
-				viewList.add(storageList.get(i));
-			}
-		}
-		setReturnList(viewList);
 	}
 	private void setReturnList(LinkedList<Task> list) {
 		_returnList = list;

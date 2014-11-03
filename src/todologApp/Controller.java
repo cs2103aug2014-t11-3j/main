@@ -10,7 +10,8 @@ public class Controller {
 
 	private static History _history;
 	private static String _textDisplay;
-	private static LinkedList<Task> _displayList; 
+	private static LinkedList<Task> _displayList;
+	private static Task _focusTask;
 	private static String _feedback;
 	private static final String FEEDBACK_START = "To start, enter a command: add, delete, edit, done.\n";
 	
@@ -24,6 +25,12 @@ public class Controller {
 	
 	public static LinkedList<Task> getDisplayList() {
 		return _displayList;
+	}
+	public static Task getFocusTask() {
+		return _focusTask;
+	}
+	public static void setFocusTask(Task focusTask) {
+		_focusTask = focusTask;
 	}
 	public static void setHistory(History history) {
 		_history = history;
@@ -94,7 +101,6 @@ public class Controller {
 				/*Task task = Parser.createTask(userCurrentInput);
 				LinkedList<String> details = ControllerFeedbackHelper.createHelperTexts("add",task);
 				return details;*/
-				((CommandAdd) command).fakeExecute();
 				Task task = ((CommandAdd) command).getAddedTask();
 				LinkedList<String> details = ControllerFeedbackHelper.createHelperTexts("add",task);
 				return details;
@@ -135,6 +141,11 @@ public class Controller {
 
 	public static String getFeedback() {
 		return _feedback;
+	}
+
+	public static void resetDisplayListToAll() {
+		_displayList = _dbStorage.load();
+		
 	}
 
 }

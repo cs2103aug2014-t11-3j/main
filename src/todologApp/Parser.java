@@ -64,13 +64,11 @@ public class Parser {
 		userCommand = userCommand.trim();
 		String firstWord = getFirstWord(userCommand);
 		if (firstWord.equalsIgnoreCase("add")) {
-			try {
+			
 				Task task = createTask(userCommand);
 				CommandAdd command = new CommandAdd(task);
 				return command;
-			} catch (Exception e){
-				throw new Exception(HELP_TEXT_ADD);
-			}
+			
 		} else if (firstWord.equalsIgnoreCase("delete")) {
 			String restOfTheString = getTheRestOfTheString(userCommand);
 			if (restOfTheString == null) {
@@ -132,12 +130,12 @@ public class Parser {
 			return command;
 		} else if (firstWord.equalsIgnoreCase("undo")) {
 			History history = Controller.getHistory();
-			Command toBeUndone = history.goBackwards();
+			Command toBeUndone = history.getBackwards();
 			CommandUndo command = new CommandUndo(toBeUndone);
 			return command;
 		} else if (firstWord.equalsIgnoreCase("redo")) {
 			History history = Controller.getHistory();
-			Command toBeUndone = history.goForwards();
+			Command toBeUndone = history.getForwards();
 			CommandRedo command = new CommandRedo(toBeUndone);
 			return command;
 		} else if (firstWord.equalsIgnoreCase("load")) {
@@ -152,7 +150,7 @@ public class Parser {
 	public static Task createTask(String userInput) throws Exception{
 		String restOfTheString = getTheRestOfTheString(userInput);
 		if (restOfTheString == null) {
-			throw new Exception();
+			return null;
 		}
 		Task task = new Task(restOfTheString);
 		return task;
@@ -251,14 +249,18 @@ public class Parser {
 	}
 
 	public static int parseYear(String dateInString) throws Exception {
-		int _year = 14;
-		_year = Integer.parseInt(dateInString);
-		_year = _year % 100 + 2000 ;
-		if (_year >= 2014) {
+		int _year = DateTime.now().year().get();
+		try {
+			_year = Integer.parseInt(dateInString);
+		} catch (NumberFormatException nfe) {
 			return _year;
-		} else {
-			throw new Exception("You added a day in the past!");
 		}
+		if (_year<65) {
+		_year = _year % 100 + 2000 ;
+		} else {
+			_year = _year %100 + 1900;
+		}
+		return _year;
 	}
 	public static int parseDayOfMonth(String dateInString) throws Exception {
 		int month = parseMonth(dateInString);

@@ -17,7 +17,49 @@ public class UIFeedbackHelper {
 				return createCmdAddFloatingTaskHelperText(entryHelper);
 		}
 	}
+
+	private static String createCmdAddHelpTextEmptyDetails() {
+		String helperText = "* ADD *\n";
+		helperText += " To add, enter:  add [task name].\n"
+				+ " - Use keywords: from [date], to [date], by [date], on [date], at [time], "
+				+ "with [person], at [venue]\n"
+				+ "   to add more details."
+				+ " - Use date format: DDMMYY\n"
+				+ " - Use time format: HHmm\n"
+				+ " - Use \"today\", \"tomorrow\", \"tmr\", or "
+				+ "days of week and short forms: monday, mon, tuesday, tue,...";
+		return helperText;
+	}
 	
+	private static String createCmdAddFloatingTaskHelperText(LinkedList<String> entryHelper) {
+		String helperText = "* TASK *\n";
+		helperText += "Name: " + entryHelper.poll() + "\n" +
+					"Person: " + entryHelper.poll() + "\n" +
+					"Venue: " + entryHelper.poll() + "\n";
+		return helperText;
+	}
+
+	private static String createCmdAddDeadlineTaskHelperText(LinkedList<String> entryHelper) {
+		String helperText = "* DEADLINE TASK *\n";
+		helperText += "Name: " + entryHelper.poll() + "\n" +
+					"Date: "+ entryHelper.poll() + "\n" +
+					"Time: "+ entryHelper.poll() + "\n" +
+					"Person: " + entryHelper.poll() + "\n" +
+					"Venue: " + entryHelper.poll() + "\n";
+		return helperText;
+	}
+
+	private static String createCmdAddTimedTaskHelperText(LinkedList<String> entryHelper) {
+		String helperText = "* TASK *\n";
+		helperText += "Name: " + entryHelper.poll() + "\n" +
+					"Start date: "+ entryHelper.poll() + "\n" +
+					"Start time: "+ entryHelper.poll() + "\n" +
+					"End date: "+ entryHelper.poll() + "\n" +
+					"End time: "+ entryHelper.poll() + "\n" +
+					"Person: " + entryHelper.poll() + "\n" +
+					"Venue: " + entryHelper.poll() + "\n";
+		return helperText;
+	}
 	public static String createCmdEditHelpText(LinkedList<String> entryHelper) {
 		if (entryHelper.size() == 1) {
 			return createCmdEditHelpTextEmptyDetails();
@@ -49,14 +91,14 @@ public class UIFeedbackHelper {
 				helperText += "Name: " + oldName + " --> " + newName + "\n";
 			}
 			if (oldPerson.equals(newPerson)) {
-				helperText += "Name: " + oldPerson + "\n";
+				helperText += "Person: " + oldPerson + "\n";
 			} else {
-				helperText += "Name: " + oldPerson + " --> " + newPerson + "\n";
+				helperText += "Person: " + oldPerson + " --> " + newPerson + "\n";
 			}
 			if (oldVenue.equals(newVenue)) {
-				helperText += "Name: " + oldVenue + "\n";
+				helperText += "Venue: " + oldVenue + "\n";
 			} else {
-				helperText += "Name: " + oldVenue + " --> " + newVenue + "\n";
+				helperText += "Venue: " + oldVenue + " --> " + newVenue + "\n";
 			}
 			return helperText;
 		} catch (NoSuchElementException nsee) {
@@ -198,46 +240,4 @@ public class UIFeedbackHelper {
 	}
 	
 	
-	private static String createCmdAddHelpTextEmptyDetails() {
-		String helperText = "* ADD *\n";
-		helperText += " To add, enter:  add [task name].\n"
-				+ " - Use keywords: from [date], to [date], by [date], on [date], at [time], "
-				+ "with [person], at [venue]\n"
-				+ "   to add more details."
-				+ " - Use date format: DDMMYY\n"
-				+ " - Use time format: HHmm\n"
-				+ " - Use \"today\", \"tomorrow\", \"tmr\", or "
-				+ "days of week and short forms: monday, mon, tuesday, tue,...";
-		return helperText;
-	}
-	
-	private static String createCmdAddFloatingTaskHelperText(LinkedList<String> entryHelper) {
-		String helperText = "* TASK *\n";
-		helperText += "Name: " + entryHelper.poll() + "\n" +
-					"Person: " + entryHelper.poll() + "\n" +
-					"Venue: " + entryHelper.poll() + "\n";
-		return helperText;
-	}
-
-	private static String createCmdAddDeadlineTaskHelperText(LinkedList<String> entryHelper) {
-		String helperText = "* DEADLINE TASK *\n";
-		helperText += "Name: " + entryHelper.poll() + "\n" +
-					"Date: "+ entryHelper.poll() + "\n" +
-					"Time: "+ entryHelper.poll() + "\n" +
-					"Person: " + entryHelper.poll() + "\n" +
-					"Venue: " + entryHelper.poll() + "\n";
-		return helperText;
-	}
-
-	private static String createCmdAddTimedTaskHelperText(LinkedList<String> entryHelper) {
-		String helperText = "* TASK *\n";
-		helperText += "Name: " + entryHelper.poll() + "\n" +
-					"Start date: "+ entryHelper.poll() + "\n" +
-					"Start time: "+ entryHelper.poll() + "\n" +
-					"End date: "+ entryHelper.poll() + "\n" +
-					"End time: "+ entryHelper.poll() + "\n" +
-					"Person: " + entryHelper.poll() + "\n" +
-					"Venue: " + entryHelper.poll() + "\n";
-		return helperText;
-	}
 }
