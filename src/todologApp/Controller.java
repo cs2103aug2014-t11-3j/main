@@ -89,12 +89,16 @@ public class Controller {
 	
 	public static LinkedList<String> getCommandEntryHelperDetailsFromInput(String userCurrentInput) {
 		try {			
-			if (Parser.getFirstWord(userCurrentInput).equalsIgnoreCase("add")) {
-				Task task = Parser.createTask(userCurrentInput);
+			Command command = Parser.createCommand(userCurrentInput);
+			if (command instanceof CommandAdd) {
+				/*Task task = Parser.createTask(userCurrentInput);
+				LinkedList<String> details = ControllerFeedbackHelper.createHelperTexts("add",task);
+				return details;*/
+				((CommandAdd) command).fakeExecute();
+				Task task = ((CommandAdd) command).getAddedTask();
 				LinkedList<String> details = ControllerFeedbackHelper.createHelperTexts("add",task);
 				return details;
-			} else if (Parser.getFirstWord(userCurrentInput).equalsIgnoreCase("edit")) {
-				Command command = Parser.createCommand(userCurrentInput);
+			} else if (command instanceof CommandEdit) {
 				((CommandEdit) command).fakeExecute();
 				Task task = ((CommandEdit) command).getCurrentTask();
 				LinkedList<String> currentTaskDetails = ControllerFeedbackHelper.createHelperTexts("edit",task);
