@@ -156,7 +156,7 @@ public class UserInterface extends JFrame {
 			layerPane.add(background,new Integer(0));
 		} catch (IOException e) {
 			//TODO some notifying
-			dynamicHelpText.append("Cannot load image");
+			//dynamicHelpText.append("Cannot load image");
 		}
 		mainPanel.setOpaque(false);
 		createToDoListTable(mainPanel);

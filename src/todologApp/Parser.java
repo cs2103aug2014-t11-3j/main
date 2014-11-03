@@ -286,10 +286,11 @@ public class Parser {
 		} catch (NumberFormatException nfe) {
 			return _year;
 		}
+		_year = _year %100;
 		if (_year<65) {
-		_year = _year % 100 + 2000 ;
+		_year = _year + 2000 ;
 		} else {
-			_year = _year %100 + 1900;
+			_year = _year + 1900;
 		}
 		return _year;
 	}
@@ -560,16 +561,16 @@ public class Parser {
 			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING) 
 					|| messageArray[i].equalsIgnoreCase(KEYWORD_DEADLINE)) {
 				hasKeyword = true;
-				if (isInteger(messageArray[i+1])
-						&& messageArray[i+1].length() == 6) {
-					year = parseYear(messageArray[i+1]);
-					month = parseMonth(messageArray[i+1]);
-					day = parseDayOfMonth(messageArray[i+1]);	
-				} else if (isInteger(messageArray[i+1])
-							&& messageArray[i+1].length() == 4) {
+				if (isInteger(messageArray[i+1])) {
+					if (messageArray[i+1].length() == 6) { 
+						year = parseYear(messageArray[i+1]);
+						month = parseMonth(messageArray[i+1]);
+						day = parseDayOfMonth(messageArray[i+1]);	
+					} else if (messageArray[i+1].length() == 4) {
 						year = taskStart.getYear();
 						month = taskStart.getMonthOfYear();
 						day = taskStart.getDayOfMonth();	 
+					}
 				} else {
 					int dayOfWeek = parseDayOfWeek(messageArray[i+1]);
 					DateTime today = new DateTime();
