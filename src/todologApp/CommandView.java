@@ -9,7 +9,7 @@ import org.joda.time.DateTime;
 public class CommandView implements Command {
 	private String _toView;
 	private DBStorage _storage;
-	private LinkedList<Task> storageList;
+	
 	private static LinkedList<Task> _returnList;
 	private int monthInIntegers;
 	private static String DAY_KEYWORD_TODAY = "Today";
@@ -25,7 +25,7 @@ public class CommandView implements Command {
 	public CommandView(String toView ) {
 		_toView = toView;
 		_storage=Controller.getDBStorage();
-		storageList=_storage.load();
+		
 		}
 
 	@Override
@@ -142,7 +142,7 @@ public class CommandView implements Command {
 			feedback="Displaying tasks for the month of " + _toView;
 		}
 		else if(_toView.equalsIgnoreCase("all")){
-			setReturnList(storageList);
+			setReturnList(_storage.load());
 			feedback="Displaying all tasks";
 		}
 		else if(_toView.equalsIgnoreCase("overdue")||_toView.equalsIgnoreCase("pending")){
@@ -153,7 +153,7 @@ public class CommandView implements Command {
 		else{
 			feedback="invalid command";
 		}
-		Controller.setFocusTask(null); // set focus task to change UI's page
+		//Controller.setFocusTask(null); // set focus task to change UI's page
 		return feedback;
 		
 		
@@ -238,28 +238,28 @@ public class CommandView implements Command {
 		
 		LinkedList<Task> viewList=new LinkedList<Task>();
 
-		for (int i = 0; i < storageList.size(); i++){
-			if(storageList.get(i).getTaskType()==TaskType.TIMED){
+		for (int i = 0; i < _storage.load().size(); i++){
+			if(_storage.load().get(i).getTaskType()==TaskType.TIMED){
 				
-				if(((storageList.get(i).getStart().isAfter(startDay))||(storageList.get(i).getStart().isEqual(startDay)))
-						&&((storageList.get(i).getStart().isBefore(endDay))||(storageList.get(i).getStart().isEqual(endDay)))){
+				if(((_storage.load().get(i).getStart().isAfter(startDay))||(_storage.load().get(i).getStart().isEqual(startDay)))
+						&&((_storage.load().get(i).getStart().isBefore(endDay))||(_storage.load().get(i).getStart().isEqual(endDay)))){
 					
-					viewList.add(storageList.get(i));
+					viewList.add(_storage.load().get(i));
 				}
-				else if(((storageList.get(i).getEnd().isAfter(startDay))||(storageList.get(i).getEnd().isEqual(startDay)))
-						&&((storageList.get(i).getEnd().isBefore(endDay))||(storageList.get(i).getEnd().isEqual(endDay)))){
+				else if(((_storage.load().get(i).getEnd().isAfter(startDay))||(_storage.load().get(i).getEnd().isEqual(startDay)))
+						&&((_storage.load().get(i).getEnd().isBefore(endDay))||(_storage.load().get(i).getEnd().isEqual(endDay)))){
 					
-					viewList.add(storageList.get(i));	
+					viewList.add(_storage.load().get(i));	
 				}
 			}
-			else if(storageList.get(i).getTaskType()==TaskType.DEADLINE){
+			else if(_storage.load().get(i).getTaskType()==TaskType.DEADLINE){
 			
-				if(storageList.get(i).getEnd()!=null){
+				if(_storage.load().get(i).getEnd()!=null){
 				
-					if(((storageList.get(i).getEnd().isAfter(startDay))||(storageList.get(i).getEnd().isEqual(startDay)))
-							&&((storageList.get(i).getEnd().isBefore(endDay))||(storageList.get(i).getEnd().isEqual(endDay)))){
+					if(((_storage.load().get(i).getEnd().isAfter(startDay))||(_storage.load().get(i).getEnd().isEqual(startDay)))
+							&&((_storage.load().get(i).getEnd().isBefore(endDay))||(_storage.load().get(i).getEnd().isEqual(endDay)))){
 					
-						viewList.add(storageList.get(i));
+						viewList.add(_storage.load().get(i));
 						
 					}
 				}
@@ -272,10 +272,10 @@ public class CommandView implements Command {
 	}
 	public void viewOverDueTasks(DateTime endDay){
 		LinkedList<Task> viewList= new LinkedList<Task>();
-		for(int i=0;i<storageList.size();i++){
-			if(((storageList.get(i).getEnd().isBefore(endDay))||(storageList.get(i).getEnd().isEqual(endDay)))
-					&&(storageList.get(i).getTaskStatus()==false)){
-				viewList.add(storageList.get(i));
+		for(int i=0;i<_storage.load().size();i++){
+			if(((_storage.load().get(i).getEnd().isBefore(endDay))||(_storage.load().get(i).getEnd().isEqual(endDay)))
+					&&(_storage.load().get(i).getTaskStatus()==false)){
+				viewList.add(_storage.load().get(i));
 			}
 		}
 		setReturnList(viewList);
