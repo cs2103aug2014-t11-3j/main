@@ -20,6 +20,19 @@ public class CommandDelete implements Command {
 		try {
 			_task = taskList.get(_index);
 			taskList.remove(_index);
+			if (_index == taskList.size()) {
+				if (_index == 0) {
+					Controller.setFocusTask(null); // set focus task to change UI's page
+				} else {
+					Controller.setFocusTask(taskList.get(_index-1));
+				}
+			} else {
+				if (taskList.size() == 0) {
+					Controller.setFocusTask(null); // set focus task to change UI's page
+				} else {
+					Controller.setFocusTask(taskList.get(_index));
+				}
+			}
 			feedback = "Deleted " + _task.getTaskName() + " from toDoLog";
 			validity=true;
 		} catch (IndexOutOfBoundsException ioobe) {
@@ -40,6 +53,7 @@ public class CommandDelete implements Command {
 	public String undo() {
 		String feedback;
 		CommandAdd undoDelete = new CommandAdd(_task);
+		Controller.setFocusTask(_task);
 		undoDelete.execute();
 		feedback = "Undone the delete command";
 		return feedback;

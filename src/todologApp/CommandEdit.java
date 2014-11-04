@@ -13,7 +13,11 @@ public class CommandEdit implements Command {
 	private boolean validity;
 
 	// private static Storage _storage;
-
+	public CommandEdit() {
+		_index = -1;
+		
+		
+	}
 	public CommandEdit(int index, String toBeEdited, String editType) {
 		_index = index-1;
 		_editType = editType;
@@ -22,6 +26,10 @@ public class CommandEdit implements Command {
 		
 	}
 
+	public CommandEdit(int index) {
+		_index = index -1;
+		_storage = Controller.getDBStorage();
+	}
 	private String formNewTask() throws Exception{
 		//change the name
 		_taskEdited = _taskExisting.copy();
@@ -86,6 +94,13 @@ public class CommandEdit implements Command {
 	}
 
 	public String execute() {
+		if (_index == -1) {
+			return "Please specify task to be edited and the details.";
+		} else if (_editType == null) {
+			LinkedList<Task> tasks = _storage.load();
+			_taskExisting = tasks.get(_index);
+			return "Please specify edit type and the details.";
+		}
 		String feedback;
 		String editedField;
 		LinkedList<Task> tasks = _storage.load();
@@ -117,10 +132,19 @@ public class CommandEdit implements Command {
 		return feedback;
 	}
 	public String fakeExecute() {
+		if (_index == -1) {
+			return "Please specify task to be edited and the details.";
+		} else if (_editType == null) {
+			LinkedList<Task> tasks = _storage.load();
+			_taskExisting = tasks.get(_index);
+			Controller.setFocusTask(_taskExisting); // set focus task to change UI's page
+			return "Please specify edit type and the details.";
+		}
 		String feedback;
 		String editedField;
 		LinkedList<Task> tasks = _storage.load();
 		_taskExisting = tasks.get(_index);
+		Controller.setFocusTask(_taskExisting); // set focus task to change UI's page
 		try {
 			editedField = formNewTask();
 		} catch (Exception e1) {
@@ -143,6 +167,7 @@ public class CommandEdit implements Command {
 		LinkedList<Task> tasks = _storage.load();
 		tasks.remove(_index);
 		tasks.add(_index, _taskExisting);
+		Controller.setFocusTask(_taskExisting); // set focus task to change UI's page
 		try {
 			_storage.store(tasks);
 		} catch (IOException e) {

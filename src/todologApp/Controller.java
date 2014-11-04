@@ -10,7 +10,8 @@ public class Controller {
 
 	private static History _history;
 	private static String _textDisplay;
-	private static LinkedList<Task> _displayList; 
+	private static LinkedList<Task> _displayList;
+	private static Task _focusTask;
 	private static String _feedback;
 	private static final String FEEDBACK_START = "To start, enter a command: add, delete, edit, done.\n";
 	
@@ -24,6 +25,12 @@ public class Controller {
 	
 	public static LinkedList<Task> getDisplayList() {
 		return _displayList;
+	}
+	public static Task getFocusTask() {
+		return _focusTask;
+	}
+	public static void setFocusTask(Task focusTask) {
+		_focusTask = focusTask;
 	}
 	public static void setHistory(History history) {
 		_history = history;
@@ -89,12 +96,15 @@ public class Controller {
 	
 	public static LinkedList<String> getCommandEntryHelperDetailsFromInput(String userCurrentInput) {
 		try {			
-			if (Parser.getFirstWord(userCurrentInput).equalsIgnoreCase("add")) {
-				Task task = Parser.createTask(userCurrentInput);
+			Command command = Parser.createCommand(userCurrentInput);
+			if (command instanceof CommandAdd) {
+				/*Task task = Parser.createTask(userCurrentInput);
+				LinkedList<String> details = ControllerFeedbackHelper.createHelperTexts("add",task);
+				return details;*/
+				Task task = ((CommandAdd) command).getAddedTask();
 				LinkedList<String> details = ControllerFeedbackHelper.createHelperTexts("add",task);
 				return details;
-			} else if (Parser.getFirstWord(userCurrentInput).equalsIgnoreCase("edit")) {
-				Command command = Parser.createCommand(userCurrentInput);
+			} else if (command instanceof CommandEdit) {
 				((CommandEdit) command).fakeExecute();
 				Task task = ((CommandEdit) command).getCurrentTask();
 				LinkedList<String> currentTaskDetails = ControllerFeedbackHelper.createHelperTexts("edit",task);
@@ -131,6 +141,11 @@ public class Controller {
 
 	public static String getFeedback() {
 		return _feedback;
+	}
+
+	public static void resetDisplayListToAll() {
+		_displayList = _dbStorage.load();
+		
 	}
 
 }

@@ -6,7 +6,6 @@ import java.util.LinkedList;
 public class DBStorage implements Storage {
 	private LinkedList<Task> _tasks;
 	private FileStorage _fileStorage;
-
 	public DBStorage() {
 		_fileStorage = new FileStorage();
 		init();
@@ -20,7 +19,9 @@ public class DBStorage implements Storage {
 	public LinkedList<Task> load() {
 		return _tasks;
 	}
-
+	public FileStorage getFileStorage(){
+		return _fileStorage;
+	}
 	@Override
 	public void init() {
 		_tasks = new LinkedList<Task>();

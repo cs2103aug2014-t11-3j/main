@@ -74,7 +74,7 @@ public class TaskTest {
 		assertEquals("output should be 1650", 1650 , task3.getEndTime());
 
 		try {
-			Task task4 = new Task ("group meeting from fri @ 11h00 to sat @ 16h50");
+			new Task ("group meeting from fri @ 11h00 to sat @ 16h50");
 		} catch (Exception e) {
 			//pass
 		}
