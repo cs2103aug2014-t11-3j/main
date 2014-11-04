@@ -19,6 +19,7 @@ import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Menu;
 import java.awt.MenuItem;
+import java.awt.Point;
 import java.awt.PopupMenu;
 import java.awt.RenderingHints;
 import java.awt.SystemTray;
@@ -30,6 +31,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
@@ -110,10 +112,50 @@ public class UserInterface extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {  
 				try {
+					final Point offset = new Point();
 					window = new UserInterface(); 		
 					window.dispose();
 					window.setUndecorated(true);
 					window.setVisible(true);
+					window.addMouseListener(new MouseListener() {
+						@Override
+						public void mousePressed(final MouseEvent e) {
+							offset.setLocation(e.getPoint());
+						}
+						
+						@Override
+						public void mouseReleased(final MouseEvent e){
+							
+						}
+						
+						@Override
+						public void mouseClicked(final MouseEvent e){
+							
+						}
+						
+						@Override
+						public void mouseEntered(final MouseEvent e){
+							
+						}
+						
+						@Override
+						public void mouseExited(final MouseEvent e){
+							
+						}
+						
+					});
+					
+					window.addMouseMotionListener(new MouseMotionListener() {
+				        @Override
+				        public void mouseDragged(final MouseEvent e) {
+				            window.setLocation(e.getXOnScreen()-offset.x, e.getYOnScreen()-offset.y);
+				        }
+						
+				        @Override
+				        public void mouseMoved(final MouseEvent e){
+				        	
+				        }
+					});
 					//window.addKeyListener(new UserInterfaceListener());
 					
 				} catch (Exception e) {
@@ -761,7 +803,8 @@ public class UserInterface extends JFrame {
 	
 
 	}
-
+	
+	
 	public class CloseButtonMouseListener implements MouseListener {
 
 		@Override
