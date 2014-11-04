@@ -44,7 +44,7 @@ public class CommandDelete implements Command {
 		}
 
 		try {
-			_storage.store(taskList);
+			_storage.store(storageList);
 		} catch (IOException e) {
 			feedback = "Cannot store the list to ToDoLog";
 			validity=false;
