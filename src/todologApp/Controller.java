@@ -13,6 +13,7 @@ public class Controller {
 	private static LinkedList<Task> _displayList;
 	private static Task _focusTask;
 	private static String _feedback;
+	private static Command _currentViewMode;
 	private static final String FEEDBACK_START = "To start, enter a command: add, delete, edit, done.\n";
 	
 	public static void setStorage(DBStorage DBstorage) {
@@ -78,10 +79,19 @@ public class Controller {
 			_feedback = command.execute();
 			if (command instanceof CommandSearch) {
 				_displayList = ((CommandSearch) command).getReturnList();
+				_currentViewMode = (CommandSearch) command;
+				_displayList = ((CommandSearch) _currentViewMode).getReturnList();
 			} else if (command instanceof CommandView) {
-				_displayList = ((CommandView) command).getReturnList();
+				setFocusTask(null);
+				_currentViewMode = (CommandView) command;
+				_displayList = ((CommandView) _currentViewMode).getReturnList();
 			} else {
-				_displayList = _dbStorage.load();
+				_currentViewMode.execute();
+				if (_currentViewMode instanceof CommandView) {
+					_displayList = ((CommandView) _currentViewMode).getReturnList();
+				} else {
+					_displayList = ((CommandSearch) _currentViewMode).getReturnList();
+				}
 			}
 			if (!(command instanceof CommandUndo) && !(command instanceof CommandRedo) 
 					&& !(command instanceof CommandSearch) && !(command instanceof CommandView)){
@@ -89,7 +99,7 @@ public class Controller {
 			}
 		} catch (Exception e) {
 			_feedback = e.getMessage();
-			_displayList = _dbStorage.load();
+			
 		}
 		//_textDisplay = createNewDisplay();
 	}
@@ -133,6 +143,8 @@ public class Controller {
 		//_textDisplay = createNewDisplay();
 		_history = new History();
 		_feedback = FEEDBACK_START;
+		_currentViewMode = new CommandView("all");
+		_displayList = ((CommandView) _currentViewMode).getReturnList();
 	}
 	public static void init(String fileName) {
 		_dbStorage = new DBStorage(fileName);
