@@ -5,10 +5,12 @@ import java.util.LinkedList;
 public class CommandSearch implements Command {
 	private static String _searchKey;
 	private static LinkedList<Task> _returnList;
-	private static LinkedList<Task> _displayList;
+	private static DBStorage _storage;
+	private static LinkedList<Task> _storageList;
  	public CommandSearch(String searchKey) {
 		_searchKey = searchKey;
-		_displayList = Controller.getDisplayList();
+		_storage = Controller.getDBStorage();
+		_storageList = _storage.load();
  	}
 		
 	public String execute() {
@@ -21,9 +23,9 @@ public class CommandSearch implements Command {
 	
 	public void searchName(String searchKey) {
 		LinkedList<Task> searchList = new LinkedList<Task>();
-		for (int i = 0; i < _displayList.size(); i++) {
-			if (_displayList.get(i).getTaskName().toUpperCase().contains(searchKey.toUpperCase())) {
-				searchList.add(_displayList.get(i));
+		for (int i = 0; i < _storageList.size(); i++) {
+			if (_storageList.get(i).getTaskName().toUpperCase().contains(searchKey.toUpperCase())) {
+				searchList.add(_storageList.get(i));
 			}
 		}
 		setReturnList(searchList);
