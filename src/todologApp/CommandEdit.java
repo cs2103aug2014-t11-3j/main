@@ -167,15 +167,11 @@ public class CommandEdit implements Command {
 	public String undo() {
 		String feedback;
 		LinkedList<Task> tasks = _storage.load();
-		_taskExisting = _displayList.get(_index);
+		int indexInStorage=tasks.indexOf(_displayList.get(_index));
+		tasks.remove(indexInStorage);
 		_displayList.remove(_index);
-		int indexInStorage=tasks.indexOf(_taskExisting);
-		tasks.remove(_taskExisting);
-		tasks.add(indexInStorage, _taskEdited);
-		
-		LinkedList<Task> tasks = _storage.load();
-		tasks.remove(_index);
-		tasks.add(_index, _taskExisting);
+		_displayList.add(_index, _taskExisting);
+		tasks.add(indexInStorage,_taskExisting);
 		Controller.setFocusTask(_taskExisting); // set focus task to change UI's page
 		try {
 			_storage.store(tasks);

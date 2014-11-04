@@ -7,6 +7,7 @@ public class CommandMarkAsDone implements Command {
 	private Task _task;
 	private DBStorage _storage;
 	private int _index;
+	private LinkedList<Task> _displayList;
 	private boolean validity;
 
 	public CommandMarkAsDone(int index) {
@@ -17,9 +18,11 @@ public class CommandMarkAsDone implements Command {
 		String feedback;
 		_storage = Controller.getDBStorage();
 		LinkedList<Task> taskList = _storage.load();
+		_displayList=Controller.getDisplayList();
 		try {
-			_task = taskList.get(_index);
-			taskList.get(_index).toggleTaskStatus();
+			_task = _displayList.get(_index);
+			_displayList.get(_index).toggleTaskStatus();
+			taskList.get(taskList.indexOf(_task)).toggleTaskStatus();
 			Controller.setFocusTask(_task); // set focus task to change UI's page
 			if (_task.getTaskStatus()) {
 				feedback = _task.getTaskName() + " is mark as completed";
