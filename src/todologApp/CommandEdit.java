@@ -10,6 +10,7 @@ public class CommandEdit implements Command {
 	private Task _taskEdited;
 	private int _index;
 	private DBStorage _storage;
+	private LinkedList<Task> _displayList;
 	private boolean validity;
 
 	// private static Storage _storage;
@@ -23,12 +24,14 @@ public class CommandEdit implements Command {
 		_editType = editType;
 		_toBeEdited = toBeEdited;
 		_storage = Controller.getDBStorage();
+		_displayList=Controller.getDisplayList();
+		
 		
 	}
-
 	public CommandEdit(int index) {
 		_index = index -1;
 		_storage = Controller.getDBStorage();
+		_displayList=Controller.getDisplayList();
 	}
 	private String formNewTask() throws Exception{
 		//change the name
@@ -97,14 +100,13 @@ public class CommandEdit implements Command {
 		if (_index == -1) {
 			return "Please specify task to be edited and the details.";
 		} else if (_editType == null) {
-			LinkedList<Task> tasks = _storage.load();
-			_taskExisting = tasks.get(_index);
+			_taskExisting = _displayList.get(_index);
 			return "Please specify edit type and the details.";
 		}
 		String feedback;
 		String editedField;
 		LinkedList<Task> tasks = _storage.load();
-		_taskExisting = tasks.get(_index);
+		_taskExisting = _displayList.get(_index);
 		try {
 			editedField = formNewTask();
 		} catch (Exception e1) {
@@ -112,8 +114,10 @@ public class CommandEdit implements Command {
 			feedback = e1.getMessage();
 			return feedback;
 		}
-		tasks.remove(_index);
-		tasks.add(_index, _taskEdited);
+		_displayList.remove(_index);
+		int indexInStorage=tasks.indexOf(_taskExisting);
+		tasks.remove(_taskExisting);
+		tasks.add(indexInStorage, _taskEdited);
 		try {
 			_storage.store(tasks);
 		} catch (IOException e) {
@@ -135,15 +139,13 @@ public class CommandEdit implements Command {
 		if (_index == -1) {
 			return "Please specify task to be edited and the details.";
 		} else if (_editType == null) {
-			LinkedList<Task> tasks = _storage.load();
-			_taskExisting = tasks.get(_index);
+			_taskExisting = _displayList.get(_index);
 			Controller.setFocusTask(_taskExisting); // set focus task to change UI's page
 			return "Please specify edit type and the details.";
 		}
 		String feedback;
 		String editedField;
-		LinkedList<Task> tasks = _storage.load();
-		_taskExisting = tasks.get(_index);
+		_taskExisting = _displayList.get(_index);
 		Controller.setFocusTask(_taskExisting); // set focus task to change UI's page
 		try {
 			editedField = formNewTask();
@@ -164,6 +166,13 @@ public class CommandEdit implements Command {
 	}
 	public String undo() {
 		String feedback;
+		LinkedList<Task> tasks = _storage.load();
+		_taskExisting = _displayList.get(_index);
+		_displayList.remove(_index);
+		int indexInStorage=tasks.indexOf(_taskExisting);
+		tasks.remove(_taskExisting);
+		tasks.add(indexInStorage, _taskEdited);
+		
 		LinkedList<Task> tasks = _storage.load();
 		tasks.remove(_index);
 		tasks.add(_index, _taskExisting);
