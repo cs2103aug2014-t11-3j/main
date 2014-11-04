@@ -5,7 +5,7 @@ import java.util.LinkedList;
 
 public class CommandDelete implements Command {
 	private Task _task;
-	private DBStorage _storage;
+	private LinkedList<Task> taskList;
 	private int _index;
 	private boolean validity;
 
@@ -15,8 +15,7 @@ public class CommandDelete implements Command {
 
 	public String execute() {
 		String feedback;
-		_storage = Controller.getDBStorage();
-		LinkedList<Task> taskList = _storage.load();
+		LinkedList<Task> taskList= Controller.getDisplayList();
 		try {
 			_task = taskList.get(_index);
 			taskList.remove(_index);
