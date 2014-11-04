@@ -94,7 +94,7 @@ public class ToDoListTableModel extends AbstractTableModel{
 							+ task.getEndMonth()+" "
 							+ task.getEndTimeStr();
 				case DEADLINE:
-					return "by "+ String.format("%02d",task.getEndDate())+"/"
+					return String.format("%02d",task.getEndDate())+"/"
 					+ task.getEndMonth()+" "
 					+ task.getEndTimeStr();
 				case RECURRING:
@@ -107,7 +107,7 @@ public class ToDoListTableModel extends AbstractTableModel{
 		case 3: {
 			String col4 = "";
 			if (!task.getTaskPerson().isEmpty()) {
-				col4 = col4.concat("with ").concat(task.getTaskPerson().concat(" "));
+				col4 = col4.concat(task.getTaskPerson().concat(" "));
 			}
 			if (!task.getTaskVenue().isEmpty()) {
 				col4 = col4.concat("@ ").concat(task.getTaskVenue());

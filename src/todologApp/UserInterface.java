@@ -137,7 +137,7 @@ public class UserInterface extends JFrame {
 		UserInterface.setIconImages(images);
 		UserInterface.setTitle("ToDoLog");
 		UserInterface.setResizable(false);
-		UserInterface.setBounds(100,100,700, 600);					
+		UserInterface.setBounds(325,140,700, 600);					
 		UserInterface.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
@@ -715,13 +715,7 @@ public class UserInterface extends JFrame {
 	
 		@Override
 		public void keyReleased(KeyEvent e) {
-			int keyCode = e.getKeyCode();
-			if(keyCode == KeyEvent.VK_PAGE_UP) {
-				toDoListTableModel.pageUp();
-			}
-			if ((keyCode == KeyEvent.VK_PAGE_DOWN) || (keyCode == KeyEvent.VK_F10)) {
-				toDoListTableModel.pageDown();
-			}
+			
 		}
 			
 		@Override
