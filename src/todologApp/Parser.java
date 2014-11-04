@@ -13,7 +13,7 @@ public class Parser {
 //	private static final String DATE_SEPARATOR = "/";
 //	private static final String SYMBOL_DASH = "-";
 //	private static final String SYMBOL_AT = "@";
-//	private static final String QUOTATION_MARK = "\"";
+	private static final String QUOTATION_MARK = "\"";
 
 	//KEYWORDS
 	private static final String KEYWORD_DAY_STARTING = "from";
@@ -396,7 +396,7 @@ public class Parser {
 	public static String parseTaskName(String parameter) throws Exception {
 		String [] messageArray = generateArray(parameter);
 		String taskName = EMPTY_STRING;
-
+		
 		for (int i=0; i<=messageArray.length-1; i++) {
 			if (!messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) 
 					&& !messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING_2)
@@ -428,8 +428,26 @@ public class Parser {
 	public static String parseTaskPerson(String parameter) {
 		String [] messageArray = generateArray(parameter);
 		String taskPerson = EMPTY_STRING;
+		int count = 0;
+		
+		boolean isValidKeyWord = true;
 
 		for (int i=0; i+1<=messageArray.length-1; i++) {
+			if (messageArray[i].equalsIgnoreCase(KEYWORD_WITH)) {
+				count = 0;
+				for (int k=0; k<i; k++){
+					if (messageArray[k].indexOf(QUOTATION_MARK) != -1) {
+						count = count + 1;
+					}
+					
+				}
+			}
+			
+			if (count%2 == 1) {
+				isValidKeyWord = false;
+			}
+			
+			
 			for (int j=i+1; j<=messageArray.length-1; j++) {
 				if (messageArray[i].equalsIgnoreCase(KEYWORD_WITH) 
 						&& !messageArray[j].equalsIgnoreCase(KEYWORD_DAY_STARTING)
@@ -438,16 +456,18 @@ public class Parser {
 						&& !messageArray[j].equalsIgnoreCase(KEYWORD_DEADLINE)
 						&& !messageArray[j].equalsIgnoreCase(KEYWORD_RECURRING)
 						&& !messageArray[j].equalsIgnoreCase(KEYWORD_AT)
-						&& !messageArray[j].equalsIgnoreCase(KEYWORD_IN)) {
+						&& !messageArray[j].equalsIgnoreCase(KEYWORD_IN)
+						&& isValidKeyWord) {
 					taskPerson = taskPerson + messageArray[j] + SINGLE_SPACE;
 				} else {
 					break;
 				}
 			}
 		}
+
 		return taskPerson.trim();
 	}
-
+	
 	public static String parseTaskVenue(String parameter) {
 		String [] messageArray = generateArray(parameter);
 		String taskVenue = EMPTY_STRING;
