@@ -14,6 +14,7 @@ public class CommandSearch implements Command {
 		String feedback;
 		_storage = Controller.getDBStorage();
 		LinkedList<Task> storageList = _storage.load();
+		Controller.setFocusTask(null); // set focus task to change UI's page
 		searchName(storageList,_searchKey);
 		feedback = "Searching for \"" + _searchKey + "\" is completed";
 		return feedback;
@@ -22,7 +23,7 @@ public class CommandSearch implements Command {
 	public void searchName(LinkedList<Task> storageList, String searchKey) {
 		LinkedList<Task> searchList = new LinkedList<Task>();
 		for (int i = 0; i < storageList.size(); i++) {
-			if (storageList.get(i).getTaskName().contains(searchKey)) {
+			if (storageList.get(i).getTaskName().toUpperCase().contains(searchKey.toUpperCase())) {
 				searchList.add(storageList.get(i));
 			}
 		}

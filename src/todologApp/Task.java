@@ -1,15 +1,16 @@
 package todologApp;
 
 import org.joda.time.DateTime;
+import org.joda.time.Days;
+import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
 
 public class Task {
 	
 	//MESSAGE
 
+	private static final int NOT_DEADLINE = -1;
 	//Key Variables
 	private String _taskName;
 	private TaskType _taskType;
@@ -27,7 +28,7 @@ public class Task {
 		_taskPerson = Parser.parseTaskPerson(parameter);
 		_taskVenue = Parser.parseTaskVenue(parameter);
 		_taskStart = Parser.parseTaskStart(parameter);
-		_taskEnd = Parser.parseTaskEnd(parameter);
+		_taskEnd = Parser.parseTaskEnd(_taskStart,parameter);
 	}
 
 	
@@ -146,7 +147,7 @@ public class Task {
 		
 	}
 
-	public void setStartDay(String editInfo) throws Exception{
+	public void setStartDate(String editInfo) throws Exception{
 		int year = Parser.parseYear(editInfo);
 		int month = Parser.parseMonth(editInfo);
 		int day = Parser.parseDayOfMonth(editInfo);
@@ -156,7 +157,7 @@ public class Task {
 		_taskStart = new DateTime(year,month,day,hour,min);
 	}
 	
-	public void setEndDay(String editInfo) throws Exception {
+	public void setEndDate(String editInfo) throws Exception {
 		int year = Parser.parseYear(editInfo);
 		int month = Parser.parseMonth(editInfo);
 		int day = Parser.parseDayOfMonth(editInfo);
@@ -187,11 +188,11 @@ public class Task {
 	}
 	
 	public void setVenue(String _toBeEdited){
-		_taskVenue = Parser.parseTaskVenue(_toBeEdited);
+		_taskVenue = _toBeEdited;
 	}
 	
 	public void setPerson(String _toBeEdited){
-		_taskPerson = Parser.parseTaskPerson(_toBeEdited);
+		_taskPerson = _toBeEdited;
 	}
 
 	// for sorting in CommandAdd
@@ -205,11 +206,11 @@ public class Task {
 
 	public String getStartTimeStr() {
 		LocalTime time = new LocalTime(getStartTime()/100,getStartTime()%100);
-		return time.toString("HH:mm");
+		return (DateTimeFormat.forPattern("HH:mm")).print(time);
 	}
 	public String getEndTimeStr() {
 		LocalTime time = new LocalTime(getEndTime()/100,getEndTime()%100);
-		return time.toString("HH:mm");
+		return (DateTimeFormat.forPattern("HH:mm")).print(time);
 	}
 
 
@@ -217,5 +218,16 @@ public class Task {
 		// TODO Auto-generated method stub
 		return new Task(_taskType, _taskName, new DateTime(_taskStart), new DateTime(_taskEnd),
 				_taskStatus, _taskPerson, _taskVenue); 
+	}
+
+	public int duePeriod() {
+		if (getTaskType() == TaskType.DEADLINE) { 
+			if (getEnd().isBeforeNow()) {
+				return -1;
+			} else {
+				return (Days.daysBetween(LocalDate.now(),new LocalDate(getEnd()))).getDays();
+			}
+		}
+	return NOT_DEADLINE;
 	}
 }

@@ -20,6 +20,7 @@ public class CommandMarkAsDone implements Command {
 		try {
 			_task = taskList.get(_index);
 			taskList.get(_index).toggleTaskStatus();
+			Controller.setFocusTask(_task); // set focus task to change UI's page
 			if (_task.getTaskStatus()) {
 				feedback = _task.getTaskName() + " is mark as completed";
 				validity=true;
