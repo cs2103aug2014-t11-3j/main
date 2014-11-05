@@ -13,36 +13,36 @@ public class CommandDelete implements Command {
 	public CommandDelete(int index) {
 		_index = index - 1;
 	}
-
+	public CommandDelete() {
+		_index = -1;
+	}
+	public Task getDeletedTask() {
+		return _task;
+	}
 	public String execute() {
 		String feedback;
 		taskList= Controller.getDisplayList();
 		_storage=Controller.getDBStorage();
 		LinkedList<Task> storageList=_storage.load();
-		try {
-			_task = taskList.get(_index);
-			taskList.remove(_index);
-			storageList.remove(_task);
-			if (_index == taskList.size()) {
-				if (_index == 0) {
-					Controller.setFocusTask(null); // set focus task to change UI's page
-				} else {
-					Controller.setFocusTask(taskList.get(_index-1));
-				}
-			} else {
-				if (taskList.size() == 0) {
-					Controller.setFocusTask(null); // set focus task to change UI's page
-				} else {
-					Controller.setFocusTask(taskList.get(_index));
-				}
+		if (_index == -1) {
+			validity = false;
+			return "Please specify the task to be edited."; 
+		} else {
+			try {
+				_task = taskList.get(_index);
+				Controller.setFocusTask(_task);
+			} catch (IndexOutOfBoundsException ioobe ) {
+				validity = false;
+				Controller.setFocusTask(null);
+				return "Item number "+ (_index+1) +" does not exist";
 			}
-			feedback = "Deleted " + _task.getTaskName() + " from toDoLog";
-			validity=true;
-		} catch (IndexOutOfBoundsException ioobe) {
-			feedback = "Invalid task number. Cannot delete.";
-			validity=false;
 		}
-
+		
+		
+		taskList.remove(_index);
+		storageList.remove(_task);
+		feedback = "Deleted " + _task.getTaskName() + " from toDoLog";
+		validity=true;
 		try {
 			_storage.store(storageList);
 		} catch (IOException e) {
@@ -52,7 +52,29 @@ public class CommandDelete implements Command {
 		}
 		return feedback;
 	}
-
+	public String fakeExecute() { 
+		taskList= Controller.getDisplayList();
+		_storage=Controller.getDBStorage();
+		LinkedList<Task> storageList=_storage.load();
+		if (_index == -1) {
+			validity = false;
+			return "Please specify the task to be edited."; 
+		} else {
+			try {
+				_task = taskList.get(_index);
+				storageList.get(storageList.indexOf(_task));
+				Controller.setFocusTask(_task);
+			} catch (IndexOutOfBoundsException ioobe ) {
+				validity = false;
+				Controller.setFocusTask(taskList.getLast());
+				return "Item number "+ (_index+1) +" does not exist";
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		validity = true;
+		return "Deleted " + _task.getTaskName() + " from toDoLog";
+	}
 	public String undo() {
 		String feedback;
 		CommandAdd undoDelete = new CommandAdd(_task);

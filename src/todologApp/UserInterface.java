@@ -696,7 +696,10 @@ public class UserInterface extends JFrame {
 				} else if (commandType.equals("edit")) {
 					flipPages();
 					helperText = UIFeedbackHelper.createCmdEditHelpText(entryHelper);
-				} 
+				} else if (commandType.equals("delete")) {
+					flipPages();
+					helperText = UIFeedbackHelper.createCmdDeleteHelpText(entryHelper);
+				}
 			} 
 			return helperText;
 		}

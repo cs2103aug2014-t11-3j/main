@@ -72,7 +72,7 @@ public class Parser {
 		} else if (firstWord.equalsIgnoreCase("delete")) {
 			String restOfTheString = getTheRestOfTheString(userCommand);
 			if (restOfTheString == null) {
-				throw new Exception(HELP_TEXT_DELETE);
+				return new CommandDelete();
 			}
 			restOfTheString = restOfTheString.trim();
 			if (isInteger(restOfTheString)) {

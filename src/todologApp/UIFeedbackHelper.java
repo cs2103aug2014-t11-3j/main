@@ -60,6 +60,7 @@ public class UIFeedbackHelper {
 					"Venue: " + entryHelper.poll() + "\n";
 		return helperText;
 	}
+	
 	public static String createCmdEditHelpText(LinkedList<String> entryHelper) {
 		if (entryHelper.size() == 1) {
 			return createCmdEditHelpTextEmptyDetails();
@@ -238,6 +239,54 @@ public class UIFeedbackHelper {
 		}
 		
 	}
-	
-	
+
+	public static String createCmdDeleteHelpText(LinkedList<String> entryHelper) {
+		if (entryHelper.isEmpty()) {
+			return createCmdDeleteHelpTextEmptyDetails();
+		}
+		switch (entryHelper.poll()) {
+			case "TIMED":
+				return createCmdDeleteTimedTaskHelperText(entryHelper);
+			case "DEADLINE":
+				return createCmdDeleteDeadlineTaskHelperText(entryHelper);
+			default:
+				return createCmdDeleteFloatingTaskHelperText(entryHelper);
+		}
+	}
+
+	private static String createCmdDeleteHelpTextEmptyDetails() {
+		String helperText = "* DELETE *\n";
+		helperText += " To DELETE, enter:  delete [index].\n";
+		return helperText;
+	}
+
+	private static String createCmdDeleteFloatingTaskHelperText(LinkedList<String> entryHelper) {
+		String helperText = "* DELETE TASK *\n";
+		helperText += "Name: " + entryHelper.poll() + "\n" +
+					"Person: " + entryHelper.poll() + "\n" +
+					"Venue: " + entryHelper.poll() + "\n";
+		return helperText;
+	}
+
+	private static String createCmdDeleteDeadlineTaskHelperText(LinkedList<String> entryHelper) {
+		String helperText = "* DELETE DEADLINE *\n";
+		helperText += "Name: " + entryHelper.poll() + "\n" +
+					"Date: "+ entryHelper.poll() + "\n" +
+					"Time: "+ entryHelper.poll() + "\n" +
+					"Person: " + entryHelper.poll() + "\n" +
+					"Venue: " + entryHelper.poll() + "\n";
+		return helperText;
+	}
+
+	private static String createCmdDeleteTimedTaskHelperText(LinkedList<String> entryHelper) {
+		String helperText = "* DELETE TASK *\n";
+		helperText += "Name: " + entryHelper.poll() + "\n" +
+					"Start date: "+ entryHelper.poll() + "\n" +
+					"Start time: "+ entryHelper.poll() + "\n" +
+					"End date: "+ entryHelper.poll() + "\n" +
+					"End time: "+ entryHelper.poll() + "\n" +
+					"Person: " + entryHelper.poll() + "\n" +
+					"Venue: " + entryHelper.poll() + "\n";
+		return helperText;
+	}
 }
