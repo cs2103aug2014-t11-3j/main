@@ -101,17 +101,20 @@ public class CommandEdit implements Command {
 		LinkedList<Task> tasks = _storage.load();
 		
 		if (_index == -1) {
+			validity = false;
 			return "Please specify task to be edited and the details.";
 		} else {
 			try {
 				_taskExisting = tasks.get(_index);
 				Controller.setFocusTask(_taskExisting); // set focus task to change UI's page
 			} catch (IndexOutOfBoundsException ioobe) {
+				validity = false;
 				Controller.setFocusTask(tasks.getLast());
 				return "Item number "+ (_index+1) +" does not exist";
 			}	
 		}
 		if (_editType == null) {
+			validity = false;
 			return "Please specify edit type and the details.";
 		}
 		try {
