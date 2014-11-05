@@ -5,6 +5,7 @@ import java.util.LinkedList;
 
 public class CommandDelete implements Command {
 	private Task _task;
+	private LinkedList<Task> taskList;
 	private DBStorage _storage;
 	private int _index;
 	private boolean validity;
@@ -15,11 +16,13 @@ public class CommandDelete implements Command {
 
 	public String execute() {
 		String feedback;
-		_storage = Controller.getDBStorage();
-		LinkedList<Task> taskList = _storage.load();
+		taskList= Controller.getDisplayList();
+		_storage=Controller.getDBStorage();
+		LinkedList<Task> storageList=_storage.load();
 		try {
 			_task = taskList.get(_index);
 			taskList.remove(_index);
+			storageList.remove(_task);
 			if (_index == taskList.size()) {
 				if (_index == 0) {
 					Controller.setFocusTask(null); // set focus task to change UI's page
@@ -41,7 +44,7 @@ public class CommandDelete implements Command {
 		}
 
 		try {
-			_storage.store(taskList);
+			_storage.store(storageList);
 		} catch (IOException e) {
 			feedback = "Cannot store the list to ToDoLog";
 			validity=false;

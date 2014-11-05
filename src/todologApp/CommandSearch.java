@@ -4,27 +4,28 @@ import java.util.LinkedList;
 
 public class CommandSearch implements Command {
 	private static String _searchKey;
-	private static Storage _storage;
 	private static LinkedList<Task> _returnList;
-	public CommandSearch(String searchKey) {
+	private static DBStorage _storage;
+	private static LinkedList<Task> _storageList;
+ 	public CommandSearch(String searchKey) {
 		_searchKey = searchKey;
-	}
-
+		_storage = Controller.getDBStorage();
+		_storageList = _storage.load();
+ 	}
+		
 	public String execute() {
 		String feedback;
-		_storage = Controller.getDBStorage();
-		LinkedList<Task> storageList = _storage.load();
 		Controller.setFocusTask(null); // set focus task to change UI's page
-		searchName(storageList,_searchKey);
+		searchName(_searchKey);
 		feedback = "Searching for \"" + _searchKey + "\" is completed";
 		return feedback;
 	}
 	
-	public void searchName(LinkedList<Task> storageList, String searchKey) {
+	public void searchName(String searchKey) {
 		LinkedList<Task> searchList = new LinkedList<Task>();
-		for (int i = 0; i < storageList.size(); i++) {
-			if (storageList.get(i).getTaskName().toUpperCase().contains(searchKey.toUpperCase())) {
-				searchList.add(storageList.get(i));
+		for (int i = 0; i < _storageList.size(); i++) {
+			if (_storageList.get(i).getTaskName().toUpperCase().contains(searchKey.toUpperCase())) {
+				searchList.add(_storageList.get(i));
 			}
 		}
 		setReturnList(searchList);
