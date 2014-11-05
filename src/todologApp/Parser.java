@@ -13,7 +13,7 @@ public class Parser {
 //	private static final String DATE_SEPARATOR = "/";
 //	private static final String SYMBOL_DASH = "-";
 //	private static final String SYMBOL_AT = "@";
-//	private static final String QUOTATION_MARK = "\"";
+	private static final String QUOTATION_MARK = "\"";
 
 	//KEYWORDS
 	private static final String KEYWORD_DAY_STARTING = "from";
@@ -88,7 +88,6 @@ public class Parser {
 				}
 			}
 
-			
 		} else if (firstWord.equalsIgnoreCase("done")) {
 			String restOfTheString = getTheRestOfTheString(userCommand);
 			if (restOfTheString == null) {
@@ -397,7 +396,7 @@ public class Parser {
 	public static String parseTaskName(String parameter) throws Exception {
 		String [] messageArray = generateArray(parameter);
 		String taskName = EMPTY_STRING;
-
+		
 		for (int i=0; i<=messageArray.length-1; i++) {
 			if (!messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) 
 					&& !messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING_2)
@@ -429,51 +428,138 @@ public class Parser {
 	public static String parseTaskPerson(String parameter) {
 		String [] messageArray = generateArray(parameter);
 		String taskPerson = EMPTY_STRING;
-
-		for (int i=0; i+1<=messageArray.length-1; i++) {
-			for (int j=i+1; j<=messageArray.length-1; j++) {
-				if (messageArray[i].equalsIgnoreCase(KEYWORD_WITH) 
-						&& !messageArray[j].equalsIgnoreCase(KEYWORD_DAY_STARTING)
-						&& !messageArray[j].equalsIgnoreCase(KEYWORD_DAY_STARTING_2)
-						&& !messageArray[j].equalsIgnoreCase(KEYWORD_DAY_ENDING)
-						&& !messageArray[j].equalsIgnoreCase(KEYWORD_DEADLINE)
-						&& !messageArray[j].equalsIgnoreCase(KEYWORD_RECURRING)
-						&& !messageArray[j].equalsIgnoreCase(KEYWORD_AT)
-						&& !messageArray[j].equalsIgnoreCase(KEYWORD_IN)) {
-					taskPerson = taskPerson + messageArray[j] + SINGLE_SPACE;
-				} else {
-					break;
+		
+		if (!parameter.contains(QUOTATION_MARK)) {
+			for (int i=0; i+1<=messageArray.length-1; i++) {
+				for (int j=i+1; j<=messageArray.length-1; j++) {
+					if (messageArray[i].equalsIgnoreCase(KEYWORD_WITH)
+							&& !messageArray[j].equalsIgnoreCase(KEYWORD_DAY_STARTING)
+							&& !messageArray[j].equalsIgnoreCase(KEYWORD_DAY_STARTING_2)
+							&& !messageArray[j].equalsIgnoreCase(KEYWORD_DAY_ENDING)
+							&& !messageArray[j].equalsIgnoreCase(KEYWORD_DEADLINE)
+							&& !messageArray[j].equalsIgnoreCase(KEYWORD_RECURRING)
+							&& !messageArray[j].equalsIgnoreCase(KEYWORD_AT)
+							&& !messageArray[j].equalsIgnoreCase(KEYWORD_IN)) {
+						taskPerson = taskPerson + messageArray[j] + SINGLE_SPACE;
+					} else {
+						break;
+					}
+				}
+			}
+		} else {
+			for (int i=0; i+1<=messageArray.length-1; i++) {
+				if(messageArray[i].equalsIgnoreCase(KEYWORD_WITH)
+						&& validKeyWord(messageArray, KEYWORD_WITH, i)) {
+					for (int j=i+1; j<=messageArray.length-1; j++) {
+						if(messageArray[j].equalsIgnoreCase(KEYWORD_AT)
+								&& !validKeyWord(messageArray, KEYWORD_AT, j)) {
+							taskPerson = taskPerson + messageArray[j] + SINGLE_SPACE;
+						} else if (messageArray[j].equalsIgnoreCase(KEYWORD_AT)
+								&& validKeyWord(messageArray, KEYWORD_AT, j)) { 
+							break;
+						}
+					}
 				}
 			}
 		}
+		
+//		taskPerson = taskPerson.replaceAll(QUOTATION_MARK, EMPTY_STRING);
+
+//		for (int i=0; i+1<=messageArray.length-1; i++) {
+//			if (messageArray[i].equalsIgnoreCase(KEYWORD_WITH) 
+//					&& validKeyWord(messageArray, KEYWORD_WITH, i)) {
+//				for (int j=i+1; j<=messageArray.length-1; j++) {
+//					if (messageArray[j].equalsIgnoreCase(KEYWORD_AT) 
+//							&& validKeyWord(messageArray, KEYWORD_AT, j)) {
+//						break;
+//						//return taskPerson.trim();
+//					} else  {
+//						taskPerson = taskPerson + messageArray[j] + SINGLE_SPACE;
+//					}
+//				}
+//			}
+//		}
+//		
 		return taskPerson.trim();
 	}
-
-	public static String parseTaskVenue(String parameter) {
+	
+		public static String parseTaskVenue(String parameter) {
 		String [] messageArray = generateArray(parameter);
 		String taskVenue = EMPTY_STRING;
-
-		for (int i=0; i+1<=messageArray.length-1; i++) {
-			for (int j=i+1; j<=messageArray.length-1; j++) {
-				if ( (messageArray[i].equalsIgnoreCase(KEYWORD_AT) 
-						|| messageArray[i].equalsIgnoreCase(KEYWORD_IN)) 
-						&& !messageArray[j].equalsIgnoreCase(KEYWORD_DAY_STARTING)
-						&& !messageArray[j].equalsIgnoreCase(KEYWORD_DAY_STARTING_2)
-						&& !messageArray[j].equalsIgnoreCase(KEYWORD_DAY_ENDING)
-						&& !messageArray[j].equalsIgnoreCase(KEYWORD_DEADLINE)
-						&& !messageArray[j].equalsIgnoreCase(KEYWORD_RECURRING)
-						&& !messageArray[j].equalsIgnoreCase(KEYWORD_WITH)
-						&& !messageArray[j].equalsIgnoreCase(KEYWORD_AT)
-						&& !isInteger(messageArray[j])) {
-					taskVenue = taskVenue + messageArray[j] + SINGLE_SPACE;
-				} else {
-					break;
+		
+		if (!parameter.contains(QUOTATION_MARK)) {
+			for (int i=0; i+1<=messageArray.length-1; i++) {
+				for (int j=i+1; j<=messageArray.length-1; j++) {
+					if ( (messageArray[i].equalsIgnoreCase(KEYWORD_AT) 
+							|| messageArray[i].equalsIgnoreCase(KEYWORD_IN))
+							&& !messageArray[j].equalsIgnoreCase(KEYWORD_DAY_STARTING)
+							&& !messageArray[j].equalsIgnoreCase(KEYWORD_DAY_STARTING_2)
+							&& !messageArray[j].equalsIgnoreCase(KEYWORD_DAY_ENDING)
+							&& !messageArray[j].equalsIgnoreCase(KEYWORD_DEADLINE)
+							&& !messageArray[j].equalsIgnoreCase(KEYWORD_RECURRING)
+							&& !messageArray[j].equalsIgnoreCase(KEYWORD_WITH)
+							&& !messageArray[j].equalsIgnoreCase(KEYWORD_AT)
+							&& !isInteger(messageArray[j])) {
+						taskVenue = taskVenue + messageArray[j] + SINGLE_SPACE;
+					} else {
+						break;
+					}
 				}
 			}
+		} else {
+			for (int i=0; i+1<=messageArray.length-1; i++) {
+				if(messageArray[i].equalsIgnoreCase(KEYWORD_AT)
+						&& validKeyWord(messageArray, KEYWORD_AT, i)) {
+					for (int j=i+1; j<=messageArray.length-1; j++) {
+						if(messageArray[j].equalsIgnoreCase(KEYWORD_WITH)
+								&& !validKeyWord(messageArray, KEYWORD_WITH, j)) {
+							taskVenue = taskVenue + messageArray[j] + SINGLE_SPACE;
+						} else if (messageArray[j].equalsIgnoreCase(KEYWORD_WITH)
+								&& validKeyWord(messageArray, KEYWORD_WITH, j)){ 
+							break;
+						}
+					}
+				} 
+			}
 		}
+		
+//		taskVenue = taskVenue.replaceAll(QUOTATION_MARK, EMPTY_STRING);
+	
+//		for (int i=0; i+1<=messageArray.length-1; i++) {
+//			if (messageArray[i].equalsIgnoreCase(KEYWORD_AT) 
+//					&& validKeyWord(messageArray, KEYWORD_AT, i)) {
+//				for (int j=i+1; j<=messageArray.length-1; j++) {
+//					if (messageArray[j].equalsIgnoreCase(KEYWORD_WITH) 
+//							&& validKeyWord(messageArray, KEYWORD_WITH, j)) {
+//						break;
+//						//return taskVenue.trim();
+//					} else  {
+//						taskVenue = taskVenue + messageArray[j] + SINGLE_SPACE;
+//					}
+//				}
+//			}
+//		}
+		
 		return taskVenue.trim();
 	}
 
+	public static boolean validKeyWord(String [] array, String keyWord, int index) {
+		int count = 0;
+
+		for (int i=0; i<=index; i++) {	
+			if (array[i].equalsIgnoreCase(keyWord)) {
+				break;
+			} else if (array[i].contains(QUOTATION_MARK)) {
+				count = count + 1;
+			}
+		}
+
+		if (count % 2 == 0) {
+			return true;
+		} else 
+			return false;
+	}
+		
 	public static DateTime parseTaskStart(String parameter) throws Exception {
 		String[] messageArray = generateArray(parameter);
 		int year = 1, month = 1, day = 1;
