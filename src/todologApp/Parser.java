@@ -428,26 +428,8 @@ public class Parser {
 	public static String parseTaskPerson(String parameter) {
 		String [] messageArray = generateArray(parameter);
 		String taskPerson = EMPTY_STRING;
-		int count = 0;
-		
-		boolean isValidKeyWord = true;
 
 		for (int i=0; i+1<=messageArray.length-1; i++) {
-			if (messageArray[i].equalsIgnoreCase(KEYWORD_WITH)) {
-				count = 0;
-				for (int k=0; k<i; k++){
-					if (messageArray[k].indexOf(QUOTATION_MARK) != -1) {
-						count = count + 1;
-					}
-					
-				}
-			}
-			
-			if (count%2 == 1) {
-				isValidKeyWord = false;
-			}
-			
-			
 			for (int j=i+1; j<=messageArray.length-1; j++) {
 				if (messageArray[i].equalsIgnoreCase(KEYWORD_WITH) 
 						&& !messageArray[j].equalsIgnoreCase(KEYWORD_DAY_STARTING)
@@ -456,8 +438,7 @@ public class Parser {
 						&& !messageArray[j].equalsIgnoreCase(KEYWORD_DEADLINE)
 						&& !messageArray[j].equalsIgnoreCase(KEYWORD_RECURRING)
 						&& !messageArray[j].equalsIgnoreCase(KEYWORD_AT)
-						&& !messageArray[j].equalsIgnoreCase(KEYWORD_IN)
-						&& isValidKeyWord) {
+						&& !messageArray[j].equalsIgnoreCase(KEYWORD_IN)) {
 					taskPerson = taskPerson + messageArray[j] + SINGLE_SPACE;
 				} else {
 					break;
@@ -466,6 +447,25 @@ public class Parser {
 		}
 
 		return taskPerson.trim();
+	}
+	
+	public static boolean validKeyWord(String [] array, String keyWord, int index) {
+
+		int count = 0;
+
+		for (int i=0; i<index; i++) {	
+			if (array[i].equalsIgnoreCase(keyWord))
+				break;
+			else if (array[i].indexOf(QUOTATION_MARK) != -1) {
+				count = count++;
+			}
+
+			if (count % 2 == 0) {
+				return true;
+			} 
+		}
+
+		return false;
 	}
 	
 	public static String parseTaskVenue(String parameter) {
