@@ -702,10 +702,12 @@ public class UserInterface extends JFrame {
 			return;
 		}
 		Task focusTask = Controller.getFocusTask();
+		boolean found = false;
 		for (int index = 0; index < toDoListItems.size(); index ++){
 			Task task = toDoListItems.get(index);
 			if (task == focusTask) {
 				toDoListTableModel.goToPage((index)/17);
+				found = true;
 			}
 		}
 	}
@@ -736,7 +738,10 @@ public class UserInterface extends JFrame {
 				} else if (commandType.equals("edit")) {
 					flipPages();
 					helperText = UIFeedbackHelper.createCmdEditHelpText(entryHelper);
-				} 
+				} else if (commandType.equals("delete")) {
+					flipPages();
+					helperText = UIFeedbackHelper.createCmdDeleteHelpText(entryHelper);
+				}
 			} 
 			return helperText;
 		}

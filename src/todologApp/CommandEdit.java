@@ -10,7 +10,6 @@ public class CommandEdit implements Command {
 	private Task _taskEdited;
 	private int _index;
 	private DBStorage _storage;
-	private LinkedList<Task> _displayList;
 	private boolean validity;
 
 	// private static Storage _storage;
@@ -24,14 +23,12 @@ public class CommandEdit implements Command {
 		_editType = editType;
 		_toBeEdited = toBeEdited;
 		_storage = Controller.getDBStorage();
-		_displayList=Controller.getDisplayList();
-		
 		
 	}
+
 	public CommandEdit(int index) {
 		_index = index -1;
 		_storage = Controller.getDBStorage();
-		_displayList=Controller.getDisplayList();
 	}
 	private String formNewTask() throws Exception{
 		//change the name
@@ -95,18 +92,31 @@ public class CommandEdit implements Command {
 	public Task getEditedTask() {
 		return _taskEdited;
 	}
-
+	public int getIndex() {
+		return _index;
+	}
 	public String execute() {
-		if (_index == -1) {
-			return "Please specify task to be edited and the details.";
-		} else if (_editType == null) {
-			_taskExisting = _displayList.get(_index);
-			return "Please specify edit type and the details.";
-		}
 		String feedback;
 		String editedField;
 		LinkedList<Task> tasks = _storage.load();
-		_taskExisting = _displayList.get(_index);
+		
+		if (_index == -1) {
+			validity = false;
+			return "Please specify task to be edited and the details.";
+		} else {
+			try {
+				_taskExisting = tasks.get(_index);
+				Controller.setFocusTask(_taskExisting); // set focus task to change UI's page
+			} catch (IndexOutOfBoundsException ioobe) {
+				validity = false;
+				Controller.setFocusTask(tasks.getLast());
+				return "Item number "+ (_index+1) +" does not exist";
+			}	
+		}
+		if (_editType == null) {
+			validity = false;
+			return "Please specify edit type and the details.";
+		}
 		try {
 			editedField = formNewTask();
 		} catch (Exception e1) {
@@ -114,10 +124,8 @@ public class CommandEdit implements Command {
 			feedback = e1.getMessage();
 			return feedback;
 		}
-		_displayList.remove(_index);
-		int indexInStorage=tasks.indexOf(_taskExisting);
-		tasks.remove(_taskExisting);
-		tasks.add(indexInStorage, _taskEdited);
+		tasks.remove(_index);
+		tasks.add(_index, _taskEdited);
 		try {
 			_storage.store(tasks);
 		} catch (IOException e) {
@@ -136,17 +144,24 @@ public class CommandEdit implements Command {
 		return feedback;
 	}
 	public String fakeExecute() {
-		if (_index == -1) {
-			return "Please specify task to be edited and the details.";
-		} else if (_editType == null) {
-			_taskExisting = _displayList.get(_index);
-			Controller.setFocusTask(_taskExisting); // set focus task to change UI's page
-			return "Please specify edit type and the details.";
-		}
 		String feedback;
 		String editedField;
-		_taskExisting = _displayList.get(_index);
-		Controller.setFocusTask(_taskExisting); // set focus task to change UI's page
+		LinkedList<Task> tasks = _storage.load();
+		
+		if (_index == -1) {
+			return "Please specify task to be edited and the details.";
+		} else {
+			try {
+				_taskExisting = tasks.get(_index);
+				Controller.setFocusTask(_taskExisting); // set focus task to change UI's page
+			} catch (IndexOutOfBoundsException ioobe) {
+				Controller.setFocusTask(tasks.getLast());
+				return "Item number "+ _index +" does not exist";
+			}	
+		}
+		if (_editType == null) {
+			return "Please specify edit type and the details.";
+		}
 		try {
 			editedField = formNewTask();
 		} catch (Exception e1) {
@@ -167,11 +182,8 @@ public class CommandEdit implements Command {
 	public String undo() {
 		String feedback;
 		LinkedList<Task> tasks = _storage.load();
-		int indexInStorage=tasks.indexOf(_displayList.get(_index));
-		tasks.remove(indexInStorage);
-		_displayList.remove(_index);
-		_displayList.add(_index, _taskExisting);
-		tasks.add(indexInStorage,_taskExisting);
+		tasks.remove(_index);
+		tasks.add(_index, _taskExisting);
 		Controller.setFocusTask(_taskExisting); // set focus task to change UI's page
 		try {
 			_storage.store(tasks);

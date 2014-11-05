@@ -13,7 +13,8 @@ public class Controller {
 	private static LinkedList<Task> _displayList;
 	private static Task _focusTask;
 	private static String _feedback;
-	private static Command _currentViewMode;
+	private static CommandView _currentViewMode;
+	private static CommandSearch _currentSearchCriterion;
 	private static final String FEEDBACK_START = "To start, enter a command: add, delete, edit, done.\n";
 	
 	public static void setStorage(DBStorage DBstorage) {
@@ -79,18 +80,18 @@ public class Controller {
 			_feedback = command.execute();
 			if (command instanceof CommandSearch) {
 				_displayList = ((CommandSearch) command).getReturnList();
-				_currentViewMode = (CommandSearch) command;
-				_displayList = ((CommandSearch) _currentViewMode).getReturnList();
+				_currentSearchCriterion = (CommandSearch) command;
+				_displayList = _currentSearchCriterion.getReturnList();
 			} else if (command instanceof CommandView) {
 				setFocusTask(null);
 				_currentViewMode = (CommandView) command;
-				_displayList = ((CommandView) _currentViewMode).getReturnList();
+				_displayList =  _currentViewMode.getReturnList();
 			} else {
 				_currentViewMode.execute();
 				if (_currentViewMode instanceof CommandView) {
 					_displayList = ((CommandView) _currentViewMode).getReturnList();
 				} else {
-					_displayList = ((CommandSearch) _currentViewMode).getReturnList();
+					_displayList =  _currentSearchCriterion.getReturnList();
 				}
 			}
 			if (!(command instanceof CommandUndo) && !(command instanceof CommandRedo) 
@@ -123,6 +124,11 @@ public class Controller {
 				LinkedList<String> details = new LinkedList<String>(currentTaskDetails);
 				details.addAll(newTaskDetails);
 				return details;
+			} else if (command instanceof CommandDelete) {
+				((CommandDelete) command).fakeExecute();
+				Task task = ((CommandDelete) command).getDeletedTask();
+				LinkedList<String> details = ControllerFeedbackHelper.createHelperTexts("delete",task);
+				return details;
 			}
 			 else {
 				return new LinkedList<String>();
@@ -144,7 +150,7 @@ public class Controller {
 		_history = new History();
 		_feedback = FEEDBACK_START;
 		_currentViewMode = new CommandView("all");
-		_displayList = ((CommandView) _currentViewMode).getReturnList();
+		_displayList = _currentViewMode.getReturnList();
 	}
 	public static void init(String fileName) {
 		_dbStorage = new DBStorage(fileName);
