@@ -129,6 +129,10 @@ public class Controller {
 				Task task = ((CommandDelete) command).getDeletedTask();
 				LinkedList<String> details = ControllerFeedbackHelper.createHelperTexts("delete",task);
 				return details;
+			} else if (command instanceof CommandDeleteAll) {
+				((CommandDeleteAll) command).fakeExecute();
+				LinkedList<String> details = ControllerFeedbackHelper.createHelperTexts("deleteall",null);
+				return details;
 			}
 			 else {
 				return new LinkedList<String>();

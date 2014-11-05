@@ -690,19 +690,12 @@ public class UserInterface extends JFrame {
 			String helperText = dynamicHelpText.getText();
 			if (!entryHelper.isEmpty()) {
 				helperText += "\n";
-				String commandType = entryHelper.poll();
-				if (commandType.equals("add")) {
-					helperText = UIFeedbackHelper.createCmdAddHelpText(entryHelper);
-				} else if (commandType.equals("edit")) {
-					flipPages();
-					helperText = UIFeedbackHelper.createCmdEditHelpText(entryHelper);
-				} else if (commandType.equals("delete")) {
-					flipPages();
-					helperText = UIFeedbackHelper.createCmdDeleteHelpText(entryHelper);
-				}
+				helperText = UIFeedbackHelper.createCmdHelpText(entryHelper);
+				flipPages();
 			} 
 			return helperText;
 		}
+		
 		
 	}
 	
