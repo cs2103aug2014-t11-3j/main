@@ -92,19 +92,28 @@ public class CommandEdit implements Command {
 	public Task getEditedTask() {
 		return _taskEdited;
 	}
-
+	public int getIndex() {
+		return _index;
+	}
 	public String execute() {
-		if (_index == -1) {
-			return "Please specify task to be edited and the details.";
-		} else if (_editType == null) {
-			LinkedList<Task> tasks = _storage.load();
-			_taskExisting = tasks.get(_index);
-			return "Please specify edit type and the details.";
-		}
 		String feedback;
 		String editedField;
 		LinkedList<Task> tasks = _storage.load();
-		_taskExisting = tasks.get(_index);
+		
+		if (_index == -1) {
+			return "Please specify task to be edited and the details.";
+		} else {
+			try {
+				_taskExisting = tasks.get(_index);
+				Controller.setFocusTask(_taskExisting); // set focus task to change UI's page
+			} catch (IndexOutOfBoundsException ioobe) {
+				Controller.setFocusTask(tasks.getLast());
+				return "Item number "+ (_index+1) +" does not exist";
+			}	
+		}
+		if (_editType == null) {
+			return "Please specify edit type and the details.";
+		}
 		try {
 			editedField = formNewTask();
 		} catch (Exception e1) {
@@ -132,19 +141,24 @@ public class CommandEdit implements Command {
 		return feedback;
 	}
 	public String fakeExecute() {
-		if (_index == -1) {
-			return "Please specify task to be edited and the details.";
-		} else if (_editType == null) {
-			LinkedList<Task> tasks = _storage.load();
-			_taskExisting = tasks.get(_index);
-			Controller.setFocusTask(_taskExisting); // set focus task to change UI's page
-			return "Please specify edit type and the details.";
-		}
 		String feedback;
 		String editedField;
 		LinkedList<Task> tasks = _storage.load();
-		_taskExisting = tasks.get(_index);
-		Controller.setFocusTask(_taskExisting); // set focus task to change UI's page
+		
+		if (_index == -1) {
+			return "Please specify task to be edited and the details.";
+		} else {
+			try {
+				_taskExisting = tasks.get(_index);
+				Controller.setFocusTask(_taskExisting); // set focus task to change UI's page
+			} catch (IndexOutOfBoundsException ioobe) {
+				Controller.setFocusTask(tasks.getLast());
+				return "Item number "+ _index +" does not exist";
+			}	
+		}
+		if (_editType == null) {
+			return "Please specify edit type and the details.";
+		}
 		try {
 			editedField = formNewTask();
 		} catch (Exception e1) {

@@ -660,10 +660,12 @@ public class UserInterface extends JFrame {
 			return;
 		}
 		Task focusTask = Controller.getFocusTask();
+		boolean found = false;
 		for (int index = 0; index < toDoListItems.size(); index ++){
 			Task task = toDoListItems.get(index);
 			if (task == focusTask) {
 				toDoListTableModel.goToPage((index)/17);
+				found = true;
 			}
 		}
 	}
