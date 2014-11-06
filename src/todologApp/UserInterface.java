@@ -549,7 +549,7 @@ public class UserInterface extends JFrame {
 		makeTrayIcon(this);
 		this.addWindowListener(new ToDoLogWindowListener());
 		Controller.init();
-		toDoListItems = Controller.getDBStorage().load();
+		toDoListItems = Controller.getDisplayList();
 		toDoListTableModel = new ToDoListTableModel(toDoListItems);
 		toDoListTable.setModel(toDoListTableModel);
 		adjustTableColumns(toDoListTable);

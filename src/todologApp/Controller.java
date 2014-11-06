@@ -133,6 +133,11 @@ public class Controller {
 				((CommandDeleteAll) command).fakeExecute();
 				LinkedList<String> details = ControllerFeedbackHelper.createHelperTexts("deleteall",null);
 				return details;
+			} else if (command instanceof CommandMarkAsDone) {
+				((CommandMarkAsDone) command).fakeExecute();
+				Task task = ((CommandMarkAsDone) command).getMarkedTask();
+				LinkedList<String> details = ControllerFeedbackHelper.createHelperTexts("done",task);
+				return details;
 			}
 			 else {
 				return new LinkedList<String>();
@@ -154,6 +159,7 @@ public class Controller {
 		_history = new History();
 		_feedback = FEEDBACK_START;
 		_currentViewMode = new CommandView("all");
+		_currentViewMode.execute();
 		_displayList = _currentViewMode.getReturnList();
 	}
 	public static void init(String fileName) {

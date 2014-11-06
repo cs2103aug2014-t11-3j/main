@@ -15,9 +15,12 @@ public class UIFeedbackHelper {
 			helperText = createCmdDeleteHelpText(entryHelper);
 		} else if (commandType.equals("deleteall")) {
 			helperText = createCmdDeleteAllHelpText(entryHelper);
+		} else if (commandType.equals("done")) {
+			helperText = createCmdDoneHelpText(entryHelper);
 		}
 		return helperText;
 	}
+	
 	private static String createCmdAddHelpText(LinkedList<String> entryHelper) {
 		if (entryHelper.isEmpty()) {
 			return createCmdAddHelpTextEmptyDetails();
@@ -307,5 +310,54 @@ public class UIFeedbackHelper {
 	private static String createCmdDeleteAllHelpText(
 			LinkedList<String> entryHelper) {
 		return "Warning: Destructive command";
+	}
+	
+	private static String createCmdDoneHelpText(LinkedList<String> entryHelper) {
+		if (entryHelper.isEmpty()) {
+			return createCmdDoneHelpTextEmptyDetails();
+		}
+		switch (entryHelper.poll()) {
+			case "TIMED":
+				return createCmdDoneTimedTaskHelperText(entryHelper);
+			case "DEADLINE":
+				return createCmdDoneDeadlineTaskHelperText(entryHelper);
+			default:
+				return createCmdDoneFloatingTaskHelperText(entryHelper);
+		}
+	}
+
+	private static String createCmdDoneHelpTextEmptyDetails() {
+		String helperText = "* DELETE *\n";
+		helperText += " To DELETE, enter:  delete [index].\n";
+		return helperText;
+	}
+
+	private static String createCmdDoneFloatingTaskHelperText(LinkedList<String> entryHelper) {
+		String helperText = "* DELETE TASK *\n";
+		helperText += "Name: " + entryHelper.poll() + "\n" +
+				"Person: " + entryHelper.poll() + "\n" +
+				"Venue: " + entryHelper.poll() + "\n";
+		return helperText;
+	}
+
+	private static String createCmdDoneDeadlineTaskHelperText(LinkedList<String> entryHelper) {
+		String helperText = "* DELETE DEADLINE *\n";
+		helperText += "Name: " + entryHelper.poll() + "\n" +
+				"Date: "+ entryHelper.poll() + "\n" +
+				"Time: "+ entryHelper.poll() + "\n" +
+				"Person: " + entryHelper.poll() + "\n" +
+				"Venue: " + entryHelper.poll() + "\n";
+		return helperText;
+	}
+	private static String createCmdDoneTimedTaskHelperText(LinkedList<String> entryHelper) {
+		String helperText = "* DELETE TASK *\n";
+		helperText += "Name: " + entryHelper.poll() + "\n" +
+				"Start date: "+ entryHelper.poll() + "\n" +
+				"Start time: "+ entryHelper.poll() + "\n" +
+				"End date: "+ entryHelper.poll() + "\n" +
+				"End time: "+ entryHelper.poll() + "\n" +
+				"Person: " + entryHelper.poll() + "\n" +
+				"Venue: " + entryHelper.poll() + "\n";
+		return helperText;
 	}
 }
