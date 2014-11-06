@@ -33,9 +33,8 @@ import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -310,17 +309,10 @@ public class UserInterface extends JFrame {
 		
 		toDoListTable.setShowGrid(false);
 		toDoListTable.setIntercellSpacing(new Dimension(0, 0));
-		URL url = this.getClass().getClassLoader().getResource("fonts/OpenSans-Regular.ttf");
-		File fontFile = null;
-		try {
-			fontFile = new File(url.toURI());
-		} catch (URISyntaxException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		InputStream in = this.getClass().getClassLoader().getResourceAsStream("fonts/OpenSans-Regular.ttf");
 		try {
 			Font font;
-			font = Font.createFont(Font.TRUETYPE_FONT, fontFile);
+			font = Font.createFont(Font.TRUETYPE_FONT, in);
 			Font sizedFont = font.deriveFont(TABLE_FONT_SIZE);
 			toDoListTable.setFont(sizedFont);
 			toDoListTable.getTableHeader().setFont(sizedFont);
@@ -387,18 +379,11 @@ public class UserInterface extends JFrame {
 		bottomPanelParameters = setParameters(COMMAND_ENTRY_PARAMETERS);
 		commandEntryTextField = new JTextField(20);
 		bottomPanel.add(commandEntryTextField,bottomPanelParameters);
-		URL url = this.getClass().getClassLoader().getResource("fonts/BPmono.ttf");
-		File fontFile = null;
-		try {
-			fontFile = new File(url.toURI());
-		} catch (URISyntaxException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-
+		InputStream in = this.getClass().getClassLoader().getResourceAsStream("fonts/BPmono.ttf");
+		
 		try {
 			Font font;
-			font = Font.createFont(Font.TRUETYPE_FONT, fontFile);
+			font = Font.createFont(Font.TRUETYPE_FONT, in);
 			Font sizedFont = font.deriveFont(ENTRY_TEXT_FIELD_FONT_SIZE);
 			commandEntryTextField.setFont(sizedFont);
 		} catch (FontFormatException e) {
@@ -427,17 +412,10 @@ public class UserInterface extends JFrame {
 		dynamicHelpText.setLineWrap(true);
 		dynamicHelpText.setWrapStyleWord(false);
 		dynamicHelpText.setEditable(false);
-		URL url = this.getClass().getClassLoader().getResource("fonts/OpenSans-Regular.ttf");
-		File fontFile = null;
-		try {
-			fontFile = new File(url.toURI());
-		} catch (URISyntaxException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		InputStream in = this.getClass().getClassLoader().getResourceAsStream("fonts/OpenSans-Regular.ttf");
 		try {
 			Font font;
-			font = Font.createFont(Font.TRUETYPE_FONT, fontFile);
+			font = Font.createFont(Font.TRUETYPE_FONT, in);
 			Font sizedFont = font.deriveFont(HELP_TEXT_FONT_SIZE);
 			dynamicHelpText.setFont(sizedFont);
 		} catch (FontFormatException e) {
