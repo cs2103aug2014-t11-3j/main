@@ -186,7 +186,8 @@ public class Parser {
 					&& validKeyWord(messageArray, KEYWORD_DAY_ENDING, i)) {
 				for (int j=i+1; j<=messageArray.length-1; j++) {
 					if (messageArray[j].equalsIgnoreCase(KEYWORD_AT) 
-							&& isInteger(messageArray[j+1])) {
+							&& isInteger(messageArray[j+1])
+							&& validKeyWord(messageArray, KEYWORD_AT, j)) {
 						try {
 							int endTime = Integer.parseInt(messageArray[j+1]);
 							if (endTime >= 0000 && endTime <= 2359) {
@@ -249,8 +250,8 @@ public class Parser {
 		for (int i = 0; i<=messageArray.length-1; i++) {
 			if ((messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) 
 					&& validKeyWord(messageArray, KEYWORD_DAY_STARTING, i))
-					|| messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING_2)
-					&& validKeyWord(messageArray, KEYWORD_DAY_STARTING_2, i)) {
+					|| (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING_2)
+					&& validKeyWord(messageArray, KEYWORD_DAY_STARTING_2, i))) {
 				for (int j=i+1; j<=messageArray.length-1; j++) {
 					if (messageArray[j].equalsIgnoreCase(KEYWORD_AT) 
 							&& validKeyWord(messageArray, KEYWORD_AT, j)
@@ -368,33 +369,45 @@ public class Parser {
 		String [] messageArray = generateArray(parameter);
 		if (messageArray.length != 0) {
 			for (int i=0; i<=messageArray.length-1; i++) {
-				if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) 
-						|| messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING_2)
-						|| messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING)) {
+				if ((messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING)
+							&& validKeyWord(messageArray, KEYWORD_DAY_STARTING, i))
+						|| (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING_2)
+							&& validKeyWord(messageArray, KEYWORD_DAY_STARTING_2, i))
+						|| messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING)
+							&& validKeyWord(messageArray, KEYWORD_DAY_ENDING, i)) {
 					return (TaskType.TIMED);
 				}
 			}
 
 			for (int i=0; i<=messageArray.length-1; i++) {
-				if (messageArray[i].equalsIgnoreCase(KEYWORD_DEADLINE)) {
+				if (messageArray[i].equalsIgnoreCase(KEYWORD_DEADLINE)
+						&& validKeyWord(messageArray, KEYWORD_DEADLINE, i)) {
 					return (TaskType.DEADLINE);
 				} 
 			}		
 
 			for (int i=0; i<=messageArray.length-1; i++) {
-				if (messageArray[i].equalsIgnoreCase(KEYWORD_RECURRING)) {
+				if (messageArray[i].equalsIgnoreCase(KEYWORD_RECURRING)
+						&& validKeyWord(messageArray, KEYWORD_RECURRING, i)) {
 					return (TaskType.RECURRING);
 				} 		
 			}
 
 			for (int i=0; i<=messageArray.length-1; i++) {
-				if (!messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) 
-						&& !messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING_2)
-						&& !messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING)
-						&& !messageArray[i].equalsIgnoreCase(KEYWORD_DEADLINE)
-						&& !messageArray[i].equalsIgnoreCase(KEYWORD_RECURRING)
-						&& !messageArray[i].equalsIgnoreCase(KEYWORD_AT) 
-						&& !messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING)){
+				if ((messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) 
+						&& validKeyWord(messageArray, KEYWORD_DAY_STARTING, i))
+					|| (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING_2) 
+							&& validKeyWord(messageArray, KEYWORD_DAY_STARTING_2, i))
+					|| (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING)
+							&& validKeyWord(messageArray, KEYWORD_DAY_ENDING, i))
+					|| (messageArray[i].equalsIgnoreCase(KEYWORD_DEADLINE)
+							&& validKeyWord(messageArray, KEYWORD_DEADLINE, i))
+					|| (messageArray[i].equalsIgnoreCase(KEYWORD_RECURRING)
+							&& validKeyWord(messageArray, KEYWORD_RECURRING, i))
+					|| (messageArray[i].equalsIgnoreCase(KEYWORD_AT)
+							&& validKeyWord(messageArray, KEYWORD_AT, i))
+					|| (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING)
+							&& validKeyWord(messageArray, KEYWORD_DAY_STARTING, i))) {
 					return (TaskType.FLOATING);
 				} 
 			}
@@ -409,14 +422,22 @@ public class Parser {
 		
 		if (!parameter.contains(QUOTATION_MARK)) {
 			for (int i=0; i<=messageArray.length-1; i++) {
-				if (!messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) 
-						&& !messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING_2)
-						&& !messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING)
-						&& !messageArray[i].equalsIgnoreCase(KEYWORD_DEADLINE)
-						&& !messageArray[i].equalsIgnoreCase(KEYWORD_RECURRING)
-						&& !messageArray[i].equalsIgnoreCase(KEYWORD_WITH)
-						&& !messageArray[i].equalsIgnoreCase(KEYWORD_AT)
-						&& !messageArray[i].equalsIgnoreCase(KEYWORD_IN)) {
+				if ((messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) 
+						&& validKeyWord(messageArray, KEYWORD_DAY_STARTING, i))
+						|| (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING_2)
+								&& validKeyWord(messageArray, KEYWORD_DAY_STARTING, i))
+						|| (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING)
+								&& validKeyWord(messageArray, KEYWORD_DAY_ENDING, i))
+						|| (messageArray[i].equalsIgnoreCase(KEYWORD_DEADLINE)
+								&& validKeyWord(messageArray, KEYWORD_DEADLINE, i))
+						|| (messageArray[i].equalsIgnoreCase(KEYWORD_RECURRING)
+								&& validKeyWord(messageArray, KEYWORD_RECURRING, i))
+						|| (messageArray[i].equalsIgnoreCase(KEYWORD_WITH)
+								&& validKeyWord(messageArray, KEYWORD_WITH, i))
+						|| (messageArray[i].equalsIgnoreCase(KEYWORD_AT)
+								&& validKeyWord(messageArray, KEYWORD_AT, i))
+						|| (messageArray[i].equalsIgnoreCase(KEYWORD_IN) 
+								&& validKeyWord(messageArray, KEYWORD_IN, i))) {
 					taskName = taskName + messageArray[i] + SINGLE_SPACE;
 				} else {
 					break;
