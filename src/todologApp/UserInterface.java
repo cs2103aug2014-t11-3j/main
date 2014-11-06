@@ -50,6 +50,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.Timer;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
@@ -106,6 +107,18 @@ public class UserInterface extends JFrame {
 	}
 	
 	public static void main(String[] args) {
+		
+		final Timer timer = new Timer( 60000 ,
+				new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent ae) {
+						reminderLogic one = new reminderLogic();
+						one.execute();
+					}
+				});
+		timer.setInitialDelay(0);
+		timer.start();
+		
 		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {  
@@ -660,12 +673,12 @@ public class UserInterface extends JFrame {
 			return;
 		}
 		Task focusTask = Controller.getFocusTask();
-		boolean found = false;
+		//boolean found = false;
 		for (int index = 0; index < toDoListItems.size(); index ++){
 			Task task = toDoListItems.get(index);
 			if (task == focusTask) {
 				toDoListTableModel.goToPage((index)/17);
-				found = true;
+				//found = true;
 			}
 		}
 	}
