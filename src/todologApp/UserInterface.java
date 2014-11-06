@@ -4,7 +4,7 @@
 
 package todologApp;
 import java.awt.AWTException;
-import java.awt.AWTUtilities;
+//import java.awt.AWTUtilities;
 import java.awt.CheckboxMenuItem;
 import java.awt.Color;
 import java.awt.Container;
@@ -64,7 +64,7 @@ import javax.swing.table.TableColumn;
 import com.melloware.jintellitype.HotkeyListener;
 import com.melloware.jintellitype.JIntellitype;
 import com.melloware.jintellitype.JIntellitypeException;
-import com.sun.awt.AWTUtilities;
+//import com.sun.awt.AWTUtilities;
 
 public class UserInterface extends JFrame { 
 	
@@ -99,7 +99,7 @@ public class UserInterface extends JFrame {
 	private ToDoListTableModel toDoListTableModel;
 	private TrayIcon trayIcon;
 	private boolean firstMinimize;
-	private boolean invisbility = false;
+//	private boolean invisbility = false;
 	private static UserInterface window;
 	
 	/**
@@ -628,16 +628,16 @@ public class UserInterface extends JFrame {
 	                
 	                if(combination == 2){
 	                	
-	                	if(invisibility == false){
-	                    AWTUtilities.setWindowOpacity(window, 0.05f);
-	                    commandEntryTextField.repaint();
-	                	invisibility = true;
-	                	}
-	                	
-	                	else{
-	                		AWTUtilities.setWindowOpacity(window, 1.0f);
-	                		invisibility = false;
-	                	}
+//	                	if(invisibility == false){
+//	                    AWTUtilities.setWindowOpacity(window, 0.05f);
+//	                    commandEntryTextField.repaint();
+//	                	invisibility = true;
+//	                	}
+//	                	
+//	                	else{
+//	                		AWTUtilities.setWindowOpacity(window, 1.0f);
+//	                		invisibility = false;
+//	                	}
 	                	
 	                
 	                }
