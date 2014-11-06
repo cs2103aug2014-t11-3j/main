@@ -38,6 +38,8 @@ import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -175,9 +177,11 @@ public class UserInterface extends JFrame {
 	private void initialize(JFrame UserInterface) { 
 		//initializeLinkedList();
 		ArrayList<Image> images = new ArrayList<Image>();
-		Image image = Toolkit.getDefaultToolkit().getImage("src/icon-16x16.gif");
+		URL url = this.getClass().getClassLoader().getResource("icon-16x16.gif");
+		Image image = Toolkit.getDefaultToolkit().getImage(url);
 		images.add(image);
-		image = Toolkit.getDefaultToolkit().getImage("src/icon-32x32.gif");
+		url = this.getClass().getClassLoader().getResource("icon-32x32.gif");
+		image = Toolkit.getDefaultToolkit().getImage(url);
 		images.add(image);
 		UserInterface.setIconImages(images);
 		UserInterface.setTitle("ToDoLog");
@@ -195,7 +199,8 @@ public class UserInterface extends JFrame {
 		mainPanel.setLayout(new GridBagLayout());
 		BufferedImage img;
 		try {
-			img = ImageIO.read(new File("src/photos/seagull.jpg"));
+			URL url = this.getClass().getClassLoader().getResource("photos/seagull.jpg");
+			img = ImageIO.read(url);
 			JLabel background = new JLabel(new ImageIcon(img));
 			background.setBounds(0,0,700, 600);
 			layerPane.add(background,new Integer(0));
@@ -291,7 +296,8 @@ public class UserInterface extends JFrame {
 	
 	private void createIcon(JPanel topPanel) {
 		JLabel iconPanel = new JLabel();
-		ImageIcon icon = new ImageIcon("src/icon-40x40.gif");
+		URL url = this.getClass().getClassLoader().getResource("icon-40x40.gif");
+		ImageIcon icon = new ImageIcon(url);
 		iconPanel.setIcon(icon);
 		GridBagConstraints parameters;
 		parameters = setParameters(ICON_PARAMETERS);
@@ -349,8 +355,14 @@ public class UserInterface extends JFrame {
 		
 		toDoListTable.setShowGrid(false);
 		toDoListTable.setIntercellSpacing(new Dimension(0, 0));
-		
-		File fontFile = new File("src/fonts/OpenSans-Regular.ttf");
+		URL url = this.getClass().getClassLoader().getResource("fonts/OpenSans-Regular.ttf");
+		File fontFile = null;
+		try {
+			fontFile = new File(url.toURI());
+		} catch (URISyntaxException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		try {
 			Font font;
 			font = Font.createFont(Font.TRUETYPE_FONT, fontFile);
@@ -420,7 +432,15 @@ public class UserInterface extends JFrame {
 		bottomPanelParameters = setParameters(COMMAND_ENTRY_PARAMETERS);
 		commandEntryTextField = new JTextField(20);
 		bottomPanel.add(commandEntryTextField,bottomPanelParameters);
-		File fontFile = new File("src/fonts/BPmono.ttf");
+		URL url = this.getClass().getClassLoader().getResource("fonts/BPmono.ttf");
+		File fontFile = null;
+		try {
+			fontFile = new File(url.toURI());
+		} catch (URISyntaxException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
 		try {
 			Font font;
 			font = Font.createFont(Font.TRUETYPE_FONT, fontFile);
@@ -452,7 +472,14 @@ public class UserInterface extends JFrame {
 		dynamicHelpText.setLineWrap(true);
 		dynamicHelpText.setWrapStyleWord(false);
 		dynamicHelpText.setEditable(false);
-		File fontFile = new File("src/fonts/OpenSans-Regular.ttf");
+		URL url = this.getClass().getClassLoader().getResource("fonts/OpenSans-Regular.ttf");
+		File fontFile = null;
+		try {
+			fontFile = new File(url.toURI());
+		} catch (URISyntaxException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		try {
 			Font font;
 			font = Font.createFont(Font.TRUETYPE_FONT, fontFile);
@@ -594,7 +621,7 @@ public class UserInterface extends JFrame {
 		makeTrayIcon(this);
 		this.addWindowListener(new ToDoLogWindowListener());
 		Controller.init();
-		toDoListItems = Controller.getDBStorage().load();
+		toDoListItems = Controller.getDisplayList();
 		toDoListTableModel = new ToDoListTableModel(toDoListItems);
 		toDoListTable.setModel(toDoListTableModel);
 		adjustTableColumns(toDoListTable);
@@ -649,7 +676,8 @@ public class UserInterface extends JFrame {
             System.out.println("SystemTray is not supported");
             return;
         }
-        ImageIcon img = new ImageIcon("src/icon-16x16.gif");
+        URL url = this.getClass().getClassLoader().getResource("icon-16x16.gif");
+        ImageIcon img = new ImageIcon(url);
         PopupMenu popup = new PopupMenu();
         trayIcon =
                 new TrayIcon(img.getImage());
@@ -722,12 +750,12 @@ public class UserInterface extends JFrame {
 			return;
 		}
 		Task focusTask = Controller.getFocusTask();
-		boolean found = false;
+		//boolean found = false;
 		for (int index = 0; index < toDoListItems.size(); index ++){
 			Task task = toDoListItems.get(index);
 			if (task == focusTask) {
 				toDoListTableModel.goToPage((index)/17);
-				found = true;
+			//	found = true;
 			}
 		}
 	}
@@ -752,19 +780,12 @@ public class UserInterface extends JFrame {
 			String helperText = dynamicHelpText.getText();
 			if (!entryHelper.isEmpty()) {
 				helperText += "\n";
-				String commandType = entryHelper.poll();
-				if (commandType.equals("add")) {
-					helperText = UIFeedbackHelper.createCmdAddHelpText(entryHelper);
-				} else if (commandType.equals("edit")) {
-					flipPages();
-					helperText = UIFeedbackHelper.createCmdEditHelpText(entryHelper);
-				} else if (commandType.equals("delete")) {
-					flipPages();
-					helperText = UIFeedbackHelper.createCmdDeleteHelpText(entryHelper);
-				}
+				helperText = UIFeedbackHelper.createCmdHelpText(entryHelper);
+				flipPages();
 			} 
 			return helperText;
 		}
+		
 		
 	}
 	

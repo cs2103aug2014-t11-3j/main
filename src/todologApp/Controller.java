@@ -124,10 +124,20 @@ public class Controller {
 				LinkedList<String> details = new LinkedList<String>(currentTaskDetails);
 				details.addAll(newTaskDetails);
 				return details;
+
 			} else if (command instanceof CommandDelete) {
 				((CommandDelete) command).fakeExecute();
 				Task task = ((CommandDelete) command).getDeletedTask();
 				LinkedList<String> details = ControllerFeedbackHelper.createHelperTexts("delete",task);
+				return details;
+			} else if (command instanceof CommandDeleteAll) {
+				((CommandDeleteAll) command).fakeExecute();
+				LinkedList<String> details = ControllerFeedbackHelper.createHelperTexts("deleteall",null);
+				return details;
+			} else if (command instanceof CommandMarkAsDone) {
+				((CommandMarkAsDone) command).fakeExecute();
+				Task task = ((CommandMarkAsDone) command).getMarkedTask();
+				LinkedList<String> details = ControllerFeedbackHelper.createHelperTexts("done",task);
 				return details;
 			}
 			 else {
@@ -150,6 +160,7 @@ public class Controller {
 		_history = new History();
 		_feedback = FEEDBACK_START;
 		_currentViewMode = new CommandView("all");
+		_currentViewMode.execute();
 		_displayList = _currentViewMode.getReturnList();
 	}
 	public static void init(String fileName) {

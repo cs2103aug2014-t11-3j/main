@@ -10,17 +10,18 @@ public class CommandMarkAsDone implements Command {
 	private LinkedList<Task> _displayList;
 	private LinkedList<Task> _taskList;
 	private boolean validity;
-
+	public CommandMarkAsDone() {
+		_index = -1;
+	}
 	public CommandMarkAsDone(int index) {
 		_index = index - 1;
-		_storage = Controller.getDBStorage();
-		_taskList = _storage.load();
-		_displayList=Controller.getDisplayList();
 	}
 
 	public String execute() {
 		String feedback;
-		
+		_storage = Controller.getDBStorage();
+		_taskList = _storage.load();
+		_displayList=Controller.getDisplayList();
 		try {
 			_task = _displayList.get(_index);
 			_displayList.get(_index).toggleTaskStatus();
@@ -45,6 +46,36 @@ public class CommandMarkAsDone implements Command {
 			
 		}
 		sortDisplay(_task);
+		return feedback;
+	}
+	public String fakeExecute() {
+		String feedback="";
+		_storage = Controller.getDBStorage();
+		_taskList = _storage.load();
+		_displayList=Controller.getDisplayList();
+		if (_index == -1) {
+			validity = false;
+			return "Please specify the task to be marked."; 
+		} else {
+			try {
+				_task = _displayList.get(_index);
+				
+				Controller.setFocusTask(_task); // set focus task to change UI's page
+				if (_task.getTaskStatus()) {
+					feedback = _task.getTaskName() + " is mark as completed";
+					validity=true;
+				} else {
+					feedback = _task.getTaskName() + " is mark as not completed";
+					validity=true;
+				}
+			} catch (IndexOutOfBoundsException ioobe ) {
+				validity = false;
+				Controller.setFocusTask(_taskList.getLast());
+				return "Item number "+ (_index+1) +" does not exist";
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 		return feedback;
 	}
 	public void sortDisplay(Task task){
@@ -95,6 +126,9 @@ public class CommandMarkAsDone implements Command {
 	}
 	public boolean isUndoable(){
 		return validity;
+	}
+	public Task getMarkedTask() {
+		return _task;
 	}
 
 }

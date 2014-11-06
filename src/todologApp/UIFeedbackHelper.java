@@ -4,7 +4,24 @@ import java.util.LinkedList;
 import java.util.NoSuchElementException;
 
 public class UIFeedbackHelper {
-	public static String createCmdAddHelpText(LinkedList<String> entryHelper) {
+	public static String createCmdHelpText(LinkedList<String> entryHelper) {
+		String commandType = entryHelper.poll();
+		String helperText = "";
+		if (commandType.equals("add")) {
+			helperText = createCmdAddHelpText(entryHelper);
+		} else if (commandType.equals("edit")) {
+			helperText = createCmdEditHelpText(entryHelper);
+		} else if (commandType.equals("delete")) {
+			helperText = createCmdDeleteHelpText(entryHelper);
+		} else if (commandType.equals("deleteall")) {
+			helperText = createCmdDeleteAllHelpText(entryHelper);
+		} else if (commandType.equals("done")) {
+			helperText = createCmdDoneHelpText(entryHelper);
+		}
+		return helperText;
+	}
+	
+	private static String createCmdAddHelpText(LinkedList<String> entryHelper) {
 		if (entryHelper.isEmpty()) {
 			return createCmdAddHelpTextEmptyDetails();
 		}
@@ -30,38 +47,38 @@ public class UIFeedbackHelper {
 				+ "days of week and short forms: monday, mon, tuesday, tue,...";
 		return helperText;
 	}
-	
+
 	private static String createCmdAddFloatingTaskHelperText(LinkedList<String> entryHelper) {
 		String helperText = "* TASK *\n";
 		helperText += "Name: " + entryHelper.poll() + "\n" +
-					"Person: " + entryHelper.poll() + "\n" +
-					"Venue: " + entryHelper.poll() + "\n";
+				"Person: " + entryHelper.poll() + "\n" +
+				"Venue: " + entryHelper.poll() + "\n";
 		return helperText;
 	}
 
 	private static String createCmdAddDeadlineTaskHelperText(LinkedList<String> entryHelper) {
 		String helperText = "* DEADLINE TASK *\n";
 		helperText += "Name: " + entryHelper.poll() + "\n" +
-					"Date: "+ entryHelper.poll() + "\n" +
-					"Time: "+ entryHelper.poll() + "\n" +
-					"Person: " + entryHelper.poll() + "\n" +
-					"Venue: " + entryHelper.poll() + "\n";
+				"Date: "+ entryHelper.poll() + "\n" +
+				"Time: "+ entryHelper.poll() + "\n" +
+				"Person: " + entryHelper.poll() + "\n" +
+				"Venue: " + entryHelper.poll() + "\n";
 		return helperText;
 	}
 
 	private static String createCmdAddTimedTaskHelperText(LinkedList<String> entryHelper) {
 		String helperText = "* TASK *\n";
 		helperText += "Name: " + entryHelper.poll() + "\n" +
-					"Start date: "+ entryHelper.poll() + "\n" +
-					"Start time: "+ entryHelper.poll() + "\n" +
-					"End date: "+ entryHelper.poll() + "\n" +
-					"End time: "+ entryHelper.poll() + "\n" +
-					"Person: " + entryHelper.poll() + "\n" +
-					"Venue: " + entryHelper.poll() + "\n";
+				"Start date: "+ entryHelper.poll() + "\n" +
+				"Start time: "+ entryHelper.poll() + "\n" +
+				"End date: "+ entryHelper.poll() + "\n" +
+				"End time: "+ entryHelper.poll() + "\n" +
+				"Person: " + entryHelper.poll() + "\n" +
+				"Venue: " + entryHelper.poll() + "\n";
 		return helperText;
 	}
-	
-	public static String createCmdEditHelpText(LinkedList<String> entryHelper) {
+
+	private static String createCmdEditHelpText(LinkedList<String> entryHelper) {
 		if (entryHelper.size() == 1) {
 			return createCmdEditHelpTextEmptyDetails();
 		} 
@@ -74,7 +91,7 @@ public class UIFeedbackHelper {
 				return createCmdEditFloatingTaskHelperText(entryHelper);
 		}
 	}
-	
+
 	private static String createCmdEditFloatingTaskHelperText(
 			LinkedList<String> entryHelper) {
 		String helperText = "* EDIT TASK *\n";
@@ -104,12 +121,12 @@ public class UIFeedbackHelper {
 			return helperText;
 		} catch (NoSuchElementException nsee) {
 			helperText += "Name: " + oldName + "\n" +
-						"Person: " + oldPerson + "\n" +
-						"Venue: " + oldVenue + "\n";
+					"Person: " + oldPerson + "\n" +
+					"Venue: " + oldVenue + "\n";
 			return helperText;
 		}
 	}
-	
+
 	private static String createCmdEditHelpTextEmptyDetails() {
 		String helperText = "* EDIT *\n";
 		helperText += " To edit, enter:  edit [index] [edit type] [details].\n"
@@ -119,7 +136,7 @@ public class UIFeedbackHelper {
 				+ " - Cannot edit a task to become a deadline or vice versa.";
 		return helperText;
 	}
-	
+
 	private static String createCmdEditDeadlineTaskHelperText(
 			LinkedList<String> entryHelper) {
 		String helperText = "* EDIT DEADLINE TASK *\n";
@@ -130,7 +147,7 @@ public class UIFeedbackHelper {
 		String oldVenue = entryHelper.poll();
 		try {
 			entryHelper.removeFirst(); entryHelper.removeFirst();
-		
+
 			String newName = entryHelper.poll();
 			String newDate = entryHelper.poll();
 			String newTime = entryHelper.poll();
@@ -164,16 +181,16 @@ public class UIFeedbackHelper {
 			return helperText;
 		} catch (NoSuchElementException nsee) {
 			helperText += "Name: " + oldName + "\n" +
-				 	"Date: " + oldDate + "\n" +
-				 	"Time: " + oldTime + "\n" +
+					"Date: " + oldDate + "\n" +
+					"Time: " + oldTime + "\n" +
 					"Person: " + oldPerson + "\n" +
 					"Venue: " + oldVenue + "\n";
-		return helperText;
+			return helperText;
+		}
 	}
-	}
-	
+
 	private static String createCmdEditTimedTaskHelperText(
-						LinkedList<String> entryHelper) {
+			LinkedList<String> entryHelper) {
 		String helperText = "* EDIT DEADLINE TASK *\n";
 		String oldName = entryHelper.poll();
 		String oldStartDate = entryHelper.poll();
@@ -229,18 +246,18 @@ public class UIFeedbackHelper {
 			return helperText;
 		} catch (NoSuchElementException nsee) {
 			helperText += "Name: " + oldName + "\n" +
-					 	"Start date: " + oldStartDate + "\n" +
-					 	"Start time: " + oldStartTime + "\n" +
-					 	"End date: " + oldEndDate + "\n" +
-					 	"End time: " + oldEndTime + "\n" +
-						"Person: " + oldPerson + "\n" +
-						"Venue: " + oldVenue + "\n";
+					"Start date: " + oldStartDate + "\n" +
+					"Start time: " + oldStartTime + "\n" +
+					"End date: " + oldEndDate + "\n" +
+					"End time: " + oldEndTime + "\n" +
+					"Person: " + oldPerson + "\n" +
+					"Venue: " + oldVenue + "\n";
 			return helperText;
 		}
-		
+
 	}
 
-	public static String createCmdDeleteHelpText(LinkedList<String> entryHelper) {
+	private static String createCmdDeleteHelpText(LinkedList<String> entryHelper) {
 		if (entryHelper.isEmpty()) {
 			return createCmdDeleteHelpTextEmptyDetails();
 		}
@@ -263,30 +280,84 @@ public class UIFeedbackHelper {
 	private static String createCmdDeleteFloatingTaskHelperText(LinkedList<String> entryHelper) {
 		String helperText = "* DELETE TASK *\n";
 		helperText += "Name: " + entryHelper.poll() + "\n" +
-					"Person: " + entryHelper.poll() + "\n" +
-					"Venue: " + entryHelper.poll() + "\n";
+				"Person: " + entryHelper.poll() + "\n" +
+				"Venue: " + entryHelper.poll() + "\n";
 		return helperText;
 	}
 
 	private static String createCmdDeleteDeadlineTaskHelperText(LinkedList<String> entryHelper) {
 		String helperText = "* DELETE DEADLINE *\n";
 		helperText += "Name: " + entryHelper.poll() + "\n" +
-					"Date: "+ entryHelper.poll() + "\n" +
-					"Time: "+ entryHelper.poll() + "\n" +
-					"Person: " + entryHelper.poll() + "\n" +
-					"Venue: " + entryHelper.poll() + "\n";
+				"Date: "+ entryHelper.poll() + "\n" +
+				"Time: "+ entryHelper.poll() + "\n" +
+				"Person: " + entryHelper.poll() + "\n" +
+				"Venue: " + entryHelper.poll() + "\n";
 		return helperText;
 	}
 
 	private static String createCmdDeleteTimedTaskHelperText(LinkedList<String> entryHelper) {
 		String helperText = "* DELETE TASK *\n";
 		helperText += "Name: " + entryHelper.poll() + "\n" +
-					"Start date: "+ entryHelper.poll() + "\n" +
-					"Start time: "+ entryHelper.poll() + "\n" +
-					"End date: "+ entryHelper.poll() + "\n" +
-					"End time: "+ entryHelper.poll() + "\n" +
-					"Person: " + entryHelper.poll() + "\n" +
-					"Venue: " + entryHelper.poll() + "\n";
+				"Start date: "+ entryHelper.poll() + "\n" +
+				"Start time: "+ entryHelper.poll() + "\n" +
+				"End date: "+ entryHelper.poll() + "\n" +
+				"End time: "+ entryHelper.poll() + "\n" +
+				"Person: " + entryHelper.poll() + "\n" +
+				"Venue: " + entryHelper.poll() + "\n";
+		return helperText;
+	}
+
+	private static String createCmdDeleteAllHelpText(
+			LinkedList<String> entryHelper) {
+		return "Warning: Destructive command";
+	}
+	
+	private static String createCmdDoneHelpText(LinkedList<String> entryHelper) {
+		if (entryHelper.isEmpty()) {
+			return createCmdDoneHelpTextEmptyDetails();
+		}
+		switch (entryHelper.poll()) {
+			case "TIMED":
+				return createCmdDoneTimedTaskHelperText(entryHelper);
+			case "DEADLINE":
+				return createCmdDoneDeadlineTaskHelperText(entryHelper);
+			default:
+				return createCmdDoneFloatingTaskHelperText(entryHelper);
+		}
+	}
+
+	private static String createCmdDoneHelpTextEmptyDetails() {
+		String helperText = "* DELETE *\n";
+		helperText += " To DELETE, enter:  delete [index].\n";
+		return helperText;
+	}
+
+	private static String createCmdDoneFloatingTaskHelperText(LinkedList<String> entryHelper) {
+		String helperText = "* DELETE TASK *\n";
+		helperText += "Name: " + entryHelper.poll() + "\n" +
+				"Person: " + entryHelper.poll() + "\n" +
+				"Venue: " + entryHelper.poll() + "\n";
+		return helperText;
+	}
+
+	private static String createCmdDoneDeadlineTaskHelperText(LinkedList<String> entryHelper) {
+		String helperText = "* DELETE DEADLINE *\n";
+		helperText += "Name: " + entryHelper.poll() + "\n" +
+				"Date: "+ entryHelper.poll() + "\n" +
+				"Time: "+ entryHelper.poll() + "\n" +
+				"Person: " + entryHelper.poll() + "\n" +
+				"Venue: " + entryHelper.poll() + "\n";
+		return helperText;
+	}
+	private static String createCmdDoneTimedTaskHelperText(LinkedList<String> entryHelper) {
+		String helperText = "* DELETE TASK *\n";
+		helperText += "Name: " + entryHelper.poll() + "\n" +
+				"Start date: "+ entryHelper.poll() + "\n" +
+				"Start time: "+ entryHelper.poll() + "\n" +
+				"End date: "+ entryHelper.poll() + "\n" +
+				"End time: "+ entryHelper.poll() + "\n" +
+				"Person: " + entryHelper.poll() + "\n" +
+				"Venue: " + entryHelper.poll() + "\n";
 		return helperText;
 	}
 }

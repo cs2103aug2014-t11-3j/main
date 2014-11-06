@@ -27,6 +27,16 @@ public class CommandDeleteAll implements Command {
 		validity=true;
 		return feedback;
 	}
+	
+	public String fakeExecute() {
+		String feedback;
+		_storage = Controller.getDBStorage();
+		_tasks = _storage.load();
+		Controller.setFocusTask(null);
+		feedback = "Deleted all tasks";
+		validity=true;
+		return feedback;
+	}
 
 	public String undo() {
 		String feedback;
