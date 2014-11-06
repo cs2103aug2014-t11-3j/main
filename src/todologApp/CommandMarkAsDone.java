@@ -121,7 +121,8 @@ public class CommandMarkAsDone implements Command {
 		}
 	}
 	public String undo() {
-		return execute();
+		CommandMarkAsDone one= new CommandMarkAsDone(_displayList.indexOf(_task)+1);
+		return one.execute();
 	}
 	public boolean isUndoable(){
 		return validity;
