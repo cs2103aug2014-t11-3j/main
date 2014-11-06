@@ -239,27 +239,27 @@ public class CommandView implements Command {
 		LinkedList<Task> viewList=new LinkedList<Task>();
 
 		for (int i = 0; i < _storage.load().size(); i++){
-			if(storageList.get(i).getTaskType()==TaskType.TIMED){
+			if(_storage.load().get(i).getTaskType()==TaskType.TIMED){
 				
-				if(((storageList.get(i).getStart().isAfter(startDay))||(storageList.get(i).getStart().isEqual(startDay)))
-						&&((storageList.get(i).getStart().isBefore(endDay))||(storageList.get(i).getStart().isEqual(endDay)))){
+				if(((_storage.load().get(i).getStart().isAfter(startDay))||(_storage.load().get(i).getStart().isEqual(startDay)))
+						&&((_storage.load().get(i).getStart().isBefore(endDay))||(_storage.load().get(i).getStart().isEqual(endDay)))){
 					
-					viewList.add(storageList.get(i));
+					viewList.add(_storage.load().get(i));
 				}
-				else if(((storageList.get(i).getEnd().isAfter(startDay))||(storageList.get(i).getEnd().isEqual(startDay)))
-						&&((storageList.get(i).getEnd().isBefore(endDay))||(storageList.get(i).getEnd().isEqual(endDay)))){
+				else if(((_storage.load().get(i).getEnd().isAfter(startDay))||(_storage.load().get(i).getEnd().isEqual(startDay)))
+						&&((_storage.load().get(i).getEnd().isBefore(endDay))||(_storage.load().get(i).getEnd().isEqual(endDay)))){
 					
-					viewList.add(storageList.get(i));	
+					viewList.add(_storage.load().get(i));	
 				}
 			}
-			else if(storageList.get(i).getTaskType()==TaskType.DEADLINE){
+			else if(_storage.load().get(i).getTaskType()==TaskType.DEADLINE){
 			
-				if(storageList.get(i).getEnd()!=null){
+				if(_storage.load().get(i).getEnd()!=null){
 				
-					if(((storageList.get(i).getEnd().isAfter(startDay))||(storageList.get(i).getEnd().isEqual(startDay)))
-							&&((storageList.get(i).getEnd().isBefore(endDay))||(storageList.get(i).getEnd().isEqual(endDay)))){
+					if(((_storage.load().get(i).getEnd().isAfter(startDay))||(_storage.load().get(i).getEnd().isEqual(startDay)))
+							&&((_storage.load().get(i).getEnd().isBefore(endDay))||(_storage.load().get(i).getEnd().isEqual(endDay)))){
 					
-						viewList.add(storageList.get(i));
+						viewList.add(_storage.load().get(i));
 						
 					}
 				}
