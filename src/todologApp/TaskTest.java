@@ -171,4 +171,15 @@ public class TaskTest {
 		} catch (Exception e){
 		}
 	}
+	
+	@Test
+	public void testValidKeyWord() {
+		String s1 = "deadline task with \"dad at soc\" at \"dad with soc\"";
+		String[] arr1 = s1.split(" ");
+		
+		assertEquals(true, Parser.validKeyWord(arr1, "with", 2));
+		assertEquals(false, Parser.validKeyWord(arr1, "at", 4));
+		assertEquals(false, Parser.validKeyWord(arr1, "with", 8));
+		assertEquals(true, Parser.validKeyWord(arr1, "at", 6));
+	}
 }
