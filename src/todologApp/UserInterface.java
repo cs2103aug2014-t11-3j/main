@@ -4,6 +4,7 @@
 
 package todologApp;
 import java.awt.AWTException;
+import java.awt.AWTUtilities;
 import java.awt.CheckboxMenuItem;
 import java.awt.Color;
 import java.awt.Container;
@@ -19,6 +20,7 @@ import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Menu;
 import java.awt.MenuItem;
+import java.awt.Point;
 import java.awt.PopupMenu;
 import java.awt.RenderingHints;
 import java.awt.SystemTray;
@@ -30,6 +32,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
@@ -60,6 +63,7 @@ import javax.swing.table.TableColumn;
 import com.melloware.jintellitype.HotkeyListener;
 import com.melloware.jintellitype.JIntellitype;
 import com.melloware.jintellitype.JIntellitypeException;
+import com.sun.awt.AWTUtilities;
 
 public class UserInterface extends JFrame { 
 	
@@ -94,6 +98,7 @@ public class UserInterface extends JFrame {
 	private ToDoListTableModel toDoListTableModel;
 	private TrayIcon trayIcon;
 	private boolean firstMinimize;
+	private boolean invisbility = false;
 	private static UserInterface window;
 	
 	/**
@@ -110,10 +115,50 @@ public class UserInterface extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {  
 				try {
+					final Point offset = new Point();
 					window = new UserInterface(); 		
 					window.dispose();
 					window.setUndecorated(true);
 					window.setVisible(true);
+					window.addMouseListener(new MouseListener() {
+						@Override
+						public void mousePressed(final MouseEvent e) {
+							offset.setLocation(e.getPoint());
+						}
+						
+						@Override
+						public void mouseReleased(final MouseEvent e){
+							
+						}
+						
+						@Override
+						public void mouseClicked(final MouseEvent e){
+							
+						}
+						
+						@Override
+						public void mouseEntered(final MouseEvent e){
+							
+						}
+						
+						@Override
+						public void mouseExited(final MouseEvent e){
+							
+						}
+						
+					});
+					
+					window.addMouseMotionListener(new MouseMotionListener() {
+				        @Override
+				        public void mouseDragged(final MouseEvent e) {
+				            window.setLocation(e.getXOnScreen()-offset.x, e.getYOnScreen()-offset.y);
+				        }
+						
+				        @Override
+				        public void mouseMoved(final MouseEvent e){
+				        	
+				        }
+					});
 					//window.addKeyListener(new UserInterfaceListener());
 					
 				} catch (Exception e) {
@@ -137,7 +182,7 @@ public class UserInterface extends JFrame {
 		UserInterface.setIconImages(images);
 		UserInterface.setTitle("ToDoLog");
 		UserInterface.setResizable(false);
-		UserInterface.setBounds(100,100,700, 600);					
+		UserInterface.setBounds(325,140,700, 600);					
 		UserInterface.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
@@ -564,6 +609,7 @@ public class UserInterface extends JFrame {
 		try {
 			JIntellitype.getInstance();
 			JIntellitype.getInstance().registerHotKey(1, JIntellitype.MOD_ALT, (int) 'B');;
+			JIntellitype.getInstance().registerHotKey(2, JIntellitype.MOD_ALT, (int) 'N');
 			JIntellitype.getInstance().addHotKeyListener(new HotkeyListener() {
 	            @Override
 	            public void onHotKey(int combination) {
@@ -574,6 +620,22 @@ public class UserInterface extends JFrame {
 	                	} else {
 	                		window.setState(JFrame.ICONIFIED);
 	                	}
+	                
+	                if(combination == 2){
+	                	
+	                	if(invisibility == false){
+	                    AWTUtilities.setWindowOpacity(window, 0.05f);
+	                    commandEntryTextField.repaint();
+	                	invisibility = true;
+	                	}
+	                	
+	                	else{
+	                		AWTUtilities.setWindowOpacity(window, 1.0f);
+	                		invisibility = false;
+	                	}
+	                	
+	                
+	                }
 	            }
 			});
 		} catch (JIntellitypeException jie) {
@@ -713,13 +775,7 @@ public class UserInterface extends JFrame {
 	
 		@Override
 		public void keyReleased(KeyEvent e) {
-			int keyCode = e.getKeyCode();
-			if(keyCode == KeyEvent.VK_PAGE_UP) {
-				toDoListTableModel.pageUp();
-			}
-			if ((keyCode == KeyEvent.VK_PAGE_DOWN) || (keyCode == KeyEvent.VK_F10)) {
-				toDoListTableModel.pageDown();
-			}
+			
 		}
 			
 		@Override
@@ -765,7 +821,8 @@ public class UserInterface extends JFrame {
 	
 
 	}
-
+	
+	
 	public class CloseButtonMouseListener implements MouseListener {
 
 		@Override
