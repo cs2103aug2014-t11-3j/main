@@ -1,7 +1,7 @@
 package todologApp;
 
 //import javax.swing.ImageIcon;
-import javax.swing.JFrame;
+//import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 public class ShowMessageDialog {
@@ -14,10 +14,10 @@ public class ShowMessageDialog {
 	  {
 		String message = generateMessage();
 	    // create a jframe
-	    JFrame frame = new JFrame("JOptionPane showMessageDialog example");   
+	    //JFrame frame = new JFrame("JOptionPane showMessageDialog example");   
 	    // show a joptionpane dialog using showMessageDialog
-	    JOptionPane.showMessageDialog(frame,message,"Reminder",JOptionPane.WARNING_MESSAGE);
-	    System.exit(0);
+	    JOptionPane.showMessageDialog(null,message,"Reminder",JOptionPane.WARNING_MESSAGE);
+	    
 	  }
 	public String generateMessage(){
 		String name = _task.getTaskName();
