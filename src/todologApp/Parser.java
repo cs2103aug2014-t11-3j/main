@@ -452,34 +452,38 @@ public class Parser {
 						&& validKeyWord(messageArray, KEYWORD_WITH, i)) {
 					for (int j=i+1; j<=messageArray.length-1; j++) {
 						if(messageArray[j].equalsIgnoreCase(KEYWORD_AT)
-								&& !validKeyWord(messageArray, KEYWORD_AT, j)) {
-							taskPerson = taskPerson + messageArray[j] + SINGLE_SPACE;
-						} else if (messageArray[j].equalsIgnoreCase(KEYWORD_AT)
-								&& validKeyWord(messageArray, KEYWORD_AT, j)) { 
+								&& validKeyWord(messageArray, KEYWORD_AT, j)) {
 							break;
+						} else if (messageArray[j].equalsIgnoreCase(KEYWORD_DAY_STARTING)
+								&& validKeyWord(messageArray, KEYWORD_DAY_STARTING, j)) {
+							break;
+						} else if (messageArray[j].equalsIgnoreCase(KEYWORD_DAY_STARTING_2)
+								&& validKeyWord(messageArray, KEYWORD_DAY_STARTING_2, j)) {
+							break;
+						} else if (messageArray[j].equalsIgnoreCase(KEYWORD_DAY_ENDING)
+								&& validKeyWord(messageArray, KEYWORD_DAY_ENDING, j)) {
+							break;
+						} else if (messageArray[j].equalsIgnoreCase(KEYWORD_DEADLINE)
+								&& validKeyWord(messageArray, KEYWORD_DEADLINE, j)) {
+							break;
+						} else if (messageArray[j].equalsIgnoreCase(KEYWORD_RECURRING)
+								&& validKeyWord(messageArray, KEYWORD_RECURRING, j)) {
+							break;
+						} else if (messageArray[j].equalsIgnoreCase(KEYWORD_DAY_ENDING)
+								&& validKeyWord(messageArray, KEYWORD_DAY_ENDING, j)) {
+							break;
+						} 
+						
+						else { 
+							taskPerson = taskPerson + messageArray[j] + SINGLE_SPACE;
 						}
 					}
 				}
 			}
 		}
 		
-//		taskPerson = taskPerson.replaceAll(QUOTATION_MARK, EMPTY_STRING);
+		taskPerson = taskPerson.replaceAll(QUOTATION_MARK, EMPTY_STRING);
 
-//		for (int i=0; i+1<=messageArray.length-1; i++) {
-//			if (messageArray[i].equalsIgnoreCase(KEYWORD_WITH) 
-//					&& validKeyWord(messageArray, KEYWORD_WITH, i)) {
-//				for (int j=i+1; j<=messageArray.length-1; j++) {
-//					if (messageArray[j].equalsIgnoreCase(KEYWORD_AT) 
-//							&& validKeyWord(messageArray, KEYWORD_AT, j)) {
-//						break;
-//						//return taskPerson.trim();
-//					} else  {
-//						taskPerson = taskPerson + messageArray[j] + SINGLE_SPACE;
-//					}
-//				}
-//			}
-//		}
-//		
 		return taskPerson.trim();
 	}
 	
@@ -509,36 +513,44 @@ public class Parser {
 		} else {
 			for (int i=0; i+1<=messageArray.length-1; i++) {
 				if(messageArray[i].equalsIgnoreCase(KEYWORD_AT)
-						&& validKeyWord(messageArray, KEYWORD_AT, i)) {
+						&& validKeyWord(messageArray, KEYWORD_AT, i)
+						&& !isInteger(messageArray[i+1])) {
 					for (int j=i+1; j<=messageArray.length-1; j++) {
 						if(messageArray[j].equalsIgnoreCase(KEYWORD_WITH)
-								&& !validKeyWord(messageArray, KEYWORD_WITH, j)) {
-							taskVenue = taskVenue + messageArray[j] + SINGLE_SPACE;
-						} else if (messageArray[j].equalsIgnoreCase(KEYWORD_WITH)
-								&& validKeyWord(messageArray, KEYWORD_WITH, j)){ 
+								&& validKeyWord(messageArray, KEYWORD_WITH, j)) {
 							break;
+						} else if (messageArray[j].equalsIgnoreCase(KEYWORD_DAY_STARTING)
+								&& validKeyWord(messageArray, KEYWORD_DAY_STARTING, j)) {
+							break;
+						} else if (messageArray[j].equalsIgnoreCase(KEYWORD_DAY_STARTING_2)
+								&& validKeyWord(messageArray, KEYWORD_DAY_STARTING_2, j)) {
+							break;
+						} else if (messageArray[j].equalsIgnoreCase(KEYWORD_DAY_ENDING)
+								&& validKeyWord(messageArray, KEYWORD_DAY_ENDING, j)) {
+							break;
+						} else if (messageArray[j].equalsIgnoreCase(KEYWORD_DEADLINE)
+								&& validKeyWord(messageArray, KEYWORD_DEADLINE, j)) {
+							break;
+						} else if (messageArray[j].equalsIgnoreCase(KEYWORD_RECURRING)
+								&& validKeyWord(messageArray, KEYWORD_RECURRING, j)) {
+							break;
+						} else if (messageArray[j].equalsIgnoreCase(KEYWORD_DAY_ENDING)
+								&& validKeyWord(messageArray, KEYWORD_DAY_ENDING, j)) {
+							break;
+						}
+						
+						
+						
+						
+						else { 
+							taskVenue = taskVenue + messageArray[j] + SINGLE_SPACE;
 						}
 					}
 				} 
 			}
 		}
 		
-//		taskVenue = taskVenue.replaceAll(QUOTATION_MARK, EMPTY_STRING);
-	
-//		for (int i=0; i+1<=messageArray.length-1; i++) {
-//			if (messageArray[i].equalsIgnoreCase(KEYWORD_AT) 
-//					&& validKeyWord(messageArray, KEYWORD_AT, i)) {
-//				for (int j=i+1; j<=messageArray.length-1; j++) {
-//					if (messageArray[j].equalsIgnoreCase(KEYWORD_WITH) 
-//							&& validKeyWord(messageArray, KEYWORD_WITH, j)) {
-//						break;
-//						//return taskVenue.trim();
-//					} else  {
-//						taskVenue = taskVenue + messageArray[j] + SINGLE_SPACE;
-//					}
-//				}
-//			}
-//		}
+		taskVenue = taskVenue.replaceAll(QUOTATION_MARK, EMPTY_STRING);
 		
 		return taskVenue.trim();
 	}
@@ -546,10 +558,10 @@ public class Parser {
 	public static boolean validKeyWord(String [] array, String keyWord, int index) {
 		int count = 0;
 
-		for (int i=0; i<=index; i++) {	
-			if (array[i].equalsIgnoreCase(keyWord)) {
-				break;
-			} else if (array[i].contains(QUOTATION_MARK)) {
+		for (int i=0; i<=index; i++) {
+			String currentWord = array[i];
+			if (currentWord.equalsIgnoreCase(keyWord)) {
+			} else if (currentWord.contains(QUOTATION_MARK)) {
 				count = count + 1;
 			}
 		}
