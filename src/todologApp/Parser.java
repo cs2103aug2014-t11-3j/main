@@ -182,7 +182,8 @@ public class Parser {
 		String [] messageArray = generateArray(parameter);
 
 		for (int i = 0; i<=messageArray.length-1; i++) {
-			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING)) {
+			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING)
+					&& validKeyWord(messageArray, KEYWORD_DAY_ENDING, i)) {
 				for (int j=i+1; j<=messageArray.length-1; j++) {
 					if (messageArray[j].equalsIgnoreCase(KEYWORD_AT) 
 							&& isInteger(messageArray[j+1])) {
@@ -198,9 +199,11 @@ public class Parser {
 						} 
 					}
 				}
-			} else if (messageArray[i].equalsIgnoreCase(KEYWORD_DEADLINE)) {
+			} else if (messageArray[i].equalsIgnoreCase(KEYWORD_DEADLINE)
+						&& validKeyWord(messageArray, KEYWORD_DEADLINE, i)) {
 				for (int j=i+1; j<=messageArray.length-1; j++) {
-					if (messageArray[j].equalsIgnoreCase(KEYWORD_AT) 
+					if (messageArray[j].equalsIgnoreCase(KEYWORD_AT)
+							&& validKeyWord(messageArray, KEYWORD_AT, j)
 							&& isInteger(messageArray[j+1])) {
 						try {
 							int endTime = Integer.parseInt(messageArray[j+1]);
@@ -214,10 +217,13 @@ public class Parser {
 						} 
 					}
 				}
-			} else if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) 
-						|| messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING_2)) {
+			} else if ((messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING)
+							&& validKeyWord(messageArray, KEYWORD_DAY_STARTING, i))
+						|| (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING_2) 
+							&& validKeyWord(messageArray, KEYWORD_DAY_STARTING_2, i))) {
 				for (int j=i+1; j<=messageArray.length-1; j++) {
 					if (messageArray[j].equalsIgnoreCase(KEYWORD_DAY_ENDING) 
+							&& validKeyWord(messageArray, KEYWORD_DAY_ENDING, j)
 							&& isInteger(messageArray[j+1])
 							&& messageArray[j+1].length() == 4) {
 						try {
@@ -241,10 +247,13 @@ public class Parser {
 		String [] messageArray = generateArray(parameter);
 
 		for (int i = 0; i<=messageArray.length-1; i++) {
-			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING)
-					|| messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING_2)) {
+			if ((messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) 
+					&& validKeyWord(messageArray, KEYWORD_DAY_STARTING, i))
+					|| messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING_2)
+					&& validKeyWord(messageArray, KEYWORD_DAY_STARTING_2, i)) {
 				for (int j=i+1; j<=messageArray.length-1; j++) {
 					if (messageArray[j].equalsIgnoreCase(KEYWORD_AT) 
+							&& validKeyWord(messageArray, KEYWORD_AT, j)
 							&& isInteger(messageArray[j+1])) {
 						try {
 							int startTime = Integer.parseInt(messageArray[j+1]);
@@ -256,7 +265,8 @@ public class Parser {
 						} catch (NumberFormatException nfe) {
 							throw new Exception("Invalid Time Format");
 						} 
-					} else if (messageArray[j].equalsIgnoreCase(KEYWORD_DAY_ENDING)) {
+					} else if (messageArray[j].equalsIgnoreCase(KEYWORD_DAY_ENDING)
+							&& validKeyWord(messageArray, KEYWORD_DAY_ENDING, j)) {
 						return 0000;
 					}
 				}
@@ -472,6 +482,9 @@ public class Parser {
 						} else if (messageArray[j].equalsIgnoreCase(KEYWORD_DAY_ENDING)
 								&& validKeyWord(messageArray, KEYWORD_DAY_ENDING, j)) {
 							break;
+						} else if (messageArray[j].equalsIgnoreCase(KEYWORD_IN)
+								&& validKeyWord(messageArray, KEYWORD_IN, j)) {
+							break;
 						} 
 						
 						else { 
@@ -512,9 +525,11 @@ public class Parser {
 			}
 		} else {
 			for (int i=0; i+1<=messageArray.length-1; i++) {
-				if(messageArray[i].equalsIgnoreCase(KEYWORD_AT)
+				if((messageArray[i].equalsIgnoreCase(KEYWORD_AT)
 						&& validKeyWord(messageArray, KEYWORD_AT, i)
-						&& !isInteger(messageArray[i+1])) {
+						&& !isInteger(messageArray[i+1]))
+						|| messageArray[i].equalsIgnoreCase(KEYWORD_IN)
+						&& validKeyWord(messageArray, KEYWORD_AT, i)) {
 					for (int j=i+1; j<=messageArray.length-1; j++) {
 						if(messageArray[j].equalsIgnoreCase(KEYWORD_WITH)
 								&& validKeyWord(messageArray, KEYWORD_WITH, j)) {
@@ -537,10 +552,11 @@ public class Parser {
 						} else if (messageArray[j].equalsIgnoreCase(KEYWORD_DAY_ENDING)
 								&& validKeyWord(messageArray, KEYWORD_DAY_ENDING, j)) {
 							break;
-						}
-						
-						
-						
+						} else if (messageArray[j].equalsIgnoreCase(KEYWORD_AT)
+								&& validKeyWord(messageArray, KEYWORD_AT, j)) {
+							break;
+						} 
+					
 						
 						else { 
 							taskVenue = taskVenue + messageArray[j] + SINGLE_SPACE;
@@ -577,8 +593,10 @@ public class Parser {
 		int year = 1, month = 1, day = 1;
 		boolean hasKeyword = false;
 		for (int i = 0; i+1<=messageArray.length-1; i++) {
-			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) 
-					|| messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING_2)) {
+			if ((messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) 
+					&& validKeyWord(messageArray, KEYWORD_DAY_STARTING, i))
+				|| (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING_2)
+					&& validKeyWord(messageArray, KEYWORD_DAY_STARTING_2, i))) {
 				hasKeyword = true;
 				if (isInteger(messageArray[i+1])) {
 					year = parseYear(messageArray[i+1]);
@@ -608,7 +626,8 @@ public class Parser {
 					}
 				}
 			}
-			if (messageArray[i].equalsIgnoreCase(KEYWORD_DEADLINE)) {
+			if (messageArray[i].equalsIgnoreCase(KEYWORD_DEADLINE)
+					&& validKeyWord(messageArray, KEYWORD_DEADLINE, i)) {
 				hasKeyword = true;
 				DateTime taskStart = new DateTime(0);
 				return taskStart;
@@ -657,8 +676,10 @@ public class Parser {
 		boolean hasKeyword = false;
 		//Parse date
 		for (int i = 0; i+1<=messageArray.length-1; i++) {
-			if (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING) 
-					|| messageArray[i].equalsIgnoreCase(KEYWORD_DEADLINE)) {
+			if ((messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING) 
+					&& validKeyWord(messageArray, KEYWORD_DAY_ENDING, i))
+					|| (messageArray[i].equalsIgnoreCase(KEYWORD_DEADLINE)
+					&& validKeyWord(messageArray, KEYWORD_DEADLINE, i)) ) {
 				hasKeyword = true;
 				if (isInteger(messageArray[i+1])) {
 					if (messageArray[i+1].length() == 6) { 
