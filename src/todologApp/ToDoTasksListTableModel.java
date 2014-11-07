@@ -12,7 +12,7 @@ import javax.swing.table.*;
 import java.util.*;
 import java.lang.Object;
 
-public class ToDoListTableModel extends AbstractTableModel{
+public class ToDoTasksListTableModel extends AbstractTableModel{
 	
 
 	/**
@@ -29,7 +29,7 @@ public class ToDoListTableModel extends AbstractTableModel{
 	private static final int NOT_DEADLINE = -1;
 	private int pageOffSet = 0;
 	
-	public ToDoListTableModel(LinkedList<Task> toDoListItems){
+	public ToDoTasksListTableModel(LinkedList<Task> toDoListItems){
 		tableData = toDoListItems;
 	}
 	

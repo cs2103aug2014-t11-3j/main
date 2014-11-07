@@ -51,6 +51,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
@@ -72,29 +73,33 @@ public class UserInterface extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = 4308151724219875078L;	
-	private static final int TODOLIST_PARAMETERS = 1;
+	private static final int TODOLIST_HOLDER_PARAMETERS = 1;
 	private static final int BOTTOM_PANEL_PARAMETERS = 2;
 	private static final int COMMAND_ENTRY_PARAMETERS = 3;
 	private static final int DYNAMIC_HELP_TEXT_PARAMETERS = 4;
 	private static final int LEGEND_PARAMETERS = 5;
-	private static final int TODOLIST_SCROLLPANE_PARAMETERS = 6;
+	private static final int TODOTABLE_PARAMETERS = 6;
 	private static final int CLOCK_PARAMETERS = 7;
 	private static final int TOP_PANEL_PARAMETERS = 8;
 	private static final int BUTTON_PANEL_PARAMETERS = 9;
 	private static final int ICON_PARAMETERS = 10;
+	private static final int FLOATINGTASKLIST_PARAMETERS = 11;
 	
 	private JTextField commandEntryTextField;
 	private JLayeredPane layerPane = new JLayeredPane();
 	private JTextArea dynamicHelpText;
 	//private JTextArea toDoListText;
-	private JTable toDoListTable;
+	private JTable toDoTaskTable;
+	private JTable floatingTaskTable;
 	private JLabel closeButton;
 	private JLabel minimizeButton;
 	//private Controller controller;
 	private LinkedList <Task> toDoListItems = new LinkedList<Task>();
-	private ToDoListTableModel toDoListTableModel;
+	private ToDoTasksListTableModel toDoTasksTableModel;
+	private FloatingTasksListTableModel floatingTasksTableModel;
 	private TrayIcon trayIcon;
 	private boolean firstMinimize;
+	private LinkedList<Task> floatingItems;
 	private static UserInterface window;
 	
 	/**
@@ -163,7 +168,7 @@ public class UserInterface extends JFrame {
 			//dynamicHelpText.append("Cannot load image");
 		}
 		mainPanel.setOpaque(false);
-		createToDoListTable(mainPanel);
+		createToDoListHolder(mainPanel);
 		createBottomPanel(mainPanel); 
 		createTopPanel(mainPanel);
 		layerPane.add(mainPanel,new Integer(2));
@@ -258,28 +263,54 @@ public class UserInterface extends JFrame {
 		topPanel.add(iconPanel,parameters);
 		
 	}
-
-	private void createToDoListTable(Container mainPanel){                        
+	
+	private void createToDoListHolder(Container mainPanel){
+		GridBagConstraints panelParameters;   
+		panelParameters = setParameters(TODOLIST_HOLDER_PARAMETERS); //panelParameters are values for how the top panel will fit into the main frame of ToDoLog
 		JPanel toDoListHolder = new JPanel(new GridBagLayout());
-		GridBagConstraints panelParameters;      //panelParameters are values for how the top panel will fit into the main frame of ToDoLog
-		GridBagConstraints scrollPaneParameters; //scrollPaneParameters are values for how the scrollPane will be placed within the top panel,toDoListHolder
 		toDoListHolder.setPreferredSize(new Dimension(650, 300));
+		createToDoTable(toDoListHolder);
+		createFloatingTaskList(toDoListHolder);
+		mainPanel.add(toDoListHolder, panelParameters);
+		toDoListHolder.setOpaque(false);
 		
-		panelParameters = setParameters(TODOLIST_PARAMETERS);
-		scrollPaneParameters = setParameters(TODOLIST_SCROLLPANE_PARAMETERS);
 		
-		toDoListTableModel = new ToDoListTableModel(toDoListItems);
-		toDoListTable = new JTable(toDoListTableModel);    
-		toDoListTable.setPreferredSize(new Dimension(650,300));
-		adjustTableColumns(toDoListTable);
-		changeTableColors(toDoListTable);
-		toDoListTable.getTableHeader().setResizingAllowed(false);
-		toDoListTable.getTableHeader().setBackground(new Color(0,0,0,0));
-		toDoListTable.getTableHeader().setReorderingAllowed(false);
+	}
+	
+	private void createToDoTable(Container toDoListHolder) {
+		GridBagConstraints scrollPaneParameters; //scrollPaneParameters are values for how the scrollPane will be placed within the top panel,toDoListHolder
+		scrollPaneParameters = setParameters(TODOTABLE_PARAMETERS);
+		toDoTasksTableModel = new ToDoTasksListTableModel(toDoListItems);
+		toDoTaskTable = new JTable(toDoTasksTableModel);    
+		toDoTaskTable.setPreferredSize(new Dimension(500,300));
+		adjustToDoTaskTableColumns(toDoTaskTable);
+		changeToDoTableColors(toDoTaskTable);
+		toDoTaskTable.getTableHeader().setResizingAllowed(false);
+		toDoTaskTable.getTableHeader().setBackground(new Color(0,0,0,0));
+		toDoTaskTable.getTableHeader().setReorderingAllowed(false);
+		toDoTaskTable.setOpaque(false);
+		toDoTaskTable.setEnabled(false);
+		toDoTaskTable.setShowGrid(false);
+		toDoTaskTable.setIntercellSpacing(new Dimension(0, 0));
+		((DefaultTableCellRenderer)toDoTaskTable.getDefaultRenderer(Object.class)).setOpaque(false);
+		InputStream in = this.getClass().getClassLoader().getResourceAsStream("fonts/OpenSans-Regular.ttf");
+		try {
+			Font font;
+			font = Font.createFont(Font.TRUETYPE_FONT, in);
+			Font sizedFont = font.deriveFont(TABLE_FONT_SIZE);
+			toDoTaskTable.setFont(sizedFont);
+			toDoTaskTable.getTableHeader().setFont(sizedFont);
+		} catch (FontFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		//toDoListTable.addKeyListener(new ToDoListTableListener());
 		//updateToDoListTable(toDoListTable,toDoListItems,toDoListHeaders);
 		
-		JScrollPane toDoList = new JScrollPane(toDoListTable)
+		JScrollPane toDoList = new JScrollPane(toDoTaskTable)
 		{
 			/**
 			 * 
@@ -294,28 +325,39 @@ public class UserInterface extends JFrame {
 		    }
 		};
 		toDoList.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-		toDoList.setPreferredSize(new Dimension(650,300));
+		toDoList.setPreferredSize(new Dimension(500,300));
 		toDoList.setOpaque(false);
 		toDoList.setBackground(new Color(255,255,255,220));
-		toDoListHolder.add(toDoList,scrollPaneParameters);
-		mainPanel.add(toDoListHolder, panelParameters);
-		toDoListHolder.setOpaque(false);
-		toDoListTable.setOpaque(false);
-		toDoListTable.setEnabled(false);
-		((DefaultTableCellRenderer)toDoListTable.getDefaultRenderer(Object.class)).setOpaque(false);
-	
 		toDoList.getViewport().setOpaque(false);
 		toDoList.getViewport().setBackground(new Color(255,255,255,220));
+		toDoList.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 		
-		toDoListTable.setShowGrid(false);
-		toDoListTable.setIntercellSpacing(new Dimension(0, 0));
+		toDoListHolder.add(toDoList,scrollPaneParameters);
+	}
+	
+	private void createFloatingTaskList(JPanel toDoListHolder) {
+		GridBagConstraints floatingTaskListParameters; 
+		floatingTaskListParameters = setParameters(FLOATINGTASKLIST_PARAMETERS);
+		floatingTasksTableModel = new FloatingTasksListTableModel(toDoListItems);
+		floatingTaskTable = new JTable(floatingTasksTableModel);    
+		floatingTaskTable.setPreferredSize(new Dimension(130,300));
+		adjustFloatingTaskTableColumns(floatingTaskTable);
+		changeToDoTableColors(floatingTaskTable);
+		floatingTaskTable.getTableHeader().setResizingAllowed(false);
+		floatingTaskTable.getTableHeader().setBackground(new Color(0,0,0,0));
+		floatingTaskTable.getTableHeader().setReorderingAllowed(false);
+		floatingTaskTable.setOpaque(false);
+		floatingTaskTable.setEnabled(false);
+		floatingTaskTable.setShowGrid(false);
+		floatingTaskTable.setIntercellSpacing(new Dimension(0, 0));
+		((DefaultTableCellRenderer)floatingTaskTable.getDefaultRenderer(Object.class)).setOpaque(false);
 		InputStream in = this.getClass().getClassLoader().getResourceAsStream("fonts/OpenSans-Regular.ttf");
 		try {
 			Font font;
 			font = Font.createFont(Font.TRUETYPE_FONT, in);
 			Font sizedFont = font.deriveFont(TABLE_FONT_SIZE);
-			toDoListTable.setFont(sizedFont);
-			toDoListTable.getTableHeader().setFont(sizedFont);
+			floatingTaskTable.setFont(sizedFont);
+			floatingTaskTable.getTableHeader().setFont(sizedFont);
 		} catch (FontFormatException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -323,21 +365,35 @@ public class UserInterface extends JFrame {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-//		BufferedImage img;
-//		try {
-//			img = ImageIO.read(new File("src/black-white.jpg"));
-//			JLabel background = new JLabel();
-//			background.setOpaque(false);
-//			background.setBackground(new Color(255,255,255,170));
-//			background.setBounds(25,20,650,225);
-//			layerPane.add(background,new Integer(1));
-//		} catch (IOException e) {
-//			//TODO some notifying
-//			dynamicHelpText.setText("Cannot load image");
-//		}
+		//toDoListTable.addKeyListener(new ToDoListTableListener());
+		//updateToDoListTable(toDoListTable,toDoListItems,toDoListHeaders);
+		
+		JScrollPane toDoList = new JScrollPane(floatingTaskTable)
+		{
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			protected void paintComponent(Graphics g)
+		    {
+		        g.setColor( getBackground() );
+		        g.fillRect(0, 0, getWidth(), getHeight());
+		        super.paintComponent(g);
+		    }
+		};
+		toDoList.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+		toDoList.setPreferredSize(new Dimension(130,300));
+		toDoList.setOpaque(false);
+		toDoList.setBackground(new Color(255,255,255,220));
+		toDoList.getViewport().setOpaque(false);
+		toDoList.getViewport().setBackground(new Color(255,255,255,220));
+		toDoList.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+		
+		toDoListHolder.add(toDoList,floatingTaskListParameters);
 		
 	}
-	
+
 	/*private void createToDoList(Container mainPanel){
 		JPanel toDoListHolder = new JPanel(new GridBagLayout());
 		toDoListHolder.setBackground(Color.WHITE);
@@ -554,25 +610,28 @@ public class UserInterface extends JFrame {
 		makeTrayIcon(this);
 		this.addWindowListener(new ToDoLogWindowListener());
 		Controller.init();
+		//TODO Seperate 2 lists
 		toDoListItems = Controller.getDisplayList();
-		toDoListTableModel = new ToDoListTableModel(toDoListItems);
-		toDoListTable.setModel(toDoListTableModel);
-		adjustTableColumns(toDoListTable);
+		floatingItems = Controller.getFloatingTasksList();
+		toDoTasksTableModel = new ToDoTasksListTableModel(toDoListItems);
+		toDoTaskTable.setModel(toDoTasksTableModel);
+		adjustToDoTaskTableColumns(toDoTaskTable);
 		dynamicHelpText.append(Controller.getFeedback());
-		changeTableColors(toDoListTable);
-		
+		changeToDoTableColors(toDoTaskTable);
+		floatingTasksTableModel = new FloatingTasksListTableModel(floatingItems);
+		floatingTaskTable.setModel(floatingTasksTableModel);
+		adjustFloatingTaskTableColumns(floatingTaskTable);
+		changeFloatingTableColors(floatingTaskTable);
 		// create more here
 	}
 	
 	private void useJIntellitype() {
-	// TODO Auto-generated method stub
 		try {
 			JIntellitype.getInstance();
 			JIntellitype.getInstance().registerHotKey(1, JIntellitype.MOD_ALT, (int) 'B');;
 			JIntellitype.getInstance().addHotKeyListener(new HotkeyListener() {
 	            @Override
 	            public void onHotKey(int combination) {
-	                // TODO Auto-generated method stub
 	                if (combination == 1)
 	                	if (window.getState() == JFrame.ICONIFIED) {
 	                		window.setState(JFrame.NORMAL);
@@ -637,7 +696,7 @@ public class UserInterface extends JFrame {
 	private class CommandEntryTextFieldActionListener implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent evt) {
-			//TODO This is for actions and stuffs, sending the action
+			//This is for actions and stuffs, sending the action
 			//(I think for this is when typing (to guess the input)
 			// and for pressing enter then send the text to Parser)
 			String commandString = commandEntryTextField.getText();
@@ -651,18 +710,22 @@ public class UserInterface extends JFrame {
 			Controller.acceptUserCommand(commandString);
 			commandEntryTextField.setText("");
 			dynamicHelpText.setText(Controller.getFeedback());	
+			//TODO Seperate 2 lists
 			toDoListItems = Controller.getDisplayList();
-			toDoListTableModel.setTableData(toDoListItems);
-			toDoListTableModel.fireTableDataChanged();
-			
+			floatingItems = Controller.getFloatingTasksList();
+			toDoTasksTableModel.setTableData(toDoListItems);
+			toDoTasksTableModel.fireTableDataChanged();
+			floatingTasksTableModel.setTableData(floatingItems);
+			floatingTasksTableModel.fireTableDataChanged();
 			//I want the toDoListItems to show the previous screen if the next screen has no more items to display
 			flipPages();
 
 		}
 	}
+	
 	private void flipPages() {
 		if (Controller.getFocusTask() == null) {
-			toDoListTableModel.goToPage(0);
+			toDoTasksTableModel.goToPage(0);
 			return;
 		}
 		Task focusTask = Controller.getFocusTask();
@@ -670,11 +733,12 @@ public class UserInterface extends JFrame {
 		for (int index = 0; index < toDoListItems.size(); index ++){
 			Task task = toDoListItems.get(index);
 			if (task == focusTask) {
-				toDoListTableModel.goToPage((index)/17);
+				toDoTasksTableModel.goToPage((index)/17);
 			//	found = true;
 			}
 		}
 	}
+	
 	private class CommandEntryTextFieldDocumentListener implements DocumentListener {
 		@Override
 		public void insertUpdate(DocumentEvent e) {
@@ -710,10 +774,10 @@ public class UserInterface extends JFrame {
 		public void keyPressed(KeyEvent e) {
 			int keyCode = e.getKeyCode();
 			if ((keyCode == KeyEvent.VK_PAGE_UP) || (keyCode == KeyEvent.VK_F9)){
-				toDoListTableModel.pageUp();
+				toDoTasksTableModel.pageUp();
 			}
 			if ((keyCode == KeyEvent.VK_PAGE_DOWN) || (keyCode == KeyEvent.VK_F10)){
-				toDoListTableModel.pageDown();
+				toDoTasksTableModel.pageDown();
 			}
 		}
 	
@@ -721,10 +785,10 @@ public class UserInterface extends JFrame {
 		public void keyReleased(KeyEvent e) {
 			int keyCode = e.getKeyCode();
 			if(keyCode == KeyEvent.VK_PAGE_UP) {
-				toDoListTableModel.pageUp();
+				toDoTasksTableModel.pageUp();
 			}
 			if ((keyCode == KeyEvent.VK_PAGE_DOWN) || (keyCode == KeyEvent.VK_F10)) {
-				toDoListTableModel.pageDown();
+				toDoTasksTableModel.pageDown();
 			}
 		}
 			
@@ -734,11 +798,11 @@ public class UserInterface extends JFrame {
 		}
 	}
 	
-	public class MinimizeButtonMouseListener implements MouseListener {
+	private class MinimizeButtonMouseListener implements MouseListener {
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			// TODO Auto-generated method stub
+			// do nothing
 			
 		}
 
@@ -772,11 +836,11 @@ public class UserInterface extends JFrame {
 
 	}
 
-	public class CloseButtonMouseListener implements MouseListener {
+	private class CloseButtonMouseListener implements MouseListener {
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			// TODO Auto-generated method stub
+			// do nothing
 			
 		}
 
@@ -808,9 +872,6 @@ public class UserInterface extends JFrame {
 		
 
 	}
-	//this method is to set up the parameters of the gridbagconstraints
-	//to put the different panels into the right positions on the JFrame
-	//here we use the constructor GridBagConstraints(gridx,gridy,gridwidth,gridheight,weightx,weighty,anchor,fill,insets,ipadx,ipady)
 	
 	private class ToDoLogWindowListener implements WindowListener{
 		public void windowActivated(WindowEvent e) {
@@ -829,7 +890,7 @@ public class UserInterface extends JFrame {
 
 		@Override
 		public void windowDeactivated(WindowEvent e) {
-			// TODO Auto-generated method stub
+			
 			
 		}
 
@@ -850,11 +911,14 @@ public class UserInterface extends JFrame {
 
 		@Override
 		public void windowOpened(WindowEvent e) {
-			// TODO Auto-generated method stub
 			
 		}
 	}
 	
+	/*this method is to set up the parameters of the gridbagconstraints
+	to put the different panels into the right positions on the JFrame
+	here we use the constructor GridBagConstraints(gridx,gridy,gridwidth,gridheight,weightx,weighty,anchor,fill,insets,ipadx,ipady)
+	*/
 	private GridBagConstraints setParameters(int panelParameters){
 		GridBagConstraints parameters;
 		Insets topPanelInsets = new Insets(0,0,0,0);
@@ -862,8 +926,9 @@ public class UserInterface extends JFrame {
 		Insets buttonPanelInsets = new Insets(0,0,0,0);
 		Insets iconInsets = new Insets(10,30,0,0);
 		Insets clockInsets = new Insets(15,0,0,53);
-		Insets toDoListInsets = new Insets(10,0,0,0);
-		Insets toDoListScrollPaneInsets = new Insets(0,0,0,0);
+		Insets toDoListHolderInsets = new Insets(10,0,0,0);
+		Insets toDoTableInsets = new Insets(0,0,0,0);
+		Insets floatingTasksTableInsets = new Insets(0,10,0,0);
 		Insets commandEntryTextFieldInsets = new Insets(10,25,5,25);
 		Insets dynamicHelpTextInsets = new Insets(10,25,10,20);
 		Insets legendInsets = new Insets(0,0,0,10);
@@ -873,8 +938,8 @@ public class UserInterface extends JFrame {
 			parameters = new GridBagConstraints(1,0,1,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,clockInsets,0,0);
 			return parameters;
 		}
-		else if(panelParameters == TODOLIST_PARAMETERS){
-			parameters = new GridBagConstraints(0,1,3,4,0.1,0.0,GridBagConstraints.NORTHWEST,GridBagConstraints.BOTH,toDoListInsets,0,0);
+		else if(panelParameters == TODOLIST_HOLDER_PARAMETERS){
+			parameters = new GridBagConstraints(0,1,3,4,0.1,0.0,GridBagConstraints.NORTHWEST,GridBagConstraints.BOTH,toDoListHolderInsets,0,0);
 			return parameters;
 		}
 		else if(panelParameters == TOP_PANEL_PARAMETERS){
@@ -916,8 +981,11 @@ public class UserInterface extends JFrame {
 			return parameters;
 		}*/
 		
-		else if(panelParameters == TODOLIST_SCROLLPANE_PARAMETERS){
-			parameters = new GridBagConstraints(0,0,1,1,0.0,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,toDoListScrollPaneInsets,0,0);
+		else if(panelParameters == TODOTABLE_PARAMETERS){
+			parameters = new GridBagConstraints(0,0,1,1,0.0,0.0,GridBagConstraints.WEST,GridBagConstraints.BOTH,toDoTableInsets,0,0);
+			return parameters;
+		} else if (panelParameters == FLOATINGTASKLIST_PARAMETERS) {
+			parameters = new GridBagConstraints(1,0,1,1,0.0,0.0,GridBagConstraints.EAST,GridBagConstraints.BOTH,floatingTasksTableInsets,0,0);
 			return parameters;
 		}
 		
@@ -926,10 +994,10 @@ public class UserInterface extends JFrame {
 		
 	} 
 	
-	//convert linked lists into data for the table, go find out how to
-	//dynamic help text will also be 
-	
-	private void adjustTableColumns(JTable toDoListTable){
+	/*	convert linked lists into data for the table, go find out how to
+		dynamic help text will also be 
+	 */	
+	private void adjustToDoTaskTableColumns(JTable toDoListTable){
 		TableColumn tableColumn = null;
 		
 		for(int columnHeaders = 0; columnHeaders < 6;columnHeaders++){
@@ -940,13 +1008,13 @@ public class UserInterface extends JFrame {
 				tableColumn.setPreferredWidth(30);
 				break;
 			case 1:
-				tableColumn.setPreferredWidth(180);
+				tableColumn.setPreferredWidth(130);
 				break;
 			case 2:
-				tableColumn.setPreferredWidth(210);
+				tableColumn.setPreferredWidth(150);
 				break;
 			case 3:
-				tableColumn.setPreferredWidth(140);
+				tableColumn.setPreferredWidth(100);
 				break;
 			case 4:
 				tableColumn.setPreferredWidth(90);
@@ -960,15 +1028,58 @@ public class UserInterface extends JFrame {
 		}
 	}
 	
-	private void changeTableColors(JTable toDoListTable){
+	private void adjustFloatingTaskTableColumns(JTable floatingListTable){
+		TableColumn tableColumn = null;
+		
+		for(int columnHeaders = 0; columnHeaders < 6;columnHeaders++){
+			tableColumn = floatingListTable.getColumnModel().getColumn(columnHeaders);
+			
+			switch(columnHeaders){
+			case 0:
+				tableColumn.setPreferredWidth(30);
+				break;
+			case 1:
+				tableColumn.setPreferredWidth(100);
+				break;
+			case 2:
+				tableColumn.setPreferredWidth(0);
+				tableColumn.setMinWidth(0);
+				tableColumn.setMaxWidth(0);
+				tableColumn.setWidth(0);
+				break;
+			case 3:
+				tableColumn.setPreferredWidth(0);
+				tableColumn.setMinWidth(0);
+				tableColumn.setMaxWidth(0);
+				tableColumn.setWidth(0);
+				break;
+			case 4:
+				tableColumn.setPreferredWidth(0);
+				tableColumn.setMinWidth(0);
+				tableColumn.setMaxWidth(0);
+				tableColumn.setWidth(0);
+				break;
+			case 5:
+				tableColumn.setPreferredWidth(0);
+				tableColumn.setMinWidth(0);
+				tableColumn.setMaxWidth(0);
+				tableColumn.setWidth(0);
+				break;
+			}
+		}
+	}
+	
+	private void changeToDoTableColors(JTable toDoListTable){
 		toDoListTable.getColumnModel().getColumn(0).setCellRenderer(new CustomRenderer());
 		toDoListTable.getColumnModel().getColumn(1).setCellRenderer(new CustomRenderer());
 		toDoListTable.getColumnModel().getColumn(2).setCellRenderer(new CustomRenderer());
 		toDoListTable.getColumnModel().getColumn(3).setCellRenderer(new CustomRenderer());
-		toDoListTable.getColumnModel().getColumn(4).setCellRenderer(new CustomRenderer());
-		
+		toDoListTable.getColumnModel().getColumn(4).setCellRenderer(new CustomRenderer());	
 	}
-
 	
+	private void changeFloatingTableColors(JTable toDoListTable){
+		toDoListTable.getColumnModel().getColumn(0).setCellRenderer(new CustomRenderer());
+		toDoListTable.getColumnModel().getColumn(1).setCellRenderer(new CustomRenderer());
+	}
 	
 }

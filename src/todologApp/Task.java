@@ -1,5 +1,7 @@
 package todologApp;
 
+import java.util.LinkedList;
+
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
@@ -12,6 +14,7 @@ public class Task {
 
 	private static final int NOT_DEADLINE = -1;
 	//Key Variables
+	
 	private String _taskName;
 	private TaskType _taskType;
 	private String _taskStartDay;
@@ -230,4 +233,6 @@ public class Task {
 		}
 	return NOT_DEADLINE;
 	}
+	
+	
 }
