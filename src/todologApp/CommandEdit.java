@@ -13,6 +13,8 @@ public class CommandEdit implements Command {
 	private LinkedList <Task> _displayList;
 	private boolean _validity;
 	
+	private static final int INVALID_INDEX = -1;
+	
 	private static final String KEYWORD_TASK_NAME = "task name";
 	private static final String KEYWORD_NAME = "name";
 	private static final String KEYWORD_END_DATE = "end date";
@@ -20,11 +22,22 @@ public class CommandEdit implements Command {
 	private static final String KEYWORD_START_DATE = "start date";
 	private static final String KEYWORD_START_TIME = "start time";
 	private static final String KEYWORD_END_TIME = "end time";
+	private static final String KEYWORD_TIME = "time";
 	private static final String KEYWORD_VENUE = "venue";
 	private static final String KEYWORD_PLACE = "place";
 	private static final String KEYWORD_PERSON = "person";
+	private static final String KEYWORD_INVALID = "invalid";
 	
-	private static final String FEEDBACK_INVALID_DETAILS = "Please specify task to be edited and the details.";
+	private static final String FEEDBACK_INVALID_TASK = "Please specify task to be edited and the details.";
+	private static final String FEEDBACK_INVALID_INDEX = "Item number %1$s does not exist";
+	private static final String FEEDBACK_INVALID_DETAILS = "Please specify edit type and the details.";
+	private static final String FEEDBACK_INVALID_STORAGE = "Cannot store the list to ToDoLog";
+	private static final String FEEDBACK_INVALID_INPUT = "Invalid input";
+	private static final String FEEDBACK_VALID_EDIT = "Edited %1$s of the task.";
+	private static final String FEEDBACK_INVALID_REQUEST = "Incorrect input for edit";
+	private static final String FEEDBACK_VALID_UNDO = "Undone edit the %1$s.";
+	 
+	
 	public CommandEdit() {
 		_index = -1;	
 	}
@@ -55,36 +68,39 @@ public class CommandEdit implements Command {
 	
 	public String execute() {
 		String feedback;
+		int indexInStorage;
 		LinkedList <Task> storageList;
 		String editedField;
 		storageList = _storage.load();
 		_displayList = Controller.getDisplayList();
 		
-		if (_index == -1) {
+		if (_index == INVALID_INDEX) {
 			_validity = false;
-			return FEEDBACK_INVALID_DETAILS;
+			return FEEDBACK_INVALID_TASK;
 		} else {
 			try {
 				_taskExisting = _displayList.get(_index);
-				Controller.setFocusTask(_taskExisting); // set focus task to change UI's page
+				// set focus task to change UI's page
+				Controller.setFocusTask(_taskExisting); 
 			} catch (IndexOutOfBoundsException ioobe) {
 				_validity = false;
 				Controller.setFocusTask(_displayList.getLast());
-				return "Item number "+ (_index+1) +" does not exist";
+				return String.format(FEEDBACK_INVALID_INDEX, _index+1);
 			}	
 		}
+		
 		if (_editType == null) {
 			_validity = false;
-			return "Please specify edit type and the details.";
+			return FEEDBACK_INVALID_DETAILS;
 		}
 		try {
 			editedField = formNewTask();
 		} catch (Exception e1) {
-			_validity=false;
+			_validity = false;
 			feedback = e1.getMessage();
 			return feedback;
 		}
-		int indexInStorage=storageList.indexOf(_taskExisting);
+		indexInStorage = storageList.indexOf(_taskExisting);
 		_displayList.remove(_index);
 		storageList.remove(_taskExisting);
 		storageList.add(indexInStorage, _taskEdited);
@@ -92,142 +108,135 @@ public class CommandEdit implements Command {
 		try {
 			_storage.store(storageList);
 		} catch (IOException e) {
-			feedback = "Cannot store the list to ToDoLog";
-			_validity=false;
+			feedback = FEEDBACK_INVALID_STORAGE;
+			_validity = false;
 			return feedback;
 		}
-		if(editedField.equals("invalid")){
-			feedback = "Invalid input";
-			_validity=false;
+		if (editedField.equals("invalid")){
+			feedback = FEEDBACK_INVALID_INPUT;
+			_validity = false;
 		}
-		else{
-			feedback = "Edited " + editedField + " of the task.";
-			_validity=true;
+		else {
+			feedback = String.format(FEEDBACK_VALID_EDIT, editedField);
+			_validity = true;
 		}
 		return feedback;
 	}
+	
 	public String fakeExecute() {
 		String feedback;
 		String editedField;
 		
 		if (_index == -1) {
-			return "Please specify task to be edited and the details.";
+			return FEEDBACK_INVALID_TASK;
 		} else {
 			try {
 				_taskExisting = _displayList.get(_index);
-
-				Controller.setFocusTask(_taskExisting); // set focus task to change UI's page
+				// set focus task to change UI's page
+				Controller.setFocusTask(_taskExisting); 
 			} catch (IndexOutOfBoundsException ioobe) {
 				Controller.setFocusTask(_displayList.getLast());
-				return "Item number "+ _index +" does not exist";
+				return String.format(FEEDBACK_INVALID_INDEX, _index+1);
 			}	
 		}
 		if (_editType == null) {
-			return "Please specify edit type and the details.";
+			return FEEDBACK_INVALID_DETAILS;
 		}
+		
 		try {
 			editedField = formNewTask();
-		} catch (Exception e1) {
-			_validity=false;
+		} catch ( Exception e1) {
+			_validity = false;
 			feedback = e1.getMessage();
 			return feedback;
 		}
-		if(editedField.equals("invalid")){
-			feedback = "Invalid input";
-			_validity=false;
-		}
-		else{
-			feedback = "Edited " + editedField + " of the task.";
-			_validity=true;
+		
+		if (editedField.equals(KEYWORD_INVALID)){
+			feedback = FEEDBACK_INVALID_INPUT;
+			_validity = false;
+		} else {
+			feedback = String.format(FEEDBACK_VALID_EDIT, editedField);
+			_validity = true;
 		}
 		return feedback;
 	}
 
 	private String formNewTask() throws Exception{
 		_taskEdited = _taskExisting.copy();
-		//editing the name
-		if (_editType.equalsIgnoreCase(KEYWORD_TASK_NAME)||_editType.equalsIgnoreCase(KEYWORD_NAME)) {
+		
+		if (_editType.equalsIgnoreCase(KEYWORD_TASK_NAME) || _editType.equalsIgnoreCase(KEYWORD_NAME)) {
 			_taskEdited.setTaskName(_toBeEdited);
 			return KEYWORD_NAME;
-		}
-		
-		//change End day
-		 else if(_editType.equalsIgnoreCase("End Date")||_editType.equalsIgnoreCase("Date")){
+		} else if (_editType.equalsIgnoreCase(KEYWORD_END_DATE) || _editType.equalsIgnoreCase(KEYWORD_DATE)){
 			 if (_taskEdited.getTaskType() != TaskType.FLOATING) {
 				 _taskEdited.setEndDate(_toBeEdited);
-				 return "end date";
+				 return KEYWORD_END_DATE;
 			 } else {
-				 throw new Exception("Cannot edit end day for floating tasks");
+				 throw new Exception(FEEDBACK_INVALID_REQUEST);
 			 }
-		 }
-		//change Start day
-		 else if(_editType.equalsIgnoreCase("Start Date")||_editType.equalsIgnoreCase("Date")){	
+		} else if (_editType.equalsIgnoreCase(KEYWORD_START_DATE)){	
+			 if (_taskEdited.getTaskType() != TaskType.FLOATING
+				&& _taskEdited.getTaskType() != TaskType.DEADLINE){
 			 _taskEdited.setStartDate(_toBeEdited);
-			 return "start date";
-			 
-		 }
-		
-		//change End Time
-		 else if(_editType.equalsIgnoreCase("End Time")||_editType.equalsIgnoreCase("time")){
-			 if(_toBeEdited.length()==4){
+			 return KEYWORD_START_DATE;	 
+			 } else {
+				 throw new Exception(FEEDBACK_INVALID_REQUEST);
+			 }
+		} else if (_editType.equalsIgnoreCase(KEYWORD_END_TIME) || _editType.equalsIgnoreCase(KEYWORD_TIME)){
+			 if (_toBeEdited.length() == 4 
+				&& _taskEdited.getTaskType() != TaskType.FLOATING){
 				 _taskEdited.setEndTime(_toBeEdited);
-			 	return "end time";
+			 	return KEYWORD_END_TIME;
 			 } else {
-				 throw new Exception("Incorrect time format input");
+				 throw new Exception(FEEDBACK_INVALID_REQUEST);
 			 }
-		 }
-		//change Start Time
-		 else if(_editType.equalsIgnoreCase("Start Time")){
-			 if(_toBeEdited.length()==4){
+		 } else if (_editType.equalsIgnoreCase(KEYWORD_START_TIME)){
+			 if (_toBeEdited.length() == 4 
+			    && _taskEdited.getTaskType() != TaskType.FLOATING 
+			    && _taskEdited.getTaskType() != TaskType.DEADLINE){
 				 _taskEdited.setStartTime(_toBeEdited);
-			 	return "start time";
+			 	return KEYWORD_START_TIME;
 			 } else {
-				 throw new Exception("Incorrect time format input");
+				 throw new Exception(FEEDBACK_INVALID_REQUEST);
 			 }
-		 }
-		//changeVenue
-		 else if(_editType.equalsIgnoreCase("Venue")){
+		 } else if (_editType.equalsIgnoreCase(KEYWORD_VENUE) || _editType.equalsIgnoreCase(KEYWORD_PLACE)){
 			 _taskEdited.setVenue(_toBeEdited);
-			 return "venue";
-		 }
-		//change person
-		 else if(_editType.equalsIgnoreCase("person")){
+			 return KEYWORD_VENUE;
+		 } else if (_editType.equalsIgnoreCase(KEYWORD_PERSON)){
 			 _taskEdited.setPerson(_toBeEdited);
-			 return "person";
-		 }
-		 else{
-			 throw new Exception("Incorrect input for edit");
+			 return KEYWORD_PERSON;
+		 } else {
+			 throw new Exception (FEEDBACK_INVALID_REQUEST);
 		 }
 	}
 	 
 	public String undo() {
 		String feedback;
-		LinkedList<Task> storageList = _storage.load();
+		LinkedList <Task> storageList;
+		
+		storageList = _storage.load();
 		_displayList = Controller.getDisplayList();
 		
-		int indexInStorage=storageList.indexOf(_displayList.get(_index));
+		int indexInStorage = storageList.indexOf(_displayList.get(_index));
 		storageList.remove(indexInStorage);
+		
 		_displayList.remove(_index);
-
 		_displayList.add(_index, _taskExisting);
-		storageList.add(indexInStorage,_taskExisting);
-
-		Controller.setFocusTask(_taskExisting); // set focus task to change UI's page
+		storageList.add(indexInStorage, _taskExisting);
+		// set focus task to change UI's page
+		Controller.setFocusTask(_taskExisting); 
 		try {
 			_storage.store(storageList);
 		} catch (IOException e) {
-			feedback = "Cannot store the list to ToDoLog";
+			feedback = FEEDBACK_INVALID_STORAGE;;
 			return feedback;
 		}
-		feedback = "Undone edit the "+_editType+".";
+		feedback = String.format(FEEDBACK_VALID_UNDO, _editType);
 		return feedback;
 	}
 	
 	public boolean isUndoable(){
 		return _validity;
 	}
-
-	
-
 }
 
