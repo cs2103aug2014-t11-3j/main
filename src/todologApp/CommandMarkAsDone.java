@@ -42,9 +42,9 @@ public class CommandMarkAsDone implements Command {
 			_storage.store(_taskList);
 		} catch (IOException e) {
 			feedback="Cannot store the list to ToDoLog";
-			validity=false;
-			
+			validity=false;	
 		}
+		
 		sortDisplay(_task);
 		return feedback;
 	}
@@ -121,7 +121,10 @@ public class CommandMarkAsDone implements Command {
 		}
 	}
 	public String undo() {
+		_displayList=Controller.getDisplayList();
+		
 		CommandMarkAsDone one= new CommandMarkAsDone(_displayList.indexOf(_task)+1);
+		
 		return one.execute();
 	}
 	public boolean isUndoable(){
