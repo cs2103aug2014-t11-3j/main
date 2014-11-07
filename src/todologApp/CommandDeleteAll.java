@@ -4,9 +4,13 @@ import java.io.IOException;
 import java.util.LinkedList;
 
 public class CommandDeleteAll implements Command {
-	private LinkedList<Task> _tasks;
+	private LinkedList<Task> _storageList;
 	private DBStorage _storage;
-	private boolean validity;
+	private boolean _validity;
+	
+	private static final String FEEDBACK_INVALID_STORAGE = "Cannot store the list to ToDoLog";
+	private static final String FEEDBACK_VALID_DELETE_ALL = "Deleted all tasks";
+	private static final String FEEDBACK_VALID_UNDO = "Undone the delete command";
 
 	public CommandDeleteAll() {
 	}
@@ -14,45 +18,46 @@ public class CommandDeleteAll implements Command {
 	public String execute() {
 		String feedback;
 		_storage = Controller.getDBStorage();
-		_tasks = _storage.load();
+		_storageList = _storage.load();
 		try {
 			_storage.store(new LinkedList<Task>());
 		} catch (IOException e) {
-			feedback = "Cannot store the list to ToDoLog";
-			validity=false;
+			feedback = FEEDBACK_INVALID_STORAGE;
+			_validity=false;
 			return feedback;
 		}
+		// set focus task to change UI's page
 		Controller.setFocusTask(null);
-		feedback = "Deleted all tasks";
-		validity=true;
+		feedback = FEEDBACK_VALID_DELETE_ALL;
+		_validity=true;
 		return feedback;
 	}
 	
 	public String fakeExecute() {
 		String feedback;
 		_storage = Controller.getDBStorage();
-		_tasks = _storage.load();
+		_storageList = _storage.load();
+		// set focus task to change UI's page
 		Controller.setFocusTask(null);
-		feedback = "Deleted all tasks";
-		validity=true;
+		feedback = FEEDBACK_VALID_DELETE_ALL;
+		_validity=true;
 		return feedback;
 	}
 
 	public String undo() {
 		String feedback;
 		try {
-			_storage.store(_tasks);
+			_storage.store(_storageList);
 		} catch (IOException e) {
-			feedback = "Cannot store the list to ToDoLog";
+			feedback = FEEDBACK_INVALID_STORAGE;
 			return feedback;
 		}
-		feedback = "Undone the delete command";
+		feedback = FEEDBACK_VALID_UNDO;
 		return feedback;
-
 	}
 	
 	public boolean isUndoable(){
-		return validity;
+		return _validity;
 	}
 
 }
