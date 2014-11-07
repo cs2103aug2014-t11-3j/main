@@ -19,6 +19,9 @@ public class CommandAdd implements Command {
 		_task = task;
 	}
 
+	public Task getAddedTask() {
+		return _task;
+	}
 	
 	public String execute(){
 		
@@ -82,7 +85,24 @@ public class CommandAdd implements Command {
     		}
 	    }
 	}
-	
+
+	public String fakeExecute() {
+		String feedback;
+		LinkedList <Task> storageList;
+		_storage= Controller.getDBStorage();
+		storageList = _storage.load();
+		
+		if (_task == null) {
+			_validity = false;
+			return FEEDBACK_INVALID_DETAILS;
+		}
+		
+		sortByDate(storageList);
+		feedback = String.format(FEEDBACK_VALID_INPUT, _task.getTaskName());
+		_validity=true;
+		return feedback;
+		
+	}
 	
 	public String undo() {
 		String feedback;
@@ -126,28 +146,6 @@ public class CommandAdd implements Command {
 	
 	public boolean isUndoable(){
 		return _validity;
-	}
-
-	public String fakeExecute() {
-		String feedback;
-		LinkedList <Task> storageList;
-		_storage= Controller.getDBStorage();
-		storageList = _storage.load();
-		
-		if (_task == null) {
-			_validity = false;
-			return FEEDBACK_INVALID_DETAILS;
-		}
-		
-		sortByDate(storageList);
-		feedback = String.format(FEEDBACK_VALID_INPUT, _task.getTaskName());
-		_validity=true;
-		return feedback;
-		
-	}
-
-	public Task getAddedTask() {
-		return _task;
 	}
 
 }
