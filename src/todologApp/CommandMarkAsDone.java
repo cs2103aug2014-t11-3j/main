@@ -37,7 +37,7 @@ public class CommandMarkAsDone implements Command {
 			feedback = "Invalid task number. Cannot mark.";
 			validity=false;
 		}
-
+		sortDisplay(_task);
 		try {
 			_storage.store(_taskList);
 		} catch (IOException e) {
@@ -45,7 +45,7 @@ public class CommandMarkAsDone implements Command {
 			validity=false;	
 		}
 		
-		sortDisplay(_task);
+		
 		return feedback;
 	}
 	public String fakeExecute() {
@@ -59,7 +59,6 @@ public class CommandMarkAsDone implements Command {
 		} else {
 			try {
 				_task = _displayList.get(_index);
-				
 				Controller.setFocusTask(_task); // set focus task to change UI's page
 				if (_task.getTaskStatus()) {
 					feedback = _task.getTaskName() + " is mark as completed";
@@ -70,7 +69,7 @@ public class CommandMarkAsDone implements Command {
 				}
 			} catch (IndexOutOfBoundsException ioobe ) {
 				validity = false;
-				Controller.setFocusTask(_taskList.getLast());
+				Controller.setFocusTask(_displayList.getLast());
 				return "Item number "+ (_index+1) +" does not exist";
 			} catch (Exception e) {
 				e.printStackTrace();
