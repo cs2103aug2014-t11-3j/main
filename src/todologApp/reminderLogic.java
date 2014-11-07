@@ -40,19 +40,20 @@ public boolean check24hrsBefore(Task task){
 	int hour= currentTime.getHourOfDay();
 	int min=currentTime.getMinuteOfHour();
 	currentTime= new DateTime(year,month,day,hour,min);
-	
-	if(task.getTaskType()==TaskType.DEADLINE){
-		DateTime dueTime = task.getEndDateTime();
-		DateTime tempTime= dueTime;
-		if(tempTime.minusHours(24).equals(currentTime)){
-			return true;
+	if(task.getTaskStatus()==false){
+		if(task.getTaskType()==TaskType.DEADLINE){
+			DateTime dueTime = task.getEndDateTime();
+			DateTime tempTime= dueTime;
+			if(tempTime.minusHours(24).equals(currentTime)){
+				return true;
+			}
 		}
-	}
-	else if(task.getTaskType()==TaskType.TIMED){
-		DateTime startTime =task.getStartDateTime();
-		DateTime tempTime =startTime;
-		if(tempTime.minusHours(24).equals(currentTime)){
-			return true;
+		else if(task.getTaskType()==TaskType.TIMED){
+			DateTime startTime =task.getStartDateTime();
+			DateTime tempTime =startTime;
+			if(tempTime.minusHours(24).equals(currentTime)){
+				return true;
+			}
 		}
 	}
 	return false;
