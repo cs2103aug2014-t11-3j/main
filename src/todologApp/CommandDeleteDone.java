@@ -21,10 +21,10 @@ import java.util.LinkedList;
 			_storage = Controller.getDBStorage();
 			_storageList = _storage.load();
 			_undoList = new LinkedList <Task> (_storage.load());
-				for(int i=_storageList.size()-1; i >= 0 ; i-- ){
-					if(_storageList.get(i).getTaskStatus()==true){
+			
+				for ( int i=_storageList.size()-1; i >= 0; i-- ){
+					if (_storageList.get(i).getTaskStatus() == true ) {
 						_storageList.remove(i);
-		
 					}
 				}
 			try {
@@ -35,9 +35,9 @@ import java.util.LinkedList;
 				return feedback;
 			}
 			// set focus task to change UI's page
-			Controller.setFocusTask(_storageList.get(0));
+			Controller.setFocusTask(_storageList.getLast());
 			feedback = FEEDBACK_VALID_DELETE_DONE;
-			_validity=true;
+			_validity = true;
 			return feedback;
 		}
 		
@@ -45,23 +45,19 @@ import java.util.LinkedList;
 			String feedback;
 			_storage = Controller.getDBStorage();
 			_storageList = _storage.load();
-			// set focus task to change UI's page
-			Controller.setFocusTask(_storageList.get(0));
 			feedback = FEEDBACK_VALID_DELETE_DONE;
-			_validity=true;
+			_validity = true;
 			return feedback;
 		}
 
 		public String undo() {
 			String feedback;
-			
 			try {
 				_storage.store(_undoList);
 			} catch (IOException e) {
 				feedback = FEEDBACK_INVALID_STORAGE;
 				return feedback;
 			}
-			
 			feedback = FEEDBACK_VALID_UNDO;
 			return feedback;
 		}

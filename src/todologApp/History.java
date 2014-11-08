@@ -32,12 +32,16 @@ public class History {
 		}
 	}
 	public Command getForwards() throws Exception {
-		if (_position < _commands.size()) {			
-			Command toBeRedone = _commands.get(_position+1);
-			return toBeRedone;
-		} else {
-			_position--;
-			return null;
+		try{
+			if (_position < _commands.size()) {			
+				Command toBeRedone = _commands.get(_position+1);
+				return toBeRedone;
+			} else {
+				_position--;
+				return null;
+			}
+		} catch (Exception e) {
+			throw new Exception("No commands to undo!");
 		}
 	}
 	public void goForwards() throws Exception {

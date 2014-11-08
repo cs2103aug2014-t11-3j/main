@@ -1,6 +1,6 @@
 package todologApp;
 
-import javax.swing.border.LineBorder;
+//import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import java.awt.Color;

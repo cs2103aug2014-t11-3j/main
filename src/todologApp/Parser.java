@@ -13,7 +13,7 @@ public class Parser {
 //	private static final String DATE_SEPARATOR = "/";
 //	private static final String SYMBOL_DASH = "-";
 //	private static final String SYMBOL_AT = "@";
-	private static final String QUOTATION_MARK = "\"";
+	private static final String QUOTATION_MARK = "'";
 
 	//KEYWORDS
 	private static final String KEYWORD_DAY_STARTING = "from";

@@ -12,7 +12,7 @@ public class Task {
 	
 	//MESSAGE
 
-	private static final int NOT_DEADLINE = -1;
+	//private static final int NOT_DEADLINE = -1;
 	//Key Variables
 	
 	private String _taskName;
@@ -230,8 +230,14 @@ public class Task {
 			} else {
 				return (Days.daysBetween(LocalDate.now(),new LocalDate(getEnd()))).getDays();
 			}
+		} else if (getTaskType()== TaskType.TIMED){
+			if (getEnd().isBeforeNow()) {
+				return -1;
+			} else {
+				return (Days.daysBetween(LocalDate.now(),new LocalDate(getStart()))).getDays();
+			}
 		}
-	return NOT_DEADLINE;
+	return -1;
 	}
 	
 	

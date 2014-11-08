@@ -16,7 +16,8 @@ public class Controller {
 	private static String _feedback;
 	private static CommandView _currentViewMode;
 	private static CommandSearch _currentSearchCriterion;
-	private static final String FEEDBACK_START = "To start, enter a command: add, delete, edit, done.\n";
+	private static final String FEEDBACK_START = "To start, type a command HELP \n"
+			+ "Or enter a command: add, delete, edit, done, view, search.\n";
 	
 	public static void setStorage(DBStorage DBstorage) {
 		_dbStorage = DBstorage;
@@ -117,7 +118,8 @@ public class Controller {
 				_displayList =  _currentViewMode.getReturnList();
 			}
 			if (!(command instanceof CommandUndo) && !(command instanceof CommandRedo) 
-					&& !(command instanceof CommandSearch) && !(command instanceof CommandView)){
+					&& !(command instanceof CommandSearch) && !(command instanceof CommandView) 
+					&& !(command instanceof CommandHelp)){
 				_history.addCommand(command);
 			}
 		} catch (Exception e) {

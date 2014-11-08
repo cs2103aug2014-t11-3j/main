@@ -23,10 +23,10 @@ public class ToDoTasksListTableModel extends AbstractTableModel implements ToDoL
 	 * 
 	 */
 	
-	private final static String[] columnNames = {"No.","Name","Time","Person / Venue","Done","<hidden>","<hidden>"};
+	private final static String[] columnNames = {"No.","Name","Time","Person / Venue","Status","<hidden>","<hidden>"};
 	private LinkedList<Task> tableData;
 	private final static int pageSize = 17;
-	private static final int NOT_DEADLINE = -1;
+	//private static final int NOT_DEADLINE = -1;
 	private int pageOffSet = 0;
 	
 	public ToDoTasksListTableModel(LinkedList<Task> toDoListItems){
@@ -120,20 +120,33 @@ public class ToDoTasksListTableModel extends AbstractTableModel implements ToDoL
 			}
 			else{
 				int duePeriod = task.duePeriod();
-				if (duePeriod == NOT_DEADLINE) {
-					return "";
-				}
-				if (duePeriod < 7) {
-					if (duePeriod == 0) {
+				
+				if (task.getTaskType() == TaskType.DEADLINE) {
+					if (duePeriod == -1){
+						return "Overdue!";
+					} else if (duePeriod == 0) {
 						return "Due today";
 					} else if (duePeriod == 1) {
 						return "Due tomorrow";
+					} else if (duePeriod > 7) {
+						return "Due Later";
 					} else {
-						return String.format("Due in %d days",duePeriod);
+						return String.format("Due in %d days", duePeriod);
+					}
+				} else if (task.getTaskType() == TaskType.TIMED){
+					if (duePeriod == -1){
+						return "Past event";
+					} else if (duePeriod == 0) {
+						return "Today";
+					} else if (duePeriod == 1) {
+						return "Tomorrow";
+					} else if (duePeriod > 7) {
+						return "Later";
+					} else {
+						return String.format("In %d days", duePeriod);
 					}
 				}
-				return "";
-				
+				return "";	
 			} 
 		case 5:
 			return task.duePeriod();
