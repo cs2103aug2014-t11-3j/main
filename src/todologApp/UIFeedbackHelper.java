@@ -4,9 +4,11 @@ import java.util.LinkedList;
 import java.util.NoSuchElementException;
 
 public class UIFeedbackHelper {
+	private static TaskType processingTaskType;
 	public static String createCmdHelpText(LinkedList<String> entryHelper) {
 		String commandType = entryHelper.poll();
 		String helperText = "";
+		UIFeedbackHelper.setProcessingTaskType(TaskType.INVALID);
 		if (commandType.equals("add")) {
 			helperText = createCmdAddHelpText(entryHelper);
 		} else if (commandType.equals("edit")) {
@@ -27,10 +29,13 @@ public class UIFeedbackHelper {
 		}
 		switch (entryHelper.poll()) {
 			case "TIMED":
+				setProcessingTaskType(TaskType.TIMED);
 				return createCmdAddTimedTaskHelperText(entryHelper);
 			case "DEADLINE":
+				setProcessingTaskType(TaskType.DEADLINE);
 				return createCmdAddDeadlineTaskHelperText(entryHelper);
 			default:
+				setProcessingTaskType(TaskType.FLOATING);
 				return createCmdAddFloatingTaskHelperText(entryHelper);
 		}
 	}
@@ -84,10 +89,13 @@ public class UIFeedbackHelper {
 		} 
 		switch (entryHelper.poll()) {
 			case "TIMED":
+				setProcessingTaskType(TaskType.TIMED);
 				return createCmdEditTimedTaskHelperText(entryHelper);
 			case "DEADLINE":
+				setProcessingTaskType(TaskType.DEADLINE);
 				return createCmdEditDeadlineTaskHelperText(entryHelper);
 			default:
+				setProcessingTaskType(TaskType.FLOATING);
 				return createCmdEditFloatingTaskHelperText(entryHelper);
 		}
 	}
@@ -318,22 +326,25 @@ public class UIFeedbackHelper {
 		}
 		switch (entryHelper.poll()) {
 			case "TIMED":
+				setProcessingTaskType(TaskType.TIMED);
 				return createCmdDoneTimedTaskHelperText(entryHelper);
 			case "DEADLINE":
+				setProcessingTaskType(TaskType.DEADLINE);
 				return createCmdDoneDeadlineTaskHelperText(entryHelper);
 			default:
+				setProcessingTaskType(TaskType.FLOATING);
 				return createCmdDoneFloatingTaskHelperText(entryHelper);
 		}
 	}
 
 	private static String createCmdDoneHelpTextEmptyDetails() {
-		String helperText = "* DELETE *\n";
-		helperText += " To DELETE, enter:  delete [index].\n";
+		String helperText = "* MARK AS DONE *\n";
+		helperText += " To MARK AS DONE, enter:  delete [index].\n";
 		return helperText;
 	}
 
 	private static String createCmdDoneFloatingTaskHelperText(LinkedList<String> entryHelper) {
-		String helperText = "* DELETE TASK *\n";
+		String helperText = "* MARK AS DONE TASK *\n";
 		helperText += "Name: " + entryHelper.poll() + "\n" +
 				"Person: " + entryHelper.poll() + "\n" +
 				"Venue: " + entryHelper.poll() + "\n";
@@ -341,7 +352,7 @@ public class UIFeedbackHelper {
 	}
 
 	private static String createCmdDoneDeadlineTaskHelperText(LinkedList<String> entryHelper) {
-		String helperText = "* DELETE DEADLINE *\n";
+		String helperText = "* MARK AS DONE DEADLINE *\n";
 		helperText += "Name: " + entryHelper.poll() + "\n" +
 				"Date: "+ entryHelper.poll() + "\n" +
 				"Time: "+ entryHelper.poll() + "\n" +
@@ -350,7 +361,7 @@ public class UIFeedbackHelper {
 		return helperText;
 	}
 	private static String createCmdDoneTimedTaskHelperText(LinkedList<String> entryHelper) {
-		String helperText = "* DELETE TASK *\n";
+		String helperText = "* MARK AS DONE TASK *\n";
 		helperText += "Name: " + entryHelper.poll() + "\n" +
 				"Start date: "+ entryHelper.poll() + "\n" +
 				"Start time: "+ entryHelper.poll() + "\n" +
@@ -359,5 +370,13 @@ public class UIFeedbackHelper {
 				"Person: " + entryHelper.poll() + "\n" +
 				"Venue: " + entryHelper.poll() + "\n";
 		return helperText;
+	}
+
+	public static TaskType getProcessingTaskType() {
+		return processingTaskType;
+	}
+
+	public static void setProcessingTaskType(TaskType processingTaskType) {
+		UIFeedbackHelper.processingTaskType = processingTaskType;
 	}
 }

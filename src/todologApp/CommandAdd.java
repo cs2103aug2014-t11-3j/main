@@ -2,124 +2,150 @@ package todologApp;
 
 import java.io.IOException;
 import java.util.LinkedList;
-
+	
 public class CommandAdd implements Command {
 	private Task _task;
 	private DBStorage _storage;
-	private boolean validity;
+	private boolean _validity;
+	
+	private static final String FEEDBACK_INVALID_DETAILS="Please enter the task details";
+	private static final String FEEDBACK_INVALID_STORAGE="Cannot store the list to ToDoLog";
+	private static final String FEEDBACK_VALID_INPUT="Added %1$s to ToDoLog";
+	private static final String FEEDBACK_VALID_UNDO="Undone adding %1$s";
+	private static final String FEEDBACK_INVALID_UNDO="Cannot undo adding %1$s";
+	
+	
 	public CommandAdd(Task task) {
 		_task = task;
 	}
 
+	public Task getAddedTask() {
+		return _task;
+	}
+	
 	public String execute(){
-		if (_task == null) {
-			validity = false;
-			return "Please enter task details";
-		}
+		
 		String feedback;
+		LinkedList <Task> storageList = new LinkedList<Task>();
+		
 		_storage= Controller.getDBStorage();
-		LinkedList<Task> newList = new LinkedList<Task>();
-		newList=_storage.load();
-		sortByDate(newList);
+		storageList=_storage.load();
+		
+		if (_task == null) {
+			_validity = false;
+			return FEEDBACK_INVALID_DETAILS;
+		}
+		
+		sortByDate(storageList);
+		
 		try {
-			_storage.store(newList);
+			_storage.store(storageList);
 		} catch (IOException e) {
-			feedback = "Cannot store the list to ToDoLog";
-			validity=false;
+			feedback = FEEDBACK_INVALID_STORAGE;
+			_validity = false;
 			return feedback;
 		}
-		feedback = "Added " + _task.getTaskName() + " to ToDoLog";
-		Controller.setFocusTask(_task);
-		validity=true;
+		
+		feedback = String.format (FEEDBACK_VALID_INPUT, _task.getTaskName());
+		_validity=true;
 		return feedback;
 	}
 	
-	public void sortByDate(LinkedList<Task> newList){
-	    if(_task.getTaskType() == TaskType.FLOATING) {
-	    	newList.add(_task);
-	    	Controller.setFocusTask(_task); // set focus task to change UI's page
+	
+	public void sortByDate(LinkedList<Task> toSortList){
+		
+	    if (_task.getTaskType() == TaskType.FLOATING) {
+	    	toSortList.add(_task);
+	    	// set focus task to change UI's page
+	    	Controller.setFocusTask(_task); 
 	    } else {
 	    	boolean isAdded = false;
-    		for (int i=0 ; i<newList.size();i++) {
-    			Task curr = newList.get(i);
-    			if (curr.getTaskType() == TaskType.FLOATING) {
-    				newList.add(i,_task);
-    				Controller.setFocusTask(_task); // set focus task to change UI's page
-    				isAdded=true;
+	    	
+    		for (int i=0; i<toSortList.size(); i++) {
+    			Task current = toSortList.get(i);
+    			if (current.getTaskType() == TaskType.FLOATING) {
+    				toSortList.add(i,_task);
+    				// set focus task to change UI's page
+    				Controller.setFocusTask(_task); 
+    				isAdded = true;
     				break;
     			} else {
-	    			if (curr.getEndDateTime().compareTo(_task.getEndDateTime()) >0) {
-	    				newList.add(i,_task);
-	    				Controller.setFocusTask(_task); // set focus task to change UI's page
+	    			if (current.getEndDateTime().compareTo(_task.getEndDateTime()) >0) {
+	    				toSortList.add(i,_task);
+	    				// set focus task to change UI's page
+	    				Controller.setFocusTask(_task); 
 	    				isAdded=true;
 	    				break;
 	    			}
     			}	
     		}
+    		
     		if (!isAdded) {
-    			newList.add(_task);
+    			toSortList.add(_task);
     		}
-	    	
 	    }
+	}
+
+	public String fakeExecute() {
+		String feedback;
+		LinkedList <Task> storageList;
+		_storage= Controller.getDBStorage();
+		storageList = _storage.load();
+		
+		if (_task == null) {
+			_validity = false;
+			return FEEDBACK_INVALID_DETAILS;
+		}
+		
+		sortByDate(storageList);
+		feedback = String.format(FEEDBACK_VALID_INPUT, _task.getTaskName());
+		_validity=true;
+		return feedback;
+		
 	}
 	
 	public String undo() {
 		String feedback;
+		LinkedList <Task> storageList;
+		
 		_storage = Controller.getDBStorage();
-		LinkedList<Task> taskList = _storage.load();
-		int index = taskList.indexOf(_task);
-		Task removedTask = taskList.remove(index);
-		if (index == taskList.size()) {
+		storageList = _storage.load();
+		int index = storageList.indexOf(_task);
+		Task removedTask = storageList.remove(index);
+		if (index == storageList.size()) {
 			if (index == 0) {
-				Controller.setFocusTask(null); // set focus task to change UI's page
+				// set focus task to change UI's page
+				Controller.setFocusTask(null); 
 			} else {
-				Controller.setFocusTask(taskList.get(index-1));
+				Controller.setFocusTask(storageList.get(index-1));
 			}
 		} else {
-			if (taskList.size() == 0) {
-				Controller.setFocusTask(null); // set focus task to change UI's page
+			if (storageList.size() == 0) {
+				// set focus task to change UI's page
+				Controller.setFocusTask(null); 
 			} else {
-				Controller.setFocusTask(taskList.get(index));
+				Controller.setFocusTask(storageList.get(index));
 			}
 		}
 		
 		try {
-			_storage.store(taskList);
+			_storage.store(storageList);
 		} catch (IOException e) {
-			feedback = "Cannot store the list to ToDoLog";
+			feedback = FEEDBACK_INVALID_STORAGE;
 			return feedback;
 		}
 		if (removedTask != null) {
-			feedback = "Undone adding "+ _task.getTaskName();
+			feedback = String.format(FEEDBACK_VALID_UNDO, _task.getTaskName());
 		} 
 		else {
-			feedback = "Cannot undo adding "+ _task.getTaskName(); 
+			feedback = String.format(FEEDBACK_INVALID_UNDO, _task.getTaskName());
 		}
 		
 		return feedback;
 	}
+	
 	public boolean isUndoable(){
-		return validity;
-	}
-
-	public String fakeExecute() {
-		if (_task == null) {
-			validity = false;
-			return "Please enter task details";
-		}
-		String feedback;
-		_storage= Controller.getDBStorage();
-		LinkedList<Task> newList = new LinkedList<Task>(_storage.load());
-		sortByDate(newList);
-		feedback = "Added " + _task.getTaskName() + " to ToDoLog";
-		validity=true;
-		return feedback;
-		
-	}
-
-	public Task getAddedTask() {
-		// TODO Auto-generated method stub
-		return _task;
+		return _validity;
 	}
 
 }
