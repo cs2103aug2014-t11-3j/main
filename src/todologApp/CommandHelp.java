@@ -21,7 +21,7 @@ public class CommandHelp implements Command{
 		//Scanner inFile;
 		String everything="";
 			try{
-			 inFile = new Scanner(new FileReader("temp.txt"));
+			 inFile = new Scanner(new FileReader("helper.txt"));
 			
 			 while(inFile.hasNextLine()!=false){
 				String check = inFile.nextLine();
