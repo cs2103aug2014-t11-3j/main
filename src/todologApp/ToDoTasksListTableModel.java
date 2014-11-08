@@ -7,6 +7,7 @@ import java.util.Vector;
 
 import javax.swing.*;
 import javax.swing.border.*;*/
+
 import javax.swing.table.*;
 
 import java.util.*;
@@ -37,6 +38,9 @@ public class ToDoTasksListTableModel extends AbstractTableModel implements ToDoL
 		tableData = toDoListItems;
 	}
 	public int getColumnCount(){
+		
+
+		
 		return columnNames.length;
 	}
 	

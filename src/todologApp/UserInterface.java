@@ -7,6 +7,7 @@ import java.awt.AWTException;
 //import java.awt.AWTUtilities;
 import java.awt.CheckboxMenuItem;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.EventQueue;
@@ -62,6 +63,9 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
+import javax.swing.ScrollPaneConstants;
+
+import sun.swing.table.DefaultTableCellHeaderRenderer;
 
 import com.melloware.jintellitype.HotkeyListener;
 import com.melloware.jintellitype.JIntellitype;
@@ -108,11 +112,18 @@ public class UserInterface extends JFrame {
 	private FloatingTasksListTableModel floatingTasksTableModel;
 	private TrayIcon trayIcon;
 	private boolean firstMinimize;
-	
-//	private boolean invisbility = false;
+
+	private boolean invisbility = false;
 	private static UserInterface window;
 	private JScrollPane toDoTaskPane;
 	private JScrollPane floatingTaskPane;
+
+	private boolean invisibility = false;
+	private static UserInterface window;
+	private JLabel backgroundPicture;
+	private BufferedImage img;
+	private Border dynamicHelpTextBorder;
+	private DigitalClock clock;
 	
 	/**
 	 * Launch the application.
@@ -216,22 +227,26 @@ public class UserInterface extends JFrame {
 	
 	//this method consists of setting the different sections within the frame of ToDoLog
 	private void fillUpTheJFrame(JFrame UserInterface){
+		UserInterface.setUndecorated(true);
+		UserInterface.setBackground(new Color(255,255,255,255));
 		Container contentPane = UserInterface.getContentPane();
 		contentPane.add(layerPane);
 		JPanel mainPanel = new JPanel();
 		mainPanel.setBounds(0, 0, 700, 580);
 		mainPanel.setLayout(new GridBagLayout());
-		BufferedImage img;
+		
 		try {
 			URL url = this.getClass().getClassLoader().getResource("photos/seagull.jpg");
 			img = ImageIO.read(url);
-			JLabel background = new JLabel(new ImageIcon(img));
-			background.setBounds(0,0,700, 600);
-			layerPane.add(background,new Integer(0));
+			backgroundPicture = new JLabel(new ImageIcon(img));
+			backgroundPicture.setBounds(0,0,700, 600);
+			layerPane.add(backgroundPicture,new Integer(0));
+			
 		} catch (IOException e) {
 			//TODO some notifying
 			//dynamicHelpText.append("Cannot load image");
 		}
+		
 		mainPanel.setOpaque(false);
 		createToDoListHolder(mainPanel);
 		createBottomPanel(mainPanel); 
@@ -241,10 +256,10 @@ public class UserInterface extends JFrame {
 	}
 	
 	private void createClockPanel(Container topPanel){
-		 DigitalClock clock = new DigitalClock();
+		 clock = new DigitalClock();
 		 GridBagConstraints clockPanelParameters = setParameters(CLOCK_PARAMETERS);
-		 JLabel clockLabel = clock.getTime();
-		 topPanel.add(clockLabel,clockPanelParameters);
+		
+		 topPanel.add(clock.getTime(),clockPanelParameters);
 		 clock.start();
 	}
 	
@@ -353,6 +368,10 @@ public class UserInterface extends JFrame {
 		toDoTaskTable.getTableHeader().setResizingAllowed(false);
 		toDoTaskTable.getTableHeader().setBackground(new Color(0,0,0,0));
 		toDoTaskTable.getTableHeader().setReorderingAllowed(false);
+        
+        
+        toDoListTable.setShowGrid(false);
+        toDoListTable.setIntercellSpacing(new Dimension(0, 0));
 		toDoTaskTable.setOpaque(false);
 		toDoTaskTable.setEnabled(false);
 		toDoTaskTable.setShowGrid(false);
@@ -375,8 +394,8 @@ public class UserInterface extends JFrame {
 		}
 		//toDoListTable.addKeyListener(new ToDoListTableListener());
 		//updateToDoListTable(toDoListTable,toDoListItems,toDoListHeaders);
-		
-		toDoTaskPane = new JScrollPane(toDoTaskTable)
+        toDoTaskPane = new JScrollPane(toDoTaskTable)
+
 		{
 			/**
 			 * 
@@ -401,15 +420,30 @@ public class UserInterface extends JFrame {
 		toDoTaskPane.getViewport().setOpaque(false);
 		toDoTaskPane.getViewport().setBackground(new Color(255,255,255,220));
 		toDoTaskPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-		
+        toDoTaskTable.getTableHeader().setDefaultRenderer(new DefaultTableCellHeaderRenderer() {
+            
+            
+            @Override
+            public Component getTableCellRendererComponent(
+                                                           JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                DefaultTableCellHeaderRenderer rendererComponent = (DefaultTableCellHeaderRenderer)super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                
+                rendererComponent.setBorder(null);
+                rendererComponent.setHorizontalAlignment(LEFT);
+                
+                return rendererComponent;
+            }
+            
+        });
+
 		toDoListHolder.add(toDoTaskPane,scrollPaneParameters);
 	}
+
 	
 	private void createFloatingTaskList(JPanel toDoListHolder) {
 		GridBagConstraints floatingTaskListParameters; 
 		floatingTaskListParameters = setParameters(FLOATINGTASKLIST_PARAMETERS);
 		floatingTasksTableModel = new FloatingTasksListTableModel(floatingItems);
-		
 		floatingTaskTable = new JTable(floatingTasksTableModel); 
 		floatingTaskTable.setPreferredSize(new Dimension(130,300));
 		adjustFloatingTaskTableColumns(floatingTaskTable);
@@ -422,6 +456,7 @@ public class UserInterface extends JFrame {
 		floatingTaskTable.setShowGrid(false);
 		floatingTaskTable.setIntercellSpacing(new Dimension(0, 0));
 		((DefaultTableCellRenderer)floatingTaskTable.getDefaultRenderer(Object.class)).setOpaque(false);
+
 		InputStream in = this.getClass().getClassLoader().getResourceAsStream("fonts/OpenSans-Regular.ttf");
 		try {
 			Font font;
@@ -488,7 +523,7 @@ public class UserInterface extends JFrame {
 	 */
 	private void createBottomPanel(Container mainPanel){
 		JPanel bottomPanel = new JPanel(new GridBagLayout());
-		bottomPanel.setBackground(Color.WHITE);
+		bottomPanel.setBackground(new Color(255,255,255,0));
 		bottomPanel.setPreferredSize(new Dimension(650,170));
 		GridBagConstraints parameters;
 		
@@ -496,10 +531,11 @@ public class UserInterface extends JFrame {
 		
 		createCommandEntryTextBox(bottomPanel);
 		createTextArea(bottomPanel);
-		createLegend(bottomPanel);
+	//	createLegend(bottomPanel);
 		//createButton(bottomPanel);
 		mainPanel.add(bottomPanel, parameters);
-		bottomPanel.setOpaque(false);
+		
+		bottomPanel.setOpaque(true);
 	}
 	
 	private void createCommandEntryTextBox(JPanel bottomPanel) {
@@ -535,7 +571,7 @@ public class UserInterface extends JFrame {
 		dynamicHelpTextParameters = setParameters(DYNAMIC_HELP_TEXT_PARAMETERS);
 		
 		//characterize the text area box into the bottom panel
-		Border dynamicHelpTextBorder = new LineBorder(Color.GRAY);
+		dynamicHelpTextBorder = new LineBorder(Color.GRAY);
 		dynamicHelpText = new JTextArea(5,33);
 		dynamicHelpText.setMaximumSize(dynamicHelpText.getSize());
 		dynamicHelpText.setBorder(dynamicHelpTextBorder);
@@ -716,6 +752,42 @@ public class UserInterface extends JFrame {
 	                	}
 	                
 	                if(combination == 2){
+	                	
+	                	if(invisibility == false){
+	                	backgroundPicture.setIcon(null);
+	                	window.setBackground(new Color(255,255,255,30));
+	                	
+	                	//hide dynamicHelpText
+	                	dynamicHelpText.setBackground(new Color(255,255,255,30));
+	                	dynamicHelpText.setBorder(null);
+	                	dynamicHelpText.setForeground(new Color(255,255,255,80));
+	                	
+	                	toDoList.setBackground(new Color(255,255,255,30));
+	                	toDoList.setBorder(null);
+	                	toDoListTable.setForeground(new Color(255,255,255,70));
+	                	toDoListTable.getTableHeader().setForeground(new Color(255,255,255,70));
+	                	
+	                	
+	                	clock.getTime().setForeground(new Color(255,255,255,70));
+	                	invisibility = true;
+	                	}
+	                	
+	                	else{
+	                		backgroundPicture.setIcon(new ImageIcon(img));
+	                		window.setBackground(new Color(255,255,255,255));
+	                		
+	                		//hide dynamicHelpText
+		                	dynamicHelpText.setBackground(new Color(255,255,255,255));
+		                	dynamicHelpText.setBorder(dynamicHelpTextBorder);
+		                	dynamicHelpText.setForeground(new Color(0,0,0,255));
+		                	
+		                	toDoList.setBackground(new Color(255,255,255,220));
+		                	toDoListTable.setForeground(Color.BLACK);
+		                	toDoListTable.getTableHeader().setForeground(Color.BLACK);
+		                	
+		                	clock.getTime().setForeground(Color.WHITE);
+	                		invisibility = false;
+	                	}
 	                	
 //	                	if(invisibility == false){
 //	                    AWTUtilities.setWindowOpacity(window, 0.05f);
