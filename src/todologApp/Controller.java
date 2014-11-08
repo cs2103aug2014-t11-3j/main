@@ -9,6 +9,7 @@ public class Controller {
 	private static DBStorage _dbStorage;
 
 	private static History _history;
+	private static InputHistory _input;
 	private static String _textDisplay;
 	private static LinkedList<Task> _displayList;
 	private static Task _focusTask;
