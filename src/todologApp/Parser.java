@@ -83,7 +83,11 @@ public class Parser {
 				if (restOfTheString.equalsIgnoreCase("all")) {
 					CommandDeleteAll command = new CommandDeleteAll();
 					return command;
-				} else {
+				}if (restOfTheString.equalsIgnoreCase("done")) {
+					CommandDeleteDone command = new CommandDeleteDone();
+					return command;
+				}
+				else {
 					throw new Exception(HELP_TEXT_DELETE);
 				}
 			}
@@ -103,11 +107,17 @@ public class Parser {
 				return new CommandEdit();
 			}
 			restOfTheString = restOfTheString.trim();
-			int index = Integer.valueOf(getFirstWord(restOfTheString));
-			restOfTheString = getTheRestOfTheString(restOfTheString);
-			if (restOfTheString == null) {
-				return new CommandEdit(index);
+			int index;
+			try {
+				index = Integer.valueOf(getFirstWord(restOfTheString));
+				restOfTheString = getTheRestOfTheString(restOfTheString);
+				if (restOfTheString == null) {
+					return new CommandEdit(index);
+				}
+			} catch (NumberFormatException nfe) {
+				return new CommandEdit();
 			}
+			
 			String editType = getFirstWord(restOfTheString);
 			restOfTheString = getTheRestOfTheString(restOfTheString);
 			if (editType.equalsIgnoreCase("start") || editType.equalsIgnoreCase("end")) {
