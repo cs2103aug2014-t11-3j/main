@@ -14,14 +14,14 @@ public class CommandRedo implements Command {
 			return _toBeRedone.execute();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			return e.getMessage();
+			return "No more commands to Redo";
 		}
 	}
 
 	@Override
 	public String undo() {
 		// TODO Auto-generated method stub
-		return "Unexpected Error!";
+		return "Redo cannot be undone";
 	}
 	
 	public boolean isUndoable(){

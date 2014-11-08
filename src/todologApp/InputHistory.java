@@ -10,7 +10,7 @@ public class InputHistory {
 		_position = -1;
 	}
 	
-	public boolean addInput (String string) { 
+	public boolean addInput (String string) {
 		_position = _strings.size();
 		return _strings.add(string);
 	}

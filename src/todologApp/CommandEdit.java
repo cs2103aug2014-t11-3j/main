@@ -69,7 +69,6 @@ public class CommandEdit implements Command {
 	
 	public String execute() {
 		String feedback;
-		int indexInStorage;
 		LinkedList <Task> storageList;
 		String editedField;
 		storageList = _storage.load();
@@ -94,6 +93,7 @@ public class CommandEdit implements Command {
 			_validity = false;
 			return FEEDBACK_INVALID_DETAILS;
 		}
+		
 		try {
 			editedField = formNewTask();
 		} catch (Exception e1) {
@@ -101,11 +101,11 @@ public class CommandEdit implements Command {
 			feedback = e1.getMessage();
 			return feedback;
 		}
-		indexInStorage = storageList.indexOf(_taskExisting);
+		
 		_displayList.remove(_index);
 		storageList.remove(_taskExisting);
-		storageList.add(indexInStorage, _taskEdited);
-
+		sortByDate(storageList);
+		
 		try {
 			_storage.store(storageList);
 		} catch (IOException e) {
@@ -124,11 +124,44 @@ public class CommandEdit implements Command {
 		return feedback;
 	}
 	
+	public void sortByDate(LinkedList<Task> toSortList){
+		
+	    if (_taskEdited.getTaskType() == TaskType.FLOATING) {
+	    	toSortList.add(_taskEdited);
+	    	// set focus task to change UI's page
+	    	Controller.setFocusTask(_taskEdited); 
+	    } else {
+	    	boolean isAdded = false;
+    		for (int i=0; i<toSortList.size(); i++) {
+    			Task current = toSortList.get(i);
+    			if (current.getTaskType() == TaskType.FLOATING) {
+    				toSortList.add(i,_taskEdited);
+    				// set focus task to change UI's page
+    				Controller.setFocusTask(_taskEdited); 
+    				isAdded = true;
+    				break;
+    			} else {
+	    			if (current.getEndDateTime().compareTo(_taskEdited.getEndDateTime()) >0) {
+	    				toSortList.add(i,_taskEdited);
+	    				// set focus task to change UI's page
+	    				Controller.setFocusTask(_taskEdited); 
+	    				isAdded=true;
+	    				break;
+	    			}
+    			}	
+    		}
+    		
+    		if (!isAdded) {
+    			toSortList.add(_taskEdited);
+    		}
+	    }
+	}
+	
 	public String fakeExecute() {
 		String feedback;
 		String editedField;
 		_displayList = Controller.getDisplayList();
-		if (_index == -1) {
+		if (_index == INVALID_INDEX) {
 			return FEEDBACK_INVALID_TASK;
 		} else {
 			try {
@@ -164,7 +197,6 @@ public class CommandEdit implements Command {
 
 	private String formNewTask() throws Exception{
 		_taskEdited = _taskExisting.copy();
-		
 		if (_editType.equalsIgnoreCase(KEYWORD_TASK_NAME) || _editType.equalsIgnoreCase(KEYWORD_NAME)) {
 			_taskEdited.setTaskName(_toBeEdited);
 			return KEYWORD_NAME;
@@ -214,11 +246,12 @@ public class CommandEdit implements Command {
 	public String undo() {
 		String feedback;
 		LinkedList <Task> storageList;
+		int indexInStorage;
 		
 		storageList = _storage.load();
 		_displayList = Controller.getDisplayList();
 		
-		int indexInStorage = storageList.indexOf(_displayList.get(_index));
+		indexInStorage = storageList.indexOf(_displayList.get(_index));
 		storageList.remove(indexInStorage);
 		
 		_displayList.remove(_index);

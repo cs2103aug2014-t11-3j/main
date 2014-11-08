@@ -8,9 +8,11 @@ import org.joda.time.DateTime;
 
 public class CommandView implements Command {
 	private String _toView;
+	private String _viewType;
 	private DBStorage _storage;
 	private static LinkedList<Task> _returnList;
 	private int monthInIntegers;
+	//private boolean _isMonth;
 	private static String DAY_KEYWORD_TODAY = "Today";
 	private static String DAY_KEYWORD_THIS_DAY = "This day ";
 	private static String DAY_KEYWORD_TOMORROW = "Tomorrow";
@@ -37,7 +39,6 @@ public class CommandView implements Command {
 		month=startDay.getMonthOfYear();
 		day=startDay.getDayOfMonth();
 		
-		feedback="Displaying tasks for "+ _toView;
 		
 	
 		//checking for today/this day 
@@ -46,6 +47,7 @@ public class CommandView implements Command {
 			startDay=new DateTime(year,month,day,0,0);
 			endDay=new DateTime(year,month,day,23,59);
 			formViewList(startDay,endDay);
+			_viewType = DAY_KEYWORD_TODAY;
 		}
 		//checking for tomorrow/tmr/next day
 		else if(_toView.equalsIgnoreCase(DAY_KEYWORD_TOMORROW)
@@ -59,9 +61,10 @@ public class CommandView implements Command {
 			startDay=new DateTime(year,month,day,0,0);
 			endDay=new DateTime(year,month,day,23,59);
 			formViewList(startDay,endDay);
+			_viewType = DAY_KEYWORD_TOMORROW;
 		}
 		//checking for days 
-		else if(isWeekDay()){
+		else if(isWeekDay()!= null){
 			
 			int currentWeekDay=startDay.getDayOfWeek();
 			int givenWeekDay=Parser.parseDayOfWeek(_toView);
@@ -77,6 +80,8 @@ public class CommandView implements Command {
 			startDay=new DateTime(year,month,day,0,0);
 			endDay=new DateTime(year,month,day,23,59);
 			formViewList(startDay,endDay);	
+			_viewType = isWeekDay();
+			
 		}
 		//checking for date
 		else if(Parser.checkDateFormat(_toView)){
@@ -88,6 +93,7 @@ public class CommandView implements Command {
 			startDay=new DateTime(year,month,day,0,0);
 			endDay=new DateTime(year,month,day,23,59);
 			formViewList(startDay,endDay);
+			_viewType = _toView;
 		}
 		//checking for this week
 		else if(_toView.equalsIgnoreCase(DAY_KEYWORD_THIS_WEEK)){
@@ -99,6 +105,7 @@ public class CommandView implements Command {
 			endDay.withMinuteOfHour(59);
 
 			formViewList(startDay,endDay);
+			_viewType = DAY_KEYWORD_THIS_WEEK;
 		}
 		//checking for next week
 		else if(_toView.equalsIgnoreCase(DAY_KEYWORD_NEXT_WEEK)){
@@ -114,9 +121,10 @@ public class CommandView implements Command {
 			endDay.withMinuteOfHour(59);
 
 			formViewList(startDay,endDay);
+			_viewType = DAY_KEYWORD_NEXT_WEEK;
 		}
 		//checking for month 
-		else if(isMonth()){
+		else if(checkMonth() != null ){
 			
 			DateTime startOfThisMonth=startDay.dayOfMonth().withMinimumValue().withTimeAtStartOfDay();
 			int currentMonth=startOfThisMonth.getMonthOfYear();
@@ -136,96 +144,121 @@ public class CommandView implements Command {
 
 			formViewList(startDay,endDay);
 			feedback="Displaying tasks for the month of " + _toView;
+			_viewType = checkMonth();
 		}
 		else if(_toView.equalsIgnoreCase("all")){
 			setReturnList(_storage.load());
 			feedback="Displaying all tasks";
+			_viewType = "all";
 		}
 		else if(_toView.equalsIgnoreCase("overdue")||_toView.equalsIgnoreCase("pending")){
 			endDay=startDay.minusMinutes(1);
 			viewOverDueTasks(endDay);
 			feedback="OVERDUE TASKS";
+			_viewType = "Overdue";
 			
 		}
 		else{
 			
 			feedback="invalid command";
 		}
+		
+		feedback="Displaying tasks for "+ _viewType;
+		
 		//Controller.setFocusTask(null); // set focus task to change UI's page
 		return feedback;
 		
 		
 	}
 
-	public boolean isWeekDay(){
+	public String isWeekDay(){
 	
-		if(_toView.equalsIgnoreCase("monday")||_toView.equalsIgnoreCase("mon")
-				||_toView.equalsIgnoreCase("tuesday")||_toView.equalsIgnoreCase("tues")
-				||_toView.equalsIgnoreCase("wednesday")||_toView.equalsIgnoreCase("wed")
-				||_toView.equalsIgnoreCase("thursday")||_toView.equalsIgnoreCase("thurs")
-				||_toView.equalsIgnoreCase("friday")||_toView.equalsIgnoreCase("fri")
-				||_toView.equalsIgnoreCase("saturday")||_toView.equalsIgnoreCase("sat")
-				||_toView.equalsIgnoreCase("sunday")||_toView.equalsIgnoreCase("sun")){
-			return true;
+		if(_toView.equalsIgnoreCase("monday")||_toView.equalsIgnoreCase("mon")){
+			return "Monday";
+		}else if(_toView.equalsIgnoreCase("tuesday")||_toView.equalsIgnoreCase("tues")){
+			return "Tuesday";
+		}else if(_toView.equalsIgnoreCase("wednesday")||_toView.equalsIgnoreCase("wed")){
+			return "Wednesday";
+		}else if(_toView.equalsIgnoreCase("thursday")||_toView.equalsIgnoreCase("thurs")){
+			return "Thursday";
+		}else if(_toView.equalsIgnoreCase("friday")||_toView.equalsIgnoreCase("fri")){
+			return "Friday";
+		}else if(_toView.equalsIgnoreCase("saturday")||_toView.equalsIgnoreCase("sat")){
+			return "Saturday";
+		}else if(_toView.equalsIgnoreCase("sunday")||_toView.equalsIgnoreCase("sun")){
+			return "Sunday";
 		}
 		else{
-			return false;
+			return null;
 		}
 		
 	}
 	
-	public boolean isMonth() {
+	public String checkMonth() {
 		
 		if(_toView.equalsIgnoreCase("january")||_toView.equalsIgnoreCase("jan")){
 			monthInIntegers=1;
-			return true;
+		
+			return "January";
 		}
 		else if(_toView.equalsIgnoreCase("february")||_toView.equalsIgnoreCase("feb")){
 			monthInIntegers=2;
-			return true;
+
+			return "February";
 		}
 		else if(_toView.equalsIgnoreCase("march")||_toView.equalsIgnoreCase("mar")){
 			monthInIntegers=3;
-			return true;
+		
+			return "March";
 		}
 		else if(_toView.equalsIgnoreCase("april")||_toView.equalsIgnoreCase("apr")){
 			monthInIntegers=4;
-			return true;
+		
+			return "April";
 		}
 		else if (_toView.equalsIgnoreCase("may")){
 			monthInIntegers=5;
-			return true;
+		
+			return "May";
 		}
 		else if(_toView.equalsIgnoreCase("june")||_toView.equalsIgnoreCase("jun")){
 			monthInIntegers=6;
-			return true;
+	
+			return "June";
 		}
 		else if(_toView.equalsIgnoreCase("july")||_toView.equalsIgnoreCase("jul")){
 			monthInIntegers=7;
-			return true;
+	
+			return "July";
 		}
 		else if(_toView.equalsIgnoreCase("august")||_toView.equalsIgnoreCase("aug")){
 			monthInIntegers=8;
-			return true;
+		
+			return "August";
 		}
 		else if(_toView.equalsIgnoreCase("september")||_toView.equalsIgnoreCase("sept")){
 			monthInIntegers=9;
-			return true;
+		
+			return "September";
 		}
 		else if(_toView.equalsIgnoreCase("october")||_toView.equalsIgnoreCase("oct")){
 			monthInIntegers=10;
-			return true;
+		
+			return "October";
 		}
 		else if(_toView.equalsIgnoreCase("november")||_toView.equalsIgnoreCase("nov")){
 			monthInIntegers=11;
-			return true;
+			
+			return "November";
 		}
 		else if(_toView.equalsIgnoreCase("december")||_toView.equalsIgnoreCase("dec")){
 			monthInIntegers=12;
-			return true;
+		
+			return "December";
 		}
 		else{
-			return false;
+			
+			return null;
 		}
 		
 	}
@@ -301,7 +334,7 @@ public class CommandView implements Command {
 
 	@Override
 	public String undo() {
-		return "Unexpected Error";
+		return "View cannot be undone";
 	}
 
 	@Override
