@@ -126,7 +126,7 @@ public class CommandEdit implements Command {
 	public String fakeExecute() {
 		String feedback;
 		String editedField;
-		
+		_displayList = Controller.getDisplayList();
 		if (_index == -1) {
 			return FEEDBACK_INVALID_TASK;
 		} else {
