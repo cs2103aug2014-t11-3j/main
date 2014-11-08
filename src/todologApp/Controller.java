@@ -24,9 +24,26 @@ public class Controller {
 	public static DBStorage getDBStorage() {
 		return _dbStorage;
 	}
-	
+	public static LinkedList<Task> getCurrentView() {
+		LinkedList<Task> displayTasks = new LinkedList<Task>();
+		for (Task task : _displayList) {
+			if (task.getTaskType() != TaskType.FLOATING) {
+				displayTasks.add(task);
+			}
+		}
+		return displayTasks;
+	}
 	public static LinkedList<Task> getDisplayList() {
 		return _displayList;
+	}
+	public static LinkedList<Task> getFloatingTasksList() {
+		LinkedList<Task> floatingTasks = new LinkedList<Task>();
+		for (Task task : _dbStorage.load()) {
+			if (task.getTaskType() == TaskType.FLOATING) {
+				floatingTasks.add(task);
+			}
+		}
+		return floatingTasks;
 	}
 	public static Task getFocusTask() {
 		return _focusTask;
@@ -159,7 +176,7 @@ public class Controller {
 		//_textDisplay = createNewDisplay();
 		_history = new History();
 		_feedback = FEEDBACK_START;
-		_currentViewMode = new CommandView("all");
+		_currentViewMode = new CommandView("this week");
 		_currentViewMode.execute();
 		_displayList = _currentViewMode.getReturnList();
 	}
@@ -176,5 +193,14 @@ public class Controller {
 		_displayList = _dbStorage.load();
 		
 	}
-
+	
+	public static int getNumberOfScheduledTasks() {
+		int numberOfScheduledTasks = 0;
+		for (Task task : _displayList) {
+			if (task.getTaskType() != TaskType.FLOATING) {
+				numberOfScheduledTasks++;
+			}
+		}
+		return numberOfScheduledTasks;
+	}
 }

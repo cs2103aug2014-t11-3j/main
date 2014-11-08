@@ -19,6 +19,7 @@ public class DBStorage implements Storage {
 	public LinkedList<Task> load() {
 		return _tasks;
 	}
+
 	public FileStorage getFileStorage(){
 		return _fileStorage;
 	}
@@ -33,5 +34,6 @@ public class DBStorage implements Storage {
 		_tasks = tasks;
 		_fileStorage.store(tasks);
 	}
+	
 
 }

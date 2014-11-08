@@ -12,7 +12,7 @@ import javax.swing.table.*;
 import java.util.*;
 import java.lang.Object;
 
-public class ToDoListTableModel extends AbstractTableModel{
+public class FloatingTasksListTableModel extends AbstractTableModel implements ToDoLogTableModel{
 	
 
 	/**
@@ -29,12 +29,12 @@ public class ToDoListTableModel extends AbstractTableModel{
 	private static final int NOT_DEADLINE = -1;
 	private int pageOffSet = 0;
 	
-	public ToDoListTableModel(LinkedList<Task> toDoListItems){
-		tableData = toDoListItems;
+	public FloatingTasksListTableModel(LinkedList<Task> floatingTaskListItems){
+		tableData = floatingTaskListItems;
 	}
 	
-	public void setTableData(LinkedList<Task> toDoListItems){
-		tableData = toDoListItems;
+	public void setTableData(LinkedList<Task> floatingTaskListItems){
+		tableData = floatingTaskListItems;
 	}
 	public int getColumnCount(){
 		return columnNames.length;
@@ -66,8 +66,7 @@ public class ToDoListTableModel extends AbstractTableModel{
 		return columnNames[col];
 	}
 	public Object getValueAt(int row,int col){
-		
-		int actualRow = row + (pageOffSet * pageSize);
+		int actualRow =  row + (pageOffSet * pageSize);
 		Task task = tableData.get(actualRow);
 		
 		if(task == null){
@@ -77,32 +76,10 @@ public class ToDoListTableModel extends AbstractTableModel{
 		switch(col){
 		
 		case 0:
-			return actualRow+1;
+			return actualRow+1+Controller.getNumberOfScheduledTasks();
 		
 		case 1: 
 			return task.getTaskName();
-			
-		case 2:
-			switch (task.getTaskType()) {
-				case FLOATING:
-					return "-";
-				case TIMED:
-					return String.format("%02d",task.getStartDate())+"/"
-							+ task.getStartMonth()+" " 
-							+ task.getStartTimeStr() + " - " 
-							+ String.format("%02d",task.getEndDate())+"/"
-							+ task.getEndMonth()+" "
-							+ task.getEndTimeStr();
-				case DEADLINE:
-					return "by "+ String.format("%02d",task.getEndDate())+"/"
-					+ task.getEndMonth()+" "
-					+ task.getEndTimeStr();
-				case RECURRING:
-					break;
-				default:
-					break;
-			}
-			
 			
 		case 3: {
 			String col4 = "";
@@ -170,4 +147,6 @@ public class ToDoListTableModel extends AbstractTableModel{
 		fireTableDataChanged();
 		
 	}
+
+	
 }
