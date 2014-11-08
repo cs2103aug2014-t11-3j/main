@@ -69,7 +69,6 @@ public class CommandEdit implements Command {
 	
 	public String execute() {
 		String feedback;
-		int indexInStorage;
 		LinkedList <Task> storageList;
 		String editedField;
 		storageList = _storage.load();
@@ -101,11 +100,9 @@ public class CommandEdit implements Command {
 			feedback = e1.getMessage();
 			return feedback;
 		}
-		indexInStorage = storageList.indexOf(_taskExisting);
 		_displayList.remove(_index);
 		storageList.remove(_taskExisting);
-		storageList.add(indexInStorage, _taskEdited);
-
+		sortByDate(storageList);
 		try {
 			_storage.store(storageList);
 		} catch (IOException e) {
@@ -122,6 +119,40 @@ public class CommandEdit implements Command {
 			_validity = true;
 		}
 		return feedback;
+	}
+	
+	public void sortByDate(LinkedList<Task> toSortList){
+		
+	    if (_taskEdited.getTaskType() == TaskType.FLOATING) {
+	    	toSortList.add(_taskEdited);
+	    	// set focus task to change UI's page
+	    	Controller.setFocusTask(_taskEdited); 
+	    } else {
+	    	boolean isAdded = false;
+	    	
+    		for (int i=0; i<toSortList.size(); i++) {
+    			Task current = toSortList.get(i);
+    			if (current.getTaskType() == TaskType.FLOATING) {
+    				toSortList.add(i,_taskEdited);
+    				// set focus task to change UI's page
+    				Controller.setFocusTask(_taskEdited); 
+    				isAdded = true;
+    				break;
+    			} else {
+	    			if (current.getEndDateTime().compareTo(_taskEdited.getEndDateTime()) >0) {
+	    				toSortList.add(i,_taskEdited);
+	    				// set focus task to change UI's page
+	    				Controller.setFocusTask(_taskEdited); 
+	    				isAdded=true;
+	    				break;
+	    			}
+    			}	
+    		}
+    		
+    		if (!isAdded) {
+    			toSortList.add(_taskEdited);
+    		}
+	    }
 	}
 	
 	public String fakeExecute() {
