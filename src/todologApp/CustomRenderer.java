@@ -10,7 +10,7 @@ import java.awt.Graphics;
 import javax.swing.*;
 
 public class CustomRenderer extends DefaultTableCellRenderer {
-	private static final int NOT_DEADLINE = -1;
+	private static final int NOT_DEADLINE = Integer.MIN_VALUE;
 	/**
 	 * 
 	 */
@@ -55,6 +55,9 @@ public class CustomRenderer extends DefaultTableCellRenderer {
 	private int computeAlpha(int duePeriod) {
 		if (duePeriod == NOT_DEADLINE) {
 			return 0;
+		}
+		if (duePeriod == -1) {
+			return 240;
 		}
 		if (duePeriod > 4) {
 			return 20;

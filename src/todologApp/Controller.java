@@ -113,14 +113,15 @@ public class Controller {
 				setViewOrSearchType("Search results for \""+((CommandSearch) command).getSearchKey()+"\"");
 			} else if (command instanceof CommandView) {
 				setFocusTask(null);
-				_currentViewMode = (CommandView) command;
-				_displayList =  _currentViewMode.getReturnList();
-				setViewOrSearchType(((CommandView) command).getViewType()+" events and deadlines");
-				
+				if (((CommandView)command).getViewType() != null) {
+					_currentViewMode = (CommandView) command;
+					_displayList =  _currentViewMode.getReturnList();
+					setViewOrSearchType(((CommandView) command).getViewType()+" events and deadlines:");
+				}
 			} else {
 				_currentViewMode.execute();
 				_displayList =  _currentViewMode.getReturnList();
-				setViewOrSearchType(_currentViewMode.getViewType()+" events and deadlines");
+				setViewOrSearchType(_currentViewMode.getViewType()+" events and deadlines:");
 			}
 			if (!(command instanceof CommandUndo) && !(command instanceof CommandRedo) 
 					&& !(command instanceof CommandSearch) && !(command instanceof CommandView) 
@@ -197,7 +198,7 @@ public class Controller {
 		_currentViewMode = new CommandView("this week");
 		_currentViewMode.execute();
 		_displayList = _currentViewMode.getReturnList();
-		setViewOrSearchType(_currentViewMode.getViewType()+" events and deadlines");
+		setViewOrSearchType(_currentViewMode.getViewType()+" events and deadlines:");
 	}
 	public static void init(String fileName) {
 		_dbStorage = new DBStorage(fileName);
