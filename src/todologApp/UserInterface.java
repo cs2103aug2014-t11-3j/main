@@ -103,12 +103,13 @@ public class UserInterface extends JFrame {
 	private JLabel closeButton;
 	private JLabel minimizeButton;
 	//private Controller controller;
-	private LinkedList <Task> toDoListItems = new LinkedList<Task>();
+	private LinkedList <Task> toDoListItems;
+	private LinkedList<Task> floatingItems;
 	private ToDoTasksListTableModel toDoTasksTableModel;
 	private FloatingTasksListTableModel floatingTasksTableModel;
 	private TrayIcon trayIcon;
 	private boolean firstMinimize;
-	private LinkedList<Task> floatingItems;
+	
 //	private boolean invisbility = false;
 	private static UserInterface window;
 	private JScrollPane toDoTaskPane;
@@ -408,7 +409,7 @@ public class UserInterface extends JFrame {
 	private void createFloatingTaskList(JPanel toDoListHolder) {
 		GridBagConstraints floatingTaskListParameters; 
 		floatingTaskListParameters = setParameters(FLOATINGTASKLIST_PARAMETERS);
-		floatingTasksTableModel = new FloatingTasksListTableModel(toDoListItems);
+		floatingTasksTableModel = new FloatingTasksListTableModel(floatingItems);
 		
 		floatingTaskTable = new JTable(floatingTasksTableModel); 
 		floatingTaskTable.setPreferredSize(new Dimension(130,300));
@@ -793,7 +794,9 @@ public class UserInterface extends JFrame {
 			//(I think for this is when typing (to guess the input)
 			// and for pressing enter then send the text to Parser)
 			String commandString = commandEntryTextField.getText();
-			
+			if (commandString.equalsIgnoreCase("exit")) {
+				window.dispatchEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSING));
+			}
 		
 //			Controller.acceptUserCommand(commandString);	    
 //			commandEntryTextField.setText("");
@@ -817,20 +820,38 @@ public class UserInterface extends JFrame {
 	}
 	
 	private void flipPages() {
-		if (Controller.getFocusTask() == null) {
-			((ToDoLogTableModel) focusTable.getModel()).goToPage(0);
-			return;
-		}
-		Task focusTask = Controller.getFocusTask();
-		//boolean found = false;
-		for (int index = 0; index < toDoListItems.size(); index ++){
-			Task task = toDoListItems.get(index);
-			if (task == focusTask) {
-				((ToDoLogTableModel) focusTable.getModel()).goToPage((index)/17);
-			//	found = true;
+		if (focusTable == toDoTaskTable) {
+			if (Controller.getFocusTask() == null) {
+				((ToDoLogTableModel) focusTable.getModel()).goToPage(0);
+				return;
+			}
+			Task focusTask = Controller.getFocusTask();
+			//boolean found = false;
+			for (int index = 0; index < toDoListItems.size(); index ++){
+				Task task = toDoListItems.get(index);
+				if (task == focusTask) {
+					((ToDoLogTableModel) focusTable.getModel()).goToPage((index)/17);
+				//	found = true;
 
+				}
+			}
+		} else {
+			if (Controller.getFocusTask() == null) {
+				((ToDoLogTableModel) focusTable.getModel()).goToPage(0);
+				return;
+			}
+			Task focusTask = Controller.getFocusTask();
+			//boolean found = false;
+			for (int index = 0; index < floatingItems.size(); index ++){
+				Task task = floatingItems.get(index);
+				if (task == focusTask) {
+					((ToDoLogTableModel) focusTable.getModel()).goToPage((index)/17);
+				//	found = true;
+
+				}
 			}
 		}
+		
 	}
 	private void setFocusTable(int tableIndex) {
 		switch (tableIndex) {

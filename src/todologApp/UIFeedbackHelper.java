@@ -19,6 +19,8 @@ public class UIFeedbackHelper {
 			helperText = createCmdDeleteAllHelpText(entryHelper);
 		} else if (commandType.equals("done")) {
 			helperText = createCmdDoneHelpText(entryHelper);
+		}else if (commandType.equals("number")) {
+			helperText = createCmdNumberHelpText(entryHelper);
 		}
 		return helperText;
 	}
@@ -372,6 +374,51 @@ public class UIFeedbackHelper {
 		return helperText;
 	}
 
+	private static String createCmdNumberHelpText(LinkedList<String> entryHelper) {
+		if (entryHelper.isEmpty()) {
+			return "Invalid task number. Task does not exist!";
+		}
+		switch (entryHelper.poll()) {
+			case "TIMED":
+				setProcessingTaskType(TaskType.TIMED);
+				return createCmdNumberTimedTaskHelperText(entryHelper);
+			case "DEADLINE":
+				setProcessingTaskType(TaskType.DEADLINE);
+				return createCmdNumberDeadlineTaskHelperText(entryHelper);
+			default:
+				setProcessingTaskType(TaskType.FLOATING);
+				return createCmdNumberFloatingTaskHelperText(entryHelper);
+		}
+	}
+
+	private static String createCmdNumberFloatingTaskHelperText(LinkedList<String> entryHelper) {
+		String helperText = "* VIEWING TASK DETAILS *\n";
+		helperText += "Name: " + entryHelper.poll() + "\n" +
+				"Person: " + entryHelper.poll() + "\n" +
+				"Venue: " + entryHelper.poll() + "\n";
+		return helperText;
+	}
+
+	private static String createCmdNumberDeadlineTaskHelperText(LinkedList<String> entryHelper) {
+		String helperText = "* VIEWING TASK DETAILS *\n";
+		helperText += "Name: " + entryHelper.poll() + "\n" +
+				"Date: "+ entryHelper.poll() + "\n" +
+				"Time: "+ entryHelper.poll() + "\n" +
+				"Person: " + entryHelper.poll() + "\n" +
+				"Venue: " + entryHelper.poll() + "\n";
+		return helperText;
+	}
+	private static String createCmdNumberTimedTaskHelperText(LinkedList<String> entryHelper) {
+		String helperText = "* VIEWING TASK DETAILS *\n";
+		helperText += "Name: " + entryHelper.poll() + "\n" +
+				"Start date: "+ entryHelper.poll() + "\n" +
+				"Start time: "+ entryHelper.poll() + "\n" +
+				"End date: "+ entryHelper.poll() + "\n" +
+				"End time: "+ entryHelper.poll() + "\n" +
+				"Person: " + entryHelper.poll() + "\n" +
+				"Venue: " + entryHelper.poll() + "\n";
+		return helperText;
+	}
 	public static TaskType getProcessingTaskType() {
 		return processingTaskType;
 	}
