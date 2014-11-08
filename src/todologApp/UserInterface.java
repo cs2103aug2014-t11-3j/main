@@ -54,7 +54,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-
 import javax.swing.ScrollPaneConstants;
 import javax.swing.Timer;
 import javax.swing.border.Border;
@@ -917,6 +916,27 @@ public class UserInterface extends JFrame {
 			if ((keyCode == KeyEvent.VK_PAGE_DOWN) || (keyCode == KeyEvent.VK_F10)){
 				((ToDoLogTableModel) focusTable.getModel()).pageDown();
 			}
+			
+			if (keyCode == KeyEvent.VK_UP){
+				try {
+					commandEntryTextField.setText(Controller.getInput().getBackwards());
+	//				Controller.getInput().goBackwards();
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+			
+			if (keyCode == KeyEvent.VK_DOWN){
+				try {
+					commandEntryTextField.setText(Controller.getInput().getForwards());
+//					Controller.getInput().goForwards();
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+			
 			if ((keyCode == KeyEvent.VK_TAB)) {
 				toggleFocusTable();
 				
