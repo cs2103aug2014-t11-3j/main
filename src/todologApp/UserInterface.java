@@ -829,6 +829,7 @@ public class UserInterface extends JFrame {
 			for (int index = 0; index < toDoListItems.size(); index ++){
 				Task task = toDoListItems.get(index);
 				if (task == focusTask) {
+					
 					((ToDoLogTableModel) focusTable.getModel()).goToPage((index)/17);
 				//	found = true;
 
@@ -844,6 +845,7 @@ public class UserInterface extends JFrame {
 			for (int index = 0; index < floatingItems.size(); index ++){
 				Task task = floatingItems.get(index);
 				if (task == focusTask) {
+					
 					((ToDoLogTableModel) focusTable.getModel()).goToPage((index)/17);
 				//	found = true;
 
@@ -1177,7 +1179,7 @@ public class UserInterface extends JFrame {
 	private void adjustToDoTaskTableColumns(JTable toDoListTable){
 		TableColumn tableColumn = null;
 		
-		for(int columnHeaders = 0; columnHeaders < 6;columnHeaders++){
+		for(int columnHeaders = 0; columnHeaders < 7;columnHeaders++){
 			tableColumn = toDoListTable.getColumnModel().getColumn(columnHeaders);
 			
 			switch(columnHeaders){
@@ -1201,6 +1203,12 @@ public class UserInterface extends JFrame {
 				tableColumn.setMinWidth(0);
 				tableColumn.setMaxWidth(0);
 				break;
+			case 6:
+				tableColumn.setPreferredWidth(0);
+				tableColumn.setMinWidth(0);
+				tableColumn.setMaxWidth(0);
+				tableColumn.setWidth(0);
+				break;
 			}
 		}
 	}
@@ -1208,7 +1216,7 @@ public class UserInterface extends JFrame {
 	private void adjustFloatingTaskTableColumns(JTable floatingListTable){
 		TableColumn tableColumn = null;
 		
-		for(int columnHeaders = 0; columnHeaders < 6;columnHeaders++){
+		for(int columnHeaders = 0; columnHeaders < 7;columnHeaders++){
 			tableColumn = floatingListTable.getColumnModel().getColumn(columnHeaders);
 			
 			switch(columnHeaders){
@@ -1237,6 +1245,12 @@ public class UserInterface extends JFrame {
 				tableColumn.setWidth(0);
 				break;
 			case 5:
+				tableColumn.setPreferredWidth(0);
+				tableColumn.setMinWidth(0);
+				tableColumn.setMaxWidth(0);
+				tableColumn.setWidth(0);
+				break;
+			case 6:
 				tableColumn.setPreferredWidth(0);
 				tableColumn.setMinWidth(0);
 				tableColumn.setMaxWidth(0);

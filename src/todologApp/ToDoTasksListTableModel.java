@@ -23,7 +23,7 @@ public class ToDoTasksListTableModel extends AbstractTableModel implements ToDoL
 	 * 
 	 */
 	
-	private final static String[] columnNames = {"No.","Name","Time","Person / Venue","Done","<hidden>"};
+	private final static String[] columnNames = {"No.","Name","Time","Person / Venue","Done","<hidden>","<hidden>"};
 	private LinkedList<Task> tableData;
 	private final static int pageSize = 17;
 	private static final int NOT_DEADLINE = -1;
@@ -137,6 +137,13 @@ public class ToDoTasksListTableModel extends AbstractTableModel implements ToDoL
 			} 
 		case 5:
 			return task.duePeriod();
+		case 6:
+			if (task == Controller.getFocusTask()) {
+				return true;
+			}
+			else {
+				return false;
+			}
 		default:
 			return null;
 			

@@ -1,5 +1,6 @@
 package todologApp;
 
+import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import java.awt.Color;
@@ -25,8 +26,31 @@ public class CustomRenderer extends DefaultTableCellRenderer {
 			int duePeriod = (int) table.getValueAt(row, 5);
 			colorCell(cellComponent,new Color(231, 76, 60,computeAlpha(duePeriod)));
 		} 
-
+		if ((Boolean) table.getValueAt(row, 6) == true) {
+			highlightCell(cellComponent);
+		}
 		return cellComponent;
+	}
+	private void highlightCell(Component cellComponent) {
+		//Color color = Color.YELLOW;
+		JPanel highlightCell = new JPanel()
+		{
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+			@Override
+			protected void paintComponent(Graphics g)
+		    {
+		        g.setColor( getBackground() );
+		        g.fillRect(0, 0, getWidth(), getHeight());
+		        super.paintComponent(g);
+		    }
+		};
+		((JComponent) cellComponent).setBackground(new Color(255,255,0,200));
+		((JComponent) cellComponent).setOpaque(true);
+		((JComponent) cellComponent).add(highlightCell);
+		
 	}
 	private int computeAlpha(int duePeriod) {
 		if (duePeriod == NOT_DEADLINE) {
