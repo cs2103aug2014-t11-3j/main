@@ -12,7 +12,7 @@ import javax.swing.table.*;
 import java.util.*;
 import java.lang.Object;
 
-public class FloatingTasksListTableModel extends AbstractTableModel{
+public class FloatingTasksListTableModel extends AbstractTableModel implements ToDoLogTableModel{
 	
 
 	/**
@@ -147,4 +147,6 @@ public class FloatingTasksListTableModel extends AbstractTableModel{
 		fireTableDataChanged();
 		
 	}
+
+	
 }

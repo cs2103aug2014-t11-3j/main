@@ -66,6 +66,8 @@ import com.melloware.jintellitype.JIntellitypeException;
 public class UserInterface extends JFrame { 
 	
 
+	private static final int FLOATINGTASK_TABLE_INDEX = 2;
+	private static final int TODOTASK_TABLE_INDEX = 1;
 	private static final float TABLE_FONT_SIZE = 12f;
 	private static final float ENTRY_TEXT_FIELD_FONT_SIZE = 20f;
 	private static final float HELP_TEXT_FONT_SIZE = 13f;
@@ -91,6 +93,7 @@ public class UserInterface extends JFrame {
 	//private JTextArea toDoListText;
 	private JTable toDoTaskTable;
 	private JTable floatingTaskTable;
+	private JTable focusTable;
 	private JLabel closeButton;
 	private JLabel minimizeButton;
 	//private Controller controller;
@@ -101,6 +104,8 @@ public class UserInterface extends JFrame {
 	private boolean firstMinimize;
 	private LinkedList<Task> floatingItems;
 	private static UserInterface window;
+	private JScrollPane toDoTaskPane;
+	private JScrollPane floatingTaskPane;
 	
 	/**
 	 * Launch the application.
@@ -147,6 +152,7 @@ public class UserInterface extends JFrame {
 		UserInterface.setResizable(false);
 		UserInterface.setBounds(100,100,700, 600);					
 		UserInterface.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
 	}
 	
 	//this method consists of setting the different sections within the frame of ToDoLog
@@ -292,6 +298,7 @@ public class UserInterface extends JFrame {
 		toDoTaskTable.setEnabled(false);
 		toDoTaskTable.setShowGrid(false);
 		toDoTaskTable.setIntercellSpacing(new Dimension(0, 0));
+		focusTable = toDoTaskTable;
 		((DefaultTableCellRenderer)toDoTaskTable.getDefaultRenderer(Object.class)).setOpaque(false);
 		InputStream in = this.getClass().getClassLoader().getResourceAsStream("fonts/OpenSans-Regular.ttf");
 		try {
@@ -310,36 +317,41 @@ public class UserInterface extends JFrame {
 		//toDoListTable.addKeyListener(new ToDoListTableListener());
 		//updateToDoListTable(toDoListTable,toDoListItems,toDoListHeaders);
 		
-		JScrollPane toDoList = new JScrollPane(toDoTaskTable)
+		toDoTaskPane = new JScrollPane(toDoTaskTable)
 		{
 			/**
 			 * 
 			 */
 			private static final long serialVersionUID = 1L;
-
+			
 			protected void paintComponent(Graphics g)
-		    {
+		    {	
+				int arc = 20;
 		        g.setColor( getBackground() );
-		        g.fillRect(0, 0, getWidth(), getHeight());
+		        ((Graphics2D) g).setRenderingHint (RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		        g.fillRoundRect(0, 0, getWidth(), getHeight(), arc, arc);
 		        super.paintComponent(g);
 		    }
 		};
-		toDoList.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-		toDoList.setPreferredSize(new Dimension(500,300));
-		toDoList.setOpaque(false);
-		toDoList.setBackground(new Color(255,255,255,220));
-		toDoList.getViewport().setOpaque(false);
-		toDoList.getViewport().setBackground(new Color(255,255,255,220));
-		toDoList.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 		
-		toDoListHolder.add(toDoList,scrollPaneParameters);
+		toDoTaskPane.setBorder(BorderFactory.createLineBorder(new Color(241, 196, 15), 3, true));
+
+		toDoTaskPane.setPreferredSize(new Dimension(500,300));
+		toDoTaskPane.setOpaque(false);
+		toDoTaskPane.setBackground(new Color(255,255,255,220));
+		toDoTaskPane.getViewport().setOpaque(false);
+		toDoTaskPane.getViewport().setBackground(new Color(255,255,255,220));
+		toDoTaskPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+		
+		toDoListHolder.add(toDoTaskPane,scrollPaneParameters);
 	}
 	
 	private void createFloatingTaskList(JPanel toDoListHolder) {
 		GridBagConstraints floatingTaskListParameters; 
 		floatingTaskListParameters = setParameters(FLOATINGTASKLIST_PARAMETERS);
 		floatingTasksTableModel = new FloatingTasksListTableModel(toDoListItems);
-		floatingTaskTable = new JTable(floatingTasksTableModel);    
+		
+		floatingTaskTable = new JTable(floatingTasksTableModel); 
 		floatingTaskTable.setPreferredSize(new Dimension(130,300));
 		adjustFloatingTaskTableColumns(floatingTaskTable);
 		changeToDoTableColors(floatingTaskTable);
@@ -368,7 +380,7 @@ public class UserInterface extends JFrame {
 		//toDoListTable.addKeyListener(new ToDoListTableListener());
 		//updateToDoListTable(toDoListTable,toDoListItems,toDoListHeaders);
 		
-		JScrollPane toDoList = new JScrollPane(floatingTaskTable)
+		floatingTaskPane = new JScrollPane(floatingTaskTable)
 		{
 			/**
 			 * 
@@ -376,21 +388,24 @@ public class UserInterface extends JFrame {
 			private static final long serialVersionUID = 1L;
 
 			protected void paintComponent(Graphics g)
-		    {
+		    {	
+				int arc = 20;
 		        g.setColor( getBackground() );
-		        g.fillRect(0, 0, getWidth(), getHeight());
+		        ((Graphics2D) g).setRenderingHint (RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		        g.fillRoundRect(0, 0, getWidth(), getHeight(), arc, arc);
 		        super.paintComponent(g);
 		    }
 		};
-		toDoList.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-		toDoList.setPreferredSize(new Dimension(130,300));
-		toDoList.setOpaque(false);
-		toDoList.setBackground(new Color(255,255,255,220));
-		toDoList.getViewport().setOpaque(false);
-		toDoList.getViewport().setBackground(new Color(255,255,255,220));
-		toDoList.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 		
-		toDoListHolder.add(toDoList,floatingTaskListParameters);
+		floatingTaskPane.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3, true));
+		floatingTaskPane.setPreferredSize(new Dimension(130,300));
+		floatingTaskPane.setOpaque(false);
+		floatingTaskPane.setBackground(new Color(255,255,255,220));
+		floatingTaskPane.getViewport().setOpaque(false);
+		floatingTaskPane.getViewport().setBackground(new Color(255,255,255,220));
+		floatingTaskPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+		
+		toDoListHolder.add(floatingTaskPane,floatingTaskListParameters);
 		
 	}
 
@@ -449,7 +464,7 @@ public class UserInterface extends JFrame {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+		commandEntryTextField.setFocusTraversalKeysEnabled(false);
 		commandEntryTextField.addActionListener(new CommandEntryTextFieldActionListener());
 		commandEntryTextField.addKeyListener(new CommandEntryTextFieldKeyListener());
 		commandEntryTextField.getDocument().addDocumentListener(new CommandEntryTextFieldDocumentListener());
@@ -611,7 +626,7 @@ public class UserInterface extends JFrame {
 		this.addWindowListener(new ToDoLogWindowListener());
 		Controller.init();
 		//TODO Seperate 2 lists
-		toDoListItems = Controller.getDisplayList();
+		toDoListItems = Controller.getCurrentView();
 		floatingItems = Controller.getFloatingTasksList();
 		toDoTasksTableModel = new ToDoTasksListTableModel(toDoListItems);
 		toDoTaskTable.setModel(toDoTasksTableModel);
@@ -620,6 +635,7 @@ public class UserInterface extends JFrame {
 		changeToDoTableColors(toDoTaskTable);
 		floatingTasksTableModel = new FloatingTasksListTableModel(floatingItems);
 		floatingTaskTable.setModel(floatingTasksTableModel);
+		focusTable = toDoTaskTable;
 		adjustFloatingTaskTableColumns(floatingTaskTable);
 		changeFloatingTableColors(floatingTaskTable);
 		// create more here
@@ -628,7 +644,8 @@ public class UserInterface extends JFrame {
 	private void useJIntellitype() {
 		try {
 			JIntellitype.getInstance();
-			JIntellitype.getInstance().registerHotKey(1, JIntellitype.MOD_ALT, (int) 'B');;
+			JIntellitype.getInstance().registerHotKey(1, JIntellitype.MOD_ALT, (int) 'B');
+			JIntellitype.getInstance().registerHotKey(2, "TAB");
 			JIntellitype.getInstance().addHotKeyListener(new HotkeyListener() {
 	            @Override
 	            public void onHotKey(int combination) {
@@ -638,7 +655,10 @@ public class UserInterface extends JFrame {
 	                	} else {
 	                		window.setState(JFrame.ICONIFIED);
 	                	}
+	                if (combination == 2)
+	                	System.out.println(window.getFocusOwner().getName());
 	            }
+	            
 			});
 		} catch (JIntellitypeException jie) {
 			dynamicHelpText.append("Cannot load hotkey settings.\n");
@@ -711,7 +731,7 @@ public class UserInterface extends JFrame {
 			commandEntryTextField.setText("");
 			dynamicHelpText.setText(Controller.getFeedback());	
 			//TODO Seperate 2 lists
-			toDoListItems = Controller.getDisplayList();
+			toDoListItems = Controller.getCurrentView();
 			floatingItems = Controller.getFloatingTasksList();
 			toDoTasksTableModel.setTableData(toDoListItems);
 			toDoTasksTableModel.fireTableDataChanged();
@@ -725,7 +745,7 @@ public class UserInterface extends JFrame {
 	
 	private void flipPages() {
 		if (Controller.getFocusTask() == null) {
-			toDoTasksTableModel.goToPage(0);
+			((ToDoLogTableModel) focusTable.getModel()).goToPage(0);
 			return;
 		}
 		Task focusTask = Controller.getFocusTask();
@@ -733,12 +753,47 @@ public class UserInterface extends JFrame {
 		for (int index = 0; index < toDoListItems.size(); index ++){
 			Task task = toDoListItems.get(index);
 			if (task == focusTask) {
-				toDoTasksTableModel.goToPage((index)/17);
+				((ToDoLogTableModel) focusTable.getModel()).goToPage((index)/17);
 			//	found = true;
 			}
 		}
 	}
-	
+	private void setFocusTable(int tableIndex) {
+		switch (tableIndex) {
+			case TODOTASK_TABLE_INDEX: 
+				floatingTaskPane.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3, true));
+				focusTable = toDoTaskTable;
+				toDoTaskPane.setBorder(BorderFactory.createLineBorder(new Color(241, 196, 15), 3, true));
+				break;
+			case FLOATINGTASK_TABLE_INDEX: 
+				toDoTaskPane.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3, true));
+				focusTable = floatingTaskTable;
+				floatingTaskPane.setBorder(BorderFactory.createLineBorder(new Color(241, 196, 15), 3, true));
+				break;
+			default: break;
+		}
+	}
+	private void toggleFocusTable() {
+		int tableIndex;
+		if (focusTable == toDoTaskTable) {
+			tableIndex = FLOATINGTASK_TABLE_INDEX;
+		} else {
+			tableIndex = TODOTASK_TABLE_INDEX;
+		}
+		switch (tableIndex) {
+			case TODOTASK_TABLE_INDEX: 
+				floatingTaskPane.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3, true));
+				focusTable = toDoTaskTable;
+				toDoTaskPane.setBorder(BorderFactory.createLineBorder(new Color(241, 196, 15), 3, true));
+				break;
+			case FLOATINGTASK_TABLE_INDEX: 
+				toDoTaskPane.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3, true));
+				focusTable = floatingTaskTable;
+				floatingTaskPane.setBorder(BorderFactory.createLineBorder(new Color(241, 196, 15), 3, true));
+				break;
+			default: break;
+		}
+	}
 	private class CommandEntryTextFieldDocumentListener implements DocumentListener {
 		@Override
 		public void insertUpdate(DocumentEvent e) {
@@ -761,12 +816,21 @@ public class UserInterface extends JFrame {
 			if (!entryHelper.isEmpty()) {
 				helperText += "\n";
 				helperText = UIFeedbackHelper.createCmdHelpText(entryHelper);
+				switch (UIFeedbackHelper.getProcessingTaskType()) {
+					case FLOATING:
+						setFocusTable(FLOATINGTASK_TABLE_INDEX);
+						break;
+					case DEADLINE:
+					case TIMED:
+						setFocusTable(TODOTASK_TABLE_INDEX);
+						break;
+					default:
+						break;		
+				}
 				flipPages();
 			} 
 			return helperText;
 		}
-		
-		
 	}
 	
 	private class CommandEntryTextFieldKeyListener implements KeyListener {
@@ -774,22 +838,20 @@ public class UserInterface extends JFrame {
 		public void keyPressed(KeyEvent e) {
 			int keyCode = e.getKeyCode();
 			if ((keyCode == KeyEvent.VK_PAGE_UP) || (keyCode == KeyEvent.VK_F9)){
-				toDoTasksTableModel.pageUp();
+				((ToDoLogTableModel) focusTable.getModel()).pageUp();
 			}
 			if ((keyCode == KeyEvent.VK_PAGE_DOWN) || (keyCode == KeyEvent.VK_F10)){
-				toDoTasksTableModel.pageDown();
+				((ToDoLogTableModel) focusTable.getModel()).pageDown();
+			}
+			if ((keyCode == KeyEvent.VK_TAB)) {
+				toggleFocusTable();
+				
 			}
 		}
 	
 		@Override
 		public void keyReleased(KeyEvent e) {
-			int keyCode = e.getKeyCode();
-			if(keyCode == KeyEvent.VK_PAGE_UP) {
-				toDoTasksTableModel.pageUp();
-			}
-			if ((keyCode == KeyEvent.VK_PAGE_DOWN) || (keyCode == KeyEvent.VK_F10)) {
-				toDoTasksTableModel.pageDown();
-			}
+			
 		}
 			
 		@Override

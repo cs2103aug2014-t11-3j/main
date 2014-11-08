@@ -12,7 +12,7 @@ import javax.swing.table.*;
 import java.util.*;
 import java.lang.Object;
 
-public class ToDoTasksListTableModel extends AbstractTableModel{
+public class ToDoTasksListTableModel extends AbstractTableModel implements ToDoLogTableModel{
 	
 
 	/**

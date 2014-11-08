@@ -132,7 +132,7 @@ public class CommandView implements Command {
 			startDay.withHourOfDay(0);
 			startDay.withMinuteOfHour(0);
 			endDay.withHourOfDay(0);
-			endDay.withMinuteOfHour(0);
+			endDay.withMinuteOfHour(0); 
 			formViewList(startDay,endDay);
 			feedback="Displaying tasks for the month of " + _toView;
 		}
@@ -278,7 +278,15 @@ public class CommandView implements Command {
 		setReturnList(viewList);
 	}
 	private void setReturnList(LinkedList<Task> list) {
-		_returnList = list;
+		_storage = Controller.getDBStorage();
+		LinkedList<Task> storageList = _storage.load();
+		LinkedList<Task> returnList = new LinkedList<Task>(list);
+		for (Task task : storageList) {
+			if (task.getTaskType() == TaskType.FLOATING) {
+				returnList.add(task);
+			}
+		}
+		_returnList = returnList;
 	}
 
 	public LinkedList<Task> getReturnList() {

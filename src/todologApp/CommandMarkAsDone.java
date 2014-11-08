@@ -79,21 +79,28 @@ public class CommandMarkAsDone implements Command {
 		return feedback;
 	}
 	public void sortDisplay(Task task){
-		if(_task.getTaskStatus()==true){
-			_taskList.remove(task);
-			_taskList.addLast(task);
+		if( _task.getTaskType() != TaskType.FLOATING){
+			if (_task.getTaskStatus()==true) {
+				_taskList.remove(task);
+				_taskList.add(countNumberOfScheduleTasks(_taskList),task);
+			} else {
+				sortList(_taskList);
+			}
 		}
-		else{
-			 if(_task.getTaskType() == TaskType.FLOATING) {
-				 	_taskList.remove(_task);
-			    	_taskList.add(_task);
-			    	Controller.setFocusTask(_task); // set focus task to change UI's page
-			    } else {
-		    		sortList(_taskList);
-		    		
-			    }
-			
+		else if (_task.getTaskStatus()==true && _task.getTaskType() == TaskType.FLOATING){
+			_taskList.remove(_task);
+			_taskList.add(_task);
+
 		}
+	}
+	private int countNumberOfScheduleTasks(LinkedList<Task> tasks) {
+		int numberOfScheduleTasks = 0;
+		for (Task task:tasks) {
+			if (task.getTaskType() != TaskType.FLOATING) {
+				numberOfScheduleTasks++;
+			}
+		}
+		return numberOfScheduleTasks;
 	}
 	public void sortList(LinkedList<Task> newList){
 		boolean isAdded = false;
@@ -102,14 +109,12 @@ public class CommandMarkAsDone implements Command {
 			if (curr.getTaskType() == TaskType.FLOATING) {
 				newList.remove(_task);
 				newList.add(i,_task);
-				Controller.setFocusTask(_task); // set focus task to change UI's page
 				isAdded=true;
 				break;
 			} else {
     			if (curr.getEndDateTime().compareTo(_task.getEndDateTime()) >0) {
     				newList.remove(_task);
     				newList.add(i,_task);
-    				Controller.setFocusTask(_task); // set focus task to change UI's page
     				isAdded=true;
     				break;
     			}
@@ -121,6 +126,7 @@ public class CommandMarkAsDone implements Command {
 		}
 	}
 	public String undo() {
+		_displayList = Controller.getDisplayList();
 		CommandMarkAsDone one= new CommandMarkAsDone(_displayList.indexOf(_task)+1);
 		return one.execute();
 	}

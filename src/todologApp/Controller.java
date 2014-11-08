@@ -24,8 +24,7 @@ public class Controller {
 	public static DBStorage getDBStorage() {
 		return _dbStorage;
 	}
-	
-	public static LinkedList<Task> getDisplayList() {
+	public static LinkedList<Task> getCurrentView() {
 		LinkedList<Task> displayTasks = new LinkedList<Task>();
 		for (Task task : _displayList) {
 			if (task.getTaskType() != TaskType.FLOATING) {
@@ -33,6 +32,9 @@ public class Controller {
 			}
 		}
 		return displayTasks;
+	}
+	public static LinkedList<Task> getDisplayList() {
+		return _displayList;
 	}
 	public static LinkedList<Task> getFloatingTasksList() {
 		LinkedList<Task> floatingTasks = new LinkedList<Task>();
@@ -174,7 +176,7 @@ public class Controller {
 		//_textDisplay = createNewDisplay();
 		_history = new History();
 		_feedback = FEEDBACK_START;
-		_currentViewMode = new CommandView("all");
+		_currentViewMode = new CommandView("this week");
 		_currentViewMode.execute();
 		_displayList = _currentViewMode.getReturnList();
 	}
@@ -194,7 +196,7 @@ public class Controller {
 	
 	public static int getNumberOfScheduledTasks() {
 		int numberOfScheduledTasks = 0;
-		for (Task task : _dbStorage.load()) {
+		for (Task task : _displayList) {
 			if (task.getTaskType() != TaskType.FLOATING) {
 				numberOfScheduledTasks++;
 			}
