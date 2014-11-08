@@ -9,6 +9,7 @@ public class Controller {
 	private static DBStorage _dbStorage;
 
 	private static History _history;
+	private static InputHistory _input;
 	private static String _textDisplay;
 	private static LinkedList<Task> _displayList;
 	private static Task _focusTask;
@@ -58,7 +59,14 @@ public class Controller {
 		return _history;
 
 	}
-	 
+	
+	public static void setInputHistory (InputHistory input) {
+		_input = input;
+	}
+	public static InputHistory getInput() {
+		return _input;
+	}
+	
 	// unused
 	// code for TextGUI display
 	public static String createNewDisplay() {
@@ -93,6 +101,7 @@ public class Controller {
 
 	public static void acceptUserCommand(String userCommand) {
 		try {
+			_input.addInput(userCommand);
 			Command command = Parser.createCommand(userCommand);
 			_feedback = command.execute();
 			if (command instanceof CommandSearch) {
@@ -176,6 +185,7 @@ public class Controller {
 		_dbStorage = new DBStorage();
 		//_textDisplay = createNewDisplay();
 		_history = new History();
+		_input = new InputHistory();
 		_feedback = FEEDBACK_START;
 		_currentViewMode = new CommandView("this week");
 		_currentViewMode.execute();
