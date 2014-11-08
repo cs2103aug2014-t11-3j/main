@@ -27,7 +27,7 @@ public class ToDoTasksListTableModel extends AbstractTableModel implements ToDoL
 	private final static String[] COLUMNS = {"No.","Name","Time","Person / Venue","Status","<hidden>","<hidden>"};
 	private LinkedList<Task> tableData;
 	private final static int PAGE_SIZE = 16;
-	private static final int NOT_DEADLINE = -1;
+	//private static final int NOT_DEADLINE = -1;
 
 	private int pageOffSet = 0;
 	

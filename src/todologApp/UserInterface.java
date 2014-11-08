@@ -63,7 +63,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
-import javax.swing.ScrollPaneConstants;
+//import javax.swing.ScrollPaneConstants;
 
 import sun.swing.table.DefaultTableCellHeaderRenderer;
 
