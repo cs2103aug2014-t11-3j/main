@@ -92,7 +92,11 @@ public class Parser {
 					if (restOfTheString.equalsIgnoreCase("all")) {
 						CommandDeleteAll command = new CommandDeleteAll();
 						return command;
-					} else {
+					}else if (restOfTheString.equalsIgnoreCase("done")){
+						CommandDeleteDone command= new CommandDeleteDone();
+						return command;
+					}
+					else {
 						throw new Exception(HELP_TEXT_DELETE);
 					}
 				}
