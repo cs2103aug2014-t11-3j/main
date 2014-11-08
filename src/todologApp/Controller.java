@@ -105,11 +105,7 @@ public class Controller {
 				_displayList =  _currentViewMode.getReturnList();
 			} else {
 				_currentViewMode.execute();
-				if (_currentViewMode instanceof CommandView) {
-					_displayList = ((CommandView) _currentViewMode).getReturnList();
-				} else {
-					_displayList =  _currentSearchCriterion.getReturnList();
-				}
+				_displayList =  _currentViewMode.getReturnList();
 			}
 			if (!(command instanceof CommandUndo) && !(command instanceof CommandRedo) 
 					&& !(command instanceof CommandSearch) && !(command instanceof CommandView)){
@@ -155,6 +151,11 @@ public class Controller {
 				((CommandMarkAsDone) command).fakeExecute();
 				Task task = ((CommandMarkAsDone) command).getMarkedTask();
 				LinkedList<String> details = ControllerFeedbackHelper.createHelperTexts("done",task);
+				return details;
+			} else if (command instanceof CommandNumber) {
+				((CommandNumber) command).fakeExecute();
+				Task task = ((CommandNumber) command).getTask();
+				LinkedList<String> details = ControllerFeedbackHelper.createHelperTexts("number",task);
 				return details;
 			}
 			 else {
