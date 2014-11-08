@@ -309,5 +309,10 @@ public class CommandView implements Command {
 		return false;
 	}
 
+	public String getViewType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	
 }

@@ -14,6 +14,7 @@ public class Controller {
 	private static LinkedList<Task> _displayList;
 	private static Task _focusTask;
 	private static String _feedback;
+	private static String _viewOrSearchType;
 	private static CommandView _currentViewMode;
 	private static CommandSearch _currentSearchCriterion;
 	private static final String FEEDBACK_START = "To start, enter a command: add, delete, edit, done.\n";
@@ -108,10 +109,13 @@ public class Controller {
 				_displayList = ((CommandSearch) command).getReturnList();
 				_currentSearchCriterion = (CommandSearch) command;
 				_displayList = _currentSearchCriterion.getReturnList();
+				setViewOrSearchType("Search results for \""+((CommandSearch) command).getSearchKey()+"\"");
 			} else if (command instanceof CommandView) {
 				setFocusTask(null);
 				_currentViewMode = (CommandView) command;
 				_displayList =  _currentViewMode.getReturnList();
+				setViewOrSearchType(((CommandView) command).getViewType()+"'s events and deadlines");
+				
 			} else {
 				_currentViewMode.execute();
 				_displayList =  _currentViewMode.getReturnList();
@@ -190,6 +194,7 @@ public class Controller {
 		_currentViewMode = new CommandView("this week");
 		_currentViewMode.execute();
 		_displayList = _currentViewMode.getReturnList();
+		setViewOrSearchType(_currentViewMode.getViewType()+"'s events and deadlines");
 	}
 	public static void init(String fileName) {
 		_dbStorage = new DBStorage(fileName);
@@ -213,5 +218,12 @@ public class Controller {
 			}
 		}
 		return numberOfScheduledTasks;
+	}
+
+	public static String getViewOrSearchType() {
+		return _viewOrSearchType;
+	}
+	private static void setViewOrSearchType(String text) {
+		_viewOrSearchType = text;
 	}
 }

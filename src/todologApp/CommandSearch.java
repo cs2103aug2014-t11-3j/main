@@ -44,5 +44,7 @@ public class CommandSearch implements Command {
 	public boolean isUndoable(){
 		return false;
 	}
-
+	public String getSearchKey() {
+		return _searchKey;
+	}
 }
