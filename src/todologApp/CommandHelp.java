@@ -22,7 +22,8 @@ public class CommandHelp implements Command{
 		String everything="";
 			try{
 			 inFile = new Scanner(new FileReader("temp.txt"));
-			 while(inFile.nextLine()!=null){
+			
+			 while(inFile.hasNextLine()!=false){
 				String check = inFile.nextLine();
 				everything = everything + check + "\n"; 
 			} 
@@ -40,11 +41,9 @@ public class CommandHelp implements Command{
 		    ta.setForeground(Color.WHITE);
 		    
 			JFrame frame = new JFrame("HELPER");
-			
             frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             
-            
-            Dimension d = new Dimension(500,500);
+            Dimension d = new Dimension(700,500);
             frame.setPreferredSize(d);
             frame.pack();
             frame.getContentPane().add(scroll, java.awt.BorderLayout.CENTER);
