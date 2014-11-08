@@ -41,7 +41,7 @@ public class History {
 				return null;
 			}
 		} catch (Exception e) {
-			throw new Exception("No commands to undo!");
+			throw new Exception("No commands to redo!");
 		}
 	}
 	public void goForwards() throws Exception {

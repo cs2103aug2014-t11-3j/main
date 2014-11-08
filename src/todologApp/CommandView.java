@@ -7,6 +7,7 @@ import org.joda.time.DateTime;
 
 
 public class CommandView implements Command {
+	private static final String POSSESSIVE_CASE = "'s";
 	private String _toView;
 	private String _viewType;
 	private DBStorage _storage;
@@ -17,9 +18,9 @@ public class CommandView implements Command {
 	private static String DAY_KEYWORD_THIS_DAY = "This day ";
 	private static String DAY_KEYWORD_TOMORROW = "Tomorrow";
 	private static String DAY_KEYWORD_TMR = "tmr";
-	private static String DAY_KEYWORD_NEXT_DAY="next day";
-	private static String DAY_KEYWORD_THIS_WEEK="this week";
-	private static String DAY_KEYWORD_NEXT_WEEK="next week";	
+	private static String DAY_KEYWORD_NEXT_DAY="Next day";
+	private static String DAY_KEYWORD_THIS_WEEK="This week";
+	private static String DAY_KEYWORD_NEXT_WEEK="Next week";	
 	
 	
 	
@@ -47,7 +48,7 @@ public class CommandView implements Command {
 			startDay=new DateTime(year,month,day,0,0);
 			endDay=new DateTime(year,month,day,23,59);
 			formViewList(startDay,endDay);
-			_viewType = DAY_KEYWORD_TODAY;
+			_viewType = DAY_KEYWORD_TODAY + POSSESSIVE_CASE;
 		}
 		//checking for tomorrow/tmr/next day
 		else if(_toView.equalsIgnoreCase(DAY_KEYWORD_TOMORROW)
@@ -61,7 +62,7 @@ public class CommandView implements Command {
 			startDay=new DateTime(year,month,day,0,0);
 			endDay=new DateTime(year,month,day,23,59);
 			formViewList(startDay,endDay);
-			_viewType = DAY_KEYWORD_TOMORROW;
+			_viewType = DAY_KEYWORD_TOMORROW + POSSESSIVE_CASE;
 		}
 		//checking for days 
 		else if(isWeekDay()!= null){
@@ -80,7 +81,7 @@ public class CommandView implements Command {
 			startDay=new DateTime(year,month,day,0,0);
 			endDay=new DateTime(year,month,day,23,59);
 			formViewList(startDay,endDay);	
-			_viewType = isWeekDay();
+			_viewType = isWeekDay() + POSSESSIVE_CASE;
 			
 		}
 		//checking for date
@@ -93,7 +94,7 @@ public class CommandView implements Command {
 			startDay=new DateTime(year,month,day,0,0);
 			endDay=new DateTime(year,month,day,23,59);
 			formViewList(startDay,endDay);
-			_viewType = _toView;
+			_viewType = _toView + POSSESSIVE_CASE;
 		}
 		//checking for this week
 		else if(_toView.equalsIgnoreCase(DAY_KEYWORD_THIS_WEEK)){
@@ -105,7 +106,7 @@ public class CommandView implements Command {
 			endDay.withMinuteOfHour(59);
 
 			formViewList(startDay,endDay);
-			_viewType = DAY_KEYWORD_THIS_WEEK;
+			_viewType = DAY_KEYWORD_THIS_WEEK + POSSESSIVE_CASE;
 		}
 		//checking for next week
 		else if(_toView.equalsIgnoreCase(DAY_KEYWORD_NEXT_WEEK)){
@@ -144,18 +145,18 @@ public class CommandView implements Command {
 
 			formViewList(startDay,endDay);
 			feedback="Displaying tasks for the month of " + _toView;
-			_viewType = checkMonth();
+			_viewType = checkMonth() + POSSESSIVE_CASE;
 		}
 		else if(_toView.equalsIgnoreCase("all")){
 			setReturnList(_storage.load());
 			feedback="Displaying all tasks";
-			_viewType = "all";
+			_viewType = "All";
 		}
 		else if(_toView.equalsIgnoreCase("overdue")||_toView.equalsIgnoreCase("pending")){
 			endDay=startDay.minusMinutes(1);
 			viewOverDueTasks(endDay);
 			feedback="OVERDUE TASKS";
-			_viewType = "Overdue";
+			_viewType = "Past";
 			
 		}
 		else{
@@ -343,8 +344,7 @@ public class CommandView implements Command {
 	}
 
 	public String getViewType() {
-		// TODO Auto-generated method stub
-		return null;
+		return _viewType;
 	}
 
 	
