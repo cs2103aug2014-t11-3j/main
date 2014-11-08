@@ -5,87 +5,105 @@ import java.util.LinkedList;
 
 public class CommandDelete implements Command {
 	private Task _task;
-	private LinkedList<Task> taskList;
+	private LinkedList<Task> _displayList;
 	private DBStorage _storage;
 	private int _index;
-	private boolean validity;
+	private boolean _validity;
 
+	private static final String FEEDBACK_INVALID_FORMAT = "Please specify the task to be deleted.";
+	private static final String FEEDBACK_INVALID_INDEX = "Item number %1$s does not exist";
+	private static final String FEEDBACK_VALID_DELETE = "Deleted %1$s from toDoLog";
+	private static final String FEEDBACK_INVALID_STORAGE = "Cannot store the list to ToDoLog";
+	private static final String FEEDBACK_VALID_UNDO = "Undone the delete command";
+	
+	
 	public CommandDelete(int index) {
 		_index = index - 1;
 	}
+	
 	public CommandDelete() {
 		_index = -1;
 	}
+	
 	public Task getDeletedTask() {
 		return _task;
 	}
+	
 	public String execute() {
 		String feedback;
-		taskList= Controller.getDisplayList();
+		LinkedList<Task> storageList;
+		
+		_displayList= Controller.getDisplayList();
 		_storage=Controller.getDBStorage();
-		LinkedList<Task> storageList=_storage.load();
+		storageList=_storage.load();
+		
 		if (_index == -1) {
-			validity = false;
-			return "Please specify the task to be edited."; 
+			_validity = false;
+			return FEEDBACK_INVALID_FORMAT; 
 		} else {
 			try {
-				_task = taskList.get(_index);
+				_task = _displayList.get(_index);
+				// set focus task to change UI's page
 				Controller.setFocusTask(_task);
 			} catch (IndexOutOfBoundsException ioobe ) {
-				validity = false;
+				_validity = false;
 				Controller.setFocusTask(null);
-				return "Item number "+ (_index+1) +" does not exist";
+				return String.format(FEEDBACK_INVALID_INDEX, _index+1);
 			}
 		}
 		
-		
-		taskList.remove(_index);
+		_displayList.remove(_index);
 		storageList.remove(_task);
-		feedback = "Deleted " + _task.getTaskName() + " from toDoLog";
-		validity=true;
+		feedback = String.format(FEEDBACK_VALID_DELETE, _task.getTaskName());
+		_validity=true;
 		try {
 			_storage.store(storageList);
 		} catch (IOException e) {
-			feedback = "Cannot store the list to ToDoLog";
-			validity=false;
+			feedback = FEEDBACK_INVALID_STORAGE;
+			_validity=false;
 			return feedback;
 		}
 		return feedback;
 	}
+	
 	public String fakeExecute() { 
-		taskList= Controller.getDisplayList();
+		LinkedList <Task> storageList;
+		_displayList= Controller.getDisplayList();
 		_storage=Controller.getDBStorage();
-		LinkedList<Task> storageList=_storage.load();
+		storageList=_storage.load();
+		
 		if (_index == -1) {
-			validity = false;
-			return "Please specify the task to be edited."; 
+			_validity = false;
+			return FEEDBACK_INVALID_FORMAT; 
 		} else {
 			try {
-				_task = taskList.get(_index);
+				_task = _displayList.get(_index);
 				storageList.get(storageList.indexOf(_task));
 				Controller.setFocusTask(_task);
 			} catch (IndexOutOfBoundsException ioobe ) {
-				validity = false;
-				Controller.setFocusTask(taskList.getLast());
-				return "Item number "+ (_index+1) +" does not exist";
+				_validity = false;
+				Controller.setFocusTask(_displayList.getLast());
+				return String.format(FEEDBACK_INVALID_INDEX, _index+1);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
-		validity = true;
-		return "Deleted " + _task.getTaskName() + " from toDoLog";
+		_validity = true;
+		return String.format(FEEDBACK_VALID_DELETE, _task.getTaskName());
 	}
+	
 	public String undo() {
 		String feedback;
 		CommandAdd undoDelete = new CommandAdd(_task);
+		// set focus task to change UI's page
 		Controller.setFocusTask(_task);
 		undoDelete.execute();
-		feedback = "Undone the delete command";
+		feedback = FEEDBACK_VALID_UNDO;
 		return feedback;
 
 	}
 	
 	public boolean isUndoable(){
-		return validity;
+		return _validity;
 	}
 }

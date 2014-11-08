@@ -9,7 +9,6 @@ import org.joda.time.DateTime;
 public class CommandView implements Command {
 	private String _toView;
 	private DBStorage _storage;
-
 	private static LinkedList<Task> _returnList;
 	private int monthInIntegers;
 	private static String DAY_KEYWORD_TODAY = "Today";
@@ -70,7 +69,7 @@ public class CommandView implements Command {
 				startDay=startDay.plusDays(givenWeekDay-currentWeekDay);	
 			}
 			else {
-				startDay=startDay.minusDays(currentWeekDay-givenWeekDay);
+				startDay=startDay.plusDays(givenWeekDay-currentWeekDay+7);
 			}
 			year=startDay.getYear();
 			month=startDay.getMonthOfYear();
@@ -93,26 +92,27 @@ public class CommandView implements Command {
 		//checking for this week
 		else if(_toView.equalsIgnoreCase(DAY_KEYWORD_THIS_WEEK)){
 		
-			startDay=startDay.weekOfWeekyear().roundFloorCopy();
-			startDay=new DateTime(year,month,day,0,0);
-			endDay=endDay.weekOfWeekyear().roundCeilingCopy();
+			endDay=startDay.plusDays(7);
 			startDay.withHourOfDay(0);
 			startDay.withMinuteOfHour(0);
-			endDay.withHourOfDay(0);
-			endDay.withMinuteOfHour(0);
+			endDay.withHourOfDay(23);
+			endDay.withMinuteOfHour(59);
+
 			formViewList(startDay,endDay);
 		}
 		//checking for next week
 		else if(_toView.equalsIgnoreCase(DAY_KEYWORD_NEXT_WEEK)){
 			
 			//changing to next week by adding 7 days
-			DateTime nextWeekDay=startDay.plusDays(7);
-			startDay=nextWeekDay.weekOfWeekyear().roundFloorCopy();
-			endDay=nextWeekDay.weekOfWeekyear().roundCeilingCopy();
+			
+			startDay=startDay.plusDays(8);
+			endDay=endDay.plusDays(15);
+
 			startDay.withHourOfDay(0);
 			startDay.withMinuteOfHour(0);
-			endDay.withHourOfDay(0);
-			endDay.withMinuteOfHour(0);
+			endDay.withHourOfDay(23);
+			endDay.withMinuteOfHour(59);
+
 			formViewList(startDay,endDay);
 		}
 		//checking for month 
@@ -131,8 +131,9 @@ public class CommandView implements Command {
 			}
 			startDay.withHourOfDay(0);
 			startDay.withMinuteOfHour(0);
-			endDay.withHourOfDay(0);
-			endDay.withMinuteOfHour(0); 
+			endDay.withHourOfDay(23);
+			endDay.withMinuteOfHour(59);
+
 			formViewList(startDay,endDay);
 			feedback="Displaying tasks for the month of " + _toView;
 		}
@@ -144,6 +145,7 @@ public class CommandView implements Command {
 			endDay=startDay.minusMinutes(1);
 			viewOverDueTasks(endDay);
 			feedback="OVERDUE TASKS";
+			
 		}
 		else{
 			
@@ -232,31 +234,31 @@ public class CommandView implements Command {
 	public void formViewList(DateTime startDay, DateTime endDay){
 		
 		_storage = Controller.getDBStorage();
-		LinkedList<Task> storageList = _storage.load();
+		//LinkedList<Task> storageList = _storage.load();
 		LinkedList<Task> viewList=new LinkedList<Task>();
 
 		for (int i = 0; i < _storage.load().size(); i++){
-			if(storageList.get(i).getTaskType()==TaskType.TIMED){
+			if(_storage.load().get(i).getTaskType()==TaskType.TIMED){
 				
-				if(((storageList.get(i).getStart().isAfter(startDay))||(storageList.get(i).getStart().isEqual(startDay)))
-						&&((storageList.get(i).getStart().isBefore(endDay))||(storageList.get(i).getStart().isEqual(endDay)))){
+				if(((_storage.load().get(i).getStart().isAfter(startDay))||(_storage.load().get(i).getStart().isEqual(startDay)))
+						&&((_storage.load().get(i).getStart().isBefore(endDay))||(_storage.load().get(i).getStart().isEqual(endDay)))){
 					
-					viewList.add(storageList.get(i));
+					viewList.add(_storage.load().get(i));
 				}
-				else if(((storageList.get(i).getEnd().isAfter(startDay))||(storageList.get(i).getEnd().isEqual(startDay)))
-						&&((storageList.get(i).getEnd().isBefore(endDay))||(storageList.get(i).getEnd().isEqual(endDay)))){
+				else if(((_storage.load().get(i).getEnd().isAfter(startDay))||(_storage.load().get(i).getEnd().isEqual(startDay)))
+						&&((_storage.load().get(i).getEnd().isBefore(endDay))||(_storage.load().get(i).getEnd().isEqual(endDay)))){
 					
-					viewList.add(storageList.get(i));	
+					viewList.add(_storage.load().get(i));	
 				}
 			}
-			else if(storageList.get(i).getTaskType()==TaskType.DEADLINE){
+			else if(_storage.load().get(i).getTaskType()==TaskType.DEADLINE){
 			
-				if(storageList.get(i).getEnd()!=null){
+				if(_storage.load().get(i).getEnd()!=null){
 				
-					if(((storageList.get(i).getEnd().isAfter(startDay))||(storageList.get(i).getEnd().isEqual(startDay)))
-							&&((storageList.get(i).getEnd().isBefore(endDay))||(storageList.get(i).getEnd().isEqual(endDay)))){
+					if(((_storage.load().get(i).getEnd().isAfter(startDay))||(_storage.load().get(i).getEnd().isEqual(startDay)))
+							&&((_storage.load().get(i).getEnd().isBefore(endDay))||(_storage.load().get(i).getEnd().isEqual(endDay)))){
 					
-						viewList.add(storageList.get(i));
+						viewList.add(_storage.load().get(i));
 						
 					}
 				}
@@ -268,8 +270,14 @@ public class CommandView implements Command {
 		
 	}
 	public void viewOverDueTasks(DateTime endDay){
+		
 		LinkedList<Task> viewList= new LinkedList<Task>();
 		for(int i=0;i<_storage.load().size();i++){
+			
+			if(_storage.load().get(i).getTaskType()==TaskType.FLOATING){
+				break;
+				
+			}
 			if(((_storage.load().get(i).getEnd().isBefore(endDay))||(_storage.load().get(i).getEnd().isEqual(endDay)))
 					&&(_storage.load().get(i).getTaskStatus()==false)){
 				viewList.add(_storage.load().get(i));
@@ -278,15 +286,7 @@ public class CommandView implements Command {
 		setReturnList(viewList);
 	}
 	private void setReturnList(LinkedList<Task> list) {
-		_storage = Controller.getDBStorage();
-		LinkedList<Task> storageList = _storage.load();
-		LinkedList<Task> returnList = new LinkedList<Task>(list);
-		for (Task task : storageList) {
-			if (task.getTaskType() == TaskType.FLOATING) {
-				returnList.add(task);
-			}
-		}
-		_returnList = returnList;
+		_returnList = list;
 	}
 
 	public LinkedList<Task> getReturnList() {

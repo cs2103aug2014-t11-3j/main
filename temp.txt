@@ -1,0 +1,85 @@
+1. ADD A TASK
+
+	- To add a task, enter command add in the bar.
+	
+	- A task contains 5 main components: name, date, time, person and venue. 
+	
+	- Date is formatted in ddmmyy (020914). Date also accepts the following inputs: today,
+	  tmr, tomorrow, Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday.
+	
+	- Time must be in 24-hours format (e.g. 1000, 1900).
+	
+	- TodoLog allows users to add:
+		a) Timed tasks
+		- Enter add “name of task” from “date” at “time” to “date” at “time”
+		- Enter add "name of task" from "date" at "time" to "time
+		• example: add dinner with T11-3J from mon at 1900 to 2100
+		b) Deadline tasks
+		- Enter add “name of task” by “date” at “time”
+		- Enter add "name of task: by "date"
+		• example: add CS2103T lecture review submission by Tuesday at 2359 
+		c) Floating tasks
+		• Enter add “name of task”
+		• example: add CS2103T review of CE1
+	
+	
+2. DELETE A TASK
+
+	- To delete a task, type delete followed by the index of the item to be deleted
+	• example: delete 2
+	
+	- Just type delete all to delete everything in the list
+	• example: delete all
+
+	
+3. MARK A TASK
+
+	- To mark a task as done, type done followed by the index of the item to be mark as done
+	• example: done 3
+	
+	- To unmark a task as done, type done again followed by the index of the item to be mark
+	as undone
+	• example: done 3
+	
+	
+4. EDIT A TASK
+
+	- To edit a task, type edit followed by the index and then type the information you wish
+	to edit and then the actual information
+	• example: edit 2 name Group meeting
+	• example: edit 2 end day Sunday
+	• example: edit 3 end time 2359
+	• example: edit 9 person Clare
+	• example: edit 4 start time 1100
+	• example: edit 3 venue SOC
+		
+
+4. SEARCH FOR A TASK
+
+	- To search for a task, type search followed by keyword.
+	
+	- The function is case insensitive.
+	
+	- Keyword should any part of the name of the task.
+	• example: search cs2103t → view all the tasks that have “cs2103t” included in their names
+	
+
+5. VIEW PARTICULAR TIME PERIODS
+
+	- To view a certain time period, type view followed by this week, next week, months.
+	• example: view today
+	• example: view tmr
+	• example: view 231114
+	• example: view this week
+	• example: view november
+	• example: view all
+		
+		
+6. UNDO A ACTION
+
+	- Simply type undo to revert a wrong action that you did
+	
+7. REDO THE UNDO
+
+	- Simply type redo to revert the wrong undo you did.
+￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼

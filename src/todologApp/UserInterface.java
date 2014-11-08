@@ -51,7 +51,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+
 import javax.swing.ScrollPaneConstants;
+import javax.swing.Timer;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
@@ -117,6 +119,18 @@ public class UserInterface extends JFrame {
 	}
 	
 	public static void main(String[] args) {
+		
+		final Timer timer = new Timer( 60000 ,
+				new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent ae) {
+						reminderLogic one = new reminderLogic();
+						one.execute();
+					}
+				});
+		timer.setInitialDelay(0);
+		timer.start();
+		
 		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {  
@@ -755,6 +769,7 @@ public class UserInterface extends JFrame {
 			if (task == focusTask) {
 				((ToDoLogTableModel) focusTable.getModel()).goToPage((index)/17);
 			//	found = true;
+
 			}
 		}
 	}
