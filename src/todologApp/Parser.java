@@ -438,7 +438,7 @@ public class Parser {
 				if ((messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) 
 						&& validKeyWord(messageArray, KEYWORD_DAY_STARTING, i))
 						|| (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING_2)
-								&& validKeyWord(messageArray, KEYWORD_DAY_STARTING, i))
+								&& validKeyWord(messageArray, KEYWORD_DAY_STARTING_2, i))
 						|| (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING)
 								&& validKeyWord(messageArray, KEYWORD_DAY_ENDING, i))
 						|| (messageArray[i].equalsIgnoreCase(KEYWORD_DEADLINE)
@@ -451,9 +451,11 @@ public class Parser {
 								&& validKeyWord(messageArray, KEYWORD_AT, i))
 						|| (messageArray[i].equalsIgnoreCase(KEYWORD_IN) 
 								&& validKeyWord(messageArray, KEYWORD_IN, i))) {
-					taskName = taskName + messageArray[i] + SINGLE_SPACE;
+						break;
+					//taskName = taskName + messageArray[i] + SINGLE_SPACE;
 				} else {
-					break;
+					taskName = taskName + messageArray[i] + SINGLE_SPACE;
+					//break;
 				}
 			}
 		} else {
@@ -637,16 +639,24 @@ public class Parser {
 		return taskVenue.trim();
 	}
 
-	public static boolean validKeyWord(String [] array, String keyWord, int index) {
-		int count = 0;
+		public static boolean validKeyWord(String [] array, String keyWord, int index) {
+			int count = 0;
 
-		for (int i=0; i<=index; i++) {
-			String currentWord = array[i];
-			if (currentWord.equalsIgnoreCase(keyWord)) {
-			} else if (currentWord.contains(QUOTATION_MARK)) {
-				count = count + 1;
+			for (int i=0; i<=index; i++) {
+				String currentWord = array[i];
+				if (currentWord.equalsIgnoreCase(keyWord)) {
+				} else if (currentWord.indexOf(QUOTATION_MARK) != -1 
+						&& currentWord.lastIndexOf(QUOTATION_MARK) != -1
+						&& currentWord.indexOf(QUOTATION_MARK) 
+						!= currentWord.lastIndexOf(QUOTATION_MARK)) {
+					count = count + 2;
+				} else if (currentWord.indexOf(QUOTATION_MARK) != -1 
+						&& currentWord.indexOf(QUOTATION_MARK) 
+						== currentWord.lastIndexOf(QUOTATION_MARK)) {
+					count = count + 1;
+				}
 			}
-		}
+
 
 		if (count % 2 == 0) {
 			return true;
