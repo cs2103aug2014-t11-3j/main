@@ -2,6 +2,7 @@ package todologApp;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.Scanner;
 
@@ -20,16 +21,18 @@ public class CommandHelp implements Command{
 	public String execute(){
 		//Scanner inFile;
 		String everything="";
-			try{
-			 inFile = new Scanner(new FileReader("helper.txt"));
 			
-			 while(inFile.hasNextLine()!=false){
-				String check = inFile.nextLine();
-				everything = everything + check + "\n"; 
-			} 
-			}catch(Exception e){
-				;
+			 try {
+				inFile = new Scanner(new FileReader("helper.txt"));
+				while(inFile.hasNextLine()!=false){
+					String check = inFile.nextLine();
+					everything = everything + check + "\n"; 
+				} 
+				
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
 			}
+			 
 			
 		if(everything!=null){
 			JTextArea ta = new JTextArea();
