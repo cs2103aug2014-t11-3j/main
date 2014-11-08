@@ -425,7 +425,7 @@ public class Parser {
 				if ((messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) 
 						&& validKeyWord(messageArray, KEYWORD_DAY_STARTING, i))
 						|| (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING_2)
-								&& validKeyWord(messageArray, KEYWORD_DAY_STARTING, i))
+								&& validKeyWord(messageArray, KEYWORD_DAY_STARTING_2, i))
 						|| (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING)
 								&& validKeyWord(messageArray, KEYWORD_DAY_ENDING, i))
 						|| (messageArray[i].equalsIgnoreCase(KEYWORD_DEADLINE)
