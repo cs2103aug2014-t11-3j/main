@@ -2,13 +2,13 @@ package todologApp;
 
 import java.awt.Color;
 import java.awt.Dimension;
-
 import java.io.FileReader;
 import java.util.Scanner;
 
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.text.DefaultCaret;
 
 public class CommandHelp implements Command{
 	
@@ -33,6 +33,9 @@ public class CommandHelp implements Command{
 			
 		if(everything!=null){
 			JTextArea ta = new JTextArea();
+
+            DefaultCaret caret1 = (DefaultCaret) ta.getCaret();
+            caret1.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
 		    ta.setLineWrap(true);
 		    ta.setWrapStyleWord(true);
 		    JScrollPane scroll = new JScrollPane(ta);
@@ -50,6 +53,7 @@ public class CommandHelp implements Command{
             ta.setBackground(Color.DARK_GRAY);
             frame.setResizable(false);
             frame.setVisible(true);
+            ta.setAutoscrolls(false);
 		}
 		
 		return "Help is here!";
