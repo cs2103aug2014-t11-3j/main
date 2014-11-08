@@ -286,7 +286,13 @@ public class CommandView implements Command {
 		setReturnList(viewList);
 	}
 	private void setReturnList(LinkedList<Task> list) {
-		_returnList = list;
+		LinkedList<Task> returnList = new LinkedList<Task>(list);
+		for (Task task : _storage.load()) {
+			if (task.getTaskType() == TaskType.FLOATING) {
+				returnList.add(task);
+			}
+		}
+		_returnList = returnList;
 	}
 
 	public LinkedList<Task> getReturnList() {
