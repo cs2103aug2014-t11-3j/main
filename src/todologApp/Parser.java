@@ -416,7 +416,7 @@ public class Parser {
 			}
 		}
 
-		return (TaskType.INVALID);
+		return (TaskType.FLOATING);
 	}
 
 	public static String parseTaskName(String parameter) throws Exception {
