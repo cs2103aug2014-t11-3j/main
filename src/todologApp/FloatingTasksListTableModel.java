@@ -26,7 +26,7 @@ public class FloatingTasksListTableModel extends AbstractTableModel implements T
 	private final static String[] COLUMNS = {"No.","Name","Time","Person / Venue","Done","<hidden>","<hidden>"};
 	private LinkedList<Task> tableData;
 	private final static int PAGE_SIZE = 16;
-	private static final int NOT_DEADLINE = -1;
+	private static final int NOT_DEADLINE = Integer.MIN_VALUE;
 	private int pageOffSet = 0;
 	
 	public FloatingTasksListTableModel(LinkedList<Task> floatingTaskListItems){

@@ -15,6 +15,7 @@ public class Task {
 	//private static final int NOT_DEADLINE = -1;
 	//Key Variables
 	
+	private static final int NOT_DEADLINE = Integer.MIN_VALUE;
 	private String _taskName;
 	private TaskType _taskType;
 	private String _taskStartDay;
@@ -237,7 +238,7 @@ public class Task {
 				return (Days.daysBetween(LocalDate.now(),new LocalDate(getStart()))).getDays();
 			}
 		}
-	return -1;
+	return NOT_DEADLINE;
 	}
 	
 	

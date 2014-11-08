@@ -358,7 +358,7 @@ public class UserInterface extends JFrame {
 	}
 
 	private void createToDoListLabel(JPanel toDoListHolder) {
-		toDoTaskLabel = new JLabel("This week's deadlines and events:") {
+		toDoTaskLabel = new JLabel("This week's events and deadlines:") {
 			/**
 			 * 
 			 */
@@ -440,7 +440,7 @@ public class UserInterface extends JFrame {
 		    }
 		};
 		
-		toDoTaskPane.setBorder(BorderFactory.createLineBorder(new Color(241, 196, 15), 3, true));
+		toDoTaskPane.setBorder(BorderFactory.createLineBorder(new Color(241, 196, 15), 3, false));
 		toDoTaskPane.setPreferredSize(new Dimension(500,280));
 		toDoTaskPane.setOpaque(false);
 		toDoTaskPane.setBackground(new Color(255,255,255,220));
@@ -541,7 +541,7 @@ public class UserInterface extends JFrame {
 		    }
 		};
 		
-		floatingTaskPane.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3, true));
+		floatingTaskPane.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3, false));
 		floatingTaskPane.setPreferredSize(new Dimension(130,270));
 		floatingTaskPane.setOpaque(false);
 		floatingTaskPane.setBackground(new Color(255,255,255,220));
@@ -1024,17 +1024,17 @@ public class UserInterface extends JFrame {
 		switch (tableIndex) {
 			case TODOTASK_TABLE_INDEX: 
 				
-				floatingTaskPane.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3, true));
+				floatingTaskPane.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3, false));
 				floatingTaskLabel.setBorder(compoundGrayBorder);
 				focusTable = toDoTaskTable;
-				toDoTaskPane.setBorder(BorderFactory.createLineBorder(new Color(241, 196, 15), 3, true));
+				toDoTaskPane.setBorder(BorderFactory.createLineBorder(new Color(241, 196, 15), 3, false));
 				toDoTaskLabel.setBorder(compoundYellowBorder);
 				break;
 			case FLOATINGTASK_TABLE_INDEX: 
-				toDoTaskPane.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3, true));
+				toDoTaskPane.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3, false));
 				toDoTaskLabel.setBorder(compoundGrayBorder);
 				focusTable = floatingTaskTable;
-				floatingTaskPane.setBorder(BorderFactory.createLineBorder(new Color(241, 196, 15), 3, true));
+				floatingTaskPane.setBorder(BorderFactory.createLineBorder(new Color(241, 196, 15), 3, false));
 				floatingTaskLabel.setBorder(compoundYellowBorder);
 				
 				break;
@@ -1310,7 +1310,7 @@ public class UserInterface extends JFrame {
 		Insets dynamicHelpTextInsets = new Insets(10,25,10,20);
 		Insets legendInsets = new Insets(0,0,0,10);
 		Insets toDoTableLabelInsets= new Insets(0,10,0,220);
-		Insets floatingTasksTableLabelInsets= new Insets(0,17,0,6);
+		Insets floatingTasksTableLabelInsets= new Insets(0,15,0,15);
 		//Insets buttonInsets = new Insets(10,0,0,20);
 		
 		if(panelParameters == CLOCK_PARAMETERS){
