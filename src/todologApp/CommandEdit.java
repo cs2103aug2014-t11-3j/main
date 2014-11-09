@@ -29,8 +29,9 @@ public class CommandEdit implements Command {
 	private static final String KEYWORD_INVALID = "invalid";
 	
 	private static final String FEEDBACK_INVALID_TASK = "Please specify task to be edited and the details.";
+	private static final String FEEDBACK_INVALID_EDIT_TYPE = "Please specify edit type and the details.";
+	private static final String FEEDBACK_INVALID_DETAILS = "Please specify the details.";
 	private static final String FEEDBACK_INVALID_INDEX = "Item number %1$s does not exist";
-	private static final String FEEDBACK_INVALID_DETAILS = "Please specify edit type and the details.";
 	private static final String FEEDBACK_INVALID_STORAGE = "Cannot store the list to ToDoLog";
 	private static final String FEEDBACK_INVALID_INPUT = "Invalid input";
 	private static final String FEEDBACK_VALID_EDIT = "Edited %1$s of the task.";
@@ -49,6 +50,13 @@ public class CommandEdit implements Command {
 		_toBeEdited = toBeEdited;
 		_storage = Controller.getDBStorage();	
 	}
+	
+	public CommandEdit(int index, String editType) {
+		_index = index -1;
+		_editType = editType;
+		_storage = Controller.getDBStorage();
+	}
+	
 
 	public CommandEdit(int index) {
 		_index = index -1;
@@ -67,6 +75,7 @@ public class CommandEdit implements Command {
 		return _index;
 	}
 	
+	@Override
 	public String execute() {
 		String feedback;
 		LinkedList <Task> storageList;
@@ -91,9 +100,12 @@ public class CommandEdit implements Command {
 		
 		if (_editType == null) {
 			_validity = false;
+			return FEEDBACK_INVALID_EDIT_TYPE;
+		}
+		if (_toBeEdited == null) {
+			_validity = false;
 			return FEEDBACK_INVALID_DETAILS;
 		}
-		
 		try {
 			editedField = formNewTask();
 		} catch (Exception e1) {
@@ -113,7 +125,7 @@ public class CommandEdit implements Command {
 			_validity = false;
 			return feedback;
 		}
-		if (editedField.equals("invalid")){
+		if (editedField.equals("invalid")) {
 			feedback = FEEDBACK_INVALID_INPUT;
 			_validity = false;
 		}
@@ -124,7 +136,7 @@ public class CommandEdit implements Command {
 		return feedback;
 	}
 	
-	public void sortByDate(LinkedList<Task> toSortList){
+	public void sortByDate(LinkedList<Task> toSortList) {
 		
 	    if (_taskEdited.getTaskType() == TaskType.FLOATING) {
 	    	toSortList.add(_taskEdited);
@@ -185,7 +197,7 @@ public class CommandEdit implements Command {
 			return feedback;
 		}
 		
-		if (editedField.equals(KEYWORD_INVALID)){
+		if (editedField.equals(KEYWORD_INVALID)) {
 			feedback = FEEDBACK_INVALID_INPUT;
 			_validity = false;
 		} else {
@@ -195,12 +207,12 @@ public class CommandEdit implements Command {
 		return feedback;
 	}
 
-	private String formNewTask() throws Exception{
+	private String formNewTask() throws Exception {
 		_taskEdited = _taskExisting.copy();
 		if (_editType.equalsIgnoreCase(KEYWORD_TASK_NAME) || _editType.equalsIgnoreCase(KEYWORD_NAME)) {
 			_taskEdited.setTaskName(_toBeEdited);
 			return KEYWORD_NAME;
-		} else if (_editType.equalsIgnoreCase(KEYWORD_END_DATE) || _editType.equalsIgnoreCase(KEYWORD_DATE)){
+		} else if (_editType.equalsIgnoreCase(KEYWORD_END_DATE) || _editType.equalsIgnoreCase(KEYWORD_DATE)) {
 			 if (_taskEdited.getTaskType() != TaskType.FLOATING) {
 				 _taskEdited.setEndDate(_toBeEdited);
 				 return KEYWORD_END_DATE;
@@ -223,19 +235,19 @@ public class CommandEdit implements Command {
 			 } else {
 				 throw new Exception(FEEDBACK_INVALID_REQUEST);
 			 }
-		 } else if (_editType.equalsIgnoreCase(KEYWORD_START_TIME)){
+		 } else if (_editType.equalsIgnoreCase(KEYWORD_START_TIME)) {
 			 if (_toBeEdited.length() == 4 
 			    && _taskEdited.getTaskType() != TaskType.FLOATING 
-			    && _taskEdited.getTaskType() != TaskType.DEADLINE){
+			    && _taskEdited.getTaskType() != TaskType.DEADLINE) {
 				 _taskEdited.setStartTime(_toBeEdited);
 			 	return KEYWORD_START_TIME;
 			 } else {
 				 throw new Exception(FEEDBACK_INVALID_REQUEST);
 			 }
-		 } else if (_editType.equalsIgnoreCase(KEYWORD_VENUE) || _editType.equalsIgnoreCase(KEYWORD_PLACE)){
+		 } else if (_editType.equalsIgnoreCase(KEYWORD_VENUE) || _editType.equalsIgnoreCase(KEYWORD_PLACE)) {
 			 _taskEdited.setVenue(_toBeEdited);
 			 return KEYWORD_VENUE;
-		 } else if (_editType.equalsIgnoreCase(KEYWORD_PERSON)){
+		 } else if (_editType.equalsIgnoreCase(KEYWORD_PERSON)) {
 			 _taskEdited.setPerson(_toBeEdited);
 			 return KEYWORD_PERSON;
 		 } else {
@@ -243,6 +255,7 @@ public class CommandEdit implements Command {
 		 }
 	}
 	 
+	@Override
 	public String undo() {
 		String feedback;
 		LinkedList <Task> storageList;
@@ -269,6 +282,7 @@ public class CommandEdit implements Command {
 		return feedback;
 	}
 	
+	@Override
 	public boolean isUndoable(){
 		return _validity;
 	}

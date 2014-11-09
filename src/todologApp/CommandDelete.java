@@ -29,6 +29,7 @@ public class CommandDelete implements Command {
 		return _task;
 	}
 	
+	@Override
 	public String execute() {
 		String feedback;
 		LinkedList<Task> storageList;
@@ -92,6 +93,7 @@ public class CommandDelete implements Command {
 		return String.format(FEEDBACK_VALID_DELETE, _task.getTaskName());
 	}
 	
+	@Override
 	public String undo() {
 		String feedback;
 		CommandAdd undoDelete = new CommandAdd(_task);
@@ -100,9 +102,9 @@ public class CommandDelete implements Command {
 		undoDelete.execute();
 		feedback = FEEDBACK_VALID_UNDO;
 		return feedback;
-
 	}
 	
+	@Override
 	public boolean isUndoable(){
 		return _validity;
 	}

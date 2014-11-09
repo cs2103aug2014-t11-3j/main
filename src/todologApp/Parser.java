@@ -103,7 +103,7 @@ public class Parser {
 			} else if (firstWord.equalsIgnoreCase("done")) {
 				String restOfTheString = getTheRestOfTheString(userCommand);
 				if (restOfTheString == null) {
-					throw new Exception(HELP_TEXT_DONE);
+					return new CommandMarkAsDone();
 				}
 				restOfTheString = restOfTheString.trim();
 				int index = Integer.valueOf(restOfTheString);
@@ -122,6 +122,9 @@ public class Parser {
 				}
 				String editType = getFirstWord(restOfTheString);
 				restOfTheString = getTheRestOfTheString(restOfTheString);
+				if (restOfTheString == null) {
+					return new CommandEdit(index,editType);
+				}
 				if (editType.equalsIgnoreCase("start") || editType.equalsIgnoreCase("end")) {
 					editType = editType.concat(" ").concat(getFirstWord(restOfTheString));
 					restOfTheString = getTheRestOfTheString(restOfTheString);
@@ -191,7 +194,7 @@ public class Parser {
 		return firstWord;
 	}
 
-	private static String[] generateArray(String parameter) {
+	private static String[] generateArray(String parameter){
 		parameter = parameter.trim();
 		String[] array = parameter.split(SINGLE_SPACE);
 		return array;

@@ -4,40 +4,39 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.Scanner;
 
-public class CommandHelp implements Command{
+public class CommandHelp implements Command {
 	
 	private Scanner inFile;
+	
+	private static final String FEEDBACK_HELP = "Help is here!";
+	private static final String FEEDBACK_UNDO = "Help cannot be undone";
 
-	public CommandHelp(){
-	}
-	
-	public String execute(){
-		//Scanner inFile;
-		String everything="";
-			
-			 try {
-				inFile = new Scanner(new FileReader("helper.txt"));
-				while(inFile.hasNextLine()!=false){
-					String check = inFile.nextLine();
-					everything = everything + check + "\n"; 
-				} 
-				
-			} catch (FileNotFoundException e) {
+	@Override
+	public String execute() {
+		String inFileText = "";
+		try {
+			inFile = new Scanner( new FileReader("helper.txt"));
+			while(inFile.hasNextLine() != false ) {
+				String line = inFile.nextLine();
+				inFileText = inFileText + line + "\n"; 
+			} 	
+		} catch (FileNotFoundException e) {
 				e.printStackTrace();
+		}	
+		if (inFileText != null ) {
+			HelpFrame generateHelpText = new HelpFrame(inFileText);
+			generateHelpText.execute();
 			}
-			
-			 if(everything!=null){
-				 HelpFrame generateHelpText = new HelpFrame(everything);
-				 generateHelpText.execute();
-			 }
-		return "Help is here!";
+		return FEEDBACK_HELP;
 	}
 	
-	public String undo(){
-		return "Help cannot be undone";
+	@Override
+	public String undo() {
+		return FEEDBACK_UNDO ;
 	}
 	
-	public boolean isUndoable(){
+	@Override
+	public boolean isUndoable() {
 		return false;
 	}
 

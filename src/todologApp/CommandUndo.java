@@ -4,10 +4,15 @@ public class CommandUndo implements Command {
 
 	private Command _toBeUndone;
 	private History _history;
+	
+	private static final String FEEDBACK_IVALID_UNDO = "Cannot undo the undo";
+	
 	public CommandUndo(Command toBeUndone) {
 		_toBeUndone = toBeUndone;
 		_history = Controller.getHistory();
 	}
+	
+	@Override
 	public String execute() {
 		try {
 			_history.goBackwards();
@@ -19,11 +24,11 @@ public class CommandUndo implements Command {
 
 	@Override
 	public String undo() {
-		// TODO Auto-generated method stub
-		return "Unexpected Error!";
+		return FEEDBACK_IVALID_UNDO;
 	}
 	
-	public boolean isUndoable(){
+	@Override
+	public boolean isUndoable() {
 		return false;
 	}
 

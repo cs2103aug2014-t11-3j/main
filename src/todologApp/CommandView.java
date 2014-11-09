@@ -3,7 +3,6 @@ package todologApp;
 import java.util.LinkedList;
 
 import org.joda.time.DateTime;
-//import org.joda.time.DateTimeConstants;
 
 
 public class CommandView implements Command {
@@ -49,6 +48,7 @@ public class CommandView implements Command {
 			endDay=new DateTime(year,month,day,23,59);
 			formViewList(startDay,endDay);
 			_viewType = DAY_KEYWORD_TODAY + POSSESSIVE_CASE;
+			feedback="Displaying tasks for "+ _viewType;
 		}
 		//checking for tomorrow/tmr/next day
 		else if(_toView.equalsIgnoreCase(DAY_KEYWORD_TOMORROW)
@@ -63,6 +63,7 @@ public class CommandView implements Command {
 			endDay=new DateTime(year,month,day,23,59);
 			formViewList(startDay,endDay);
 			_viewType = DAY_KEYWORD_TOMORROW + POSSESSIVE_CASE;
+			feedback="Displaying tasks for "+ _viewType;
 		}
 		//checking for days 
 		else if(isWeekDay()!= null){
@@ -82,6 +83,7 @@ public class CommandView implements Command {
 			endDay=new DateTime(year,month,day,23,59);
 			formViewList(startDay,endDay);	
 			_viewType = isWeekDay() + POSSESSIVE_CASE;
+			feedback="Displaying tasks for "+ _viewType;
 			
 		}
 		//checking for date
@@ -95,6 +97,7 @@ public class CommandView implements Command {
 			endDay=new DateTime(year,month,day,23,59);
 			formViewList(startDay,endDay);
 			_viewType = _toView + POSSESSIVE_CASE;
+			feedback="Displaying tasks for "+ _viewType;
 		}
 		//checking for this week
 		else if(_toView.equalsIgnoreCase(DAY_KEYWORD_THIS_WEEK)){
@@ -107,6 +110,7 @@ public class CommandView implements Command {
 
 			formViewList(startDay,endDay);
 			_viewType = DAY_KEYWORD_THIS_WEEK + POSSESSIVE_CASE;
+			feedback="Displaying tasks for "+ _viewType;
 		}
 		//checking for next week
 		else if(_toView.equalsIgnoreCase(DAY_KEYWORD_NEXT_WEEK)){
@@ -123,6 +127,7 @@ public class CommandView implements Command {
 
 			formViewList(startDay,endDay);
 			_viewType = DAY_KEYWORD_NEXT_WEEK;
+			feedback="Displaying tasks for "+ _viewType;
 		}
 		//checking for month 
 		else if(checkMonth() != null ){
@@ -144,19 +149,21 @@ public class CommandView implements Command {
 			endDay.withMinuteOfHour(59);
 
 			formViewList(startDay,endDay);
-			feedback="Displaying tasks for the month of " + _toView;
 			_viewType = checkMonth() + POSSESSIVE_CASE;
+			feedback="Displaying tasks for "+ _viewType;
 		}
 		else if(_toView.equalsIgnoreCase("all")){
 			setReturnList(_storage.load());
 			feedback="Displaying all tasks";
 			_viewType = "All";
+			feedback="Displaying tasks for "+ _viewType;
 		}
 		else if(_toView.equalsIgnoreCase("overdue")||_toView.equalsIgnoreCase("pending")){
 			endDay=startDay.minusMinutes(1);
 			viewOverDueTasks(endDay);
 			feedback="OVERDUE TASKS";
 			_viewType = "Past";
+			feedback="Displaying tasks for "+ _viewType;
 			
 		}
 		else{
@@ -164,7 +171,7 @@ public class CommandView implements Command {
 			feedback="invalid command";
 		}
 		
-		feedback="Displaying tasks for "+ _viewType;
+		
 		
 		//Controller.setFocusTask(null); // set focus task to change UI's page
 		return feedback;
