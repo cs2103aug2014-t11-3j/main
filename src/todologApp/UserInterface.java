@@ -75,6 +75,8 @@ import com.melloware.jintellitype.JIntellitypeException;
 public class UserInterface extends JFrame { 
 	
 
+	
+
 	private static final int TABLE_PAGE_SIZE = 16;
 	private static final int FLOATINGTASK_TABLE_INDEX = 2;
 	private static final int TODOTASK_TABLE_INDEX = 1;
@@ -726,85 +728,12 @@ public class UserInterface extends JFrame {
 	            @Override
 	            public void onHotKey(int combination) {
 	                if (combination == 1)
-	                	if (window.getState() == JFrame.ICONIFIED) {
-	                		window.setState(JFrame.NORMAL);
-	                	} else {
-	                		window.setState(JFrame.ICONIFIED);
-	                	}
+						showOrHideWindow();
 	                
 	                if(combination == 2){
-
-	                	if(invisibility == false){
-	                		commandEntryTextField.setBorder(new LineBorder(new Color(34,167,240),4,true));
-	                		backgroundPicture.setIcon(null);
-	                		iconPanel.setIcon(null);
-	                		minimizeButton.setVisible(false);
-	                		closeButton.setVisible(false);
-	                		window.setBackground(new Color(255,255,255,20));
-
-	                		//hide dynamicHelpText
-	                		
-	                		dynamicHelpText.setBackground(new Color(255,255,255,0));
-	                		dynamicHelpText.setBorder(null);
-	                		dynamicHelpText.setForeground(new Color(255,255,255,0));
-	                		
-	                		toDoTaskLabel.setBackground(new Color(255,255,255,20));
-	                		toDoTaskLabel.setForeground(new Color(255,255,255,20));
-	                		toDoTaskLabel.setBorder(null);
-	                		
-	                		floatingTaskLabel.setBackground(new Color(255,255,255,20));
-	                		floatingTaskLabel.setForeground(new Color(255,255,255,20));
-	                		floatingTaskLabel.setBorder(null);
-	                		
-	                		toDoTaskPane.setBackground(new Color(255,255,255,20));
-	                		toDoTaskPane.setBorder(null);
-	                		toDoTaskTable.setForeground(new Color(255,255,255,20));
-	                		toDoTaskTable.getTableHeader().setForeground(new Color(255,255,255,20));
-	                		changeToDoTableColors(toDoTaskTable,new InvisibleRenderer());
-	                		floatingTaskPane.setBackground(new Color(255,255,255,20));
-	                		floatingTaskPane.setBorder(null);
-	                		floatingTaskTable.setForeground(new Color(255,255,255,20));
-	                		floatingTaskTable.getTableHeader().setForeground(new Color(255,255,255,20));
-	                		changeFloatingTableColors(floatingTaskTable,new InvisibleRenderer());
-	                		clock.getTime().setForeground(new Color(255,255,255,20));
-	                		
-	                		invisibility = true;
-	                		
+	                	if (window.isVisible()) {
+	                		hideWindowExceptCommandEntry();
 	                	}
-
-	                	else{
-	                		commandEntryTextField.setBorder(new LineBorder(new Color(34,167,240),2,true));
-	                		backgroundPicture.setIcon(new ImageIcon(backgroundImage));
-	                		iconPanel.setIcon(new ImageIcon(iconUrl));
-	                		minimizeButton.setVisible(true);
-	                		closeButton.setVisible(true);
-	                		window.setBackground(new Color(255,255,255,255));
-
-	                		//hide dynamicHelpText
-		                	dynamicHelpText.setBackground(new Color(255,255,255,255));
-		                	dynamicHelpText.setBorder(dynamicHelpTextBorder);
-		                	dynamicHelpText.setForeground(new Color(0,0,0,255));
-		                	
-		                	toDoTaskPane.setBackground(new Color(255,255,255,220));
-		                	toggleFocusTable();toggleFocusTable();
-		                	
-		                	toDoTaskLabel.setBackground(new Color(255,255,255,220));
-		                	toDoTaskLabel.setForeground(new Color(0,0,0,255));
-		                	
-		                	floatingTaskLabel.setBackground(new Color(255,255,255,220));
-		                	floatingTaskLabel.setForeground(new Color(0,0,0,255));
-		             
-		                	toDoTaskTable.setForeground(Color.BLACK);
-		                	toDoTaskTable.getTableHeader().setForeground(Color.BLACK);
-		                	floatingTaskPane.setBackground(new Color(255,255,255,220));
-		                	floatingTaskTable.setForeground(Color.BLACK);
-		                	floatingTaskTable.getTableHeader().setForeground(Color.BLACK);
-		                	clock.getTime().setForeground(Color.WHITE);
-		                	changeToDoTableColors(toDoTaskTable,new CustomRenderer());
-		                	changeFloatingTableColors(floatingTaskTable,new CustomRenderer());
-	                		invisibility = false;
-	                	}
-	                	
 	                
 	                
 	                }
@@ -830,27 +759,17 @@ public class UserInterface extends JFrame {
         SystemTray tray = SystemTray.getSystemTray();
        
         // Create a pop-up menu components
-        MenuItem aboutItem = new MenuItem("About");
-        CheckboxMenuItem cb1 = new CheckboxMenuItem("Set auto size");
-        CheckboxMenuItem cb2 = new CheckboxMenuItem("Set tooltip");
-        Menu displayMenu = new Menu("Display");
-        MenuItem errorItem = new MenuItem("Error");
-        MenuItem warningItem = new MenuItem("Warning");
-        MenuItem infoItem = new MenuItem("Info");
-        MenuItem noneItem = new MenuItem("None");
+        MenuItem helpItem = new MenuItem("Help");
+        MenuItem showItem = new MenuItem("Show/Hide");
         MenuItem exitItem = new MenuItem("Exit");
-       
+        helpItem.addActionListener(new HelpPopupItemActionListener());
+        showItem.addActionListener(new ShowPopupItemActionListener());
+        exitItem.addActionListener(new ExitPopupItemActionListener());
+        
         //Add components to pop-up menu
-        popup.add(aboutItem);
-        popup.addSeparator();
-        popup.add(cb1);
-        popup.add(cb2);
-        popup.addSeparator();
-        popup.add(displayMenu);
-        displayMenu.add(errorItem);
-        displayMenu.add(warningItem);
-        displayMenu.add(infoItem);
-        displayMenu.add(noneItem);
+    
+        popup.add(helpItem);
+        popup.add(showItem);
         popup.add(exitItem);
        
         trayIcon.setPopupMenu(popup);
@@ -971,6 +890,35 @@ public class UserInterface extends JFrame {
 		} else {
 			setFocusTable(TODOTASK_TABLE_INDEX);
 		}
+	}
+	
+	public class ExitPopupItemActionListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			window.dispatchEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSING));
+
+		}
+
+	}
+
+	public class ShowPopupItemActionListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			showOrHideWindow();
+		}
+
+	}
+
+	public class HelpPopupItemActionListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			Controller.acceptUserCommand("help");
+
+		}
+
 	}
 	private class CommandEntryTextFieldDocumentListener implements DocumentListener {
 		@Override
@@ -1155,7 +1103,7 @@ public class UserInterface extends JFrame {
 		public void mouseReleased(MouseEvent e) {
 			closeButton.setBackground(new Color(242, 38, 19, 255));
 			repaint();
-			window.dispatchEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSING));
+			showOrHideWindow();
 		}
 
 		@Override
@@ -1405,6 +1353,91 @@ public class UserInterface extends JFrame {
 		toDoListTable.getColumnModel().getColumn(1).setCellRenderer(renderer);
 	}
 	
+	private void hideWindowExceptCommandEntry() {
+		if(invisibility == false){
+			commandEntryTextField.setBorder(new LineBorder(new Color(34,167,240),4,true));
+			backgroundLabel.setIcon(null);
+			iconPanel.setIcon(null);
+			minimizeButton.setVisible(false);
+			closeButton.setVisible(false);
+			window.setBackground(new Color(255,255,255,20));
+
+			//hide dynamicHelpText
+			
+			dynamicHelpText.setBackground(new Color(255,255,255,0));
+			dynamicHelpText.setBorder(null);
+			dynamicHelpText.setForeground(new Color(255,255,255,0));
+			
+			toDoTaskLabel.setBackground(new Color(255,255,255,20));
+			toDoTaskLabel.setForeground(new Color(255,255,255,20));
+			toDoTaskLabel.setBorder(null);
+			
+			floatingTaskLabel.setBackground(new Color(255,255,255,20));
+			floatingTaskLabel.setForeground(new Color(255,255,255,20));
+			floatingTaskLabel.setBorder(null);
+			
+			toDoTaskPane.setBackground(new Color(255,255,255,20));
+			toDoTaskPane.setBorder(null);
+			toDoTaskTable.setForeground(new Color(255,255,255,20));
+			toDoTaskTable.getTableHeader().setForeground(new Color(255,255,255,20));
+			changeToDoTableColors(toDoTaskTable,new InvisibleRenderer());
+			floatingTaskPane.setBackground(new Color(255,255,255,20));
+			floatingTaskPane.setBorder(null);
+			floatingTaskTable.setForeground(new Color(255,255,255,20));
+			floatingTaskTable.getTableHeader().setForeground(new Color(255,255,255,20));
+			changeFloatingTableColors(floatingTaskTable,new InvisibleRenderer());
+			clock.getTime().setForeground(new Color(255,255,255,20));
+			
+			invisibility = true;
+			
+		}
+
+		else{
+			commandEntryTextField.setBorder(new LineBorder(new Color(34,167,240),2,true));
+			backgroundLabel.setIcon(new ImageIcon(backgroundImage));
+			iconPanel.setIcon(new ImageIcon(iconUrl));
+			minimizeButton.setVisible(true);
+			closeButton.setVisible(true);
+			window.setBackground(new Color(255,255,255,255));
+
+			//hide dynamicHelpText
+			dynamicHelpText.setBackground(new Color(255,255,255,255));
+			dynamicHelpText.setBorder(dynamicHelpTextBorder);
+			dynamicHelpText.setForeground(new Color(0,0,0,255));
+			
+			toDoTaskPane.setBackground(new Color(255,255,255,220));
+			
+			
+			toDoTaskLabel.setBackground(new Color(255,255,255,220));
+			toDoTaskLabel.setForeground(new Color(0,0,0,255));
+			
+			floatingTaskLabel.setBackground(new Color(255,255,255,220));
+			floatingTaskLabel.setForeground(new Color(0,0,0,255));
+          
+			toDoTaskTable.setForeground(Color.BLACK);
+			toDoTaskTable.getTableHeader().setForeground(Color.BLACK);
+			floatingTaskPane.setBackground(new Color(255,255,255,220));
+			floatingTaskTable.setForeground(Color.BLACK);
+			floatingTaskTable.getTableHeader().setForeground(Color.BLACK);
+			clock.getTime().setForeground(Color.WHITE);
+			changeToDoTableColors(toDoTaskTable,new CustomRenderer());
+			changeFloatingTableColors(floatingTaskTable,new CustomRenderer());
+			invisibility = false;
+			toggleFocusTable();toggleFocusTable();
+		}
+	}
+
+	private void showOrHideWindow() {
+		if (window.getState() == JFrame.ICONIFIED) {
+			window.setState(JFrame.NORMAL);
+			window.setVisible(true);
+		} else {
+			if (invisibility) hideWindowExceptCommandEntry();
+			window.setState(JFrame.ICONIFIED);
+			window.dispose();
+		}
+	}
+
 	private static void startReminderTimer(){
 		final Timer timer = new Timer( 60000 ,
 				new ActionListener() {
