@@ -128,9 +128,6 @@ public class Task {
 		return _taskPerson;
 	}
 	
-	public static void showToUser(String message) {
-		System.out.println(message);
-	}
 
 	public boolean getTaskStatus() {
 		return _taskStatus;
