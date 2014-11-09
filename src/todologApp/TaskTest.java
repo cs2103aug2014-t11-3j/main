@@ -207,6 +207,13 @@ public class TaskTest {
 			e.printStackTrace();
 		}
 		
+		try {
+			task = new Task ("\'group meeting 2 at soc with team\'");
+			assertEquals ("output should be group meeting 2 at soc with team", 
+					"group meeting 2 at soc with team", task.getTaskName());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 	}
 }
