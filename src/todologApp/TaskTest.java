@@ -168,4 +168,45 @@ public class TaskTest {
 		assertEquals(true, Parser.validKeyWord(arr1, "at", 6));
 	}
 
+	@Test
+	public void testFull() {
+		//To add deadline task
+		Task task;
+		try {
+			task = new Task ("homework 1 by 101114 at 1900");
+			assertEquals ("output should be homework 1", "homework 1", task.getTaskName());
+			assertEquals ("output should be 1900", 1900, task.getEndTime());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			task = new Task ("homework 2 by tue at -1");
+			assertEquals ("output should be homework 2", "homework 2", task.getTaskName());
+			assertEquals ("output should be 2359", 2359, task.getEndTime());
+			assertEquals ("nearest date of tuesday", 11, task.getEndDate());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			task = new Task ("homework 3 by wed at 2430");
+			assertEquals ("output should be homework 3", "homework 3", task.getTaskName());
+			assertEquals ("output should be 2359", 2359, task.getEndTime());
+			assertEquals ("nearest date of Wednesday", 12, task.getEndDate());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		//To floating task
+		try {
+			task = new Task ("group meeting 1 at soc with team");
+			assertEquals ("output should be group meeting 1", 
+					"group meeting 1", task.getTaskName());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+	}
 }
