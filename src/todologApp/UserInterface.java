@@ -75,6 +75,8 @@ import com.melloware.jintellitype.JIntellitypeException;
 public class UserInterface extends JFrame { 
 	
 
+	
+
 	private static final int TABLE_PAGE_SIZE = 16;
 	private static final int FLOATINGTASK_TABLE_INDEX = 2;
 	private static final int TODOTASK_TABLE_INDEX = 1;
@@ -102,7 +104,6 @@ public class UserInterface extends JFrame {
 	private JTextField commandEntryTextField;
 	private JLayeredPane layerPane = new JLayeredPane();
 	private JTextArea dynamicHelpText;
-	//private JTextArea toDoListText;
 	private JTable toDoTaskTable;
 	private JLabel toDoTaskLabel;
 	private JTable floatingTaskTable;
@@ -110,7 +111,6 @@ public class UserInterface extends JFrame {
 	private JTable focusTable;
 	private JLabel closeButton;
 	private JLabel minimizeButton;
-	//private Controller controller;
 	private LinkedList<Task> toDoListItems;
 	private LinkedList<Task> floatingItems;
 	private ToDoTasksListTableModel toDoTasksTableModel;
@@ -123,7 +123,7 @@ public class UserInterface extends JFrame {
 
 	private boolean invisibility = false;
 	private static UserInterface window;
-	private JLabel backgroundPicture;
+	private JLabel backgroundLabel;
 	private JLabel iconPanel;
 	private BufferedImage backgroundImage;
 	private URL iconUrl;
@@ -142,29 +142,17 @@ public class UserInterface extends JFrame {
 	
 	public static void main(String[] args) {
 		
-		final Timer timer = new Timer( 60000 ,
-				new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent ae) {
-						ReminderLogic one = new ReminderLogic();
-						one.execute();
-					}
-				});
-		timer.setInitialDelay(0);
-		timer.start();
-		
-		
+		startReminderTimer();
+			
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {  
 				try {
 					window = new UserInterface(); 	
 					
 					window.dispose();
-					window.setUndecorated(true);
 					window.setVisible(true);
 					window.addMouseListener(window.new ScreenDraggingMouseListener());
 					window.addMouseMotionListener(window.new ScreenDraggingMouseMotionListener());
-					//window.addKeyListener(new UserInterfaceListener());
 					
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -178,7 +166,7 @@ public class UserInterface extends JFrame {
 	 */
 	//this initialize method sets up the main frame for ToDoLog
 	private void initialize(JFrame UserInterface) { 
-		//initializeLinkedList();
+		
 		ArrayList<Image> images = new ArrayList<Image>();
 		URL url = this.getClass().getClassLoader().getResource("icon-16x16.gif");
 		Image image = Toolkit.getDefaultToolkit().getImage(url);
@@ -205,11 +193,11 @@ public class UserInterface extends JFrame {
 		mainPanel.setLayout(new GridBagLayout());
 		
 		try {
-			URL url = this.getClass().getClassLoader().getResource("photos/seagull.jpg");
+			URL url = this.getClass().getClassLoader().getResource("photos/aero-colorful-purple-2_00450752.jpg");
 			backgroundImage = ImageIO.read(url);
-			backgroundPicture = new JLabel(new ImageIcon(backgroundImage));
-			backgroundPicture.setBounds(0,0,700, 610);
-			layerPane.add(backgroundPicture,new Integer(0));
+			backgroundLabel = new JLabel(new ImageIcon(backgroundImage));
+			backgroundLabel.setBounds(0,0,700, 610);
+			layerPane.add(backgroundLabel,new Integer(0));
 			
 		} catch (IOException e) {
 			//TODO some notifying
@@ -344,8 +332,21 @@ public class UserInterface extends JFrame {
 		        super.paintComponent(g);
 		    }
 		};
+		InputStream in = this.getClass().getClassLoader().getResourceAsStream("fonts/OpenSans-Semibold.ttf");
+		try {
+			Font font;
+			font = Font.createFont(Font.TRUETYPE_FONT, in);
+			Font sizedFont = font.deriveFont(HELP_TEXT_FONT_SIZE);
+			floatingTaskLabel.setFont(sizedFont);
+		} catch (FontFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Border paddingBorder = BorderFactory.createEmptyBorder(4,4,4,4);
-		Border border = BorderFactory.createMatteBorder(2, 2, 0, 2, Color.GRAY);
+		Border border = BorderFactory.createMatteBorder(3, 3, 0, 3, Color.GRAY);
 		Border compoundBorder = BorderFactory.createCompoundBorder(border, paddingBorder);
 		floatingTaskLabel.setBorder(compoundBorder);
 		floatingTaskLabel.setPreferredSize(new Dimension(40,25));
@@ -358,7 +359,7 @@ public class UserInterface extends JFrame {
 	}
 
 	private void createToDoListLabel(JPanel toDoListHolder) {
-		toDoTaskLabel = new JLabel("This week's events and deadlines:") {
+		toDoTaskLabel = new JLabel() {
 			/**
 			 * 
 			 */
@@ -373,8 +374,21 @@ public class UserInterface extends JFrame {
 		        super.paintComponent(g);
 		    }
 		};
+		InputStream in = this.getClass().getClassLoader().getResourceAsStream("fonts/OpenSans-Semibold.ttf");
+		try {
+			Font font;
+			font = Font.createFont(Font.TRUETYPE_FONT, in);
+			Font sizedFont = font.deriveFont(HELP_TEXT_FONT_SIZE);
+			toDoTaskLabel.setFont(sizedFont);
+		} catch (FontFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Border paddingBorder = BorderFactory.createEmptyBorder(4,4,4,4);
-		Border border = BorderFactory.createMatteBorder(2, 2, 0, 2, new Color(241, 196, 15, 255));
+		Border border = BorderFactory.createMatteBorder(3, 3, 0, 3, new Color(247,223,124, 255));
 		Border compoundBorder = BorderFactory.createCompoundBorder(border, paddingBorder);
 		toDoTaskLabel.setBorder(compoundBorder);
 		toDoTaskLabel.setPreferredSize(new Dimension(40,25));
@@ -391,7 +405,7 @@ public class UserInterface extends JFrame {
 		
 		toDoTasksTableModel = new ToDoTasksListTableModel(toDoListItems);
 		toDoTaskTable = new JTable(toDoTasksTableModel);    
-		toDoTaskTable.setPreferredSize(new Dimension(500,280));
+		toDoTaskTable.setPreferredSize(new Dimension(450,280));
 		adjustToDoTaskTableColumns(toDoTaskTable);
 		changeToDoTableColors(toDoTaskTable, new CustomRenderer());
 		toDoTaskTable.getTableHeader().setResizingAllowed(false);
@@ -439,9 +453,9 @@ public class UserInterface extends JFrame {
 		        super.paintComponent(g);
 		    }
 		};
-		
-		toDoTaskPane.setBorder(BorderFactory.createLineBorder(new Color(241, 196, 15), 3, false));
-		toDoTaskPane.setPreferredSize(new Dimension(500,280));
+
+		toDoTaskPane.setBorder(BorderFactory.createLineBorder(new Color(247,223,124),3));
+		toDoTaskPane.setPreferredSize(new Dimension(450,280));
 		toDoTaskPane.setOpaque(false);
 		toDoTaskPane.setBackground(new Color(255,255,255,220));
 		toDoTaskPane.getViewport().setOpaque(false);
@@ -476,7 +490,7 @@ public class UserInterface extends JFrame {
 		floatingTaskListParameters = setParameters(FLOATINGTASKSTABLE_PARAMETERS);
 		floatingTasksTableModel = new FloatingTasksListTableModel(floatingItems);
 		floatingTaskTable = new JTable(floatingTasksTableModel); 
-		floatingTaskTable.setPreferredSize(new Dimension(130,270));
+		floatingTaskTable.setPreferredSize(new Dimension(180,270));
 		adjustFloatingTaskTableColumns(floatingTaskTable);
 		changeToDoTableColors(floatingTaskTable, new CustomRenderer());
 		floatingTaskTable.getTableHeader().setResizingAllowed(false);
@@ -541,8 +555,8 @@ public class UserInterface extends JFrame {
 		    }
 		};
 		
-		floatingTaskPane.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3, false));
-		floatingTaskPane.setPreferredSize(new Dimension(130,270));
+		floatingTaskPane.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3));
+		floatingTaskPane.setPreferredSize(new Dimension(180,270));
 		floatingTaskPane.setOpaque(false);
 		floatingTaskPane.setBackground(new Color(255,255,255,220));
 		floatingTaskPane.getViewport().setOpaque(false);
@@ -623,7 +637,7 @@ public class UserInterface extends JFrame {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		commandEntryTextField.setBorder(new LineBorder(Color.BLUE,2,false));
+		commandEntryTextField.setBorder(new LineBorder(new Color(34,167,247),2,false));
 		commandEntryTextField.setFocusTraversalKeysEnabled(false);
 		commandEntryTextField.addActionListener(new CommandEntryTextFieldActionListener());
 		commandEntryTextField.addKeyListener(new CommandEntryTextFieldKeyListener());
@@ -681,105 +695,6 @@ public class UserInterface extends JFrame {
 		legendMainPanel.setOpaque(false);
 	}
 	
-/*	private void arrangeLegend(JPanel legendMainPanel){
-		Font fontForLegend = new Font("SansSerif",Font.BOLD,8);
-		Border borderLineForText = new EmptyBorder(0,0,0,0);
-		GridBagConstraints legendPanelLayout;
-		GridBagConstraints legendTextLayout;
-		Insets insets = new Insets(5,5,5,5);
-		
-		//this is the "priority: high" colored box
-		JPanel priorityHighPanel = new JPanel();
-		priorityHighPanel.setPreferredSize(new Dimension(20,5));
-		priorityHighPanel.setBackground(Color.RED);	
-		legendPanelLayout = new GridBagConstraints(0,0,1,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
-		legendMainPanel.add(priorityHighPanel,legendPanelLayout);
-	
-		//the text for "priority: high"
-		JTextField priorityHigh = new JTextField();
-		priorityHigh.setPreferredSize(new Dimension(30,15));
-		priorityHigh.setText("Priority: High");
-		priorityHigh.setFont(fontForLegend);
-		priorityHigh.setEnabled(false);
-		priorityHigh.setDisabledTextColor(Color.WHITE);
-		priorityHigh.setBorder(borderLineForText);
-		priorityHigh.setOpaque(false);
-		legendTextLayout = new GridBagConstraints(1,0,5,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
-		legendMainPanel.add(priorityHigh,legendTextLayout);
-        
-		//this is the "priority: medium" colored box
-		JPanel priorityMediumPanel = new JPanel();
-		priorityMediumPanel.setPreferredSize(new Dimension(20,5));
-		priorityMediumPanel.setBackground(Color.PINK);
-		legendPanelLayout = new GridBagConstraints(0,1,1,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
-		legendMainPanel.add(priorityMediumPanel,legendPanelLayout);
-		
-		//the text for "priority: medium"
-		JTextField priorityMedium = new JTextField();
-		priorityMedium.setPreferredSize(new Dimension(30,15));
-		priorityMedium.setText("Priority: Medium");
-		priorityMedium.setFont(fontForLegend);
-		priorityMedium.setEnabled(false);
-		priorityMedium.setDisabledTextColor(Color.WHITE);
-		priorityMedium.setBorder(borderLineForText);
-		priorityMedium.setOpaque(false);
-		legendTextLayout = new GridBagConstraints(1,1,5,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
-		legendMainPanel.add(priorityMedium,legendTextLayout);
-		
-		//this is the "priority: low" colored box
-		JPanel priorityLowPanel = new JPanel();
-		priorityLowPanel.setPreferredSize(new Dimension(20,5));
-		priorityLowPanel.setBackground(Color.WHITE);
-		Border borderLineForLow = new LineBorder(Color.BLACK);
-		priorityLowPanel.setBorder(borderLineForLow);
-		legendPanelLayout = new GridBagConstraints(0,2,1,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
-		legendMainPanel.add(priorityLowPanel,legendPanelLayout);
-		
-		//the text for "priority: low"
-		JTextField priorityLow = new JTextField();
-		priorityLow.setPreferredSize(new Dimension(30,15));
-		priorityLow.setText("Priority: Low");
-		priorityLow.setFont(fontForLegend);
-		priorityLow.setEnabled(false);
-		priorityLow.setDisabledTextColor(Color.WHITE);
-		priorityLow.setBorder(borderLineForText);
-		priorityLow.setOpaque(false);
-		legendTextLayout = new GridBagConstraints(1,2,5,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
-		legendMainPanel.add(priorityLow,legendTextLayout); 
-		
-		//this is the "done" colored box
-		JPanel donePanel = new JPanel();
-		donePanel.setPreferredSize(new Dimension(20,5));
-		donePanel.setBackground(Color.GREEN);
-		legendPanelLayout = new GridBagConstraints(0,3,1,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
-		legendMainPanel.add(donePanel,legendPanelLayout);
-		
-		//the text for "done"
-		JTextField done = new JTextField();
-		done.setPreferredSize(new Dimension(30,15));
-		done.setText("Done");
-		done.setFont(fontForLegend);
-		done.setEnabled(false);
-		done.setDisabledTextColor(Color.WHITE);
-		done.setBorder(borderLineForText);
-		done.setOpaque(false);
-		legendTextLayout = new GridBagConstraints(1,3,5,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0);
-		legendMainPanel.add(done,legendTextLayout); 
-	}*/
-	
-/*	private void createButton(JPanel bottomPanel){
-		GridBagConstraints buttonParameters = setParameters(BUTTON_PARAMETERS);
-		JLabel magicButton = new JLabel("");
-		magicButton.setPreferredSize(new Dimension(10,10));
-
-		bottomPanel.add(magicButton,buttonParameters);
-	}
-		
-	/*	
-	/**
-	 * Create the application.
-	 */
-	
 	public UserInterface() {
 		initialize(this); 
 		fillUpTheJFrame(this);
@@ -791,6 +706,7 @@ public class UserInterface extends JFrame {
 		toDoListItems = Controller.getCurrentView();
 		floatingItems = Controller.getFloatingTasksList();
 		toDoTasksTableModel = new ToDoTasksListTableModel(toDoListItems);
+		toDoTaskLabel.setText(Controller.getViewOrSearchType());
 		toDoTaskTable.setModel(toDoTasksTableModel);
 		adjustToDoTaskTableColumns(toDoTaskTable);
 		dynamicHelpText.append(Controller.getFeedback());
@@ -812,81 +728,13 @@ public class UserInterface extends JFrame {
 	            @Override
 	            public void onHotKey(int combination) {
 	                if (combination == 1)
-	                	if (window.getState() == JFrame.ICONIFIED) {
-	                		window.setState(JFrame.NORMAL);
-	                	} else {
-	                		window.setState(JFrame.ICONIFIED);
-	                	}
+						showOrHideWindow();
 	                
 	                if(combination == 2){
-
-	                	if(invisibility == false){
-	                		commandEntryTextField.setBorder(new LineBorder(Color.BLUE,4,true));
-	                		backgroundPicture.setIcon(null);
-	                		iconPanel.setIcon(null);
-	                		minimizeButton.setVisible(false);
-	                		closeButton.setVisible(false);
-	                		window.setBackground(new Color(255,255,255,20));
-
-	                		//hide dynamicHelpText
-	                		
-	                		dynamicHelpText.setBackground(new Color(255,255,255,0));
-	                		dynamicHelpText.setBorder(null);
-	                		dynamicHelpText.setForeground(new Color(255,255,255,0));
-	                		toDoTaskPane.setBackground(new Color(255,255,255,20));
-	                		toDoTaskPane.setBorder(null);
-	                		toDoTaskTable.setForeground(new Color(255,255,255,20));
-	                		toDoTaskTable.getTableHeader().setForeground(new Color(255,255,255,20));
-	                		changeToDoTableColors(toDoTaskTable,new InvisibleRenderer());
-	                		floatingTaskPane.setBackground(new Color(255,255,255,20));
-	                		floatingTaskPane.setBorder(null);
-	                		floatingTaskTable.setForeground(new Color(255,255,255,20));
-	                		floatingTaskTable.getTableHeader().setForeground(new Color(255,255,255,20));
-	                		changeFloatingTableColors(floatingTaskTable,new InvisibleRenderer());
-	                		clock.getTime().setForeground(new Color(255,255,255,20));
-	                		
-	                		invisibility = true;
-	                		
+	                	if (window.isVisible()) {
+	                		hideWindowExceptCommandEntry();
 	                	}
-
-	                	else{
-	                		commandEntryTextField.setBorder(new LineBorder(Color.BLUE,2,true));
-	                		backgroundPicture.setIcon(new ImageIcon(backgroundImage));
-	                		iconPanel.setIcon(new ImageIcon(iconUrl));
-	                		minimizeButton.setVisible(true);
-	                		closeButton.setVisible(true);
-	                		window.setBackground(new Color(255,255,255,255));
-
-	                		//hide dynamicHelpText
-		                	dynamicHelpText.setBackground(new Color(255,255,255,255));
-		                	dynamicHelpText.setBorder(dynamicHelpTextBorder);
-		                	dynamicHelpText.setForeground(new Color(0,0,0,255));
-		                	
-		                	toDoTaskPane.setBackground(new Color(255,255,255,220));
-		                	toggleFocusTable();toggleFocusTable();
-		             
-		                	toDoTaskTable.setForeground(Color.BLACK);
-		                	toDoTaskTable.getTableHeader().setForeground(Color.BLACK);
-		                	floatingTaskPane.setBackground(new Color(255,255,255,220));
-		                	floatingTaskTable.setForeground(Color.BLACK);
-		                	floatingTaskTable.getTableHeader().setForeground(Color.BLACK);
-		                	clock.getTime().setForeground(Color.WHITE);
-		                	changeToDoTableColors(toDoTaskTable,new CustomRenderer());
-		                	changeFloatingTableColors(floatingTaskTable,new CustomRenderer());
-	                		invisibility = false;
-	                	}
-	                	
-//	                	if(invisibility == false){
-//	                    AWTUtilities.setWindowOpacity(window, 0.05f);
-//	                    commandEntryTextField.repaint();
-//	                	invisibility = true;
-//	                	}
-//	                	
-//	                	else{
-//	                		AWTUtilities.setWindowOpacity(window, 1.0f);
-//	                		invisibility = false;
-//	                	}
-	                	
+	                
 	                
 	                }
 	            }
@@ -911,27 +759,17 @@ public class UserInterface extends JFrame {
         SystemTray tray = SystemTray.getSystemTray();
        
         // Create a pop-up menu components
-        MenuItem aboutItem = new MenuItem("About");
-        CheckboxMenuItem cb1 = new CheckboxMenuItem("Set auto size");
-        CheckboxMenuItem cb2 = new CheckboxMenuItem("Set tooltip");
-        Menu displayMenu = new Menu("Display");
-        MenuItem errorItem = new MenuItem("Error");
-        MenuItem warningItem = new MenuItem("Warning");
-        MenuItem infoItem = new MenuItem("Info");
-        MenuItem noneItem = new MenuItem("None");
+        MenuItem helpItem = new MenuItem("Help");
+        MenuItem showItem = new MenuItem("Show/Hide");
         MenuItem exitItem = new MenuItem("Exit");
-       
+        helpItem.addActionListener(new HelpPopupItemActionListener());
+        showItem.addActionListener(new ShowPopupItemActionListener());
+        exitItem.addActionListener(new ExitPopupItemActionListener());
+        
         //Add components to pop-up menu
-        popup.add(aboutItem);
-        popup.addSeparator();
-        popup.add(cb1);
-        popup.add(cb2);
-        popup.addSeparator();
-        popup.add(displayMenu);
-        displayMenu.add(errorItem);
-        displayMenu.add(warningItem);
-        displayMenu.add(infoItem);
-        displayMenu.add(noneItem);
+    
+        popup.add(helpItem);
+        popup.add(showItem);
         popup.add(exitItem);
        
         trayIcon.setPopupMenu(popup);
@@ -1016,27 +854,32 @@ public class UserInterface extends JFrame {
 	}
 	private void setFocusTable(int tableIndex) {
 		Border paddingBorder = BorderFactory.createEmptyBorder(10,10,10,10);
-		Border grayBorder = BorderFactory.createMatteBorder(2, 2, 0, 2, Color.GRAY);
-		Border yellowBorder = BorderFactory.createMatteBorder(2, 2, 0, 2, new Color(241, 196, 15));
+		Border grayBorder = BorderFactory.createMatteBorder(3, 3, 0 ,3, Color.GRAY);
+		Border yellowBorder = BorderFactory.createMatteBorder(3, 3, 0 ,3, new Color(247,223,124,255));
 		Border compoundGrayBorder = BorderFactory.createCompoundBorder(grayBorder, paddingBorder);
 		Border compoundYellowBorder = BorderFactory.createCompoundBorder(yellowBorder, paddingBorder);
 		
 		switch (tableIndex) {
 			case TODOTASK_TABLE_INDEX: 
-				
-				floatingTaskPane.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3, false));
-				floatingTaskLabel.setBorder(compoundGrayBorder);
+				if (!invisibility) {
+					floatingTaskPane.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3, false));
+					floatingTaskLabel.setBorder(compoundGrayBorder);
+
+					toDoTaskPane.setBorder(BorderFactory.createLineBorder(new Color(247,223,124,255), 3, false));
+					toDoTaskLabel.setBorder(compoundYellowBorder);
+				}
 				focusTable = toDoTaskTable;
-				toDoTaskPane.setBorder(BorderFactory.createLineBorder(new Color(241, 196, 15), 3, false));
-				toDoTaskLabel.setBorder(compoundYellowBorder);
 				break;
 			case FLOATINGTASK_TABLE_INDEX: 
-				toDoTaskPane.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3, false));
-				toDoTaskLabel.setBorder(compoundGrayBorder);
+
+				if (!invisibility) {
+					toDoTaskPane.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3, false));
+					toDoTaskLabel.setBorder(compoundGrayBorder);
+
+					floatingTaskPane.setBorder(BorderFactory.createLineBorder(new Color(247,223,124,255), 3, false));
+					floatingTaskLabel.setBorder(compoundYellowBorder);
+				}
 				focusTable = floatingTaskTable;
-				floatingTaskPane.setBorder(BorderFactory.createLineBorder(new Color(241, 196, 15), 3, false));
-				floatingTaskLabel.setBorder(compoundYellowBorder);
-				
 				break;
 			default: break;
 		}
@@ -1047,6 +890,35 @@ public class UserInterface extends JFrame {
 		} else {
 			setFocusTable(TODOTASK_TABLE_INDEX);
 		}
+	}
+	
+	public class ExitPopupItemActionListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			window.dispatchEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSING));
+
+		}
+
+	}
+
+	public class ShowPopupItemActionListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			showOrHideWindow();
+		}
+
+	}
+
+	public class HelpPopupItemActionListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			Controller.acceptUserCommand("help");
+
+		}
+
 	}
 	private class CommandEntryTextFieldDocumentListener implements DocumentListener {
 		@Override
@@ -1231,7 +1103,7 @@ public class UserInterface extends JFrame {
 		public void mouseReleased(MouseEvent e) {
 			closeButton.setBackground(new Color(242, 38, 19, 255));
 			repaint();
-			window.dispatchEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSING));
+			showOrHideWindow();
 		}
 
 		@Override
@@ -1309,8 +1181,8 @@ public class UserInterface extends JFrame {
 		Insets commandEntryTextFieldInsets = new Insets(10,25,5,25);
 		Insets dynamicHelpTextInsets = new Insets(10,25,10,20);
 		Insets legendInsets = new Insets(0,0,0,10);
-		Insets toDoTableLabelInsets= new Insets(0,10,0,220);
-		Insets floatingTasksTableLabelInsets= new Insets(0,15,0,15);
+		Insets toDoTableLabelInsets= new Insets(0,0,0,205);
+		Insets floatingTasksTableLabelInsets= new Insets(0,10,0,60);
 		//Insets buttonInsets = new Insets(10,0,0,20);
 		
 		if(panelParameters == CLOCK_PARAMETERS){
@@ -1399,7 +1271,9 @@ public class UserInterface extends JFrame {
 				tableColumn.setPreferredWidth(150);
 				break;
 			case 3:
-				tableColumn.setPreferredWidth(100);
+				tableColumn.setPreferredWidth(0);
+				tableColumn.setMinWidth(0);
+				tableColumn.setMaxWidth(0);
 				break;
 			case 4:
 				tableColumn.setPreferredWidth(90);
@@ -1427,10 +1301,10 @@ public class UserInterface extends JFrame {
 			
 			switch(columnHeaders){
 			case 0:
-				tableColumn.setPreferredWidth(30);
+				tableColumn.setPreferredWidth(35);
 				break;
 			case 1:
-				tableColumn.setPreferredWidth(100);
+				tableColumn.setPreferredWidth(145);
 				break;
 			case 2:
 				tableColumn.setPreferredWidth(0);
@@ -1479,4 +1353,102 @@ public class UserInterface extends JFrame {
 		toDoListTable.getColumnModel().getColumn(1).setCellRenderer(renderer);
 	}
 	
+	private void hideWindowExceptCommandEntry() {
+		if(invisibility == false){
+			commandEntryTextField.setBorder(new LineBorder(new Color(34,167,240),4,true));
+			backgroundLabel.setIcon(null);
+			iconPanel.setIcon(null);
+			minimizeButton.setVisible(false);
+			closeButton.setVisible(false);
+			window.setBackground(new Color(255,255,255,20));
+
+			//hide dynamicHelpText
+			
+			dynamicHelpText.setBackground(new Color(255,255,255,0));
+			dynamicHelpText.setBorder(null);
+			dynamicHelpText.setForeground(new Color(255,255,255,0));
+			
+			toDoTaskLabel.setBackground(new Color(255,255,255,20));
+			toDoTaskLabel.setForeground(new Color(255,255,255,20));
+			toDoTaskLabel.setBorder(null);
+			
+			floatingTaskLabel.setBackground(new Color(255,255,255,20));
+			floatingTaskLabel.setForeground(new Color(255,255,255,20));
+			floatingTaskLabel.setBorder(null);
+			
+			toDoTaskPane.setBackground(new Color(255,255,255,20));
+			toDoTaskPane.setBorder(null);
+			toDoTaskTable.setForeground(new Color(255,255,255,20));
+			toDoTaskTable.getTableHeader().setForeground(new Color(255,255,255,20));
+			changeToDoTableColors(toDoTaskTable,new InvisibleRenderer());
+			floatingTaskPane.setBackground(new Color(255,255,255,20));
+			floatingTaskPane.setBorder(null);
+			floatingTaskTable.setForeground(new Color(255,255,255,20));
+			floatingTaskTable.getTableHeader().setForeground(new Color(255,255,255,20));
+			changeFloatingTableColors(floatingTaskTable,new InvisibleRenderer());
+			clock.getTime().setForeground(new Color(255,255,255,20));
+			
+			invisibility = true;
+			
+		}
+
+		else{
+			commandEntryTextField.setBorder(new LineBorder(new Color(34,167,240),2,true));
+			backgroundLabel.setIcon(new ImageIcon(backgroundImage));
+			iconPanel.setIcon(new ImageIcon(iconUrl));
+			minimizeButton.setVisible(true);
+			closeButton.setVisible(true);
+			window.setBackground(new Color(255,255,255,255));
+
+			//hide dynamicHelpText
+			dynamicHelpText.setBackground(new Color(255,255,255,255));
+			dynamicHelpText.setBorder(dynamicHelpTextBorder);
+			dynamicHelpText.setForeground(new Color(0,0,0,255));
+			
+			toDoTaskPane.setBackground(new Color(255,255,255,220));
+			
+			
+			toDoTaskLabel.setBackground(new Color(255,255,255,220));
+			toDoTaskLabel.setForeground(new Color(0,0,0,255));
+			
+			floatingTaskLabel.setBackground(new Color(255,255,255,220));
+			floatingTaskLabel.setForeground(new Color(0,0,0,255));
+          
+			toDoTaskTable.setForeground(Color.BLACK);
+			toDoTaskTable.getTableHeader().setForeground(Color.BLACK);
+			floatingTaskPane.setBackground(new Color(255,255,255,220));
+			floatingTaskTable.setForeground(Color.BLACK);
+			floatingTaskTable.getTableHeader().setForeground(Color.BLACK);
+			clock.getTime().setForeground(Color.WHITE);
+			changeToDoTableColors(toDoTaskTable,new CustomRenderer());
+			changeFloatingTableColors(floatingTaskTable,new CustomRenderer());
+			invisibility = false;
+			toggleFocusTable();toggleFocusTable();
+		}
+	}
+
+	private void showOrHideWindow() {
+		if (window.getState() == JFrame.ICONIFIED) {
+			window.setState(JFrame.NORMAL);
+			window.setVisible(true);
+		} else {
+			if (invisibility) hideWindowExceptCommandEntry();
+			window.setState(JFrame.ICONIFIED);
+			window.dispose();
+		}
+	}
+
+	private static void startReminderTimer(){
+		final Timer timer = new Timer( 60000 ,
+				new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent ae) {
+						ReminderLogic one = new ReminderLogic();
+						one.execute();
+					}
+				});
+		timer.setInitialDelay(0);
+		timer.start();
+		
+	}
 }

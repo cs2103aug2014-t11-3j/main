@@ -10,6 +10,7 @@ import java.awt.Graphics;
 import javax.swing.*;
 
 public class CustomRenderer extends DefaultTableCellRenderer {
+	private static final int OVERDUE = -1;
 	private static final int NOT_DEADLINE = Integer.MIN_VALUE;
 	/**
 	 * 
@@ -56,13 +57,13 @@ public class CustomRenderer extends DefaultTableCellRenderer {
 		if (duePeriod == NOT_DEADLINE) {
 			return 0;
 		}
-		if (duePeriod == -1) {
+		if (duePeriod == OVERDUE) {
 			return 240;
 		}
-		if (duePeriod > 4) {
-			return 20;
+		if (duePeriod > 6) {
+			return 0;
 		} 
-		return 200-duePeriod*40;
+		return 210-duePeriod*30;
 		
 	}
 	private void colorCell(Component cellComponent, Color color) {

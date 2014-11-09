@@ -44,7 +44,7 @@ public class InvisibleRenderer extends DefaultTableCellRenderer {
 		        super.paintComponent(g);
 		    }
 		};
-		((JComponent) cellComponent).setBackground(new Color(255,255,0,200));
+		((JComponent) cellComponent).setBackground(new Color(255,255,0,0));
 		((JComponent) cellComponent).setOpaque(true);
 		((JComponent) cellComponent).add(highlightCell);
 		

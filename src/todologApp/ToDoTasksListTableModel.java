@@ -24,7 +24,7 @@ public class ToDoTasksListTableModel extends AbstractTableModel implements ToDoL
 	 * 
 	 */
 	
-	private final static String[] COLUMNS = {"No.","Name","Time","Person / Venue","Status","<hidden>","<hidden>"};
+	private final static String[] COLUMNS = {" No.","Name","Time","Person / Venue","Status","<hidden>","<hidden>"};
 	private LinkedList<Task> tableData;
 	private final static int PAGE_SIZE = 16;
 	//private static final int NOT_DEADLINE = -1;
@@ -82,7 +82,7 @@ public class ToDoTasksListTableModel extends AbstractTableModel implements ToDoL
 		switch(col){
 		
 		case 0:
-			return actualRow+1;
+			return " "+(actualRow+1);
 		
 		case 1: 
 			return task.getTaskName();
