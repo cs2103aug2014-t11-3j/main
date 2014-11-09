@@ -238,5 +238,20 @@ public class TaskTest {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		//To test for venue
+				try {
+					task = new Task ("picnic 1 with friends at gardens by the bay");
+					assertEquals ("output should be gardens", "gardens", task.getTaskVenue());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+				try {
+					task = new Task ("picnic 1 with friends at \'gardens by the bay\'");
+					assertEquals ("output should be gardens by the bay", "gardens by the bay", task.getTaskVenue());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 	}
 }
