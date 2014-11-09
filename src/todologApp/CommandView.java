@@ -3,7 +3,6 @@ package todologApp;
 import java.util.LinkedList;
 
 import org.joda.time.DateTime;
-//import org.joda.time.DateTimeConstants;
 
 
 public class CommandView implements Command {

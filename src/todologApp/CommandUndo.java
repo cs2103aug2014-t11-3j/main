@@ -6,6 +6,7 @@ public class CommandUndo implements Command {
 	private History _history;
 	
 	private static final String FEEDBACK_IVALID_UNDO = "Cannot undo the undo";
+	
 	public CommandUndo(Command toBeUndone) {
 		_toBeUndone = toBeUndone;
 		_history = Controller.getHistory();

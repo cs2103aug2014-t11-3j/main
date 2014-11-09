@@ -29,8 +29,9 @@ public class CommandEdit implements Command {
 	private static final String KEYWORD_INVALID = "invalid";
 	
 	private static final String FEEDBACK_INVALID_TASK = "Please specify task to be edited and the details.";
+	private static final String FEEDBACK_INVALID_EDIT_TYPE = "Please specify edit type and the details.";
+	private static final String FEEDBACK_INVALID_DETAILS = "Please specify the details.";
 	private static final String FEEDBACK_INVALID_INDEX = "Item number %1$s does not exist";
-	private static final String FEEDBACK_INVALID_DETAILS = "Please specify edit type and the details.";
 	private static final String FEEDBACK_INVALID_STORAGE = "Cannot store the list to ToDoLog";
 	private static final String FEEDBACK_INVALID_INPUT = "Invalid input";
 	private static final String FEEDBACK_VALID_EDIT = "Edited %1$s of the task.";
@@ -49,6 +50,13 @@ public class CommandEdit implements Command {
 		_toBeEdited = toBeEdited;
 		_storage = Controller.getDBStorage();	
 	}
+	
+	public CommandEdit(int index, String editType) {
+		_index = index -1;
+		_editType = editType;
+		_storage = Controller.getDBStorage();
+	}
+	
 
 	public CommandEdit(int index) {
 		_index = index -1;
@@ -92,9 +100,12 @@ public class CommandEdit implements Command {
 		
 		if (_editType == null) {
 			_validity = false;
+			return FEEDBACK_INVALID_EDIT_TYPE;
+		}
+		if (_toBeEdited == null) {
+			_validity = false;
 			return FEEDBACK_INVALID_DETAILS;
 		}
-		
 		try {
 			editedField = formNewTask();
 		} catch (Exception e1) {

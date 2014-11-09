@@ -17,6 +17,8 @@ public class Controller {
 	private static String _viewOrSearchType;
 	private static CommandView _currentViewMode;
 	private static CommandSearch _currentSearchCriterion;
+
+	private static Command latestCommand;
 	private static final String FEEDBACK_START = "To start, type a command HELP \n"
 			+ "Or enter a command: add, delete, edit, done, view, search.\n";
 	
@@ -105,6 +107,7 @@ public class Controller {
 		try {
 			_input.addInput(userCommand);
 			Command command = Parser.createCommand(userCommand);
+			setLatestCommand(command);
 			_feedback = command.execute();
 			if (command instanceof CommandSearch) {
 				_displayList = ((CommandSearch) command).getReturnList();
@@ -128,10 +131,13 @@ public class Controller {
 					&& !(command instanceof CommandHelp)){
 				_history.addCommand(command);
 			}
+			
 		} catch (Exception e) {
 			_feedback = e.getMessage();
+			setLatestCommand(null);
 			
 		}
+		
 		//_textDisplay = createNewDisplay();
 	}
 	
@@ -202,6 +208,13 @@ public class Controller {
 	}
 	public static void init(String fileName) {
 		_dbStorage = new DBStorage(fileName);
+		_history = new History();
+		_input = new InputHistory();
+		_feedback = FEEDBACK_START;
+		_currentViewMode = new CommandView("this week");
+		_currentViewMode.execute();
+		_displayList = _currentViewMode.getReturnList();
+		setViewOrSearchType(_currentViewMode.getViewType()+" events and deadlines:");
 	}
 
 
@@ -229,5 +242,13 @@ public class Controller {
 	}
 	private static void setViewOrSearchType(String text) {
 		_viewOrSearchType = text;
+	}
+
+	public static Command getLatestCommand() {
+		return latestCommand;
+	}
+
+	public static void setLatestCommand(Command latestCommand) {
+		Controller.latestCommand = latestCommand;
 	}
 }
