@@ -170,7 +170,7 @@ public class TaskTest {
 
 	@Test
 	public void testFull() {
-		//To add deadline task
+		//To test deadline task
 		Task task;
 		try {
 			task = new Task ("homework 1 by 101114 at 1900");
@@ -198,7 +198,7 @@ public class TaskTest {
 			e.printStackTrace();
 		}
 		
-		//To floating task
+		//To test floating task
 		try {
 			task = new Task ("group meeting 1 at soc with team");
 			assertEquals ("output should be group meeting 1", 
@@ -215,5 +215,28 @@ public class TaskTest {
 			e.printStackTrace();
 		}
 		
+		//To test floating task
+		try {
+			task = new Task ("group meeting 1 at soc with team");
+			assertEquals ("output should be group meeting 1", 
+					"group meeting 1", task.getTaskName());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		//To test for person
+		try {
+			task = new Task ("group work 1 with teammate at soc");
+			assertEquals ("output should be teammate", "teammate", task.getTaskPerson());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			task = new Task ("group work 1 with \'teammate at soc\'");
+			assertEquals ("output should be teammate ay soc", "teammate at soc", task.getTaskPerson());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
