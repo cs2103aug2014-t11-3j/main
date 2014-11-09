@@ -39,10 +39,12 @@ public class CommandSearch implements Command {
 		return _returnList;
 	}
 	public String undo(){
-		return "unexpected error";
+		return "Search cannot be undone";
 	}
 	public boolean isUndoable(){
 		return false;
 	}
-
+	public String getSearchKey() {
+		return _searchKey;
+	}
 }

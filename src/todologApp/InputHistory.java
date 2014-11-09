@@ -10,7 +10,7 @@ public class InputHistory {
 		_position = -1;
 	}
 	
-	public boolean addInput (String string) { 
+	public boolean addInput (String string) {
 		_position = _strings.size();
 		return _strings.add(string);
 	}
@@ -20,7 +20,11 @@ public class InputHistory {
 			_position--;
 			return toBeReShown;
 		} else {
-			return _strings.get(_position);
+			if (_strings.size() == 0) {
+				return "";
+			} else {
+				return _strings.get(0);
+			}
 		}
 	}
 	public void goBackwards() throws Exception {
@@ -32,8 +36,8 @@ public class InputHistory {
 	}
 	public String getForwards() throws Exception {
 		if (_position < _strings.size()-1) {
-			_position++;
 			String toBeReShown = _strings.get(_position+1);
+			_position++;
 			return toBeReShown;
 		} else {
 			return null;

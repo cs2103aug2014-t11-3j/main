@@ -38,9 +38,9 @@ public class CommandDeleteAll implements Command {
 		_storage = Controller.getDBStorage();
 		_storageList = _storage.load();
 		// set focus task to change UI's page
-		Controller.setFocusTask(null);
+		Controller.setFocusTask( null );
 		feedback = FEEDBACK_VALID_DELETE_ALL;
-		_validity=true;
+		_validity = true;
 		return feedback;
 	}
 

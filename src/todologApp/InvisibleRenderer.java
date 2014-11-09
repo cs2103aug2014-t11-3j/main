@@ -1,6 +1,5 @@
 package todologApp;
 
-//import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import java.awt.Color;
@@ -9,8 +8,7 @@ import java.awt.Graphics;
 
 import javax.swing.*;
 
-public class CustomRenderer extends DefaultTableCellRenderer {
-	private static final int NOT_DEADLINE = Integer.MIN_VALUE;
+public class InvisibleRenderer extends DefaultTableCellRenderer {
 	/**
 	 * 
 	 */
@@ -21,10 +19,9 @@ public class CustomRenderer extends DefaultTableCellRenderer {
 				value, isSelected, hasFocus, row, column);
 
 		if (((String) table.getValueAt(row, 4)).equalsIgnoreCase("done")) {
-			colorCell(cellComponent,new Color(46, 204, 113, 30));
+			colorCell(cellComponent,new Color(255, 255, 255, 0));
 		} else {
-			int duePeriod = (int) table.getValueAt(row, 5);
-			colorCell(cellComponent,new Color(231, 76, 60,computeAlpha(duePeriod)));
+			colorCell(cellComponent,new Color(255, 255, 255, 0));
 		} 
 		if ((Boolean) table.getValueAt(row, 6) == true) {
 			highlightCell(cellComponent);
@@ -52,19 +49,7 @@ public class CustomRenderer extends DefaultTableCellRenderer {
 		((JComponent) cellComponent).add(highlightCell);
 		
 	}
-	private int computeAlpha(int duePeriod) {
-		if (duePeriod == NOT_DEADLINE) {
-			return 0;
-		}
-		if (duePeriod == -1) {
-			return 240;
-		}
-		if (duePeriod > 4) {
-			return 20;
-		} 
-		return 200-duePeriod*40;
-		
-	}
+	
 	private void colorCell(Component cellComponent, Color color) {
 		JPanel colorCell = new JPanel()
 		{

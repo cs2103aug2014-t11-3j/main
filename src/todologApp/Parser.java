@@ -13,7 +13,7 @@ public class Parser {
 //	private static final String DATE_SEPARATOR = "/";
 //	private static final String SYMBOL_DASH = "-";
 //	private static final String SYMBOL_AT = "@";
-	private static final String QUOTATION_MARK = "\"";
+	private static final String QUOTATION_MARK = "'";
 
 	//KEYWORDS
 	private static final String KEYWORD_DAY_STARTING = "from";
@@ -63,90 +63,107 @@ public class Parser {
 	public static Command createCommand(String userCommand) throws Exception{
 		userCommand = userCommand.trim();
 		String firstWord = getFirstWord(userCommand);
-		if (firstWord.equalsIgnoreCase("add")) {
-			
+		boolean isNumber = false;
+		int taskNumber = 0;
+		try {
+			taskNumber = Integer.parseInt(firstWord);
+			isNumber = true;
+		} catch (NumberFormatException nfe) {
+			isNumber = false;
+		}
+		if (!isNumber) {
+			if (firstWord.equalsIgnoreCase("add")) {
+
 				Task task = createTask(userCommand);
 				CommandAdd command = new CommandAdd(task);
 				return command;
-			
-		} else if (firstWord.equalsIgnoreCase("delete")) {
-			String restOfTheString = getTheRestOfTheString(userCommand);
-			if (restOfTheString == null) {
-				return new CommandDelete();
-			}
-			restOfTheString = restOfTheString.trim();
-			if (isInteger(restOfTheString)) {
-				int index = Integer.valueOf(restOfTheString);
-				CommandDelete command = new CommandDelete(index);
-				return command; 
-			} else {
-				if (restOfTheString.equalsIgnoreCase("all")) {
-					CommandDeleteAll command = new CommandDeleteAll();
-					return command;
-				} else {
-					throw new Exception(HELP_TEXT_DELETE);
-				}
-			}
 
-		} else if (firstWord.equalsIgnoreCase("done")) {
-			String restOfTheString = getTheRestOfTheString(userCommand);
-			if (restOfTheString == null) {
-				throw new Exception(HELP_TEXT_DONE);
-			}
-			restOfTheString = restOfTheString.trim();
-			int index = Integer.valueOf(restOfTheString);
-			CommandMarkAsDone command = new CommandMarkAsDone(index);
-			return command;
-		} else if (firstWord.equalsIgnoreCase("edit")) {
-			String restOfTheString = getTheRestOfTheString(userCommand);
-			if (restOfTheString == null) {
-				return new CommandEdit();
-			}
-			restOfTheString = restOfTheString.trim();
-			int index = Integer.valueOf(getFirstWord(restOfTheString));
-			restOfTheString = getTheRestOfTheString(restOfTheString);
-			if (restOfTheString == null) {
-				return new CommandEdit(index);
-			}
-			String editType = getFirstWord(restOfTheString);
-			restOfTheString = getTheRestOfTheString(restOfTheString);
-			if (editType.equalsIgnoreCase("start") || editType.equalsIgnoreCase("end")) {
-				editType = editType.concat(" ").concat(getFirstWord(restOfTheString));
+			} else if (firstWord.equalsIgnoreCase("delete")) {
+				String restOfTheString = getTheRestOfTheString(userCommand);
+				if (restOfTheString == null) {
+					return new CommandDelete();
+				}
+				restOfTheString = restOfTheString.trim();
+				if (isInteger(restOfTheString)) {
+					int index = Integer.valueOf(restOfTheString);
+					CommandDelete command = new CommandDelete(index);
+					return command; 
+				} else {
+					if (restOfTheString.equalsIgnoreCase("all")) {
+						CommandDeleteAll command = new CommandDeleteAll();
+						return command;
+					}else if (restOfTheString.equalsIgnoreCase("done")){
+						CommandDeleteDone command= new CommandDeleteDone();
+						return command;
+					}
+					else {
+						throw new Exception(HELP_TEXT_DELETE);
+					}
+				}
+
+			} else if (firstWord.equalsIgnoreCase("done")) {
+				String restOfTheString = getTheRestOfTheString(userCommand);
+				if (restOfTheString == null) {
+					throw new Exception(HELP_TEXT_DONE);
+				}
+				restOfTheString = restOfTheString.trim();
+				int index = Integer.valueOf(restOfTheString);
+				CommandMarkAsDone command = new CommandMarkAsDone(index);
+				return command;
+			} else if (firstWord.equalsIgnoreCase("edit")) {
+				String restOfTheString = getTheRestOfTheString(userCommand);
+				if (restOfTheString == null) {
+					return new CommandEdit();
+				}
+				restOfTheString = restOfTheString.trim();
+				int index = Integer.valueOf(getFirstWord(restOfTheString));
 				restOfTheString = getTheRestOfTheString(restOfTheString);
-			} else if (editType.equalsIgnoreCase("task")) {
-				editType = getFirstWord(restOfTheString);
+				if (restOfTheString == null) {
+					return new CommandEdit(index);
+				}
+				String editType = getFirstWord(restOfTheString);
 				restOfTheString = getTheRestOfTheString(restOfTheString);
+				if (editType.equalsIgnoreCase("start") || editType.equalsIgnoreCase("end")) {
+					editType = editType.concat(" ").concat(getFirstWord(restOfTheString));
+					restOfTheString = getTheRestOfTheString(restOfTheString);
+				} else if (editType.equalsIgnoreCase("task")) {
+					editType = getFirstWord(restOfTheString);
+					restOfTheString = getTheRestOfTheString(restOfTheString);
+				}
+				CommandEdit command = new CommandEdit(index, restOfTheString, editType);
+				return command;
+			} else if (firstWord.equalsIgnoreCase("search")) {
+				String restOfTheString = getTheRestOfTheString(userCommand);
+				CommandSearch command = new CommandSearch(restOfTheString);
+				return command;
+			} else if (firstWord.equalsIgnoreCase("view")) {
+				String restOfTheString = getTheRestOfTheString(userCommand);
+				CommandView command = new CommandView(restOfTheString);
+				return command;
+			} else if (firstWord.equalsIgnoreCase("undo")) {
+				History history = Controller.getHistory();
+				Command toBeUndone = history.getBackwards();
+				CommandUndo command = new CommandUndo(toBeUndone);
+				return command;
+			} else if (firstWord.equalsIgnoreCase("redo")) {
+				History history = Controller.getHistory();
+				Command toBeUndone = history.getForwards();
+				CommandRedo command = new CommandRedo(toBeUndone);
+				return command;
+			} else if (firstWord.equalsIgnoreCase("load")) {
+				String restOfTheString = getTheRestOfTheString(userCommand);
+				CommandLoad command = new CommandLoad(restOfTheString);
+				return command;
+			} else if (firstWord.equalsIgnoreCase("help")) {
+				CommandHelp command = new CommandHelp();
+				return command;
+			} 
+			else {
+				throw new Exception("Invalid command.\n"+FEEDBACK_TYPE);
 			}
-			CommandEdit command = new CommandEdit(index, restOfTheString, editType);
+		} else {
+			CommandNumber command = new CommandNumber(taskNumber);
 			return command;
-		} else if (firstWord.equalsIgnoreCase("search")) {
-			String restOfTheString = getTheRestOfTheString(userCommand);
-			CommandSearch command = new CommandSearch(restOfTheString);
-			return command;
-		} else if (firstWord.equalsIgnoreCase("view")) {
-			String restOfTheString = getTheRestOfTheString(userCommand);
-			CommandView command = new CommandView(restOfTheString);
-			return command;
-		} else if (firstWord.equalsIgnoreCase("undo")) {
-			History history = Controller.getHistory();
-			Command toBeUndone = history.getBackwards();
-			CommandUndo command = new CommandUndo(toBeUndone);
-			return command;
-		} else if (firstWord.equalsIgnoreCase("redo")) {
-			History history = Controller.getHistory();
-			Command toBeUndone = history.getForwards();
-			CommandRedo command = new CommandRedo(toBeUndone);
-			return command;
-		} else if (firstWord.equalsIgnoreCase("load")) {
-			String restOfTheString = getTheRestOfTheString(userCommand);
-			CommandLoad command = new CommandLoad(restOfTheString);
-			return command;
-		}else if (firstWord.equalsIgnoreCase("help")) {
-			CommandHelp command = new CommandHelp();
-			return command;
-		}
-		else {
-			throw new Exception("Invalid command.\n"+FEEDBACK_TYPE);
 		}
 	}
 	public static Task createTask(String userInput) throws Exception{

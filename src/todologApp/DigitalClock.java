@@ -1,6 +1,8 @@
 package todologApp;
 
-import javax.swing.*;
+
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
 import java.util.*;
@@ -13,7 +15,7 @@ import java.text.SimpleDateFormat;
 
 public class DigitalClock {
 	private final JLabel time = new JLabel();
-    private final SimpleDateFormat sdf  = new SimpleDateFormat("hh:mm");
+    private final SimpleDateFormat sdf  = new SimpleDateFormat("EEE, d MMM yyyy HH:mm");
     private int   currentSecond;
     private Calendar calendar;
     
@@ -28,6 +30,7 @@ public class DigitalClock {
         currentSecond = calendar.get(Calendar.SECOND);
     }
     public void start(){
+    	time.setForeground(Color.WHITE);
         reset();
         Timer timer = new Timer(1000, new ActionListener(){
             public void actionPerformed( ActionEvent e ) {
@@ -36,7 +39,7 @@ public class DigitalClock {
                     }
                     time.setText( String.format("%s:%02d", sdf.format(calendar.getTime()), currentSecond ));
                     time.setHorizontalAlignment(SwingConstants.CENTER);
-                    time.setForeground(Color.WHITE);
+                    
                     Font font = new Font("SansSerif", Font.BOLD,18);
                     time.setFont(font);
                     currentSecond++;
