@@ -524,14 +524,8 @@ public class Parser {
 		if (!parameter.contains(QUOTATION_MARK)) {
 			for (int i=0; i+1<=messageArray.length-1; i++) {
 				for (int j=i+1; j<=messageArray.length-1; j++) {
-					if (messageArray[i].equalsIgnoreCase(KEYWORD_WITH)
-							&& !messageArray[j].equalsIgnoreCase(KEYWORD_DAY_STARTING)
-							&& !messageArray[j].equalsIgnoreCase(KEYWORD_DAY_STARTING_2)
-							&& !messageArray[j].equalsIgnoreCase(KEYWORD_DAY_ENDING)
-							&& !messageArray[j].equalsIgnoreCase(KEYWORD_DEADLINE)
-							&& !messageArray[j].equalsIgnoreCase(KEYWORD_RECURRING)
-							&& !messageArray[j].equalsIgnoreCase(KEYWORD_AT)
-							&& !messageArray[j].equalsIgnoreCase(KEYWORD_IN)) {
+					if (isPersonKeywod(messageArray[i])
+							&& !isKeyWord(messageArray[j])) {
 						taskPerson = taskPerson + messageArray[j] + SINGLE_SPACE;
 					} else {
 						break;
@@ -578,6 +572,11 @@ public class Parser {
 		taskPerson = taskPerson.replaceAll(QUOTATION_MARK, EMPTY_STRING);
 
 		return taskPerson.trim();
+	}
+
+	private static boolean isPersonKeywod(String string) {
+		return string.equalsIgnoreCase(KEYWORD_WITH);
+	
 	}
 
 	public static String parseTaskVenue(String parameter) {
