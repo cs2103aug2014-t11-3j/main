@@ -4,21 +4,48 @@ import static org.junit.Assert.*;
 
 import java.util.LinkedList;
 
+import org.junit.Before;
 import org.junit.Test;
 
 public class CommandDeleteTest {
+	@Before
+	public void before() throws Exception{
+		CommandAddTest addTest = new CommandAddTest();
+		addTest.testExecute();
+	}
 	@Test
-	public void testExecute() throws Exception {
-		Controller.init();
-		CommandDelete command = new CommandDelete(3);
-		DBStorage storage=new DBStorage();
-		storage = Controller.getDBStorage();
-		LinkedList<Task> taskList = storage.load();
-		if(taskList.size()<3){
-		assertEquals("Description", "Invalid task number. Cannot delete.",command.execute());
-		}
-		else{
-		assertEquals("Description", "Deleted " +taskList.get(2).getTaskName()+ " from toDoLog",command.execute());
-		}
+	public void testExecute() throws Exception{
+		Controller.init("test.xml");
+		
+		LinkedList <Task> displayList = Controller.getDisplayList();
+		Controller.acceptUserCommand("delete -1");
+		CommandDelete command1 = (CommandDelete) Controller.getLatestCommand();
+		assertEquals("Description", "Item number -1 does not exist",command1.execute());
+		
+		Controller.acceptUserCommand("delete 100000000");
+		CommandDelete command2 = (CommandDelete) Controller.getLatestCommand();
+		assertEquals("Description", "Item number 100000000 does not exist",command2.execute());
+		
+		Controller.acceptUserCommand("delete");
+		CommandDelete command3 = (CommandDelete) Controller.getLatestCommand();
+		assertEquals("Description", "Please specify the task to be deleted.",command3.execute());
+		
+		Controller.acceptUserCommand("delete         ");
+		CommandDelete command4 = (CommandDelete) Controller.getLatestCommand();
+		assertEquals("Description", "Please specify the task to be deleted.",command4.execute());
+		
+		Controller.acceptUserCommand("del");
+		assertEquals("Description", "Invalid command.\nType in a command: add, delete, edit, done.",Controller.getFeedback());
+		
+		Controller.acceptUserCommand("delete 3");
+		CommandDelete command6 = (CommandDelete) Controller.getLatestCommand();
+		String deletedName1 = displayList.get(2).getTaskName();
+		assertEquals("Description", "Deleted "+ deletedName1+" from toDoLog",command6.execute());
+		
+		Controller.acceptUserCommand("delete 10 ");
+		Command command7 = Controller.getLatestCommand();
+		String deletedName2 = displayList.get(9).getTaskName();
+		assertEquals("Description", "Deleted "+ deletedName2+" from toDoLog",command7.execute());
+			
 	}
 }
