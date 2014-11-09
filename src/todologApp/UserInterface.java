@@ -205,7 +205,7 @@ public class UserInterface extends JFrame {
 		mainPanel.setLayout(new GridBagLayout());
 		
 		try {
-			URL url = this.getClass().getClassLoader().getResource("photos/seagull.jpg");
+			URL url = this.getClass().getClassLoader().getResource("photos/aero-colorful-purple-2_00450752.jpg");
 			backgroundImage = ImageIO.read(url);
 			backgroundPicture = new JLabel(new ImageIcon(backgroundImage));
 			backgroundPicture.setBounds(0,0,700, 610);
@@ -345,7 +345,7 @@ public class UserInterface extends JFrame {
 		    }
 		};
 		Border paddingBorder = BorderFactory.createEmptyBorder(4,4,4,4);
-		Border border = BorderFactory.createMatteBorder(2, 2, 0, 2, Color.GRAY);
+		Border border = BorderFactory.createMatteBorder(3, 3, 0, 3, Color.GRAY);
 		Border compoundBorder = BorderFactory.createCompoundBorder(border, paddingBorder);
 		floatingTaskLabel.setBorder(compoundBorder);
 		floatingTaskLabel.setPreferredSize(new Dimension(40,25));
@@ -358,7 +358,7 @@ public class UserInterface extends JFrame {
 	}
 
 	private void createToDoListLabel(JPanel toDoListHolder) {
-		toDoTaskLabel = new JLabel("This week's events and deadlines:") {
+		toDoTaskLabel = new JLabel() {
 			/**
 			 * 
 			 */
@@ -374,7 +374,7 @@ public class UserInterface extends JFrame {
 		    }
 		};
 		Border paddingBorder = BorderFactory.createEmptyBorder(4,4,4,4);
-		Border border = BorderFactory.createMatteBorder(2, 2, 0, 2, new Color(241, 196, 15, 255));
+		Border border = BorderFactory.createMatteBorder(3, 3, 0, 3, new Color(247,223,124, 255));
 		Border compoundBorder = BorderFactory.createCompoundBorder(border, paddingBorder);
 		toDoTaskLabel.setBorder(compoundBorder);
 		toDoTaskLabel.setPreferredSize(new Dimension(40,25));
@@ -391,7 +391,7 @@ public class UserInterface extends JFrame {
 		
 		toDoTasksTableModel = new ToDoTasksListTableModel(toDoListItems);
 		toDoTaskTable = new JTable(toDoTasksTableModel);    
-		toDoTaskTable.setPreferredSize(new Dimension(500,280));
+		toDoTaskTable.setPreferredSize(new Dimension(450,280));
 		adjustToDoTaskTableColumns(toDoTaskTable);
 		changeToDoTableColors(toDoTaskTable, new CustomRenderer());
 		toDoTaskTable.getTableHeader().setResizingAllowed(false);
@@ -439,9 +439,9 @@ public class UserInterface extends JFrame {
 		        super.paintComponent(g);
 		    }
 		};
-		
-		toDoTaskPane.setBorder(BorderFactory.createLineBorder(new Color(241, 196, 15), 3, false));
-		toDoTaskPane.setPreferredSize(new Dimension(500,280));
+
+		toDoTaskPane.setBorder(BorderFactory.createLineBorder(new Color(247,223,124),3));
+		toDoTaskPane.setPreferredSize(new Dimension(450,280));
 		toDoTaskPane.setOpaque(false);
 		toDoTaskPane.setBackground(new Color(255,255,255,220));
 		toDoTaskPane.getViewport().setOpaque(false);
@@ -476,7 +476,7 @@ public class UserInterface extends JFrame {
 		floatingTaskListParameters = setParameters(FLOATINGTASKSTABLE_PARAMETERS);
 		floatingTasksTableModel = new FloatingTasksListTableModel(floatingItems);
 		floatingTaskTable = new JTable(floatingTasksTableModel); 
-		floatingTaskTable.setPreferredSize(new Dimension(130,270));
+		floatingTaskTable.setPreferredSize(new Dimension(180,270));
 		adjustFloatingTaskTableColumns(floatingTaskTable);
 		changeToDoTableColors(floatingTaskTable, new CustomRenderer());
 		floatingTaskTable.getTableHeader().setResizingAllowed(false);
@@ -541,8 +541,8 @@ public class UserInterface extends JFrame {
 		    }
 		};
 		
-		floatingTaskPane.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3, false));
-		floatingTaskPane.setPreferredSize(new Dimension(130,270));
+		floatingTaskPane.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3));
+		floatingTaskPane.setPreferredSize(new Dimension(180,270));
 		floatingTaskPane.setOpaque(false);
 		floatingTaskPane.setBackground(new Color(255,255,255,220));
 		floatingTaskPane.getViewport().setOpaque(false);
@@ -623,7 +623,7 @@ public class UserInterface extends JFrame {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		commandEntryTextField.setBorder(new LineBorder(Color.BLUE,2,false));
+		commandEntryTextField.setBorder(new LineBorder(new Color(34,167,247),2,false));
 		commandEntryTextField.setFocusTraversalKeysEnabled(false);
 		commandEntryTextField.addActionListener(new CommandEntryTextFieldActionListener());
 		commandEntryTextField.addKeyListener(new CommandEntryTextFieldKeyListener());
@@ -791,6 +791,7 @@ public class UserInterface extends JFrame {
 		toDoListItems = Controller.getCurrentView();
 		floatingItems = Controller.getFloatingTasksList();
 		toDoTasksTableModel = new ToDoTasksListTableModel(toDoListItems);
+		toDoTaskLabel.setText(Controller.getViewOrSearchType());
 		toDoTaskTable.setModel(toDoTasksTableModel);
 		adjustToDoTaskTableColumns(toDoTaskTable);
 		dynamicHelpText.append(Controller.getFeedback());
@@ -821,7 +822,7 @@ public class UserInterface extends JFrame {
 	                if(combination == 2){
 
 	                	if(invisibility == false){
-	                		commandEntryTextField.setBorder(new LineBorder(Color.BLUE,4,true));
+	                		commandEntryTextField.setBorder(new LineBorder(new Color(34,167,240),4,true));
 	                		backgroundPicture.setIcon(null);
 	                		iconPanel.setIcon(null);
 	                		minimizeButton.setVisible(false);
@@ -850,7 +851,7 @@ public class UserInterface extends JFrame {
 	                	}
 
 	                	else{
-	                		commandEntryTextField.setBorder(new LineBorder(Color.BLUE,2,true));
+	                		commandEntryTextField.setBorder(new LineBorder(new Color(34,167,240),2,true));
 	                		backgroundPicture.setIcon(new ImageIcon(backgroundImage));
 	                		iconPanel.setIcon(new ImageIcon(iconUrl));
 	                		minimizeButton.setVisible(true);
@@ -1016,8 +1017,8 @@ public class UserInterface extends JFrame {
 	}
 	private void setFocusTable(int tableIndex) {
 		Border paddingBorder = BorderFactory.createEmptyBorder(10,10,10,10);
-		Border grayBorder = BorderFactory.createMatteBorder(2, 2, 0, 2, Color.GRAY);
-		Border yellowBorder = BorderFactory.createMatteBorder(2, 2, 0, 2, new Color(241, 196, 15));
+		Border grayBorder = BorderFactory.createMatteBorder(3, 3, 0 ,3, Color.GRAY);
+		Border yellowBorder = BorderFactory.createMatteBorder(3, 3, 0 ,3, new Color(247,223,124,255));
 		Border compoundGrayBorder = BorderFactory.createCompoundBorder(grayBorder, paddingBorder);
 		Border compoundYellowBorder = BorderFactory.createCompoundBorder(yellowBorder, paddingBorder);
 		
@@ -1027,14 +1028,14 @@ public class UserInterface extends JFrame {
 				floatingTaskPane.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3, false));
 				floatingTaskLabel.setBorder(compoundGrayBorder);
 				focusTable = toDoTaskTable;
-				toDoTaskPane.setBorder(BorderFactory.createLineBorder(new Color(241, 196, 15), 3, false));
+				toDoTaskPane.setBorder(BorderFactory.createLineBorder(new Color(247,223,124,255), 3, false));
 				toDoTaskLabel.setBorder(compoundYellowBorder);
 				break;
 			case FLOATINGTASK_TABLE_INDEX: 
 				toDoTaskPane.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3, false));
 				toDoTaskLabel.setBorder(compoundGrayBorder);
 				focusTable = floatingTaskTable;
-				floatingTaskPane.setBorder(BorderFactory.createLineBorder(new Color(241, 196, 15), 3, false));
+				floatingTaskPane.setBorder(BorderFactory.createLineBorder(new Color(247,223,124,255), 3, false));
 				floatingTaskLabel.setBorder(compoundYellowBorder);
 				
 				break;
@@ -1309,8 +1310,8 @@ public class UserInterface extends JFrame {
 		Insets commandEntryTextFieldInsets = new Insets(10,25,5,25);
 		Insets dynamicHelpTextInsets = new Insets(10,25,10,20);
 		Insets legendInsets = new Insets(0,0,0,10);
-		Insets toDoTableLabelInsets= new Insets(0,10,0,220);
-		Insets floatingTasksTableLabelInsets= new Insets(0,15,0,15);
+		Insets toDoTableLabelInsets= new Insets(0,0,0,205);
+		Insets floatingTasksTableLabelInsets= new Insets(0,10,0,60);
 		//Insets buttonInsets = new Insets(10,0,0,20);
 		
 		if(panelParameters == CLOCK_PARAMETERS){
@@ -1399,7 +1400,9 @@ public class UserInterface extends JFrame {
 				tableColumn.setPreferredWidth(150);
 				break;
 			case 3:
-				tableColumn.setPreferredWidth(100);
+				tableColumn.setPreferredWidth(0);
+				tableColumn.setMinWidth(0);
+				tableColumn.setMaxWidth(0);
 				break;
 			case 4:
 				tableColumn.setPreferredWidth(90);
@@ -1427,10 +1430,10 @@ public class UserInterface extends JFrame {
 			
 			switch(columnHeaders){
 			case 0:
-				tableColumn.setPreferredWidth(30);
+				tableColumn.setPreferredWidth(35);
 				break;
 			case 1:
-				tableColumn.setPreferredWidth(100);
+				tableColumn.setPreferredWidth(145);
 				break;
 			case 2:
 				tableColumn.setPreferredWidth(0);
