@@ -344,6 +344,19 @@ public class UserInterface extends JFrame {
 		        super.paintComponent(g);
 		    }
 		};
+		InputStream in = this.getClass().getClassLoader().getResourceAsStream("fonts/OpenSans-Semibold.ttf");
+		try {
+			Font font;
+			font = Font.createFont(Font.TRUETYPE_FONT, in);
+			Font sizedFont = font.deriveFont(HELP_TEXT_FONT_SIZE);
+			floatingTaskLabel.setFont(sizedFont);
+		} catch (FontFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Border paddingBorder = BorderFactory.createEmptyBorder(4,4,4,4);
 		Border border = BorderFactory.createMatteBorder(3, 3, 0, 3, Color.GRAY);
 		Border compoundBorder = BorderFactory.createCompoundBorder(border, paddingBorder);
@@ -373,6 +386,19 @@ public class UserInterface extends JFrame {
 		        super.paintComponent(g);
 		    }
 		};
+		InputStream in = this.getClass().getClassLoader().getResourceAsStream("fonts/OpenSans-Semibold.ttf");
+		try {
+			Font font;
+			font = Font.createFont(Font.TRUETYPE_FONT, in);
+			Font sizedFont = font.deriveFont(HELP_TEXT_FONT_SIZE);
+			toDoTaskLabel.setFont(sizedFont);
+		} catch (FontFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Border paddingBorder = BorderFactory.createEmptyBorder(4,4,4,4);
 		Border border = BorderFactory.createMatteBorder(3, 3, 0, 3, new Color(247,223,124, 255));
 		Border compoundBorder = BorderFactory.createCompoundBorder(border, paddingBorder);
@@ -1024,20 +1050,25 @@ public class UserInterface extends JFrame {
 		
 		switch (tableIndex) {
 			case TODOTASK_TABLE_INDEX: 
-				
-				floatingTaskPane.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3, false));
-				floatingTaskLabel.setBorder(compoundGrayBorder);
+				if (!invisibility) {
+					floatingTaskPane.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3, false));
+					floatingTaskLabel.setBorder(compoundGrayBorder);
+
+					toDoTaskPane.setBorder(BorderFactory.createLineBorder(new Color(247,223,124,255), 3, false));
+					toDoTaskLabel.setBorder(compoundYellowBorder);
+				}
 				focusTable = toDoTaskTable;
-				toDoTaskPane.setBorder(BorderFactory.createLineBorder(new Color(247,223,124,255), 3, false));
-				toDoTaskLabel.setBorder(compoundYellowBorder);
 				break;
 			case FLOATINGTASK_TABLE_INDEX: 
-				toDoTaskPane.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3, false));
-				toDoTaskLabel.setBorder(compoundGrayBorder);
+
+				if (!invisibility) {
+					toDoTaskPane.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3, false));
+					toDoTaskLabel.setBorder(compoundGrayBorder);
+
+					floatingTaskPane.setBorder(BorderFactory.createLineBorder(new Color(247,223,124,255), 3, false));
+					floatingTaskLabel.setBorder(compoundYellowBorder);
+				}
 				focusTable = floatingTaskTable;
-				floatingTaskPane.setBorder(BorderFactory.createLineBorder(new Color(247,223,124,255), 3, false));
-				floatingTaskLabel.setBorder(compoundYellowBorder);
-				
 				break;
 			default: break;
 		}
