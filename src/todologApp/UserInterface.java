@@ -63,7 +63,6 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
-import javax.swing.ScrollPaneConstants;
 
 import sun.swing.table.DefaultTableCellHeaderRenderer;
 
@@ -91,15 +90,14 @@ public class UserInterface extends JFrame {
 	private static final int BOTTOM_PANEL_PARAMETERS = 2;
 	private static final int COMMAND_ENTRY_PARAMETERS = 3;
 	private static final int DYNAMIC_HELP_TEXT_PARAMETERS = 4;
-	private static final int LEGEND_PARAMETERS = 5;
-	private static final int TODOTABLE_PARAMETERS = 6;
-	private static final int CLOCK_PARAMETERS = 7;
-	private static final int TOP_PANEL_PARAMETERS = 8;
-	private static final int BUTTON_PANEL_PARAMETERS = 9;
-	private static final int ICON_PARAMETERS = 10;
-	private static final int FLOATINGTASKSTABLE_PARAMETERS = 11;
-	private static final int TODOTABLE_LABEL_PARAMETERS = 12;
-	private static final int FLOATINGTASKSTABLE_LABEL_PARAMETERS = 13;
+	private static final int TODOTABLE_PARAMETERS = 5;
+	private static final int CLOCK_PARAMETERS = 6;
+	private static final int TOP_PANEL_PARAMETERS = 7;
+	private static final int BUTTON_PANEL_PARAMETERS = 8;
+	private static final int ICON_PARAMETERS = 9;
+	private static final int FLOATINGTASKSTABLE_PARAMETERS = 10;
+	private static final int TODOTABLE_LABEL_PARAMETERS = 11;
+	private static final int FLOATINGTASKSTABLE_LABEL_PARAMETERS = 12;
 	
 	private JTextField commandEntryTextField;
 	private JLayeredPane layerPane = new JLayeredPane();
@@ -212,17 +210,40 @@ public class UserInterface extends JFrame {
 		
 	}
 	
+	private void createTopPanel(Container mainPanel){
+		JPanel topPanel = new JPanel(new GridBagLayout());
+		
+		//give settings to the top panel
+		topPanel.setPreferredSize(new Dimension(650,50));
+		topPanel.setOpaque(false);
+		
+		//determine the position of top panel in main panel
+		GridBagConstraints parameters;
+		parameters = setParameters(TOP_PANEL_PARAMETERS);
+		
+		//fill the top panel with the icon, clock and button
+		createIcon(topPanel);
+		createClockPanel(topPanel);
+		createButtonPanel(topPanel);
+		
+		mainPanel.add(topPanel, parameters);
+		
+	}
+	
 	private void createClockPanel(Container topPanel){
+		
+		 
 		 clock = new DigitalClock();
 		 GridBagConstraints clockPanelParameters = setParameters(CLOCK_PARAMETERS);
-		
-		 topPanel.add(clock.getTime(),clockPanelParameters);
+		 topPanel.add(clock.getTime(),clockPanelParameters); //clock.getTime() refers to the JLabel within DigitalClock class
 		 clock.start();
 	}
 	
 	private void createButtonPanel(Container topPanel) {
 		
 		JPanel buttonPanel = new JPanel(new GridBagLayout());
+		
+		//set up the close button
 		closeButton = new JLabel() {
 				/**
 				 * 
@@ -235,8 +256,15 @@ public class UserInterface extends JFrame {
 			        g.fillOval(0, 0, getWidth(), getHeight());
 			        super.paintComponent(g);
 			    }
-				
+				//paintComponent is used to give the button a circled-shape
 			};
+			
+		closeButton.setBackground(new Color(242, 38, 19, 255));
+		closeButton.setOpaque(false);
+		closeButton.setPreferredSize(new Dimension(17,17));
+		closeButton.addMouseListener(new CloseButtonMouseListener());
+		
+		//set up the minimize button
 		minimizeButton = new JLabel() {
 			/**
 			 * 
@@ -251,50 +279,39 @@ public class UserInterface extends JFrame {
 		        super.paintComponent(g);
 		    }
 		};
-		closeButton.setBackground(new Color(242, 38, 19, 255));
-		closeButton.setOpaque(false);
+		
 		minimizeButton.setBackground(new Color(241, 196, 15, 255));
 		minimizeButton.setOpaque(false);
-		//colorComponent(closeButton,new Color(255,0,0,255));
-		//colorComponent(minimizeButton,new Color(255,255,0,255));
-		closeButton.setPreferredSize(new Dimension(17,17));
 		minimizeButton.setPreferredSize(new Dimension(17,17));
-		closeButton.addMouseListener(new CloseButtonMouseListener());
 		minimizeButton.addMouseListener(new MinimizeButtonMouseListener());
+		
+		
 		GridBagConstraints padParameters =
 				new GridBagConstraints(0,0,3,1,1.0,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,new Insets(0,0,0,0),0,0);
 		GridBagConstraints minimizeButtonParameters = 
 				new GridBagConstraints(3,0,1,1,0.0,0.0,GridBagConstraints.NORTHEAST,GridBagConstraints.NONE,new Insets(0,0,10,7),0,0);
 		GridBagConstraints closeButtonParameters =
 				new GridBagConstraints(4,0,1,1,0.0,0.0,GridBagConstraints.NORTHEAST,GridBagConstraints.NONE,new Insets(0,0,10,10),0,0);
+		
+		//add the buttons to a button panel
 		buttonPanel.add(Box.createGlue(),padParameters);
 		buttonPanel.add(minimizeButton,minimizeButtonParameters);
 		buttonPanel.add(closeButton,closeButtonParameters);
 		buttonPanel.setOpaque(false);
+		
+		//add the button panel to the top panel
 		GridBagConstraints ButtonPanelParameters = setParameters(BUTTON_PANEL_PARAMETERS);
 		topPanel.add(buttonPanel,ButtonPanelParameters);
 	}
 	
-	private void createTopPanel(Container mainPanel){
-		JPanel topPanel = new JPanel(new GridBagLayout());
-		topPanel.setBackground(Color.WHITE);
-		topPanel.setPreferredSize(new Dimension(650,50));
-		GridBagConstraints parameters;
-		
-		parameters = setParameters(TOP_PANEL_PARAMETERS);
-		createIcon(topPanel);
-		createClockPanel(topPanel);
-		createButtonPanel(topPanel);
-		//createButton(bottomPanel);
-		mainPanel.add(topPanel, parameters);
-		topPanel.setOpaque(false);
-	}
-	
 	private void createIcon(JPanel topPanel) {
 		iconPanel = new JLabel();
+		
 		iconUrl = this.getClass().getClassLoader().getResource("icon-40x40.gif");
 		ImageIcon icon = new ImageIcon(iconUrl);
 		iconPanel.setIcon(icon);
+		
+		//add iconPanel to topPanel
 		GridBagConstraints parameters;
 		parameters = setParameters(ICON_PARAMETERS);
 		topPanel.add(iconPanel,parameters);
@@ -303,13 +320,20 @@ public class UserInterface extends JFrame {
 	
 	private void createToDoListHolder(Container mainPanel){
 		GridBagConstraints panelParameters;   
-		panelParameters = setParameters(TODOLIST_HOLDER_PARAMETERS); //panelParameters are values for how the top panel will fit into the main frame of ToDoLog
+		panelParameters = setParameters(TODOLIST_HOLDER_PARAMETERS); 
+	//panelParameters are values for how the toDoTaskHolder panel will fit into the main 
+	//frame of ToDoLog
+		
 		JPanel toDoListHolder = new JPanel(new GridBagLayout());
 		toDoListHolder.setPreferredSize(new Dimension(650, 310));
+		
+		//add toDoTasksTable and floatingTasksTable into the toDoTaskHolder
 		createToDoListLabel(toDoListHolder);
 		createToDoList(toDoListHolder);
 		createFloatingTaskListLabel(toDoListHolder);
 		createFloatingTaskList(toDoListHolder);
+		
+		//add the toDoListHolder to the mainPanel
 		mainPanel.add(toDoListHolder, panelParameters);
 		toDoListHolder.setOpaque(false);
 		
@@ -352,6 +376,8 @@ public class UserInterface extends JFrame {
 		floatingTaskLabel.setPreferredSize(new Dimension(40,25));
 		floatingTaskLabel.setOpaque(false);
 		floatingTaskLabel.setBackground(new Color(255,255,255,220));
+		
+		//add the floatingTaskLabel to the toDoListHolder
 		GridBagConstraints floatingTaskListLabelParameters;
 		floatingTaskListLabelParameters = setParameters(FLOATINGTASKSTABLE_LABEL_PARAMETERS);
 		toDoListHolder.add(floatingTaskLabel,floatingTaskListLabelParameters);
@@ -394,25 +420,37 @@ public class UserInterface extends JFrame {
 		toDoTaskLabel.setPreferredSize(new Dimension(40,25));
 		toDoTaskLabel.setOpaque(false);
 		toDoTaskLabel.setBackground(new Color(255,255,255,220));
+		
+		//add the toDoTaskLabel to the toDoListHolder
 		GridBagConstraints toDoListLabelParameters;
 		toDoListLabelParameters = setParameters(TODOTABLE_LABEL_PARAMETERS);
 		toDoListHolder.add(toDoTaskLabel,toDoListLabelParameters);
 		
 	}
+	
+	/* here is where the table displaying the user's tasks is implemented
+	 * the table is formed in reference to a table model, and then placed into a scroll pane 
+	 * which is then added to the toDoListHolder
+	 */
 	private void createToDoList(Container toDoListHolder) {
-		GridBagConstraints scrollPaneParameters; //scrollPaneParameters are values for how the scrollPane will be placed within the top panel,toDoListHolder
+		//GridBagConstraints to position the scrollPane within toDoListHolder
+		GridBagConstraints scrollPaneParameters; 
 		scrollPaneParameters = setParameters(TODOTABLE_PARAMETERS);
 		
+		/* a Table Model is used to adjust the table information for ToDoLog
+		 */
 		toDoTasksTableModel = new ToDoTasksListTableModel(toDoListItems);
-		toDoTaskTable = new JTable(toDoTasksTableModel);    
+		toDoTaskTable = new JTable(toDoTasksTableModel);
 		toDoTaskTable.setPreferredSize(new Dimension(450,280));
+		//fix the width of the columns of the table and color the rows
+		//according to the different due dates of tasks
 		adjustToDoTaskTableColumns(toDoTaskTable);
 		changeToDoTableColors(toDoTaskTable, new CustomRenderer());
 		toDoTaskTable.getTableHeader().setResizingAllowed(false);
 		toDoTaskTable.getTableHeader().setBackground(new Color(0,0,0,0));
 		toDoTaskTable.getTableHeader().setReorderingAllowed(false);
         
-        
+        //get rid of the usual grid in the JTable
 		toDoTaskTable.setShowGrid(false);
 		toDoTaskTable.setIntercellSpacing(new Dimension(0, 0));
 		toDoTaskTable.setOpaque(false);
@@ -434,8 +472,7 @@ public class UserInterface extends JFrame {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		//toDoListTable.addKeyListener(new ToDoListTableListener());
-		//updateToDoListTable(toDoListTable,toDoListItems,toDoListHeaders);
+		
         toDoTaskPane = new JScrollPane(toDoTaskTable)
 
 		{
@@ -453,17 +490,17 @@ public class UserInterface extends JFrame {
 		        super.paintComponent(g);
 		    }
 		};
-
+        //settings of the scroll pane
 		toDoTaskPane.setBorder(BorderFactory.createLineBorder(new Color(247,223,124),3));
 		toDoTaskPane.setPreferredSize(new Dimension(450,280));
-		toDoTaskPane.setOpaque(false);
+        toDoTaskPane.setOpaque(false);
 		toDoTaskPane.setBackground(new Color(255,255,255,220));
 		toDoTaskPane.getViewport().setOpaque(false);
 		toDoTaskPane.getViewport().setBackground(new Color(255,255,255,220));
 		toDoTaskPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-        toDoTaskTable.getTableHeader().setDefaultRenderer(new DefaultTableCellHeaderRenderer() {
-            
-            
+		
+		//to disable borders at the table headers and also to shift the  headings to the left
+        toDoTaskTable.getTableHeader().setDefaultRenderer(new DefaultTableCellHeaderRenderer() {            
             /**
 			 * 
 			 */
@@ -478,19 +515,24 @@ public class UserInterface extends JFrame {
                 rendererComponent.setHorizontalAlignment(LEFT);
                 
                 return rendererComponent;
-            }
-            
+            }     
         });
        
 		toDoListHolder.add(toDoTaskPane,scrollPaneParameters);
 	}
 	
+	//implementation is about the same as toDoTaskTable
 	private void createFloatingTaskList(JPanel toDoListHolder) {
+		
+		//set position of folatingTaskTable in toDoListHolder
 		GridBagConstraints floatingTaskListParameters; 
 		floatingTaskListParameters = setParameters(FLOATINGTASKSTABLE_PARAMETERS);
+		
+		//use a table model to set the table
 		floatingTasksTableModel = new FloatingTasksListTableModel(floatingItems);
-		floatingTaskTable = new JTable(floatingTasksTableModel); 
+		floatingTaskTable = new JTable(floatingTasksTableModel);
 		floatingTaskTable.setPreferredSize(new Dimension(180,270));
+		//adjust the columns and rows
 		adjustFloatingTaskTableColumns(floatingTaskTable);
 		changeToDoTableColors(floatingTaskTable, new CustomRenderer());
 		floatingTaskTable.getTableHeader().setResizingAllowed(false);
@@ -515,6 +557,8 @@ public class UserInterface extends JFrame {
             }
             
         });
+		
+		//get rids of the normal grid that tables have
 		floatingTaskTable.setOpaque(false);
 		floatingTaskTable.setEnabled(false);
 		floatingTaskTable.setShowGrid(false);
@@ -535,8 +579,6 @@ public class UserInterface extends JFrame {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		//toDoListTable.addKeyListener(new ToDoListTableListener());
-		//updateToDoListTable(toDoListTable,toDoListItems,toDoListHeaders);
 		
 		floatingTaskPane = new JScrollPane(floatingTaskTable)
 		{
@@ -567,46 +609,33 @@ public class UserInterface extends JFrame {
 		
 	}
 
-	/*private void createToDoList(Container mainPanel){
-		JPanel toDoListHolder = new JPanel(new GridBagLayout());
-		toDoListHolder.setBackground(Color.WHITE);
-		GridBagConstraints panelParameters;      //panelParameters are values for how the top panel will fit into the main frame of ToDoLog
-		GridBagConstraints scrollPaneParameters; //scrollPaneParameters are values for how the scrollPane will be placed within the top panel,toDoListHolder
-		toDoListHolder.setPreferredSize(new Dimension(650, 225));
-		
-		panelParameters = setParameters(TODOLIST_PARAMETERS);
-		scrollPaneParameters = setParameters(TODOLIST_SCROLLPANE_PARAMETERS);
-		toDoListText = new JTextArea(10,10);
-		toDoListText.setPreferredSize(new Dimension(532,225));
-		toDoListHolder.add(toDoListText,scrollPaneParameters);
-		mainPanel.add(toDoListHolder, panelParameters);
-	}*/
-
 	/* this method creates the bottom section of ToDoLog which consists of the command entry
-	 *	line, the dynamic help text area and the legend
+	 *	line and the dynamic help text area
 	 */
 	private void createBottomPanel(Container mainPanel){
+		
+		//settings of the bottom panel
 		JPanel bottomPanel = new JPanel(new GridBagLayout());
 		bottomPanel.setBackground(new Color(255,255,255,0));
 		bottomPanel.setPreferredSize(new Dimension(650,170));
-		GridBagConstraints parameters;
+		bottomPanel.setOpaque(true);
 		
+		//position of the bottom panel within the main panel
+		GridBagConstraints parameters;
 		parameters = setParameters(BOTTOM_PANEL_PARAMETERS);
 		
 		createCommandEntryTextBox(bottomPanel);
 		createTextArea(bottomPanel);
-	//	createLegend(bottomPanel);
-		//createButton(bottomPanel);
+
 		mainPanel.add(bottomPanel, parameters);
-		
-		bottomPanel.setOpaque(true);
 	}
 	
 	private void createCommandEntryTextBox(JPanel bottomPanel) {
-		//TODO implement this
-		//for layout, google for "java layout..."
+		
+		//position of the commandEntryTextField within bottom panel
 		GridBagConstraints bottomPanelParameters;
 		bottomPanelParameters = setParameters(COMMAND_ENTRY_PARAMETERS);
+		
 		commandEntryTextField = new JTextField(20){
 			/**
 			 * 
@@ -639,6 +668,10 @@ public class UserInterface extends JFrame {
 		}
 		commandEntryTextField.setBorder(new LineBorder(new Color(34,167,247),2,false));
 		commandEntryTextField.setFocusTraversalKeysEnabled(false);
+		
+		//actionListener to take in the user's input and keylistener to enable features
+		//such as flipping through pages of the user's tasks, getting the previous user 
+		//input, and changing focus between the toDoTaskTable and floatingTaskTable
 		commandEntryTextField.addActionListener(new CommandEntryTextFieldActionListener());
 		commandEntryTextField.addKeyListener(new CommandEntryTextFieldKeyListener());
 		commandEntryTextField.getDocument().addDocumentListener(new CommandEntryTextFieldDocumentListener());
@@ -646,6 +679,8 @@ public class UserInterface extends JFrame {
 	}
 	
 	private void createTextArea(JPanel bottomPanel){
+		
+		//position of the dynamicHelpText within the bottomPanel
 		GridBagConstraints dynamicHelpTextParameters;
 		dynamicHelpTextParameters = setParameters(DYNAMIC_HELP_TEXT_PARAMETERS);
 		
@@ -675,24 +710,8 @@ public class UserInterface extends JFrame {
 		//put the dynamic area into a scroll pane
 		dynamicHelpText.setBorder(dynamicHelpTextBorder);
 		bottomPanel.add(dynamicHelpText,dynamicHelpTextParameters);
-		//dynamicHelpText.addActionListener(new DynamicHelpTextAreaListener());
+		
 	
-	}
-	
-	private void createLegend(JPanel bottomPanel){ //this one will be put at borderlayout.east
-		GridBagConstraints LegendParameters;
-		LegendParameters = setParameters(LEGEND_PARAMETERS);
-		//Border borderLineForLegend = new LineBorder(Color.BLACK);
-		
-		JPanel legendMainPanel = new JPanel(new GridBagLayout());          //must find a better way of organising the legend
-		legendMainPanel.setBackground(Color.WHITE);                     //looks ugly now    
-		//legendMainPanel.setBorder(borderLineForLegend);
-		legendMainPanel.setPreferredSize(new Dimension(100,100));
-		
-//		arrangeLegend(legendMainPanel);
-		
-		bottomPanel.add(legendMainPanel, LegendParameters);
-		legendMainPanel.setOpaque(false);
 	}
 	
 	public UserInterface() {
@@ -716,24 +735,34 @@ public class UserInterface extends JFrame {
 		focusTable = toDoTaskTable;
 		adjustFloatingTaskTableColumns(floatingTaskTable);
 		changeFloatingTableColors(floatingTaskTable, new CustomRenderer());
-		// create more here
 	}
 	
+	/*we use JIntellitype to enable the use of hotkeys to enable features like minimizing
+	 * and maximizing, and to hide the application and leave the commandTextField visible
+	 */
 	private void useJIntellitype() {
 		try {
 			JIntellitype.getInstance();
+			
+			//register the hotkeys "Alt-B" and "Alt-N"
 			JIntellitype.getInstance().registerHotKey(1, JIntellitype.MOD_ALT, (int) 'B');
 			JIntellitype.getInstance().registerHotKey(2, JIntellitype.MOD_ALT, (int) 'N');
+			
 			JIntellitype.getInstance().addHotKeyListener(new HotkeyListener() {
 	            @Override
 	            public void onHotKey(int combination) {
+	            	
+	            	//if "Alt-B" is pressed, then minimize or maximize the window
 	                if (combination == 1)
 						showOrHideWindow();
-	                
-	                if(combination == 2){
+	           
+                    //if "Alt-N" is pressed, then make everything except the
+                    //commandTextField invisible
+                    if(combination == 2){
 	                	if (window.isVisible()) {
 	                		hideWindowExceptCommandEntry();
 	                	}
+
 	                
 	                
 	                }
@@ -786,26 +815,27 @@ public class UserInterface extends JFrame {
 	private class CommandEntryTextFieldActionListener implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent evt) {
-			//This is for actions and stuffs, sending the action
-			//(I think for this is when typing (to guess the input)
-			// and for pressing enter then send the text to Parser)
+			
 			String commandString = commandEntryTextField.getText();
+			//for the case where user exits ToDoLog
 			if (commandString.equalsIgnoreCase("exit")) {
 				window.dispatchEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSING));
 			}
-		
-//			Controller.acceptUserCommand(commandString);	    
-//			commandEntryTextField.setText("");
-//			toDoListText.setText(Controller.getOutput());
-//			dynamicHelpText.setText(Controller.getFeedBack());
-			//PreviousCommand.addInput(commandString);
+			
+			//this is where ToDoLog takes in the user's value
 			Controller.acceptUserCommand(commandString);
 			commandEntryTextField.setText("");
+			
+			//feedback is sent to the dynamicHelpText to assist the user in using ToDoLog
 			dynamicHelpText.setText(Controller.getFeedback());	
 			//TODO Seperate 2 lists
 			toDoListItems = Controller.getCurrentView();
 			floatingItems = Controller.getFloatingTasksList();
+			
+			//to inform the user which sets of tasks ToDoLog will be displaying
 			toDoTaskLabel.setText(Controller.getViewOrSearchType());
+			
+			//constantly changes the table model and updates the changes
 			toDoTasksTableModel.setTableData(toDoListItems);
 			toDoTasksTableModel.fireTableDataChanged();
 			floatingTasksTableModel.setTableData(floatingItems);
@@ -852,6 +882,9 @@ public class UserInterface extends JFrame {
 		}
 		
 	}
+	
+	//this method highlights the table which is in focus by the user. the table focused on
+	// has a yellow border surrounding it
 	private void setFocusTable(int tableIndex) {
 		Border paddingBorder = BorderFactory.createEmptyBorder(10,10,10,10);
 		Border grayBorder = BorderFactory.createMatteBorder(3, 3, 0 ,3, Color.GRAY);
@@ -963,6 +996,9 @@ public class UserInterface extends JFrame {
 		@Override
 		public void keyPressed(KeyEvent e) {
 			int keyCode = e.getKeyCode();
+			
+			//press the pageup and pagedown buttons to look through the pages of
+			//the user's tasks
 			if ((keyCode == KeyEvent.VK_PAGE_UP) || (keyCode == KeyEvent.VK_F9)){
 				((ToDoLogTableModel) focusTable.getModel()).pageUp();
 			}
@@ -970,6 +1006,7 @@ public class UserInterface extends JFrame {
 				((ToDoLogTableModel) focusTable.getModel()).pageDown();
 			}
 			
+			//press the arrow keys to look through past user inputs
 			if (keyCode == KeyEvent.VK_UP){
 				try {
 					commandEntryTextField.setText(Controller.getInput().getBackwards());
@@ -990,6 +1027,7 @@ public class UserInterface extends JFrame {
 				}
 			}
 			
+			//press tab to switch focus between the two tables
 			if ((keyCode == KeyEvent.VK_TAB)) {
 				toggleFocusTable();
 				
@@ -1006,6 +1044,9 @@ public class UserInterface extends JFrame {
 
 		}
 	}
+	
+	//the two mouseListener classes below enable the user to drag ToDoLog around 
+	//the computer screen
 	private class ScreenDraggingMouseListener implements MouseListener {
 	
 			@Override
@@ -1047,6 +1088,10 @@ public class UserInterface extends JFrame {
         	
         }
 	}
+	
+	//listeners added to the minimize button and the close button to enable
+	//functions such as minimize and exit respectively, also the button will change
+	//its color when the mouse goes over it
 	private class MinimizeButtonMouseListener implements MouseListener {
 
 		@Override
@@ -1122,6 +1167,7 @@ public class UserInterface extends JFrame {
 
 	}
 	
+	// a pop-up to tell the user that ToDoLog has been minimized
 	private class ToDoLogWindowListener implements WindowListener{
 		public void windowActivated(WindowEvent e) {
 	
@@ -1180,11 +1226,8 @@ public class UserInterface extends JFrame {
 		Insets floatingTasksTableInsets = new Insets(0,10,0,0);
 		Insets commandEntryTextFieldInsets = new Insets(10,25,5,25);
 		Insets dynamicHelpTextInsets = new Insets(10,25,10,20);
-		Insets legendInsets = new Insets(0,0,0,10);
 		Insets toDoTableLabelInsets= new Insets(0,0,0,205);
 		Insets floatingTasksTableLabelInsets= new Insets(0,10,0,60);
-		//Insets buttonInsets = new Insets(10,0,0,20);
-		
 		if(panelParameters == CLOCK_PARAMETERS){
 			parameters = new GridBagConstraints(1,0,1,1,0.1,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,clockInsets,0,0);
 			return parameters;
@@ -1222,16 +1265,6 @@ public class UserInterface extends JFrame {
 			return parameters;
 		}
 		
-		else if(panelParameters == LEGEND_PARAMETERS){
-			parameters = new GridBagConstraints(2,1,1,1,0.0,0.1,GridBagConstraints.EAST,GridBagConstraints.BOTH,legendInsets,0,0);
-			return parameters;
-		}
-		
-		/*else if(panelParameters == BUTTON_PARAMETERS){
-			parameters = new GridBagConstraints(5,1,1,1,0.0,0.1,GridBagConstraints.EAST,GridBagConstraints.BOTH,buttonInsets,0,0);
-			return parameters;
-		}*/
-		
 		else if(panelParameters == TODOTABLE_PARAMETERS){
 			parameters = new GridBagConstraints(0,1,1,1,0.0,0.0,GridBagConstraints.WEST,GridBagConstraints.BOTH,toDoTableInsets,0,0);
 			return parameters;
@@ -1251,8 +1284,7 @@ public class UserInterface extends JFrame {
 		
 	} 
 	
-	/*	convert linked lists into data for the table, go find out how to
-		dynamic help text will also be 
+	/*	adjust and fix the width of the columns of the toDoTaskTable
 	 */	
 	private void adjustToDoTaskTableColumns(JTable toDoListTable){
 		TableColumn tableColumn = null;
@@ -1293,6 +1325,7 @@ public class UserInterface extends JFrame {
 		}
 	}
 	
+	//adjust the width of the floatingTaskTable's columns
 	private void adjustFloatingTaskTableColumns(JTable floatingListTable){
 		TableColumn tableColumn = null;
 		
@@ -1340,6 +1373,7 @@ public class UserInterface extends JFrame {
 		}
 	}
 	
+	//a renderer to change the color of the rows of the table to show different priorities
 	private void changeToDoTableColors(JTable toDoListTable, DefaultTableCellRenderer renderer){
 		toDoListTable.getColumnModel().getColumn(0).setCellRenderer(renderer);
 		toDoListTable.getColumnModel().getColumn(1).setCellRenderer(renderer);
@@ -1390,9 +1424,8 @@ public class UserInterface extends JFrame {
 			
 			invisibility = true;
 			
-		}
-
-		else{
+		}else{
+                //make everything reappear with the same hotkey
 			commandEntryTextField.setBorder(new LineBorder(new Color(34,167,240),2,true));
 			backgroundLabel.setIcon(new ImageIcon(backgroundImage));
 			iconPanel.setIcon(new ImageIcon(iconUrl));
