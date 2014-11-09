@@ -166,7 +166,7 @@ public class Parser {
 			return command;
 		}
 	}
-	
+
 	public static Task createTask(String userInput) throws Exception{
 		String restOfTheString = getTheRestOfTheString(userInput);
 		if (restOfTheString == null) {
@@ -412,25 +412,6 @@ public class Parser {
 					return (TaskType.RECURRING);
 				} 		
 			}
-
-			for (int i=0; i<=messageArray.length-1; i++) {
-				if ((messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING) 
-						&& validKeyWord(messageArray, KEYWORD_DAY_STARTING, i))
-					|| (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING_2) 
-						&& validKeyWord(messageArray, KEYWORD_DAY_STARTING_2, i))
-					|| (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING)
-						&& validKeyWord(messageArray, KEYWORD_DAY_ENDING, i))
-					|| (messageArray[i].equalsIgnoreCase(KEYWORD_DEADLINE)
-						&& validKeyWord(messageArray, KEYWORD_DEADLINE, i))
-					|| (messageArray[i].equalsIgnoreCase(KEYWORD_RECURRING)
-						&& validKeyWord(messageArray, KEYWORD_RECURRING, i))
-					|| (messageArray[i].equalsIgnoreCase(KEYWORD_AT)
-						&& validKeyWord(messageArray, KEYWORD_AT, i))
-					|| (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING)
-						&& validKeyWord(messageArray, KEYWORD_DAY_STARTING, i))) {
-					return (TaskType.FLOATING);
-				} 
-			}
 		}
 		return (TaskType.FLOATING);
 	}
@@ -552,7 +533,7 @@ public class Parser {
 
 	private static boolean isPersonKeywod(String string) {
 		return string.equalsIgnoreCase(KEYWORD_WITH);
-	
+
 	}
 
 	public static String parseTaskVenue(String parameter) {
@@ -620,13 +601,13 @@ public class Parser {
 
 	private static boolean isKeyWord(String string) {
 		return string.equalsIgnoreCase(KEYWORD_DAY_STARTING)
-	    || string.equalsIgnoreCase(KEYWORD_DAY_STARTING_2)
-		|| string.equalsIgnoreCase(KEYWORD_DAY_ENDING)
-		|| string.equalsIgnoreCase(KEYWORD_DEADLINE)
-		|| string.equalsIgnoreCase(KEYWORD_RECURRING)
-		|| string.equalsIgnoreCase(KEYWORD_WITH)
-		|| string.equalsIgnoreCase(KEYWORD_AT)
-		|| string.equalsIgnoreCase(KEYWORD_IN);
+				|| string.equalsIgnoreCase(KEYWORD_DAY_STARTING_2)
+				|| string.equalsIgnoreCase(KEYWORD_DAY_ENDING)
+				|| string.equalsIgnoreCase(KEYWORD_DEADLINE)
+				|| string.equalsIgnoreCase(KEYWORD_RECURRING)
+				|| string.equalsIgnoreCase(KEYWORD_WITH)
+				|| string.equalsIgnoreCase(KEYWORD_AT)
+				|| string.equalsIgnoreCase(KEYWORD_IN);
 	}
 
 	private static boolean isVenueKeyword(String string) {
