@@ -8,7 +8,7 @@ public class CommandUndo implements Command {
 	private Command _toBeUndone;
 	private History _history;
 	
-	private static final String FEEDBACK_IVALID_UNDO = "Cannot undo the undo";
+	private static final String FEEDBACK_INVALID_UNDO = "Cannot undo the undo";
 	
 	public CommandUndo(Command toBeUndone) {
 		_toBeUndone = toBeUndone;
@@ -27,7 +27,7 @@ public class CommandUndo implements Command {
 
 	@Override
 	public String undo() {
-		return FEEDBACK_IVALID_UNDO;
+		return FEEDBACK_INVALID_UNDO;
 	}
 	
 	@Override
