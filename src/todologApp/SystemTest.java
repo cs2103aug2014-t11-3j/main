@@ -14,12 +14,8 @@ public class SystemTest {
 	}
 	
 	@Test
-	public void testPerformance() {
-		fail("Not yet implemented");
-	}
-	@Test
 	public void testScalability() {
-		Controller.init("test.xml");
+		Controller.init();
 		//DateTime now = new DateTime();
 		for (int i = 0; i<300; i++) {
 			Controller.acceptUserCommand(createRandomFloatingTaskString());
@@ -40,11 +36,11 @@ public class SystemTest {
 	private String createRandomTimedTaskString() {
 		//TODO
 		String name = createRandomString();
-		return "add "+name + "by tomorrow";
+		return "add "+name + " by tomorrow";
 	}
 	private String createRandomDeadlineTaskString() {
 		String name = createRandomString();
-		return "add "+name + "on sunday";
+		return "add "+name + " on sunday";
 	}
 	private String createRandomString() {
 		char[] chars = "abcdefghijklmnopqrstuvwxyz01123456789".toCharArray();

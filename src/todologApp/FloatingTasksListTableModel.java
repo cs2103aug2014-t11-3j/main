@@ -10,7 +10,6 @@ import javax.swing.border.*;*/
 import javax.swing.table.*;
 
 import java.util.*;
-import java.lang.Object;
 
 public class FloatingTasksListTableModel extends AbstractTableModel implements ToDoLogTableModel{
 	
@@ -23,7 +22,7 @@ public class FloatingTasksListTableModel extends AbstractTableModel implements T
 	 * 
 	 */
 	
-	private final static String[] COLUMNS = {"No.","Name","Time","Person / Venue","Done","<hidden>","<hidden>"};
+	private final static String[] COLUMNS = {"  No.","Name","Time","Person / Venue","Done","<hidden>","<hidden>"};
 	private LinkedList<Task> tableData;
 	private final static int PAGE_SIZE = 16;
 	private static final int NOT_DEADLINE = Integer.MIN_VALUE;
@@ -76,7 +75,7 @@ public class FloatingTasksListTableModel extends AbstractTableModel implements T
 		switch(col){
 		
 		case 0:
-			return actualRow+1+Controller.getNumberOfScheduledTasks();
+			return " "+(actualRow+1+Controller.getNumberOfScheduledTasks());
 		
 		case 1: 
 			return task.getTaskName();
