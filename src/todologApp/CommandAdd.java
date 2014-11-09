@@ -8,11 +8,11 @@ public class CommandAdd implements Command {
 	private DBStorage _storage;
 	private boolean _validity;
 	
-	private static final String FEEDBACK_INVALID_DETAILS="Please enter the task details";
-	private static final String FEEDBACK_INVALID_STORAGE="Cannot store the list to ToDoLog";
-	private static final String FEEDBACK_VALID_INPUT="Added %1$s to ToDoLog";
-	private static final String FEEDBACK_VALID_UNDO="Undone adding %1$s";
-	private static final String FEEDBACK_INVALID_UNDO="Cannot undo adding %1$s";
+	private static final String FEEDBACK_INVALID_DETAILS = "Please enter the task details";
+	private static final String FEEDBACK_INVALID_STORAGE = "Cannot store the list to ToDoLog";
+	private static final String FEEDBACK_VALID_INPUT = "Added %1$s to ToDoLog";
+	private static final String FEEDBACK_VALID_UNDO = "Undone adding %1$s";
+	private static final String FEEDBACK_INVALID_UNDO = "Cannot undo adding %1$s";
 	
 	
 	public CommandAdd(Task task) {
@@ -23,7 +23,8 @@ public class CommandAdd implements Command {
 		return _task;
 	}
 	
-	public String execute(){
+	@Override
+	public String execute() {
 		
 		String feedback;
 		LinkedList <Task> storageList = new LinkedList<Task>();
@@ -45,14 +46,13 @@ public class CommandAdd implements Command {
 			_validity = false;
 			return feedback;
 		}
-		
 		feedback = String.format (FEEDBACK_VALID_INPUT, _task.getTaskName());
 		_validity=true;
 		return feedback;
 	}
 	
 	
-	public void sortByDate(LinkedList<Task> toSortList){
+	public void sortByDate(LinkedList<Task> toSortList) {
 		
 	    if (_task.getTaskType() == TaskType.FLOATING) {
 	    	toSortList.add(_task);
@@ -104,6 +104,7 @@ public class CommandAdd implements Command {
 		
 	}
 	
+	@Override
 	public String undo() {
 		String feedback;
 		LinkedList <Task> storageList;
@@ -144,6 +145,7 @@ public class CommandAdd implements Command {
 		return feedback;
 	}
 	
+	@Override
 	public boolean isUndoable(){
 		return _validity;
 	}

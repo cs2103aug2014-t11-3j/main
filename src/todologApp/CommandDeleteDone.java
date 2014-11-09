@@ -13,16 +13,14 @@ import java.util.LinkedList;
 		private static final String FEEDBACK_VALID_DELETE_DONE = "Deleted completed tasks";
 		private static final String FEEDBACK_VALID_UNDO = "Undone the delete done command";
 
-		public CommandDeleteDone() {
-		}
-
+		@Override
 		public String execute() {
 			String feedback;
 			_storage = Controller.getDBStorage();
 			_storageList = _storage.load();
 			_undoList = new LinkedList <Task> (_storage.load());
 			
-				for ( int i=_storageList.size()-1; i >= 0; i-- ){
+				for ( int i=_storageList.size()-1; i >= 0; i-- ) {
 					if (_storageList.get(i).getTaskStatus() == true ) {
 						_storageList.remove(i);
 					}
@@ -50,6 +48,7 @@ import java.util.LinkedList;
 			return feedback;
 		}
 
+		@Override
 		public String undo() {
 			String feedback;
 			try {
@@ -62,7 +61,8 @@ import java.util.LinkedList;
 			return feedback;
 		}
 		
-		public boolean isUndoable(){
+		@Override
+		public boolean isUndoable() {
 			return _validity;
 		}
 

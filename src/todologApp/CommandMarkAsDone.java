@@ -9,128 +9,146 @@ public class CommandMarkAsDone implements Command {
 	private int _index;
 	private LinkedList<Task> _displayList;
 	private LinkedList<Task> _taskList;
-	private boolean validity;
+	private boolean _validity;
+	
+	private static final int INVALID_INDEX = -1;
+	private static final int CORRECTION_INDEX = 1;
+	
+	private static final String FEEDBACK_VALID_MARK_AS_DONE = "%1$s is mark as completed";
+	private static final String FEEDBACK_VALID_MARK_AS_NOT_DONE = "%1$s is mark as not completed";
+	private static final String FEEDBACK_INVALID_STORAGE = "Cannot store the list to ToDoLog";
+	private static final String FEEDBACK_INVALID_TASK = "Invalid task number. Cannot mark.";
+	private static final String FEEDBACK_INVALID_DETAILS = "Please specify the task to be marked.";
+	
+	
+	
 	public CommandMarkAsDone() {
-		_index = -1;
+		_index = INVALID_INDEX;
+		_storage = Controller.getDBStorage();
 	}
+	
 	public CommandMarkAsDone(int index) {
-		_index = index - 1;
+		_index = index - CORRECTION_INDEX;
+		_storage = Controller.getDBStorage();
 	}
 
+	public Task getMarkedTask() {
+		return _task;
+	}
+	
+	@Override 
 	public String execute() {
 		String feedback;
-		_storage = Controller.getDBStorage();
 		_taskList = _storage.load();
-		_displayList=Controller.getDisplayList();
+		_displayList = Controller.getDisplayList();
+		 
 		try {
 			_task = _displayList.get(_index);
 			_displayList.get(_index).toggleTaskStatus();
-			Controller.setFocusTask(_task); // set focus task to change UI's page
+			// set focus task to change UI's page
+			Controller.setFocusTask(_task); 
 			if (_task.getTaskStatus()) {
-				feedback = _task.getTaskName() + " is mark as completed";
-				validity=true;
+				feedback = String.format(FEEDBACK_VALID_MARK_AS_DONE , _task.getTaskName());
+				_validity = true;
 			} else {
-				feedback = _task.getTaskName() + " is mark as not completed";
-				validity=true;
+				feedback = String.format(FEEDBACK_VALID_MARK_AS_NOT_DONE , _task.getTaskName());
+				_validity = true;
 			}
-		} catch (IndexOutOfBoundsException ioobe) {
-			feedback = "Invalid task number. Cannot mark.";
-			validity=false;
+		} catch ( IndexOutOfBoundsException ioobe) {
+			feedback = FEEDBACK_INVALID_TASK;
+			_validity = false;
 		}
 		sortDisplay(_task);
 		try {
 			_storage.store(_taskList);
-		} catch (IOException e) {
-			feedback="Cannot store the list to ToDoLog";
-			validity=false;	
+		} catch ( IOException e) {
+			feedback = FEEDBACK_INVALID_STORAGE;
+			_validity = false;	
 		}
-		
-		
 		return feedback;
 	}
+	
 	public String fakeExecute() {
-		String feedback="";
-		_storage = Controller.getDBStorage();
+		String feedback = "";
 		_taskList = _storage.load();
-		_displayList=Controller.getDisplayList();
-		if (_index == -1) {
-			validity = false;
-			return "Please specify the task to be marked."; 
+		_displayList = Controller.getDisplayList();
+		if (_index == INVALID_INDEX) {
+			_validity = false;
+			return FEEDBACK_INVALID_DETAILS;
 		} else {
 			try {
 				_task = _displayList.get(_index);
-				Controller.setFocusTask(_task); // set focus task to change UI's page
+				// set focus task to change UI's page
+				Controller.setFocusTask(_task); 
 				if (_task.getTaskStatus()) {
-					feedback = _task.getTaskName() + " is mark as completed";
-					validity=true;
+					feedback = String.format(FEEDBACK_VALID_MARK_AS_DONE, _task.getTaskName());
+					_validity = true;
 				} else {
-					feedback = _task.getTaskName() + " is mark as not completed";
-					validity=true;
+					feedback = String.format(FEEDBACK_VALID_MARK_AS_NOT_DONE, _task.getTaskName());
+					_validity = true;
 				}
 			} catch (IndexOutOfBoundsException ioobe ) {
-				validity = false;
+				_validity = false;
 				Controller.setFocusTask(_displayList.getLast());
-				return "Item number "+ (_index+1) +" does not exist";
+				return FEEDBACK_INVALID_TASK;
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 		return feedback;
 	}
-	public void sortDisplay(Task task){
-		if(_task.getTaskStatus()==true){
+	
+	public void sortDisplay(Task task) {
+		if (_task.getTaskStatus() == true ) {
 			_taskList.remove(task);
 			_taskList.addLast(task);
-		}
-		else{
-			 if(_task.getTaskType() == TaskType.FLOATING) {
+		} else {
+			 if (_task.getTaskType() == TaskType.FLOATING) {
 				 	_taskList.remove(_task);
 			    	_taskList.add(_task);
 			    	Controller.setFocusTask(_task); // set focus task to change UI's page
 			    } else {
-		    		sortList(_taskList);
-		    		
+		    		sortList(_taskList);	
 			    }
-			
 		}
 	}
-	public void sortList(LinkedList<Task> newList){
+	
+	public void sortList(LinkedList <Task> newList) {
 		boolean isAdded = false;
-		for (int i=0 ; i<newList.size();i++) {
+		for ( int i=0; i < newList.size(); i++ ) {
 			Task curr = newList.get(i);
 			if (curr.getTaskType() == TaskType.FLOATING) {
 				newList.remove(_task);
-				newList.add(i,_task);
+				newList.add(i, _task);
 				Controller.setFocusTask(_task); // set focus task to change UI's page
-				isAdded=true;
+				isAdded = true;
 				break;
 			} else {
-    			if (curr.getEndDateTime().compareTo(_task.getEndDateTime()) >0) {
+    			if (curr.getEndDateTime().compareTo(_task.getEndDateTime()) > 0) {
     				newList.remove(_task);
     				newList.add(i,_task);
-    				Controller.setFocusTask(_task); // set focus task to change UI's page
-    				isAdded=true;
+    				// set focus task to change UI's page
+    				Controller.setFocusTask(_task); 
+    				isAdded = true;
     				break;
     			}
 			}	
 		}
-		if (!isAdded) {
+		if ( !isAdded) {
 			newList.remove(_task);
 			newList.add(_task);
 		}
 	}
+	
+	@Override
 	public String undo() {
 		_displayList=Controller.getDisplayList();
-		
-		CommandMarkAsDone one= new CommandMarkAsDone(_displayList.indexOf(_task)+1);
-		
-		return one.execute();
+		CommandMarkAsDone undoMarkAsDone = new CommandMarkAsDone(_displayList.indexOf(_task) + CORRECTION_INDEX);
+		return undoMarkAsDone.execute();
 	}
-	public boolean isUndoable(){
-		return validity;
+	
+	@Override
+	public boolean isUndoable() {
+		return _validity;
 	}
-	public Task getMarkedTask() {
-		return _task;
-	}
-
 }
