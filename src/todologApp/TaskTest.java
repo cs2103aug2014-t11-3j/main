@@ -224,6 +224,161 @@ public class TaskTest {
 			e.printStackTrace();
 		}
 		
+		//To test for timed task
+		try {
+			task = new Task ("exam 1 from thur at 1900 to 2000");
+			assertEquals ("output should be exam 1", "exam 1", task.getTaskName());
+			assertEquals ("output should be 13", 13, task.getStartDate());
+			assertEquals ("output should be 13", 1900, task.getStartTime());
+			assertEquals ("output should be 13", 13, task.getEndDate());
+			assertEquals ("output should be 2000", 2000, task.getEndTime());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			task = new Task ("exam 2 from thur at 2000 to fri at 2100");
+			assertEquals ("output should be exam 2", "exam 2", task.getTaskName());
+			assertEquals ("output should be 13", 13, task.getStartDate());
+			assertEquals ("output should be 2000", 2000, task.getStartTime());
+			assertEquals ("output should be 14", 14, task.getEndDate());
+			assertEquals ("output should be 2100", 2100, task.getEndTime());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			task = new Task ("exam 3 from friday to sat at 1800");
+			assertEquals ("output should be exam 3", "exam 3", task.getTaskName());
+			assertEquals ("output should be 14", 14, task.getStartDate());
+			assertEquals ("output should be 0000", 0000, task.getStartTime());
+			assertEquals ("output should be 15", 15, task.getEndDate());
+			assertEquals ("output should be 1800", 1800, task.getEndTime());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			task = new Task ("exam 4 on thursday at 1700 to sunday");
+			assertEquals ("output should be exam 4", "exam 4", task.getTaskName());
+			assertEquals ("output should be 13", 13, task.getStartDate());
+			assertEquals ("output should be 1700", 1700, task.getStartTime());
+			assertEquals ("output should be 16", 16, task.getEndDate());
+			assertEquals ("output should be 2359", 2359, task.getEndTime());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			task = new Task ("exam 5 from thursday at -1 to friday at 1000");
+			assertEquals ("output should be exam 5", "exam 5", task.getTaskName());
+			assertEquals ("output should be 13", 13, task.getStartDate());
+			assertEquals ("output should be 0000", 0000, task.getStartTime());
+			assertEquals ("output should be 14", 14, task.getEndDate());
+			assertEquals ("output should be 1000", 1000, task.getEndTime());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			task = new Task ("exam 6 from thursday at 2430 to friday at 1000");
+			assertEquals ("output should be exam 6", "exam 6", task.getTaskName());
+			assertEquals ("output should be 13", 13, task.getStartDate());
+			assertEquals ("output should be 0000", 0000, task.getStartTime());
+			assertEquals ("output should be 14", 14, task.getEndDate());
+			assertEquals ("output should be 1000", 1000, task.getEndTime());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			task = new Task ("exam 7 from thursday at 1100 to friday at -1");
+			assertEquals ("output should be exam 7", "exam 7", task.getTaskName());
+			assertEquals ("output should be 13", 13, task.getStartDate());
+			assertEquals ("output should be 1100", 1100, task.getStartTime());
+			assertEquals ("output should be 14", 14, task.getEndDate());
+			assertEquals ("output should be 2359", 2359, task.getEndTime());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			task = new Task ("exam 8 from thursday at 1100 to friday at 2430");
+			assertEquals ("output should be exam 8", "exam 8", task.getTaskName());
+			assertEquals ("output should be 13", 13, task.getStartDate());
+			assertEquals ("output should be 1100", 1100, task.getStartTime());
+			assertEquals ("output should be 14", 14, task.getEndDate());
+			assertEquals ("output should be 2359", 2359, task.getEndTime());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			task = new Task ("exam 9 from 121114 at 1600 to 131114 at 1700");
+			assertEquals ("output should be exam 9", "exam 9", task.getTaskName());
+			assertEquals ("output should be 12", 12, task.getStartDate());
+			assertEquals ("output should be 1600", 1600, task.getStartTime());
+			assertEquals ("output should be 13", 13, task.getEndDate());
+			assertEquals ("output should be 1700", 1700, task.getEndTime());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			task = new Task ("exam 10 from 121114 at -1 to 131114 at 1700");
+			assertEquals ("output should be exam 10", "exam 10", task.getTaskName());
+			assertEquals ("output should be 12", 12, task.getStartDate());
+			assertEquals ("output should be 0000", 0000, task.getStartTime());
+			assertEquals ("output should be 13", 13, task.getEndDate());
+			assertEquals ("output should be 1700", 1700, task.getEndTime());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			task = new Task ("exam 11 from 121114 at 2430 to 131114 at 1700");
+			assertEquals ("output should be exam 11", "exam 11", task.getTaskName());
+			assertEquals ("output should be 12", 12, task.getStartDate());
+			assertEquals ("output should be 0000", 0000, task.getStartTime());
+			assertEquals ("output should be 13", 13, task.getEndDate());
+			assertEquals ("output should be 1700", 1700, task.getEndTime());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			task = new Task ("exam 12 from 121114 at 0900 to 131114 at -1");
+			assertEquals ("output should be exam 12", "exam 12", task.getTaskName());
+			assertEquals ("output should be 12", 12, task.getStartDate());
+			assertEquals ("output should be 0900", 900, task.getStartTime());
+			assertEquals ("output should be 13", 13, task.getEndDate());
+			assertEquals ("output should be 2359", 2359, task.getEndTime());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			task = new Task ("exam 13 from 121114 at 0900 to 131114 at 2430");
+			assertEquals ("output should be exam 13", "exam 13", task.getTaskName());
+			assertEquals ("output should be 12", 12, task.getStartDate());
+			assertEquals ("output should be 0900", 900, task.getStartTime());
+			assertEquals ("output should be 13", 13, task.getEndDate());
+			assertEquals ("output should be 2359", 2359, task.getEndTime());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			task = new Task ("exam 14 from 131114 to 141114");
+			assertEquals ("output should be exam 14", "exam 14", task.getTaskName());
+			assertEquals ("output should be 13", 13, task.getStartDate());
+			assertEquals ("output should be 0000", 0000, task.getStartTime());
+			assertEquals ("output should be 14", 14, task.getEndDate());
+			assertEquals ("output should be 2359", 2359, task.getEndTime());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		//To test for person
 		try {
 			task = new Task ("group work 1 with teammate at soc");
