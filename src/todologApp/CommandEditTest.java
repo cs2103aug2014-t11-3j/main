@@ -65,7 +65,7 @@ public class CommandEditTest {
 			assertEquals("Description", "Incorrect input for edit",command11.execute());
 		}
 		
-		Controller.acceptUserCommand("edit 1 venue SOC");
+		Controller.acceptUserCommand("edit 4 venue SOC");
 		Command command12 = Controller.getLatestCommand();
 		if(displayList.get(0).getTaskType() == TaskType.TIMED || displayList.get(0).getTaskType() == TaskType.DEADLINE ){
 			assertEquals("Description", "Edited venue of the task.",command12.execute());
@@ -81,7 +81,7 @@ public class CommandEditTest {
 			assertEquals("Description", "Incorrect input for edit",command13.execute());
 		}
 		
-		Controller.acceptUserCommand("edit 1 end date 121214");
+		Controller.acceptUserCommand("edit 4 end date 121214");
 		Command command14 = Controller.getLatestCommand();
 		if(displayList.get(0).getTaskType() == TaskType.TIMED || displayList.get(0).getTaskType() == TaskType.DEADLINE ){
 			assertEquals("Description", "Edited end date of the task.",command14.execute());
@@ -89,7 +89,7 @@ public class CommandEditTest {
 			assertEquals("Description", "Incorrect input for edit",command14.execute());
 		}
 		
-		Controller.acceptUserCommand("edit 1 person Linh");
+		Controller.acceptUserCommand("edit 4 person Linh");
 		Command command15 = Controller.getLatestCommand();
 		if(displayList.get(0).getTaskType() == TaskType.TIMED || displayList.get(0).getTaskType() == TaskType.DEADLINE ){
 			assertEquals("Description", "Edited person of the task.",command15.execute());
@@ -113,7 +113,7 @@ public class CommandEditTest {
 			assertEquals("Description", "Incorrect input for edit",command17.execute());
 		}
 		
-		Controller.acceptUserCommand("edit 1 place R5 lounge");
+		Controller.acceptUserCommand("edit 4 place R5 lounge");
 		Command command18 = Controller.getLatestCommand();
 		if(displayList.get(0).getTaskType() == TaskType.TIMED || displayList.get(0).getTaskType() == TaskType.DEADLINE ){
 			assertEquals("Description", "Edited venue of the task.",command18.execute());

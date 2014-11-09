@@ -104,7 +104,7 @@ public class Parser {
 			} else if (firstWord.equalsIgnoreCase("done")) {
 				String restOfTheString = getTheRestOfTheString(userCommand);
 				if (restOfTheString == null) {
-					throw new Exception(HELP_TEXT_DONE);
+					return new CommandMarkAsDone();
 				}
 				restOfTheString = restOfTheString.trim();
 				int index = Integer.valueOf(restOfTheString);

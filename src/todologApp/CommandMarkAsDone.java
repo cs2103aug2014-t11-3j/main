@@ -41,7 +41,7 @@ public class CommandMarkAsDone implements Command {
 		String feedback;
 		_taskList = _storage.load();
 		_displayList = Controller.getDisplayList();
-		 
+		
 		try {
 			_task = _displayList.get(_index);
 			_displayList.get(_index).toggleTaskStatus();
@@ -55,15 +55,16 @@ public class CommandMarkAsDone implements Command {
 				_validity = true;
 			}
 		} catch ( IndexOutOfBoundsException ioobe) {
-			feedback = FEEDBACK_INVALID_TASK;
 			_validity = false;
+			return FEEDBACK_INVALID_TASK;	
 		}
 		sortDisplay(_task);
 		try {
 			_storage.store(_taskList);
 		} catch ( IOException e) {
-			feedback = FEEDBACK_INVALID_STORAGE;
 			_validity = false;	
+			return FEEDBACK_INVALID_STORAGE;
+			
 		}
 		return feedback;
 	}
