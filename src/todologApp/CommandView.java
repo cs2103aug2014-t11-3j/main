@@ -153,7 +153,7 @@ public class CommandView implements Command {
 			feedback="Displaying tasks for "+ _viewType;
 		}
 		else if(_toView.equalsIgnoreCase("all")){
-			setReturnList(_storage.load());
+			formViewList(new DateTime(0), new DateTime(9999, 12, 31, 23, 59));
 			feedback="Displaying all tasks";
 			_viewType = "All";
 			feedback="Displaying tasks for "+ _viewType;
