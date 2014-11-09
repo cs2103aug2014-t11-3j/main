@@ -389,31 +389,45 @@ public class Parser {
 		String [] messageArray = generateArray(parameter);
 		if (messageArray.length != 0) {
 			for (int i=0; i<=messageArray.length-1; i++) {
-				if ((messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING)
-						&& validKeyWord(messageArray, KEYWORD_DAY_STARTING, i))
-						|| (messageArray[i].equalsIgnoreCase(KEYWORD_DAY_STARTING_2)
-								&& validKeyWord(messageArray, KEYWORD_DAY_STARTING_2, i))
-								|| messageArray[i].equalsIgnoreCase(KEYWORD_DAY_ENDING)
-								&& validKeyWord(messageArray, KEYWORD_DAY_ENDING, i)) {
+				if (isTimedTaskKeyWord(messageArray[i], messageArray, i)) {
 					return (TaskType.TIMED);
 				}
 			}
 
 			for (int i=0; i<=messageArray.length-1; i++) {
-				if (messageArray[i].equalsIgnoreCase(KEYWORD_DEADLINE)
-						&& validKeyWord(messageArray, KEYWORD_DEADLINE, i)) {
+				if (isDeadlineTaskKeyWord(messageArray[i], messageArray, i)) {
 					return (TaskType.DEADLINE);
 				} 
 			}		
 
 			for (int i=0; i<=messageArray.length-1; i++) {
-				if (messageArray[i].equalsIgnoreCase(KEYWORD_RECURRING)
-						&& validKeyWord(messageArray, KEYWORD_RECURRING, i)) {
+				if (isRecurringTaskKeyWord(messageArray[i], messageArray, i)) {
 					return (TaskType.RECURRING);
 				} 		
 			}
 		}
 		return (TaskType.FLOATING);
+	}
+
+	private static boolean isRecurringTaskKeyWord(String string,
+			String[] messageArray, int i) {
+		return string.equalsIgnoreCase(KEYWORD_RECURRING)
+				&& validKeyWord(messageArray, KEYWORD_RECURRING, i);
+	}
+
+	private static boolean isDeadlineTaskKeyWord(String string,
+			String[] messageArray, int i) {
+		return string.equalsIgnoreCase(KEYWORD_DEADLINE)
+				&& validKeyWord(messageArray, KEYWORD_DEADLINE, i);
+	}
+
+	private static boolean isTimedTaskKeyWord(String string, String[] messageArray, int i) {
+		return (string.equalsIgnoreCase(KEYWORD_DAY_STARTING)
+					&& validKeyWord(messageArray, KEYWORD_DAY_STARTING, i))
+				|| (string.equalsIgnoreCase(KEYWORD_DAY_STARTING_2)
+						&& validKeyWord(messageArray, KEYWORD_DAY_STARTING_2, i))
+				|| string.equalsIgnoreCase(KEYWORD_DAY_ENDING)
+						&& validKeyWord(messageArray, KEYWORD_DAY_ENDING, i);
 	}
 
 	public static String parseTaskName(String parameter) throws Exception {
