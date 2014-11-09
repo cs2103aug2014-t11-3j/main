@@ -25,12 +25,26 @@ public class CustomRenderer extends DefaultTableCellRenderer {
 			colorCell(cellComponent,new Color(46, 204, 113, 30));
 		} else {
 			int duePeriod = (int) table.getValueAt(row, 5);
-			colorCell(cellComponent,new Color(231, 76, 60,computeAlpha(duePeriod)));
+			colorCell(cellComponent,computeColor(duePeriod));
 		} 
 		if ((Boolean) table.getValueAt(row, 6) == true) {
 			highlightCell(cellComponent);
 		}
 		return cellComponent;
+	}
+	private Color computeColor(int duePeriod) {
+		Color original = new Color(231, 76, 60, 240);
+		int red = original.getRed();
+		int green = original.getGreen();
+		int blue = original.getBlue();
+		if (duePeriod != NOT_DEADLINE) {
+			red = (red + 255*(duePeriod+1))/(duePeriod+2);
+			green = (green + 255*(duePeriod+1))/(duePeriod+2);
+			blue = (blue + 255*(duePeriod+1))/(duePeriod+2); 
+		} else {
+			return new Color(255, 255, 255, 220);
+		}
+		return new Color(red, green, blue, 220);
 	}
 	private void highlightCell(Component cellComponent) {
 		//Color color = Color.YELLOW;

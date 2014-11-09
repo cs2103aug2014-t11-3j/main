@@ -10,7 +10,6 @@ import javax.swing.border.*;*/
 import javax.swing.table.*;
 
 import java.util.*;
-import java.lang.Object;
 
 public class FloatingTasksListTableModel extends AbstractTableModel implements ToDoLogTableModel{
 	
