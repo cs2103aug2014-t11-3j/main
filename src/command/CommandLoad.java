@@ -9,10 +9,13 @@ public class CommandLoad implements Command {
 	
 	private static final String FEEDBACK_LOADED_FILE_NAME = "Loaded/created \" %1$s \"";
 	
+	//@Author A0118899E
 	public CommandLoad(String fileName) {
 		_oldFileName = Controller.getDBStorage().getFileStorage().getFile().getName();
 		_newFileName = fileName;
 	}
+	
+	//@Author A0118899E
 	@Override
 	public String execute() {
 		Controller.init(_newFileName);
@@ -21,6 +24,7 @@ public class CommandLoad implements Command {
 		return String.format(FEEDBACK_LOADED_FILE_NAME, _newFileName); 
 	}
 
+	//@Author A0118899E
 	@Override
 	public String undo() {
 		Controller.init(_oldFileName);
@@ -29,10 +33,10 @@ public class CommandLoad implements Command {
 		return String.format(FEEDBACK_LOADED_FILE_NAME, _oldFileName); 
 	}
 
+	//@Author A0118899E
 	@Override
 	public boolean isUndoable() {
 		assert isUndoable();
 		return true;
 	}
-
 }
