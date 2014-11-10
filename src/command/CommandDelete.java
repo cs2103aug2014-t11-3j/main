@@ -20,19 +20,22 @@ public class CommandDelete implements Command {
 	private static final String FEEDBACK_INVALID_STORAGE = "Cannot store the list to ToDoLog";
 	private static final String FEEDBACK_VALID_UNDO = "Undone the delete command";
 	
-	
+	//@Author A0118899E
 	public CommandDelete(int index) {
 		_index = index - 1;
 	}
 	
+	//@Author A0118899E
 	public CommandDelete() {
 		_index = -1;
 	}
 	
+	//@Author A0118899E
 	public Task getDeletedTask() {
 		return _task;
 	}
 	
+	//@Author A0118899E
 	@Override
 	public String execute() {
 		String feedback;
@@ -74,6 +77,7 @@ public class CommandDelete implements Command {
 		return feedback;
 	}
 	
+	//@Author A0112156U
 	public String tryExecute() { 
 		LinkedList <Task> storageList;
 		LinkedList <Task> _displayList= Controller.getScheduleList();
@@ -102,6 +106,7 @@ public class CommandDelete implements Command {
 		return String.format(FEEDBACK_VALID_DELETE, _task.getTaskName());
 	}
 	
+	//@Author A0118899E
 	@Override
 	public String undo() {
 		String feedback;
@@ -113,6 +118,7 @@ public class CommandDelete implements Command {
 		return feedback;
 	}
 	
+	//@Author A0118899E
 	@Override
 	public boolean isUndoable(){
 		assert isUndoable();
