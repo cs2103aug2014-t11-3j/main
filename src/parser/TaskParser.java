@@ -69,12 +69,14 @@ public class TaskParser {
 	private static final int TODAY = 0;
 	private static final int TOMORROW = -1;
 
+	//@author A0111608R
 	private static String[] generateArray(String parameter){
 		parameter = parameter.trim();
 		String[] array = parameter.split(SINGLE_SPACE);
 		return array;
 	}
 
+	//@author A0111608R
 	public static int parseTaskEndTime(String parameter) throws Exception {
 		String [] messageArray = generateArray(parameter);
 
@@ -134,6 +136,7 @@ public class TaskParser {
 		return 2359;
 	}
 
+	//@author A0111608R
 	public static int parseTaskStartTime(String parameter) throws Exception  {
 		String [] messageArray = generateArray(parameter);
 
@@ -162,6 +165,7 @@ public class TaskParser {
 		return 0000;
 	}
 
+	//@author A0112156U
 	public static boolean checkDateFormat(String dateInString){
 		try{
 			parseYear(dateInString);
@@ -175,6 +179,7 @@ public class TaskParser {
 		return true;
 	}
 
+	//@author A0112156U
 	public static int parseYear(String dateInString) throws Exception {
 		int _year = DateTime.now().year().get();
 		try {
@@ -193,6 +198,7 @@ public class TaskParser {
 		return _year;
 	}
 
+	//@author A0111608R
 	public static int parseDayOfMonth(String dateInString) throws Exception {
 		int month = parseMonth(dateInString);
 		int date = Integer.parseInt(dateInString);
@@ -212,6 +218,7 @@ public class TaskParser {
 
 	}
 
+	//@author A0111608R
 	public static int parseMonth(String dateInString) throws Exception {
 		int _month = 1;
 		_month = Integer.parseInt(dateInString);
@@ -222,9 +229,9 @@ public class TaskParser {
 		} else {
 			throw new Exception("Invalid Date Format");
 		}
-
 	}
 
+	//@author A0111608R
 	public static int parseDayOfWeek(String parameter) {
 		String day = parameter;
 
@@ -253,6 +260,7 @@ public class TaskParser {
 		}
 	}
 
+	//@author A0111608R
 	public static TaskType parseTaskType (String parameter) {
 		String [] messageArray = generateArray(parameter);
 		if (messageArray.length != 0) {
@@ -277,18 +285,21 @@ public class TaskParser {
 		return (TaskType.FLOATING);
 	}
 
+	//@author A0111608R
 	private static boolean isRecurringTaskKeyWord(String string,
 			String[] messageArray, int i) {
 		return string.equalsIgnoreCase(KEYWORD_RECURRING)
 				&& isValidKeyWord(messageArray, KEYWORD_RECURRING, i);
 	}
 
+	//@author A0111608R
 	private static boolean isDeadlineTaskKeyWord(String string,
 			String[] messageArray, int i) {
 		return string.equalsIgnoreCase(KEYWORD_DEADLINE)
 				&& isValidKeyWord(messageArray, KEYWORD_DEADLINE, i);
 	}
 
+	//@author A0111608R
 	private static boolean isTimedTaskKeyWord(String string, String[] messageArray, int i) {
 		return (string.equalsIgnoreCase(KEYWORD_DAY_STARTING)
 					&& isValidKeyWord(messageArray, KEYWORD_DAY_STARTING, i))
@@ -298,6 +309,7 @@ public class TaskParser {
 					&& isValidKeyWord(messageArray, KEYWORD_DAY_ENDING, i);
 	}
 
+	//@author A0111608R
 	public static String parseTaskName(String parameter) throws Exception {
 		String [] messageArray = generateArray(parameter);
 		String taskName = EMPTY_STRING;
@@ -338,6 +350,7 @@ public class TaskParser {
 		return taskName.trim();
 	}
 
+	//@author A0111608R
 	public static boolean isInteger(String s) {
 		try { 
 			Integer.parseInt(s); 
@@ -348,6 +361,7 @@ public class TaskParser {
 		return true;
 	}
 
+	//@author A0111608R
 	public static String parseTaskPerson(String parameter) {
 		String [] messageArray = generateArray(parameter);
 		String taskPerson = EMPTY_STRING;
@@ -396,60 +410,69 @@ public class TaskParser {
 		return taskPerson.trim();
 	}
 	
+	//@author A0111608R
 	private static boolean isValidKeyWordWith(String string, String[] messageArray,
 			int j) {
 		return messageArray[j].equalsIgnoreCase(KEYWORD_WITH)
 		&& isValidKeyWord(messageArray, KEYWORD_WITH, j);
 	}
 	
+	//@author A0111608R
 	private static boolean isValidKeyWordIn(String string, String[] messageArray,
 			int j) {
 		return messageArray[j].equalsIgnoreCase(KEYWORD_IN)
 		&& isValidKeyWord(messageArray, KEYWORD_IN, j);
 	}
 
+	//@author A0111608R
 	private static boolean isValidKeyWordRecurring(String string,
 			String[] messageArray, int j) {
 		return messageArray[j].equalsIgnoreCase(KEYWORD_RECURRING)
 		&& isValidKeyWord(messageArray, KEYWORD_RECURRING, j);
 	}
 
+	//@author A0111608R
 	private static boolean isValidKeyWordDeadline(String string,
 			String[] messageArray, int j) {
 		return messageArray[j].equalsIgnoreCase(KEYWORD_DEADLINE)
 		&& isValidKeyWord(messageArray, KEYWORD_DEADLINE, j);
 	}
 
+	//@author A0111608R
 	private static boolean isValidKeyWordEnding(String string,
 			String[] messageArray, int j) {
 		return string.equalsIgnoreCase(KEYWORD_DAY_ENDING)
 		&& isValidKeyWord(messageArray, KEYWORD_DAY_ENDING, j);
 	}
 
+	//@author A0111608R
 	private static boolean isValidKeyWordStart_2(String string,
 			String[] messageArray, int j) {
 		return string.equalsIgnoreCase(KEYWORD_DAY_STARTING_2)
 				&& isValidKeyWord(messageArray, KEYWORD_DAY_STARTING_2, j);
 	}
 
+	//@author A0111608R
 	private static boolean isValidKeyWordStart(String string,
 			String[] messageArray, int j) {
 		return string.equalsIgnoreCase(KEYWORD_DAY_STARTING)
 				&& isValidKeyWord(messageArray, KEYWORD_DAY_STARTING, j);
 	}
 
+	//@author A0111608R
 	private static boolean isValidKeyWordAt(String string, String[] messageArray,
 			int j) {
 		return string.equalsIgnoreCase(KEYWORD_AT)
 				&& isValidKeyWord(messageArray, KEYWORD_AT, j);
-		
 	}
 
+	//@author A0111608R
 	private static boolean isPersonKeyword(String string) {
 		return string.equalsIgnoreCase(KEYWORD_WITH);
 
 	}
 
+	//@author A0111608R
 	public static String parseTaskVenue(String parameter) {
 		String [] messageArray = generateArray(parameter);
 		String taskVenue = EMPTY_STRING;
@@ -502,17 +525,20 @@ public class TaskParser {
 		return taskVenue.trim();
 	}
 
+	//@author A0111608R
 	private static boolean isVenue_2(String string, String[] messageArray, int i) {
 		return string.equalsIgnoreCase(KEYWORD_IN)
 				&& isValidKeyWord(messageArray, KEYWORD_AT, i);
 	}
 
+	//@author A0111608R
 	private static boolean isVenue(String string, String[] messageArray, int i) {
 		return string.equalsIgnoreCase(KEYWORD_AT)
 				&& isValidKeyWord(messageArray, KEYWORD_AT, i)
 				&& !isInteger(messageArray[i+1]);
 	}
 
+	//@author A0111608R
 	private static boolean isKeyWord(String string) {
 		return string.equalsIgnoreCase(KEYWORD_DAY_STARTING)
 				|| string.equalsIgnoreCase(KEYWORD_DAY_STARTING_2)
@@ -524,11 +550,13 @@ public class TaskParser {
 				|| string.equalsIgnoreCase(KEYWORD_IN);
 	}
 
+	//@author A0111608R
 	private static boolean isVenueKeyword(String string) {
 		return (string.equalsIgnoreCase(KEYWORD_AT) 
 				|| string.equalsIgnoreCase(KEYWORD_IN));
 	}
 
+	//@author A0111608R
 	public static boolean isValidKeyWord(String [] array, String keyWord, int index) {
 		int count = 0;
 
@@ -555,6 +583,7 @@ public class TaskParser {
 		}
 	}
 
+	//@author A0112156U
 	public static DateTime parseTaskStart(String parameter) throws Exception {
 		String[] messageArray = generateArray(parameter);
 		int year = 1, month = 1, day = 1;
@@ -614,6 +643,7 @@ public class TaskParser {
 		return new DateTime(year,month,day,hour,min);
 	}
 
+	//@author A0112156U
 	public static DateTime parseTaskEnd(DateTime taskStart, String parameter) throws Exception {
 		String[] messageArray = generateArray(parameter);
 		int year = 1, month = 1, day = 1;
@@ -689,9 +719,9 @@ public class TaskParser {
 		return taskEnd;
 	}
 
+	//@author A0112156U
 	public static DateTime parseTaskEnd(String parameter) throws Exception {
 		DateTime taskStart = new DateTime(0);
 		return parseTaskEnd(taskStart, parameter);
-
 	}
 }
