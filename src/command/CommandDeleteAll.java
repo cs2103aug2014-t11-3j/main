@@ -17,6 +17,7 @@ public class CommandDeleteAll implements Command {
 	private static final String FEEDBACK_VALID_DELETE_ALL = "Deleted all tasks";
 	private static final String FEEDBACK_VALID_UNDO = "Undone the delete command";
 
+	//@Author A0118899E
 	@Override
 	public String execute() {
 		String feedback;
@@ -37,6 +38,7 @@ public class CommandDeleteAll implements Command {
 		return feedback;
 	}
 	
+	//@Author A0112156U
 	public String tryExecute() {
 		String feedback;
 		_storage = Controller.getDBStorage();
@@ -48,6 +50,7 @@ public class CommandDeleteAll implements Command {
 		return feedback;
 	}
 
+	//@Author A0118899E
 	@Override
 	public String undo() {
 		String feedback;
@@ -62,6 +65,7 @@ public class CommandDeleteAll implements Command {
 		return feedback;
 	}
 	
+	//@Author A0118899E
 	@Override
 	public boolean isUndoable() {
 		assert isUndoable();
