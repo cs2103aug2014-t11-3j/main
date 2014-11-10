@@ -27,21 +27,24 @@ public class CommandMarkAsDone implements Command {
 	private static final String FEEDBACK_INVALID_DETAILS = "Please specify the task to be marked.";
 	
 	
-	
+	//@Author A0118899E
 	public CommandMarkAsDone() {
 		_index = INVALID_INDEX;
 		_storage = Controller.getDBStorage();
 	}
 	
+	//@Author A0118899E
 	public CommandMarkAsDone(int index) {
 		_index = index - CORRECTION_INDEX;
 		_storage = Controller.getDBStorage();
 	}
 
+	//@Author A0118899E
 	public Task getMarkedTask() {
 		return _task;
 	}
 	
+	//@Author A0118899E
 	@Override 
 	public String execute() {
 		String feedback;
@@ -78,6 +81,7 @@ public class CommandMarkAsDone implements Command {
 		return feedback;
 	}
 	
+	//@Author A0112156U
 	public String tryExecute() {
 		String feedback = "";
 		_taskList = _storage.load();
@@ -111,6 +115,7 @@ public class CommandMarkAsDone implements Command {
 		return feedback;
 	}
 	
+	//@Author A0118899E
 	public void sortDisplay(Task task) {
 		if (_task.getTaskStatus() == true ) {
 			_taskList.remove(task);
@@ -128,6 +133,7 @@ public class CommandMarkAsDone implements Command {
 		}
 	}
 	
+	//@Author A0118899E
 	public void sortList(LinkedList <Task> newList) {
 		boolean isAdded = false;
 		for ( int i=0; i < newList.size(); i++ ) {
@@ -156,6 +162,7 @@ public class CommandMarkAsDone implements Command {
 		}
 	}
 	
+	//@Author A0118899E
 	@Override
 	public String undo() {
 		_displayList=Controller.getScheduleList();
@@ -163,6 +170,7 @@ public class CommandMarkAsDone implements Command {
 		return undoMarkAsDone.execute();
 	}
 	
+	//@Author A0118899E
 	@Override
 	public boolean isUndoable() {
 		assert isUndoable();
