@@ -19,6 +19,7 @@ public class HelpFrame {
 	
 	public void execute() {
 		JTextArea textArea = new JTextArea();
+		textArea.setTabSize(2);
         DefaultCaret caret1 = (DefaultCaret) textArea.getCaret();
         caret1.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
 	    textArea.setLineWrap( true );
