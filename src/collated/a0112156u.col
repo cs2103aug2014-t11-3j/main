@@ -1,0 +1,2826 @@
+//@author: a0112156u
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\Command.java
+	 */
+
+public interface Command {
+	public String execute() ;
+	public String undo();
+	public boolean isUndoable();
+}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\Command.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandAdd.java
+	 */
+
+	public String tryExecute() {
+		String feedback;
+		LinkedList <Task> storageList;
+		_storage= Controller.getDBStorage();
+		storageList = _storage.load();
+		
+		if (_task == null) {
+			_validity = false;
+			return FEEDBACK_INVALID_DETAILS;
+		}
+		
+		sortByDate(storageList);
+		feedback = String.format(FEEDBACK_VALID_INPUT, _task.getTaskName());
+		_validity=true;
+		return feedback;
+		
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandAdd.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandDelete.java
+	 */
+
+	public String tryExecute() { 
+		LinkedList <Task> storageList;
+		LinkedList <Task> _displayList= Controller.getScheduleList();
+		_storage=Controller.getDBStorage();
+		storageList=_storage.load();
+		
+		if (_index == -1) {
+			_validity = false;
+			return FEEDBACK_INVALID_FORMAT; 
+		} else {
+			assert (_index >= 0);
+			try {
+				_task = _displayList.get(_index);
+				storageList.get(storageList.indexOf(_task));
+				Controller.setFocusTask(_task);
+			} catch (IndexOutOfBoundsException ioobe ) {
+				Log.info("Task index is out of bounds");
+				_validity = false;
+				Controller.setFocusTask(_displayList.getLast());
+				return String.format(FEEDBACK_INVALID_INDEX, _index+1);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		_validity = true;
+		return String.format(FEEDBACK_VALID_DELETE, _task.getTaskName());
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandDelete.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandDeleteAll.java
+	 */
+
+	public String tryExecute() {
+		String feedback;
+		_storage = Controller.getDBStorage();
+		_storageList = _storage.load();
+		// set focus task to change UI's page
+		Controller.setFocusTask( null );
+		feedback = FEEDBACK_VALID_DELETE_ALL;
+		_validity = true;
+		return feedback;
+	}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandDeleteAll.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandDeleteDone.java
+	 */
+
+	public String tryExecute() {
+		String feedback;
+		_storage = Controller.getDBStorage();
+		_storageList = _storage.load();
+		feedback = FEEDBACK_VALID_DELETE_DONE;
+		_validity = true;
+		return feedback;
+	}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandDeleteDone.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandEdit.java
+	 */
+
+	public String tryExecute() {
+		String feedback;
+		String editedField;
+		_displayList = Controller.getScheduleList();
+		if (_index == INVALID_INDEX) {
+			return FEEDBACK_INVALID_TASK;
+		} else {
+			assert (_index >= 0);
+			try {
+				_taskExisting = _displayList.get(_index);
+				// set focus task to change UI's page
+				Controller.setFocusTask(_taskExisting); 
+			} catch (IndexOutOfBoundsException ioobe) {
+				Log.info("Task index is out of bounds");
+				Controller.setFocusTask(_displayList.getLast());
+				return String.format(FEEDBACK_INVALID_INDEX, _index+1);
+			}	
+		}
+		if (_editType == null) {
+			return FEEDBACK_INVALID_DETAILS;
+		}
+		
+		try {
+			editedField = formNewTask();
+		} catch ( Exception e1) {
+			_validity = false;
+			feedback = e1.getMessage();
+			return feedback;
+		}
+		
+		if (editedField.equals(KEYWORD_INVALID)) {
+			feedback = FEEDBACK_INVALID_INPUT;
+			_validity = false;
+		} else {
+			feedback = String.format(FEEDBACK_VALID_EDIT, editedField);
+			_validity = true;
+		}
+		return feedback;
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandEdit.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandMarkAsDone.java
+	 */
+
+	public String tryExecute() {
+		String feedback = "";
+		_taskList = _storage.load();
+		_displayList = Controller.getScheduleList();
+		if (_index == INVALID_INDEX) {
+			_validity = false;
+			return FEEDBACK_INVALID_DETAILS;
+		} else {
+			assert (_index >= 0);
+			try {
+				_task = _displayList.get(_index);
+				// set focus task to change UI's page
+				Controller.setFocusTask(_task); 
+				if (_task.getTaskStatus()) {
+					feedback = String.format(FEEDBACK_VALID_MARK_AS_DONE, _task.getTaskName());
+					_validity = true;
+				} else {
+					assert (_task.getTaskStatus() == false);
+					feedback = String.format(FEEDBACK_VALID_MARK_AS_NOT_DONE, _task.getTaskName());
+					_validity = true;
+				}
+			} catch (IndexOutOfBoundsException ioobe ) {
+				Log.info("Task index is out of bounds");
+				_validity = false;
+				Controller.setFocusTask(_displayList.getLast());
+				return FEEDBACK_INVALID_TASK;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return feedback;
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandMarkAsDone.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandNumber.java
+	 */
+
+	public String tryExecute() {
+		_displayList = Controller.getScheduleList();
+		try {
+			_task = _displayList.get(_index);
+			Controller.setFocusTask(_task);
+			return FEEDBACK_VALID_TASK;
+		} catch (IndexOutOfBoundsException ioobe) {
+			Log.info("Task index is out of bounds");
+			_task = null ;
+			return FEEDBACK_INVALID_TASK;
+		}
+	}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandNumber.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\common\Task.java
+	 */
+
+	public Task(String parameter) throws Exception{
+		_taskName = TaskParser.parseTaskName(parameter);
+		_taskType = TaskParser.parseTaskType(parameter);
+		_taskPerson = TaskParser.parseTaskPerson(parameter);
+		_taskVenue = TaskParser.parseTaskVenue(parameter);
+		_taskStart = TaskParser.parseTaskStart(parameter);
+		_taskEnd = TaskParser.parseTaskEnd(_taskStart,parameter);
+	}
+
+	public Task(TaskType floating, String name, boolean status, String person, String venue) {
+		_taskType = floating;
+		_taskName = name;
+		_taskStatus = status;
+		_taskPerson = person;
+		_taskVenue = venue;
+	}
+
+	public Task(TaskType deadline, String name, DateTime end, boolean status, String person, String venue) {
+		_taskType = deadline;
+		_taskName = name;
+		_taskEnd = end;
+		_taskStatus = status;
+		_taskPerson = person;
+		_taskVenue = venue;
+	}
+
+	public Task(TaskType timed, String name, DateTime start, DateTime end,
+			boolean status, String person, String venue) {
+		_taskType = timed;
+		_taskName = name;
+		_taskStart = start;
+		_taskEnd = end;
+		_taskStatus = status;
+		_taskPerson = person;
+		_taskVenue = venue;
+	}
+
+	public void setTaskName(String name) {
+		_taskName = name;
+	}
+	
+	public String getTaskName() {
+		return _taskName;
+	}
+	
+	public TaskType getTaskType() {
+		return _taskType;
+	}
+	
+	public String getStartDay() {
+		return _taskStartDay;
+	}
+	
+	public String getEndDay() {
+		return _taskEndDay;
+	}
+
+	public int getStartTime() {
+		return _taskStart.hourOfDay().get()*100
+				+ _taskStart.minuteOfHour().get();
+	}
+
+	public int getEndTime() {
+		return _taskEnd.hourOfDay().get()*100
+				+ _taskEnd.minuteOfHour().get();
+	}
+	
+	public int getStartDate() {
+		return _taskStart.dayOfMonth().get();
+	}
+	
+	public int getStartMonth() {
+		return _taskStart.monthOfYear().get();
+	}
+	
+	public int getStartYear() {
+		return _taskStart.year().get();
+	}
+	
+	public int getEndDate() {
+		return _taskEnd.dayOfMonth().get();
+	}
+	
+	public int getEndMonth() {
+		return _taskEnd.monthOfYear().get();
+	}
+	
+	public int getEndYear() {
+		return _taskEnd.year().get();
+	}
+	
+	public String getTaskVenue() {
+		return _taskVenue;
+	}
+	
+	public String getTaskPerson() {
+		return _taskPerson;
+	}
+
+	public boolean getTaskStatus() {
+		return _taskStatus;
+	}
+	public DateTime getStart() {
+		//return _taskStart.toString(ISODateTimeFormat.dateTime());
+		return _taskStart;
+	}
+	public DateTime getEnd() {
+		//return _taskEnd.toString(ISODateTimeFormat.dateTime());
+		return _taskEnd;
+	}
+
+	public void toggleTaskStatus() {
+		if (_taskStatus) {
+			_taskStatus = false;
+		} else {
+			_taskStatus = true;
+		}
+		
+	}
+
+	public void setStartDate(String editInfo) throws Exception{
+		int year = TaskParser.parseYear(editInfo);
+		int month = TaskParser.parseMonth(editInfo);
+		int day = TaskParser.parseDayOfMonth(editInfo);
+		int time = getStartTime();
+		int hour = time/100;
+		int min = time%100;
+		_taskStart = new DateTime(year,month,day,hour,min);
+	}
+	
+	public void setEndDate(String editInfo) throws Exception {
+		int year = TaskParser.parseYear(editInfo);
+		int month = TaskParser.parseMonth(editInfo);
+		int day = TaskParser.parseDayOfMonth(editInfo);
+		int time = getEndTime();
+		int hour = time/100;
+		int min = time%100;
+		_taskEnd = new DateTime(year,month,day,hour,min);
+	}
+	
+	public void setStartTime(String editInfo) throws Exception {
+		int year = getStartYear();
+		int month = getStartMonth();
+		int day = getStartDate();
+		int time = Integer.parseInt(editInfo);
+		int hour = time/100;
+		int min = time%100;
+		_taskStart = new DateTime(year,month,day,hour,min);
+	}
+	
+	public void setEndTime(String editInfo) throws Exception {
+		int year = getEndYear();
+		int month = getEndMonth();
+		int day = getEndDate();
+		int time =  Integer.parseInt(editInfo);
+		int hour = time/100;
+		int min = time%100;
+		_taskEnd = new DateTime(year,month,day,hour,min);
+	}
+	
+	public void setVenue(String _toBeEdited){
+		_taskVenue = _toBeEdited;
+	}
+	
+	public void setPerson(String _toBeEdited){
+		_taskPerson = _toBeEdited;
+	}
+
+	// for sorting in CommandAdd
+	public DateTime getEndDateTime() {
+		return _taskEnd;
+	}
+	
+	public DateTime getStartDateTime() {
+		return _taskStart;
+	}
+
+	public String getStartTimeStr() {
+		LocalTime time = new LocalTime(getStartTime()/100,getStartTime()%100);
+		return (DateTimeFormat.forPattern("HH:mm")).print(time);
+	}
+	public String getEndTimeStr() {
+		LocalTime time = new LocalTime(getEndTime()/100,getEndTime()%100);
+		return (DateTimeFormat.forPattern("HH:mm")).print(time);
+	}
+
+
+	public Task copy() {
+		// TODO Auto-generated method stub
+		return new Task(_taskType, _taskName, new DateTime(_taskStart), new DateTime(_taskEnd),
+				_taskStatus, _taskPerson, _taskVenue); 
+	}
+
+	public int duePeriod() {
+		if (getTaskType() == TaskType.DEADLINE) { 
+			if (getEnd().isBeforeNow()) {
+				return -1;
+			} else {
+				return (Days.daysBetween(LocalDate.now(),new LocalDate(getEnd()))).getDays();
+			}
+		} else if (getTaskType()== TaskType.TIMED){
+			if (getEnd().isBeforeNow()) {
+				return -1;
+			} else {
+				return (Days.daysBetween(LocalDate.now(),new LocalDate(getStart()))).getDays();
+			}
+		}
+	assert (getTaskType()== TaskType.FLOATING);
+	return NOT_DEADLINE;
+	}
+	
+	
+}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\common\Task.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\common\TaskType.java
+	 */
+
+public enum TaskType {
+	FLOATING, TIMED, DEADLINE, RECURRING, INVALID;
+}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\common\TaskType.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\controller\Controller.java
+	 */
+
+	public static void setStorage(DBStorage DBstorage) {
+		_dbStorage = DBstorage;
+	}
+	
+	public static DBStorage getDBStorage() {
+		return _dbStorage;
+	}
+	public static LinkedList<Task> getAllTasksInViewList() {
+		LinkedList<Task> displayTasks = new LinkedList<Task>();
+		for (Task task : _displayList) {
+			if (task.getTaskType() != TaskType.FLOATING) {
+				displayTasks.add(task);
+			}
+		}
+		return displayTasks;
+	}
+	public static LinkedList<Task> getScheduleList() {
+		return _displayList;
+	}
+	public static LinkedList<Task> getFlexibleList() {
+		LinkedList<Task> floatingTasks = new LinkedList<Task>();
+		for (Task task : _dbStorage.load()) {
+			if (task.getTaskType() == TaskType.FLOATING) {
+				floatingTasks.add(task);
+			}
+		}
+		return floatingTasks;
+	}
+	public static Task getFocusTask() {
+		return _focusTask;
+	}
+	public static void setFocusTask(Task focusTask) {
+		_focusTask = focusTask;
+	}
+	public static void setHistory(History history) {
+		_history = history;
+	}
+	public static History getHistory() {
+		return _history;
+	}
+	
+	public static void setInputHistory (InputHistory input) {
+		_input = input;
+	}
+	public static InputHistory getInput() {
+		return _input;
+	}
+	
+	public static void acceptUserCommand(String userCommand) {
+		try {
+			_input.addInput(userCommand);
+			Command command = CommandParser.createCommand(userCommand);
+			setLatestCommand(command);
+			_feedback = command.execute();
+			if (command instanceof CommandSearch) {
+				setSearchResult(command);
+			} else if (command instanceof CommandView) {
+				setNewViewMode((CommandView) command);
+			} else {
+				setViewMode(_currentViewMode);
+			}
+			if (command.isUndoable()){
+				_history.addCommand(command);
+				Log.info("Command created and added to history storage");
+			}
+			Log.info("Command executed and feedback return");
+		} catch (Exception e) {
+			_feedback = e.getMessage();
+			setLatestCommand(null);
+			Log.info("Command not created and executed with "+ e.getClass().getName() + ":"+e.getMessage());
+		}
+	}
+
+	private static void setViewMode(CommandView command) {
+		command.execute();
+		_displayList =  command.getReturnList();
+		setViewOrSearchType(command.getViewType()+" events and deadlines:");
+	}
+
+	private static void setNewViewMode(CommandView command) {
+		setFocusTask(null);
+		if (command.getViewType() != null) {
+			_currentViewMode =  command;
+			setViewMode(command);
+		}
+	}
+
+	private static void setSearchResult(Command command) {
+		_displayList = ((CommandSearch) command).getReturnList();
+		_currentSearchCriterion = (CommandSearch) command;
+		_displayList = _currentSearchCriterion.getReturnList();
+		setViewOrSearchType("Search results for \""+((CommandSearch) command).getSearchKey()+"\"");
+	}
+	
+	public static LinkedList<String> getCommandEntryHelperDetailsFromInput(String userCurrentInput) {
+		try {			
+			Command command = CommandParser.createCommand(userCurrentInput);
+			if (command instanceof CommandAdd) {
+				return ControllerFeedbackHelper.getHelperTextsForCmdAdd(command);
+			} else if (command instanceof CommandEdit) {
+				return ControllerFeedbackHelper.getHelperTextsForCmdEdit(command);
+			} else if (command instanceof CommandDelete) {
+				return ControllerFeedbackHelper.getHelperTextsForCmdDelete(command);
+			} else if (command instanceof CommandDeleteAll) {
+				return ControllerFeedbackHelper.getHelperTextsForCmdDeleteAll(command);
+			} else if (command instanceof CommandDeleteAll) {
+				return ControllerFeedbackHelper.getHelperTextsForCmdDeleteDone(command);
+			} else if (command instanceof CommandMarkAsDone) {
+				return ControllerFeedbackHelper.getHelperTextsForCmdMarkAsDone(command);
+			} else if (command instanceof CommandNumber) {
+				return ControllerFeedbackHelper.getHelperTextsForCmdNumber(command);
+			} else {
+				return new LinkedList<String>();
+			}
+		} catch (Exception e) {
+			Log.debug("Command is not complete");
+			return new LinkedList<String>();
+		}
+	}
+
+
+	public static void init() {
+		_dbStorage = new DBStorage();
+		//_textDisplay = createNewDisplay();
+		_history = new History();
+		_input = new InputHistory();
+		_feedback = FEEDBACK_START;
+		_currentViewMode = new CommandView("this week");
+		setViewMode(_currentViewMode);
+		Log.info("Initialize controller");
+	}
+	public static void init(String fileName) {
+		_dbStorage = new DBStorage(fileName);
+		_history = new History();
+		_input = new InputHistory();
+		_feedback = FEEDBACK_START;
+		_currentViewMode = new CommandView("this week");
+		setViewMode(_currentViewMode);
+	}
+
+
+	public static String getFeedback() {
+		return _feedback;
+	}
+
+	public static void resetDisplayListToAll() {
+		_displayList = _dbStorage.load();
+		
+	}
+	
+	public static int getNumberOfScheduledTasks() {
+		int numberOfScheduledTasks = 0;
+		for (Task task : _displayList) {
+			if (task.getTaskType() != TaskType.FLOATING) {
+				assert (task.getTaskType() == TaskType.TIMED || task.getTaskType() == TaskType.DEADLINE);
+				numberOfScheduledTasks++;
+			}
+		}
+		return numberOfScheduledTasks;
+	}
+
+	public static String getViewOrSearchType() {
+		return _viewOrSearchType;
+	}
+	private static void setViewOrSearchType(String text) {
+		_viewOrSearchType = text;
+	}
+
+	public static Command getLatestCommand() {
+		return latestCommand;
+	}
+
+	public static void setLatestCommand(Command latestCommand) {
+		Controller.latestCommand = latestCommand;
+	}
+}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\controller\Controller.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\controller\ControllerFeedbackHelper.java
+	 */
+
+	public static LinkedList<String> getHelperTextsForCmdNumber(Command command) {
+		((CommandNumber) command).tryExecute();
+		Task task = ((CommandNumber) command).getTask();
+		LinkedList<String> details = ControllerFeedbackHelper.createHelperTexts("number",task);
+		return details;
+	}
+
+	public static LinkedList<String> getHelperTextsForCmdMarkAsDone(
+			Command command) {
+		((CommandMarkAsDone) command).tryExecute();
+		Task task = ((CommandMarkAsDone) command).getMarkedTask();
+		LinkedList<String> details = ControllerFeedbackHelper.createHelperTexts("done",task);
+		return details;
+	}
+
+	public static LinkedList<String> getHelperTextsForCmdDeleteAll(
+			Command command) {
+		((CommandDeleteAll) command).tryExecute();
+		LinkedList<String> details = ControllerFeedbackHelper.createHelperTexts("deleteall",null);
+		return details;
+	}
+
+	public static LinkedList<String> getHelperTextsForCmdDeleteDone(
+			Command command) {
+		((CommandDeleteDone) command).tryExecute();
+		LinkedList<String> details = ControllerFeedbackHelper.createHelperTexts("deletedone",null);
+		return details;
+	}	
+	
+	public static LinkedList<String> getHelperTextsForCmdDelete(Command command) {
+		((CommandDelete) command).tryExecute();
+		Task task = ((CommandDelete) command).getDeletedTask();
+		LinkedList<String> details = ControllerFeedbackHelper.createHelperTexts("delete",task);
+		return details;
+	}
+
+	public static LinkedList<String> getHelperTextsForCmdEdit(Command command) {
+		((CommandEdit) command).tryExecute();
+		Task task = ((CommandEdit) command).getCurrentTask();
+		LinkedList<String> currentTaskDetails = ControllerFeedbackHelper.createHelperTexts("edit",task);
+		task = ((CommandEdit) command).getEditedTask();
+		LinkedList<String> newTaskDetails = ControllerFeedbackHelper.createHelperTexts("edit",task);
+		LinkedList<String> details = new LinkedList<String>(currentTaskDetails);
+		details.addAll(newTaskDetails);
+		return details;
+	}
+
+	public static LinkedList<String> getHelperTextsForCmdAdd(Command command) {
+		Task task = ((CommandAdd) command).getAddedTask();
+		LinkedList<String> details = ControllerFeedbackHelper.createHelperTexts("add",task);
+		return details;
+	}
+
+	
+	private static LinkedList<String> createHelperTexts(String commandType, Task task) {
+		LinkedList<String> helperTexts = new LinkedList<String>();
+		helperTexts.add(commandType);
+		if (task == null) { 
+			return helperTexts; 
+		}
+		switch (task.getTaskType()) {
+			case TIMED:
+				helperTexts.addAll(createTimedTaskHelper(task));
+				break;
+			case DEADLINE:
+				helperTexts.addAll(createDeadlineHelper(task));
+				break;
+			default:
+				assert (task.getTaskType () == TaskType.FLOATING);
+				helperTexts.addAll(createFloatingTaskHelper(task));
+				break;
+		}
+		return helperTexts;
+	}
+
+	private static LinkedList<String> createFloatingTaskHelper(Task task) {
+		LinkedList<String> helperTexts = new LinkedList<String>();
+		helperTexts.add(task.getTaskType().toString());
+		helperTexts.add(task.getTaskName().toString());
+		helperTexts.add(task.getTaskPerson().toString());
+		helperTexts.add(task.getTaskVenue().toString());
+		return helperTexts;
+	}
+
+	private static LinkedList<String> createDeadlineHelper(Task task) {
+		LinkedList<String> helperTexts = new LinkedList<String>();
+		helperTexts.add(task.getTaskType().toString());
+		helperTexts.add(task.getTaskName().toString());
+		helperTexts.add((DateTimeFormat.forPattern("dd/MM/yyyy")).print(task.getEnd()));
+		helperTexts.add((DateTimeFormat.forPattern("HH:mm")).print(task.getEnd()));
+		helperTexts.add(task.getTaskPerson().toString());
+		helperTexts.add(task.getTaskVenue().toString());
+		return helperTexts;
+	}
+
+	private static LinkedList<String> createTimedTaskHelper(Task task) {
+		LinkedList<String> helperTexts = new LinkedList<String>();
+		helperTexts.add(task.getTaskType().toString());
+		helperTexts.add(task.getTaskName().toString());
+		helperTexts.add((DateTimeFormat.forPattern("dd/MM/yyyy")).print(task.getStart()));
+		helperTexts.add((DateTimeFormat.forPattern("HH:mm")).print(task.getStart()));
+		helperTexts.add((DateTimeFormat.forPattern("dd/MM/yyyy")).print(task.getEnd()));
+		helperTexts.add((DateTimeFormat.forPattern("HH:mm")).print(task.getEnd()));
+		helperTexts.add(task.getTaskPerson().toString());
+		helperTexts.add(task.getTaskVenue().toString());
+		return helperTexts;
+	}
+
+	
+
+}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\controller\ControllerFeedbackHelper.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\gui\FloatingTasksListTableModel.java
+	 */
+
+public class FloatingTasksListTableModel extends AbstractTableModel implements ToDoLogTableModel{
+	
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4665613032022419075L;
+	/**
+	 * 
+	 */
+	
+	private final static String[] COLUMNS = {"  No.","Name","Time","Person / Venue","Done","<hidden>","<hidden>"};
+	private LinkedList<Task> tableData;
+	private final static int PAGE_SIZE = 16;
+	private static final int NOT_DEADLINE = Integer.MIN_VALUE;
+	private int pageOffSet = 0;
+	
+	public FloatingTasksListTableModel(LinkedList<Task> floatingTaskListItems){
+		tableData = floatingTaskListItems;
+	}
+	
+	public void setTableData(LinkedList<Task> floatingTaskListItems){
+		tableData = floatingTaskListItems;
+	}
+	public int getColumnCount(){
+		return COLUMNS.length;
+	}
+	
+	
+	public int getRowCount(){
+		//return tableData.size();
+		if(pageOffSet == getPageCount() -1){  
+			if(tableData.size() % PAGE_SIZE == 0){
+				return PAGE_SIZE;
+			}
+			
+			else{
+				return tableData.size() % PAGE_SIZE;
+			}
+		}
+		return Math.min(PAGE_SIZE, tableData.size());
+	}
+	
+	public int getActualRowCount(){
+		return tableData.size();
+	}
+	
+	public int getPageSize(){
+		return PAGE_SIZE;
+	}
+	public String getColumnName(int col){
+		return COLUMNS[col];
+	}
+	public Object getValueAt(int row,int col){
+		int actualRow =  row + (pageOffSet * PAGE_SIZE);
+		Task task = tableData.get(actualRow);
+		
+		if(task == null){
+			return null;
+		}
+		
+		switch(col){
+		
+		case 0:
+			return " "+(actualRow+1+Controller.getNumberOfScheduledTasks());
+		
+		case 1: 
+			return task.getTaskName();
+			
+		case 3: {
+			String col4 = "";
+			if (!task.getTaskPerson().isEmpty()) {
+				col4 = col4.concat("with ").concat(task.getTaskPerson().concat(" "));
+			}
+			if (!task.getTaskVenue().isEmpty()) {
+				col4 = col4.concat("@ ").concat(task.getTaskVenue());
+			}
+			return col4;
+		}
+		case 4:
+			if(task.getTaskStatus() == true){
+				return "Done";
+			}
+			else{
+				int duePeriod = task.duePeriod();
+				if (duePeriod == NOT_DEADLINE) {
+					return "";
+				}
+				if (duePeriod < 7) {
+					if (duePeriod == 0) {
+						return "Due today";
+					} else if (duePeriod == 1) {
+						return "Due tomorrow";
+					} else {
+						return String.format("Due in %d days",duePeriod);
+					}
+				}
+				return "";
+				
+			} 
+		case 5:
+			return task.duePeriod();
+		case 6:
+			if (task == Controller.getFocusTask()) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		default:
+			return null;
+			
+		}
+	}
+	
+	public int getPageOffSet(){
+		return pageOffSet;
+	}
+	
+	public int getPageCount() {
+	    return (int) Math.ceil((double) tableData.size() / PAGE_SIZE);
+	}
+	
+	 public void pageDown() {
+		    if (pageOffSet < getPageCount() - 1) {
+		      pageOffSet++;
+		      fireTableDataChanged();
+		    }
+		  }
+
+	 public void pageUp() {
+		    if (pageOffSet > 0) {
+		      pageOffSet--;
+		      fireTableDataChanged();
+		    }
+		  }
+
+	public void goToPage(int page) {
+		pageOffSet = page;
+		fireTableDataChanged();
+		
+	}
+
+	
+}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\gui\FloatingTasksListTableModel.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\gui\UserInterface.java
+	 */
+
+	private void useJIntellitype() {
+		try {
+			JIntellitype.getInstance();
+			
+			//register the hotkeys "Alt-B" and "Alt-N"
+			JIntellitype.getInstance().registerHotKey(1, JIntellitype.MOD_ALT, (int) 'B');
+			JIntellitype.getInstance().registerHotKey(2, JIntellitype.MOD_ALT, (int) 'N');			
+			JIntellitype.getInstance().addHotKeyListener(new HotkeyListener() {
+	            @Override
+	            public void onHotKey(int combination) {
+	            	
+	            	//if "Alt-B" is pressed, then minimize or maximize the window
+	                if (combination == 1)
+						showOrHideWindow();
+	           
+                    //if "Alt-N" is pressed, then make everything except the
+                    //commandTextField invisible
+                    if(combination == 2){
+	                	if (window.isVisible()) {
+	                		hideWindowExceptCommandEntry();
+	                	}
+	                }
+	            }       
+			});
+		} catch (JIntellitypeException jie) {
+			Log.warn("Cannot load JIntellitype for hotkeys",jie);
+			helpText.append(MSG_CANNOT_LOAD_HOTKEY);
+		}
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\gui\UserInterface.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\gui\UserInterface.java
+	 */
+
+	private void makeTrayIcon(JFrame userInterface) {
+		//Check the SystemTray is supported
+        if (!SystemTray.isSupported()) {
+        	helpText.append(MSG_CANNOT_SUPPORT_SYSTEMTRAY);
+            return;
+        }
+        URL url = this.getClass().getClassLoader().getResource(FILEPATH_ICON_16);
+        ImageIcon img = new ImageIcon(url);
+        PopupMenu popup = new PopupMenu();
+        trayIcon =
+                new TrayIcon(img.getImage());
+        SystemTray tray = SystemTray.getSystemTray();
+       
+        // Create a pop-up menu components
+        MenuItem helpItem = new MenuItem("Help");
+        MenuItem showItem = new MenuItem("Show/Hide");
+        MenuItem exitItem = new MenuItem("Exit");
+        helpItem.addActionListener(new HelpPopupItemActionListener());
+        showItem.addActionListener(new ShowPopupItemActionListener());
+        exitItem.addActionListener(new ExitPopupItemActionListener());
+        
+        //Add components to pop-up menu
+    
+        popup.add(helpItem);
+        popup.add(showItem);
+        popup.add(exitItem);
+       
+        trayIcon.setPopupMenu(popup);
+       
+        try {
+            tray.add(trayIcon);
+        } catch (AWTException e) {
+        	Log.warn("Cannot add tray icon in system tray",e);
+            helpText.append(MSG_CANNOT_ADD_TRAYICON);
+        }
+        isFirstMinimized = false;
+	}
+	
+	/**
+	 * Initialize the contents of the frame.
+	 */
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\gui\UserInterface.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\gui\UserInterface.java
+	 */
+
+	private void setIconsForApplication(JFrame UserInterface) {
+		ArrayList<Image> images = new ArrayList<Image>();
+		URL url = this.getClass().getClassLoader().getResource(FILEPATH_ICON_16);
+		Image image = Toolkit.getDefaultToolkit().getImage(url);
+		images.add(image);
+		url = this.getClass().getClassLoader().getResource(FILEPATH_ICON_32);
+		image = Toolkit.getDefaultToolkit().getImage(url);
+		images.add(image);
+		
+		UserInterface.setIconImages(images);
+		Log.info("Load icon images to UI");
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\gui\UserInterface.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\gui\UserInterface.java
+	 */
+
+	private void addBackgroundLabel(Container layeredPane) {
+		backgroundLabel= loadBackgroundImage(FILEPATH_PHOTO_BACKGROUND_IMAGE);
+		layeredPane.add(backgroundLabel,new Integer(0));
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\gui\UserInterface.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\gui\UserInterface.java
+	 */
+
+	private JLabel loadBackgroundImage(String filePath) {
+		try {
+			URL url = this.getClass().getClassLoader().getResource(filePath);
+			backgroundImage = ImageIO.read(url);
+			backgroundLabel = new JLabel(new ImageIcon(backgroundImage));
+			backgroundLabel.setBounds(0,0,700, 610);
+			Log.info("Loaded background image");
+			return backgroundLabel;
+		} catch (IOException e) {
+			Log.error("Cannot load background image");
+			return new JLabel();
+		}
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\gui\UserInterface.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\gui\UserInterface.java
+	 */
+
+	private void createTopPanel(Container mainPanel){
+		JPanel topPanel = new JPanel(new GridBagLayout());
+		
+		//give settings to the top panel
+		topPanel.setPreferredSize(new Dimension(650,50));
+		topPanel.setOpaque(false);
+		
+		//determine the position of top panel in main panel
+		GridBagConstraints parameters;
+		parameters = setParameters(ID_TOP_PANEL);
+		
+		//fill the top panel with the icon, clock and button
+		createIcon(topPanel);
+		createClockPanel(topPanel);
+		createButtonPanel(topPanel);
+		
+		mainPanel.add(topPanel, parameters);
+		Log.info("Drawed top panel");
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\gui\UserInterface.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\gui\UserInterface.java
+	 */
+
+	private void createIcon(JPanel topPanel) {
+		iconPanel = new JLabel();
+		
+		iconUrl = this.getClass().getClassLoader().getResource(FILEPATH_ICON_40);
+		ImageIcon icon = new ImageIcon(iconUrl);
+		iconPanel.setIcon(icon);
+		
+		//add iconPanel to topPanel
+		GridBagConstraints parameters;
+		parameters = setParameters(ID_ICON_PANEL);
+		topPanel.add(iconPanel,parameters);
+		Log.info("Drawed icon panel");
+		
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\gui\UserInterface.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\gui\UserInterface.java
+	 */
+
+	private void createButtonPanel(Container topPanel) {
+		
+		JPanel buttonPanel = new JPanel(new GridBagLayout());
+		
+		//set up the close button
+		closeButton = new JLabel() {
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 1L;
+				@Override
+				protected void paintComponent(Graphics g){
+			        g.setColor( getBackground() );
+			        ((Graphics2D) g).setRenderingHint (RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			        g.fillOval(0, 0, getWidth(), getHeight());
+			        super.paintComponent(g);
+			    }
+				//paintComponent is used to give the button a circled-shape
+			};
+			
+		closeButton.setBackground(new Color(242, 38, 19, 255));
+		closeButton.setOpaque(false);
+		closeButton.setPreferredSize(new Dimension(17,17));
+		closeButton.addMouseListener(new CloseButtonMouseListener());
+		
+		//set up the minimize button
+		minimizeButton = new JLabel() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+			@Override
+			protected void paintComponent(Graphics g)
+		    {
+		        g.setColor( getBackground() );
+		        ((Graphics2D) g).setRenderingHint (RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		        g.fillOval(0, 0, getWidth(), getHeight());
+		        super.paintComponent(g);
+		    }
+		};
+		
+		minimizeButton.setBackground(new Color(241, 196, 15, 255));
+		minimizeButton.setOpaque(false);
+		minimizeButton.setPreferredSize(new Dimension(17,17));
+		minimizeButton.addMouseListener(new MinimizeButtonMouseListener());
+		
+		
+		GridBagConstraints padParameters =
+				new GridBagConstraints(0,0,3,1,1.0,0.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,new Insets(0,0,0,0),0,0);
+		GridBagConstraints minimizeButtonParameters = 
+				new GridBagConstraints(3,0,1,1,0.0,0.0,GridBagConstraints.NORTHEAST,GridBagConstraints.NONE,new Insets(0,0,10,7),0,0);
+		GridBagConstraints closeButtonParameters =
+				new GridBagConstraints(4,0,1,1,0.0,0.0,GridBagConstraints.NORTHEAST,GridBagConstraints.NONE,new Insets(0,0,10,10),0,0);
+		
+		//add the buttons to a button panel
+		buttonPanel.add(Box.createGlue(),padParameters);
+		buttonPanel.add(minimizeButton,minimizeButtonParameters);
+		buttonPanel.add(closeButton,closeButtonParameters);
+		buttonPanel.setOpaque(false);
+		
+		//add the button panel to the top panel
+		GridBagConstraints ButtonPanelParameters = setParameters(ID_TOP_RIGHT_BUTTONS_PANEL);
+		topPanel.add(buttonPanel,ButtonPanelParameters);
+		Log.info("Drawed button panel");
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\gui\UserInterface.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\gui\UserInterface.java
+	 */
+
+	private void createFlexibleTableLabel(JPanel toDoListHolder) {
+		flexibleTableLabel = new JLabel("Flexible tasks:") {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+			
+			protected void paintComponent(Graphics g)
+		    {	
+				int arc = 5;
+		        g.setColor( getBackground() );
+		        ((Graphics2D) g).setRenderingHint (RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		        g.fillRoundRect(0, 0, getWidth(), getHeight(), arc, arc);
+		        super.paintComponent(g);
+		    }
+		};
+		InputStream in = this.getClass().getClassLoader().getResourceAsStream(FILEPATH_FONT_OPENSANS_SEMIBOLD);
+		try {
+			Font font;
+			font = Font.createFont(Font.TRUETYPE_FONT, in);
+			Font sizedFont = font.deriveFont(HELP_TEXT_FONT_SIZE);
+			flexibleTableLabel.setFont(sizedFont);
+		} catch (FontFormatException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		Border paddingBorder = BorderFactory.createEmptyBorder(4,4,4,4);
+		Border border = BorderFactory.createMatteBorder(3, 3, 0, 3, Color.GRAY);
+		Border compoundBorder = BorderFactory.createCompoundBorder(border, paddingBorder);
+		flexibleTableLabel.setBorder(compoundBorder);
+		flexibleTableLabel.setPreferredSize(new Dimension(40,25));
+		flexibleTableLabel.setOpaque(false);
+		flexibleTableLabel.setBackground(new Color(255,255,255,220));
+		
+		//add the flexibleTableLabel to the toDoListHolder
+		GridBagConstraints floatingTaskListLabelParameters;
+		floatingTaskListLabelParameters = setParameters(ID_FLEXIBLE_TABLE_LABEL);
+		toDoListHolder.add(flexibleTableLabel,floatingTaskListLabelParameters);
+		
+	}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\gui\UserInterface.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\gui\UserInterface.java
+	 */
+
+	private void createScheduleTableLabel(JPanel toDoListHolder) {
+		scheduleTableLabel = new JLabel() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+			
+			protected void paintComponent(Graphics g)
+		    {	
+				int arc = 5;
+		        g.setColor( getBackground() );
+		        ((Graphics2D) g).setRenderingHint (RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		        g.fillRoundRect(0, 0, getWidth(), getHeight(), arc, arc);
+		        super.paintComponent(g);
+		    }
+		};
+		InputStream in = this.getClass().getClassLoader().getResourceAsStream(FILEPATH_FONT_OPENSANS_SEMIBOLD);
+		try {
+			Font font;
+			font = Font.createFont(Font.TRUETYPE_FONT, in);
+			Font sizedFont = font.deriveFont(HELP_TEXT_FONT_SIZE);
+			scheduleTableLabel.setFont(sizedFont);
+		} catch (FontFormatException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		Border paddingBorder = BorderFactory.createEmptyBorder(4,4,4,4);
+		Border border = BorderFactory.createMatteBorder(3, 3, 0, 3, new Color(247,223,124, 255));
+		Border compoundBorder = BorderFactory.createCompoundBorder(border, paddingBorder);
+		scheduleTableLabel.setBorder(compoundBorder);
+		scheduleTableLabel.setPreferredSize(new Dimension(40,25));
+		scheduleTableLabel.setOpaque(false);
+		scheduleTableLabel.setBackground(new Color(255,255,255,220));
+		
+		//add the toDoTaskLabel to the toDoListHolder
+		GridBagConstraints toDoListLabelParameters;
+		toDoListLabelParameters = setParameters(ID_SCHEDULE_TABLE_LABEL);
+		toDoListHolder.add(scheduleTableLabel,toDoListLabelParameters);
+		
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\gui\UserInterface.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\gui\UserInterface.java
+	 */
+
+	//this method highlights the table which is in focus by the user. the table focused on
+	// has a yellow border surrounding it
+	private void setFocusTable(int tableIndex) {
+		Border paddingBorder = BorderFactory.createEmptyBorder(4,4,4,4);
+		Border grayBorder = BorderFactory.createMatteBorder(3, 3, 0 ,3, Color.GRAY);
+		Border yellowBorder = BorderFactory.createMatteBorder(3, 3, 0 ,3, new Color(247,223,124,255));
+		Border compoundGrayBorder = BorderFactory.createCompoundBorder(grayBorder, paddingBorder);
+		Border compoundYellowBorder = BorderFactory.createCompoundBorder(yellowBorder, paddingBorder);
+		
+		switch (tableIndex) {
+			case ID_SCHEDULE_TABLE: 
+				if (!isInvisible) {
+					flexibleTableScrollPane.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3, false));
+					flexibleTableLabel.setBorder(compoundGrayBorder);
+
+					scheduleTableScrollPane.setBorder(BorderFactory.createLineBorder(new Color(247,223,124,255), 3, false));
+					scheduleTableLabel.setBorder(compoundYellowBorder);
+				}
+				focusTable = scheduleTable;
+				break;
+			case ID_FLEXIBLE_TABLE: 
+
+				if (!isInvisible) {
+					scheduleTableScrollPane.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3, false));
+					scheduleTableLabel.setBorder(compoundGrayBorder);
+
+					flexibleTableScrollPane.setBorder(BorderFactory.createLineBorder(new Color(247,223,124,255), 3, false));
+					flexibleTableLabel.setBorder(compoundYellowBorder);
+				}
+				focusTable = flexibleTable;
+				break;
+			default: break;
+		}
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\gui\UserInterface.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\gui\UserInterface.java
+	 */
+
+	private void toggleFocusTable() {
+		if (focusTable == scheduleTable) {
+			setFocusTable(ID_FLEXIBLE_TABLE);
+			Log.info("Focus table toggled to flexi");
+		} else {
+			setFocusTable(ID_SCHEDULE_TABLE);
+			Log.info("Focus table toggled to schedule");
+		}
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\gui\UserInterface.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\gui\UserInterface.java
+	 */
+
+	public class ExitPopupItemActionListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			
+			exitProgram();
+		}
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\gui\UserInterface.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\gui\UserInterface.java
+	 */
+
+	public class ShowPopupItemActionListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			showOrHideWindow();
+		}
+
+	}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\gui\UserInterface.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\gui\UserInterface.java
+	 */
+
+	public class HelpPopupItemActionListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			Controller.acceptUserCommand("help");
+			Log.info("Open help screen");
+		}
+
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\gui\UserInterface.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\gui\UserInterface.java
+	 */
+
+	private class CommandEntryTextFieldDocumentListener implements DocumentListener {
+		@Override
+		public void insertUpdate(DocumentEvent e) {
+			String helperText = readKeyForHelperFeedback();
+			helpText.setText(helperText);
+		}
+		@Override
+		public void removeUpdate(DocumentEvent e) {
+			String helperText = readKeyForHelperFeedback();
+			helpText.setText(helperText);
+		}
+		@Override
+		public void changedUpdate(DocumentEvent e) {
+			
+		}
+		
+		private String readKeyForHelperFeedback() {
+			String commandString = commandEntryTextField.getText();
+			LinkedList<String> entryHelper = Controller.getCommandEntryHelperDetailsFromInput(commandString);
+			String helperText = helpText.getText();
+			if (!entryHelper.isEmpty()) {
+				helperText += "\n";
+				helperText = UIFeedbackHelper.createCmdHelpText(entryHelper);
+				switch (UIFeedbackHelper.getProcessingTaskType()) {
+					case FLOATING:
+						setFocusTable(ID_FLEXIBLE_TABLE);
+						break;
+					case DEADLINE:
+					case TIMED:
+						setFocusTable(ID_SCHEDULE_TABLE);
+						break;
+					default:
+						break;		
+				}
+				flipPages();
+			} 
+			Log.debug("Text change in command entry text");
+			return helperText;
+		}
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\gui\UserInterface.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\gui\UserInterface.java
+	 */
+
+	/*listeners added to the minimize button and the close button to enable
+	 *functions such as minimize and exit respectively, also the button will change
+	 *its color when the mouse goes over it
+	 */
+	private class MinimizeButtonMouseListener implements MouseListener {
+
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			// do nothing
+			
+		}
+
+		@Override
+		public void mousePressed(MouseEvent e) {
+			minimizeButton.setBackground(minimizeButton.getBackground().darker());
+			repaint();
+		}
+
+		@Override
+		public void mouseReleased(MouseEvent e) {
+			minimizeButton.setBackground(new Color(241, 196, 15, 255));
+			repaint();
+			
+			window.setState(JFrame.ICONIFIED);
+			Log.info("Window minimized");
+		}
+
+		@Override
+		public void mouseEntered(MouseEvent e) {
+			minimizeButton.setBackground(minimizeButton.getBackground().brighter());
+			repaint();
+		}
+
+		@Override
+		public void mouseExited(MouseEvent e) {
+			minimizeButton.setBackground(new  Color(241, 196, 15, 255));
+			repaint();
+		}
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\gui\UserInterface.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\gui\UserInterface.java
+	 */
+
+	private class CloseButtonMouseListener implements MouseListener {
+	
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			// do nothing
+			
+		}
+
+		@Override
+		public void mousePressed(MouseEvent e) {
+			closeButton.setBackground(closeButton.getBackground().darker());
+			repaint();
+		}
+
+		@Override
+		public void mouseReleased(MouseEvent e) {
+			closeButton.setBackground(new Color(242, 38, 19, 255));
+			repaint();
+			showOrHideWindow();
+		}
+
+		@Override
+		public void mouseEntered(MouseEvent e) {
+			closeButton.setBackground(closeButton.getBackground().brighter());
+			repaint();
+		}
+
+		@Override
+		public void mouseExited(MouseEvent e) {
+			closeButton.setBackground(new Color(242, 38, 19, 255));
+			repaint();
+		}
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\gui\UserInterface.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\gui\UserInterface.java
+	 */
+
+	// a pop-up to tell the user that ToDoLog has been minimized
+	private class WindowStatusWindowListener implements WindowListener{
+		public void windowActivated(WindowEvent e) {
+			commandEntryTextField.requestFocusInWindow();
+			Log.info("Window activated");
+		}
+
+		@Override
+		public void windowClosed(WindowEvent e) {
+			Log.info("Window closed");
+		}
+
+		@Override
+		public void windowClosing(WindowEvent e) {
+			Log.info("Window closing");
+		}
+
+		@Override
+		public void windowDeactivated(WindowEvent e) {
+			Log.info("Window deactivated");
+			
+		}
+
+		@Override
+		public void windowDeiconified(WindowEvent e) {
+			Log.info("Window maximized");
+		}
+
+		@Override
+		public void windowIconified(WindowEvent e) {
+			Log.info("Window minimized");
+			if (!isFirstMinimized) {
+				trayIcon.displayMessage("ToDoLog", 
+					"ToDoLog is minimized. To open use combination ALT+B", TrayIcon.MessageType.INFO);
+				isFirstMinimized = true;
+				Log.info("Tray message for first minimized shown");
+			}
+			
+		}
+		
+		@Override
+		public void windowOpened(WindowEvent e) {
+			Log.info("Window opened");
+		}
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\gui\UserInterface.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\gui\UserInterface.java
+	 */
+
+	private void exitProgram() {
+		window.dispatchEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSING));
+		Log.info("Exit program");
+	}
+}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\gui\UserInterface.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\history\History.java
+	 */
+
+public class History {
+	private LinkedList<Command> _commands;
+	private int _position;
+	public History() {
+		_commands = new LinkedList<Command>();
+		_position = -1;
+	}
+	public boolean addCommand(Command command) {
+		
+		for (int i = _commands.size()-1-_position; i>0; i--) {
+			_commands.removeLast();
+		}
+		_position ++;
+		return _commands.add(command);
+	}
+	public Command getBackwards() throws Exception {
+		if (_position >= 0) {
+			return _commands.get(_position);
+		} else {
+			return null;
+		}
+	}
+	public void goBackwards() throws Exception {
+		if (_position >= 0) {
+			_position--;
+		} else {
+			throw new Exception("No commands to undo!");
+		}
+	}
+	public Command getForwards() throws Exception {
+		try{
+			if (_position < _commands.size()) {			
+				Command toBeRedone = _commands.get(_position+1);
+				return toBeRedone;
+			} else {
+				_position--;
+				return null;
+			}
+		} catch (IndexOutOfBoundsException ioobe) {
+			return null;
+		}
+	}
+	public void goForwards() throws Exception {
+		_position++;
+		if (_position >= _commands.size()) {
+			_position--;
+			throw new Exception("No commands to redo!");
+		}
+	}
+}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\history\History.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\parser\CommandParser.java
+	 */
+
+	public static Command createCommand(String userCommand) throws Exception{
+		userCommand = userCommand.trim();
+		String firstWord = getFirstWord(userCommand);
+		boolean isNumber = false;
+		int taskNumber = 0;
+		try {
+			taskNumber = Integer.parseInt(firstWord);
+			isNumber = true;
+		} catch (NumberFormatException nfe) {
+			Log.trace("This will not be a CommandNumber");
+			isNumber = false;
+		}
+		if (!isNumber) {
+			if (firstWord.equalsIgnoreCase("add")) {
+				return parseCommandAdd(userCommand);
+			} else if (firstWord.equalsIgnoreCase("delete")) {
+				return parseCommandDelete(userCommand);
+			} else if (firstWord.equalsIgnoreCase("done")) {
+				return parseCommandMarkAsDone(userCommand);
+			} else if (firstWord.equalsIgnoreCase("edit")) {
+				return parseCommandEdit(userCommand);
+			} else if (firstWord.equalsIgnoreCase("search")) {
+				return parseCommandSearch(userCommand);
+			} else if (firstWord.equalsIgnoreCase("view")) {
+				return parseCommandView(userCommand);
+			} else if (firstWord.equalsIgnoreCase("undo")) {
+				return parseCommandUndo();
+			} else if (firstWord.equalsIgnoreCase("redo")) {
+				return parseCommandRedo();
+			} else if (firstWord.equalsIgnoreCase("load")) {
+				return parseCommandLoad(userCommand);
+			} else if (firstWord.equalsIgnoreCase("help")) {
+				return parseCommandHelp();
+			} else {
+				throw new Exception("Invalid command.\n"+FEEDBACK_TYPE);
+			}
+		} else {
+			return parseCommandNumber(taskNumber);
+		}
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\parser\CommandParser.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\parser\CommandParser.java
+	 */
+
+	private static Command parseCommandNumber(int taskNumber) {
+		CommandNumber command = new CommandNumber(taskNumber);
+		return command;
+	}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\parser\CommandParser.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\parser\CommandParser.java
+	 */
+
+	private static Command parseCommandHelp() {
+		CommandHelp command = new CommandHelp();
+		return command;
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\parser\CommandParser.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\parser\CommandParser.java
+	 */
+
+	private static Command parseCommandLoad(String userCommand)
+			throws Exception {
+		String restOfTheString = getTheRestOfTheString(userCommand);
+		CommandLoad command = new CommandLoad(restOfTheString);
+		return command;
+	}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\parser\CommandParser.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\parser\CommandParser.java
+	 */
+
+	private static Command parseCommandRedo() throws Exception {
+		History history = Controller.getHistory();
+		Command toBeUndone = history.getForwards();
+		CommandRedo command = new CommandRedo(toBeUndone);
+		return command;
+	}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\parser\CommandParser.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\parser\CommandParser.java
+	 */
+
+	private static Command parseCommandUndo() throws Exception {
+		History history = Controller.getHistory();
+		Command toBeUndone = history.getBackwards();
+		CommandUndo command = new CommandUndo(toBeUndone);
+		return command;
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\parser\CommandParser.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\parser\CommandParser.java
+	 */
+
+	private static Command parseCommandView(String userCommand) throws Exception {
+		String restOfTheString = getTheRestOfTheString(userCommand);
+		if (restOfTheString == null) {
+			return new CommandView("this week");
+		}
+		CommandView command = new CommandView(restOfTheString);
+		return command;
+	}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\parser\CommandParser.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\parser\CommandParser.java
+	 */
+
+	private static Command parseCommandSearch(String userCommand) throws Exception {
+		String restOfTheString = getTheRestOfTheString(userCommand);
+		CommandSearch command = new CommandSearch(restOfTheString);
+		return command;
+	}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\parser\CommandParser.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\parser\CommandParser.java
+	 */
+
+	private static Command parseCommandEdit(String userCommand) throws Exception {
+		String restOfTheString = getTheRestOfTheString(userCommand);
+		if (restOfTheString == null) {
+			return new CommandEdit();
+		}
+		restOfTheString = restOfTheString.trim();
+		int index = Integer.valueOf(getFirstWord(restOfTheString));
+		restOfTheString = getTheRestOfTheString(restOfTheString);
+		if (restOfTheString == null) {
+			return new CommandEdit(index);
+		}
+		String editType = getFirstWord(restOfTheString);
+		restOfTheString = getTheRestOfTheString(restOfTheString);
+		if (restOfTheString == null) {
+			return new CommandEdit(index,editType);
+		}
+		assert (restOfTheString != null);
+		if (editType.equalsIgnoreCase("start") || editType.equalsIgnoreCase("end")) {
+			editType = editType.concat(" ").concat(getFirstWord(restOfTheString));
+			restOfTheString = getTheRestOfTheString(restOfTheString);
+		} else if (editType.equalsIgnoreCase("task")) {
+			editType = getFirstWord(restOfTheString);
+			restOfTheString = getTheRestOfTheString(restOfTheString);
+		}
+		CommandEdit command = new CommandEdit(index, restOfTheString, editType);
+		return command;
+	}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\parser\CommandParser.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\parser\CommandParser.java
+	 */
+
+	private static Command parseCommandMarkAsDone(String userCommand)
+			throws Exception {
+		String restOfTheString = getTheRestOfTheString(userCommand);
+		if (restOfTheString == null) {
+			return new CommandMarkAsDone();
+		}
+		assert (restOfTheString != null);
+		restOfTheString = restOfTheString.trim();
+		int index = Integer.valueOf(restOfTheString);
+		CommandMarkAsDone command = new CommandMarkAsDone(index);
+		return command;
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\parser\CommandParser.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\parser\CommandParser.java
+	 */
+
+	private static Command parseCommandDelete(String userCommand)
+			throws Exception {
+		String restOfTheString = getTheRestOfTheString(userCommand);
+		if (restOfTheString == null) {
+			return new CommandDelete();
+		}
+		assert (restOfTheString != null);
+		restOfTheString = restOfTheString.trim();
+		if (isInteger(restOfTheString)) {
+			int index = Integer.valueOf(restOfTheString);
+			CommandDelete command = new CommandDelete(index);
+			return command; 
+		} else {
+			if (restOfTheString.equalsIgnoreCase("all")) {
+				CommandDeleteAll command = new CommandDeleteAll();
+				return command;
+			}else if (restOfTheString.equalsIgnoreCase("done")){
+				CommandDeleteDone command= new CommandDeleteDone();
+				return command;
+			}
+			else {
+				throw new Exception(HELP_TEXT_DELETE);
+			}
+		}
+	}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\parser\CommandParser.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\parser\CommandParser.java
+	 */
+
+	private static Command parseCommandAdd(String userCommand) throws Exception {
+		Task task = createTask(userCommand);
+		CommandAdd command = new CommandAdd(task);
+		return command;
+	}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\parser\CommandParser.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\parser\CommandParser.java
+	 */
+
+	public static Task createTask(String userInput) throws Exception{
+		String restOfTheString = getTheRestOfTheString(userInput);
+		if (restOfTheString == null) {
+			return null;
+		}
+		assert (restOfTheString != null);
+		Task task = new Task(restOfTheString);
+		return task;
+	}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\parser\CommandParser.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\parser\CommandParser.java
+	 */
+
+	public static boolean isInteger(String s) {
+		try { 
+			Integer.parseInt(s); 
+		} catch(NumberFormatException e) { 
+			Log.trace(s+" is not a Integer",e);
+			return false; 
+		}
+		return true;
+	}
+}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\parser\CommandParser.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\parser\TaskParser.java
+	 */
+
+	public static boolean checkDateFormat(String dateInString){
+		try{
+			parseYear(dateInString);
+			parseMonth(dateInString);
+			parseDayOfMonth(dateInString);
+		}
+		catch(Exception e){
+			Log.trace(dateInString +"is not valid date format");
+			return false;
+		}
+		return true;
+	}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\parser\TaskParser.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\parser\TaskParser.java
+	 */
+
+	public static int parseYear(String dateInString) throws Exception {
+		int _year = DateTime.now().year().get();
+		try {
+			_year = Integer.parseInt(dateInString);
+		} catch (NumberFormatException nfe) {
+			Log.trace(dateInString+ " is not a date : "+nfe.getMessage());
+			return _year;
+		}
+		_year = _year %100;
+		if (_year<65) {
+			_year = _year + 2000 ;
+		} else {
+			assert (_year >= 65);
+			_year = _year + 1900;
+		}
+		return _year;
+	}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\parser\TaskParser.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\parser\TaskParser.java
+	 */
+
+	public static DateTime parseTaskStart(String parameter) throws Exception {
+		String[] messageArray = generateArray(parameter);
+		int year = 1, month = 1, day = 1;
+		boolean hasKeyword = false;
+
+		for (int i = 0; i+1<=messageArray.length-1; i++) {
+			if ((isValidKeyWordStart(messageArray[i], messageArray, i))
+					|| ((isValidKeyWordStart_2(messageArray[i], messageArray, i)))) {
+				hasKeyword = true;
+				if (isInteger(messageArray[i+1])) {
+					year = parseYear(messageArray[i+1]);
+					month = parseMonth(messageArray[i+1]);
+					day = parseDayOfMonth(messageArray[i+1]);	
+				} else {
+					int dayOfWeek = parseDayOfWeek(messageArray[i+1]);
+					DateTime today = new DateTime();
+					if (dayOfWeek == TODAY) {
+						year = today.year().get();
+						month = today.monthOfYear().get();
+						day = today.dayOfMonth().get();
+					} else if (dayOfWeek == TOMORROW) {
+						DateTime tomorrow = today.plusDays(1);
+						year = tomorrow.year().get();
+						month = tomorrow.monthOfYear().get();
+						day = tomorrow.dayOfMonth().get();
+					} else {
+						int nextDayDistance = dayOfWeek - today.dayOfWeek().get();
+						if (nextDayDistance < 0) {
+							nextDayDistance+=7;
+						}
+						DateTime nextDay = today.plusDays(nextDayDistance);
+						year = nextDay.year().get();
+						month = nextDay.monthOfYear().get();
+						day = nextDay.dayOfMonth().get();
+					}
+				}
+			}
+			if (isValidKeyWordDeadline (messageArray[i], messageArray, i)) {
+				hasKeyword = true;
+				DateTime taskStart = new DateTime(0);
+				return taskStart;
+			}
+		}
+
+		if (!hasKeyword) {
+			hasKeyword = true;
+			DateTime today = new DateTime();
+			year = today.year().get();
+			month = today.monthOfYear().get();
+			day = today.dayOfMonth().get();
+		}
+
+		int time = parseTaskStartTime(parameter);
+		int hour = time/100;
+		int min = time%100;
+
+		return new DateTime(year,month,day,hour,min);
+	}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\parser\TaskParser.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\parser\TaskParser.java
+	 */
+
+	public static DateTime parseTaskEnd(DateTime taskStart, String parameter) throws Exception {
+		String[] messageArray = generateArray(parameter);
+		int year = 1, month = 1, day = 1;
+		boolean hasKeyword = false;
+		//Parse date
+		for (int i = 0; i+1<=messageArray.length-1; i++) {
+			if ((isValidKeyWordEnding(messageArray[i], messageArray, i))
+					|| (isValidKeyWordDeadline(messageArray[i], messageArray, i)) ) {
+				hasKeyword = true;
+				if (isInteger(messageArray[i+1])) {
+					if (messageArray[i+1].length() == 6) { 
+						year = parseYear(messageArray[i+1]);
+						month = parseMonth(messageArray[i+1]);
+						day = parseDayOfMonth(messageArray[i+1]);	
+					} else if (messageArray[i+1].length() == 4) {
+						year = taskStart.getYear();
+						month = taskStart.getMonthOfYear();
+						day = taskStart.getDayOfMonth();	 
+					}
+				} else {
+					int dayOfWeek = parseDayOfWeek(messageArray[i+1]);
+					DateTime today = new DateTime();
+					if (dayOfWeek == TODAY) {
+						year = today.year().get();
+						month = today.monthOfYear().get();
+						day = today.dayOfMonth().get();
+					} else if (dayOfWeek == TOMORROW) {
+						DateTime tomorrow = today.plusDays(1);
+						year = tomorrow.year().get();
+						month = tomorrow.monthOfYear().get();
+						day = tomorrow.dayOfMonth().get();
+					} else {
+						if (!taskStart.isEqual(new DateTime(0))) {
+							int nextDayDistance = dayOfWeek - taskStart.dayOfWeek().get();
+							if (nextDayDistance < 0) {
+								nextDayDistance+=7;
+							}
+							DateTime nextDay = taskStart.plusDays(nextDayDistance);
+							year = nextDay.year().get();
+							month = nextDay.monthOfYear().get();
+							day = nextDay.dayOfMonth().get();
+						} else { 
+							int nextDayDistance = dayOfWeek - today.dayOfWeek().get();
+							if (nextDayDistance < 0) {
+								nextDayDistance+=7;
+							}
+							DateTime nextDay = today.plusDays(nextDayDistance);
+							year = nextDay.year().get();
+							month = nextDay.monthOfYear().get();
+							day = nextDay.dayOfMonth().get();
+						}
+
+					}
+				}
+			}
+		}
+		if (!hasKeyword) {
+			year = taskStart.year().get();
+			month = taskStart.monthOfYear().get();
+			day = taskStart.dayOfMonth().get();
+			int hour = 23;
+			int min = 59;
+			return new DateTime(year,month,day,hour,min);
+		}
+		//parse time
+		int time = parseTaskEndTime(parameter);
+		int hour = time/100;
+		int min = time%100;
+		DateTime taskEnd = new DateTime(year,month,day,hour,min);
+		if (taskEnd.compareTo(taskStart)<0) {
+			throw new Exception("End time cannot be earlier than Start time");
+		}
+		return taskEnd;
+	}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\parser\TaskParser.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\parser\TaskParser.java
+	 */
+
+	public static DateTime parseTaskEnd(String parameter) throws Exception {
+		DateTime taskStart = new DateTime(0);
+		return parseTaskEnd(taskStart, parameter);
+	}
+}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\parser\TaskParser.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\storage\DBStorage.java
+	 */
+
+public class DBStorage implements Storage {
+	private LinkedList<Task> _tasks;
+	private FileStorage _fileStorage;
+	public DBStorage() {
+		_fileStorage = new FileStorage();
+		init();
+	}
+
+	public DBStorage(String fileName) {
+		_fileStorage = new FileStorage(fileName);
+		init();
+	}
+
+	public LinkedList<Task> load() {
+		return _tasks;
+	}
+
+	public FileStorage getFileStorage(){
+		return _fileStorage;
+	}
+	@Override
+	public void init() {
+		_tasks = new LinkedList<Task>();
+		_tasks = _fileStorage.load();
+	}
+
+	@Override
+	public void store(LinkedList<Task> tasks) throws IOException {
+		_tasks = tasks;
+		_fileStorage.store(tasks);
+	}
+	
+
+}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\storage\DBStorage.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\storage\FileStorage.java
+	 */
+
+public class FileStorage implements Storage{
+	private final String DEFAULT_FILE_NAME = "store.xml";
+	private Document _document;
+	private File _file;
+	
+	public FileStorage() {
+		_file = new File(DEFAULT_FILE_NAME);
+		_document = createBlankDocument();
+		init();
+	}
+	public FileStorage(String fileName) {
+		_file = new File(fileName);
+		_document = createBlankDocument();
+		init();
+	}
+	
+	@Override
+	public void init() {
+		if (!_file.exists()) {
+			try {
+				_file.createNewFile();
+				writeDocument(_document);
+			} catch (IOException e) {
+				Log.error("Storage I/O problem",e);
+				throw new RuntimeException(e);
+			}
+		}
+		
+	}
+	
+	@Override
+	public LinkedList<Task> load(){
+		SAXReader reader = new SAXReader();
+		try {
+			_document = reader.read(_file);
+		} catch (DocumentException e) {
+			e.printStackTrace();
+		}	
+		try {
+			return parseDoc(_document);
+		} catch (Exception e) {
+			Log.error("Unsupport XML file or XML file corrupted");
+			throw new RuntimeException(e);
+		}
+		
+	}
+
+	private LinkedList<Task> parseDoc(Document document) throws Exception {
+		Element root = document.getRootElement();
+		LinkedList<Task> tasks = new LinkedList<Task>();
+		for (int i = 0; i< root.nodeCount(); i++) {
+			Node taskNode = root.node(i);
+			if (taskNode instanceof Element) {
+				Task task = parseElementToTask((Element) taskNode);
+				tasks.add(task);
+			} else {
+				throw new Exception("File format incorrect.");
+			}
+			
+		}
+		return tasks;
+	}
+	private Task parseElementToTask(Element taskNode) {
+		String taskTypeString = taskNode.element("type").getText();
+		TaskType taskType = parseTaskType(taskTypeString);
+		Task task;
+		switch (taskType) {
+			case TIMED:
+				task = parseIntoTimed(taskNode);
+				break;
+			case DEADLINE:
+				task = parseIntoDeadline(taskNode);
+				break;
+			default:
+				assert (taskType == TaskType.FLOATING);
+				task = parseIntoFloating(taskNode);
+				break;
+		}
+		
+		return task;
+	}
+	private Task parseIntoFloating(Element taskNode) {
+		String name = taskNode.element("name").getText();
+		boolean status = Boolean.parseBoolean(taskNode.element("status").getText());
+		String person = taskNode.element("person").getText();
+		String venue = taskNode.element("venue").getText();
+		return new Task(TaskType.FLOATING, name, status, person, venue);
+	}
+	
+	private Task parseIntoDeadline(Element taskNode) {
+		String name = taskNode.element("name").getText();
+		String endStr = taskNode.element("end").getText();
+		DateTime end = ISODateTimeFormat.dateTime().parseDateTime(endStr);
+		boolean status = Boolean.parseBoolean(taskNode.element("status").getText());
+		String person = taskNode.element("person").getText();
+		String venue = taskNode.element("venue").getText();
+		return new Task(TaskType.DEADLINE, name, end, status, person, venue);
+	}
+	
+	private Task parseIntoTimed(Element taskNode) {
+		String name = taskNode.element("name").getText();
+		String startStr = taskNode.element("start").getText();
+		String endStr = taskNode.element("end").getText();
+		DateTime start = ISODateTimeFormat.dateTime().parseDateTime(startStr);
+		DateTime end = ISODateTimeFormat.dateTime().parseDateTime(endStr);
+		boolean status = Boolean.parseBoolean(taskNode.element("status").getText());
+		String person = taskNode.element("person").getText();
+		String venue = taskNode.element("venue").getText();
+		return new Task(TaskType.TIMED, name, start, end, status, person, venue);
+	}
+	private static TaskType parseTaskType(String taskTypeString) {
+		switch (taskTypeString) {
+			case "DEADLINE" :
+				return TaskType.DEADLINE;
+			case "TIMED" :
+				return TaskType.TIMED;
+			case "FLOATING" :
+				return TaskType.FLOATING;
+			default:
+				return TaskType.FLOATING;
+		}
+	}
+	private Document createBlankDocument() {
+		Document document = DocumentHelper.createDocument();
+		document.addElement("root");
+        return document;
+	}
+	private void writeDocument(Document document) throws IOException {
+		XMLWriter writer = new XMLWriter(new FileWriter(_file));
+		writer.write(document);
+		writer.close();
+	}
+	
+
+	@Override
+	public void store(LinkedList<Task> tasks) throws IOException{
+		Document newDocument = DocumentHelper.createDocument();
+		Element root = newDocument.addElement("root");
+		for (int i = 0; i < tasks.size(); i++) {
+			Task task = tasks.get(i);
+			switch (task.getTaskType()) {
+				case FLOATING:
+					addFloatingTaskToRoot(root, task);
+					break;
+				case TIMED:
+					addTimedTaskToRoot(root, task);
+					break;
+				case DEADLINE:
+					addDeadlineTaskToRoot(root, task);
+					break;
+				default:
+					assert false : task.getTaskType();
+					break;
+			}
+		}
+		writeDocument(newDocument);
+		
+	}
+	private void addFloatingTaskToRoot(Element root, Task task) {
+		Element newTask = root.addElement("task");
+		newTask.addElement("type").setText(task.getTaskType().toString());
+		newTask.addElement("name").setText(task.getTaskName());
+		newTask.addElement("status").setText(String.valueOf(task.getTaskStatus()));
+		newTask.addElement("person").setText(task.getTaskPerson());
+		newTask.addElement("venue").setText(task.getTaskVenue());
+	}
+	
+	private void addDeadlineTaskToRoot(Element root, Task task) {
+		Element newTask = root.addElement("task");
+		newTask.addElement("type").setText(task.getTaskType().toString());
+		newTask.addElement("name").setText(task.getTaskName());
+		newTask.addElement("end").setText(task.getEnd().toString());
+		newTask.addElement("status").setText(String.valueOf(task.getTaskStatus()));
+		newTask.addElement("person").setText(task.getTaskPerson());
+		newTask.addElement("venue").setText(task.getTaskVenue());
+	}
+	
+	private void addTimedTaskToRoot(Element root, Task task) {
+		Element newTask = root.addElement("task");
+		newTask.addElement("type").setText(task.getTaskType().toString());
+		newTask.addElement("name").setText(task.getTaskName());
+		newTask.addElement("start").setText(task.getStart().toString());
+		newTask.addElement("end").setText(task.getEnd().toString());
+		newTask.addElement("status").setText(String.valueOf(task.getTaskStatus()));
+		newTask.addElement("person").setText(task.getTaskPerson());
+		newTask.addElement("venue").setText(task.getTaskVenue());
+	}
+	public Document getDocument() {
+		return _document;
+	}
+	public File getFile() {
+		return _file;
+	}
+	
+}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\storage\FileStorage.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\storage\Storage.java
+	 */
+
+public interface Storage {
+	public LinkedList<Task> load();
+
+	public void init();
+
+	public void store(LinkedList<Task> tasks) throws IOException;
+}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\storage\Storage.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\test\DBStorageTest.java
+	 */
+
+public class DBStorageTest {
+
+	@BeforeClass
+	public static void setUpBeforeClass() throws Exception {
+	}
+
+	@Test
+	public void test() {
+		fail("Not yet implemented");
+	}
+
+}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\test\DBStorageTest.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\test\FileStorageTest.java
+	 */
+
+	@Test
+	public void testConstructorWithString() {
+		FileStorage fileStorageTest = new FileStorage("test.xml");
+		File file = new File("test.xml");
+		assertEquals(fileStorageTest.getFile(), file );
+		String text = fileStorageTest.getDocument().asXML();
+		assertEquals(text, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<root/>");
+		file.delete();
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\test\FileStorageTest.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\test\FileStorageTest.java
+	 */
+
+	@Test
+	public void testConstructor() {
+		FileStorage fileStorageTest = new FileStorage();
+		File file = new File("store.xml");
+		assertEquals(fileStorageTest.getFile(), file );
+		String text = fileStorageTest.getDocument().asXML();
+		assertEquals(text, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<root/>");
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\test\FileStorageTest.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\test\FileStorageTest.java
+	 */
+
+	@Test
+	public void testInit() {
+		String name = createRandomString();
+		File file = new File(name);
+		new FileStorage(name);
+		assertTrue(file.exists());
+		assertFalse(new File(createRandomString()).exists());
+		file.delete();
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\test\FileStorageTest.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\test\FileStorageTest.java
+	 */
+
+	@Test
+	public void testLoad() throws IOException {
+		FileStorage fileStorageTestBlank = new FileStorage("blank.xml");
+		File file = new File("blank.xml");
+		LinkedList<Task> tasks = fileStorageTestBlank.load();
+		assertTrue(tasks.equals(new LinkedList<Task>()));
+		file.delete();
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\test\FileStorageTest.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\test\FileStorageTest.java
+	 */
+
+	@Test
+	public void testStoreFloating() throws IOException {
+		FileStorage fileStorageTest = new FileStorage("test.xml");
+		File file = new File("test.xml");
+		LinkedList<Task> tasks = new LinkedList<Task>();
+		tasks.add(createRandomFloatingTask());
+		fileStorageTest.store(tasks);
+		assertTrue(file.exists());
+		FileStorage fileStorageTest2 = new FileStorage("test.xml");
+		LinkedList<Task> ctasks = fileStorageTest2.load();;
+		for (int i = 0; i< tasks.size(); i++) {
+			assertEquals(tasks.get(i).getTaskName(),ctasks.get(i).getTaskName());
+		}
+		file.delete();
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\test\FileStorageTest.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\test\FileStorageTest.java
+	 */
+
+	@Test
+	public void testStoreTimed() throws IOException {
+		FileStorage fileStorageTest = new FileStorage("test.xml");
+		File file = new File("test.xml");
+		LinkedList <Task> tasks = new LinkedList<Task>();
+		tasks.add(createRandomTimedTask());
+		fileStorageTest.store(tasks);
+		assertTrue(file.exists());
+		FileStorage fileStorageTest2 = new FileStorage("test.xml");
+		LinkedList<Task> ctasks = fileStorageTest2.load();
+		for (int i = 0;i <tasks.size(); i++){
+			assertEquals(tasks.get(i).getTaskName(),ctasks.get(i).getTaskName());
+		}
+		file.delete();
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\test\FileStorageTest.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\test\FileStorageTest.java
+	 */
+
+	@Test
+	public void testStoreDeadline() throws IOException {
+		FileStorage fileStorageTest = new FileStorage("test.xml");
+		File file = new File("test.xml");
+		LinkedList <Task> tasks = new LinkedList<Task>();
+		tasks.add(createRandomDeadlineTask());
+		fileStorageTest.store(tasks);
+		assertTrue(file.exists());
+		FileStorage fileStorageTest2 = new FileStorage("test.xml");
+		LinkedList<Task> ctasks = fileStorageTest2.load();
+		for (int i = 0;i <tasks.size(); i++){
+			assertEquals(tasks.get(i).getTaskName(),ctasks.get(i).getTaskName());
+		}
+		file.delete();
+	}
+		
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\test\FileStorageTest.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\test\FileStorageTest.java
+	 */
+
+	private String createRandomString() {
+		char[] chars = "abcdefghijklmnopqrstuvwxyz01123456789".toCharArray();
+		StringBuilder sb = new StringBuilder();
+		Random random = new Random();
+		for (int i = 0; i < 20; i++) {
+		    char c = chars[random.nextInt(chars.length)];
+		    sb.append(c);
+		}
+		return sb.toString();
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\test\FileStorageTest.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\test\FileStorageTest.java
+	 */
+
+	private Task createRandomFloatingTask() {
+		char[] chars = "abcdefghijklmnopqrstuvwxyz01123456789".toCharArray();
+		StringBuilder sb = new StringBuilder();
+		Random random = new Random();
+		for (int i = 0; i < 20; i++) {
+		    char c = chars[random.nextInt(chars.length)];
+		    sb.append(c);
+		}
+		String name = sb.toString();
+		return new Task(TaskType.FLOATING, name, false,"bob","soc");
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\test\FileStorageTest.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\test\SystemTest.java
+	 */
+
+public class SystemTest {
+
+	@BeforeClass
+	public static void setUpBeforeClass() throws Exception {
+	}
+	
+	@Test
+	public void testScalability() {
+		Controller.init("testScale.xml");
+		//DateTime now = new DateTime();
+		for (int i = 0; i<300; i++) {
+			Controller.acceptUserCommand(createRandomFloatingTaskString());
+			Controller.acceptUserCommand(createRandomTimedTaskString());
+			Controller.acceptUserCommand(createRandomDeadlineTaskString());
+		}
+//		DateTime now2 = new DateTime();
+//		System.out.println(now2.getSecondOfDay()-now.getSecondOfDay());
+	}
+	
+		
+	private String createRandomFloatingTaskString() {
+		String name = createRandomString();
+		return "add "+name;
+	}
+
+	
+	private String createRandomTimedTaskString() {
+		//TODO
+		String name = createRandomString();
+		return "add "+name + " by tomorrow";
+	}
+	private String createRandomDeadlineTaskString() {
+		String name = createRandomString();
+		return "add "+name + " on sunday";
+	}
+	private String createRandomString() {
+		char[] chars = "abcdefghijklmnopqrstuvwxyz01123456789".toCharArray();
+		StringBuilder sb = new StringBuilder();
+		Random random = new Random();
+		for (int i = 0; i < 20; i++) {
+		    char c = chars[random.nextInt(chars.length)];
+		    sb.append(c);
+		}
+		String name = sb.toString();
+		return name;
+	}
+}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\test\SystemTest.java
+
+
+
+
+

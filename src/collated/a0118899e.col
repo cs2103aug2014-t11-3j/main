@@ -1,0 +1,2464 @@
+//@author: a0118899e
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandAdd.java
+	 */
+
+	public CommandAdd(Task task) {
+		_task = task;
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandAdd.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandAdd.java
+	 */
+
+	public Task getAddedTask() {
+		return _task;
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandAdd.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandAdd.java
+	 */
+
+	@Override
+	public String execute() {
+		
+		String feedback;
+		LinkedList <Task> storageList = new LinkedList<Task>();
+		
+		_storage= Controller.getDBStorage();
+		storageList=_storage.load();
+		
+		if (_task == null) {
+			_validity = false;
+			return FEEDBACK_INVALID_DETAILS;
+		}
+		
+		sortByDate(storageList);
+		
+		try {
+			_storage.store(storageList);
+		} catch (IOException e) {
+			Log.error("Storage I/O problem",e);
+			feedback = FEEDBACK_INVALID_STORAGE;
+			_validity = false;
+			return feedback;
+		}
+		feedback = String.format (FEEDBACK_VALID_INPUT, _task.getTaskName());
+		_validity=true;
+		return feedback;
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandAdd.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandAdd.java
+	 */
+
+	public void sortByDate(LinkedList<Task> toSortList) {
+		
+	    if (_task.getTaskType() == TaskType.FLOATING) {
+	    	toSortList.add(_task);
+	    	// set focus task to change UI's page
+	    	Controller.setFocusTask(_task); 
+	    } else {
+	    	assert (_task.getTaskType() == TaskType.TIMED || _task.getTaskType() == TaskType.DEADLINE);
+	    	boolean isAdded = false;
+    		for (int i=0; i<toSortList.size(); i++) {
+    			Task current = toSortList.get(i);
+    			if (current.getTaskType() == TaskType.FLOATING) {
+    				toSortList.add(i,_task);
+    				// set focus task to change UI's page
+    				Controller.setFocusTask(_task); 
+    				isAdded = true;
+    				break;
+    			} else {
+    				assert (current.getTaskType() == TaskType.TIMED || current.getTaskType() == TaskType.DEADLINE);
+	    			if (current.getEndDateTime().compareTo(_task.getEndDateTime()) >0) {
+	    				toSortList.add(i,_task);
+	    				// set focus task to change UI's page
+	    				Controller.setFocusTask(_task); 
+	    				isAdded=true;
+	    				break;
+	    			}
+    			}	
+    		}
+    		
+    		if (!isAdded) {
+    			toSortList.add(_task);
+    		}
+	    }
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandAdd.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandAdd.java
+	 */
+
+	@Override
+	public String undo() {
+		String feedback;
+		LinkedList <Task> storageList;
+		_storage = Controller.getDBStorage();
+		storageList = _storage.load();
+		int index = storageList.indexOf(_task);
+		Task removedTask = storageList.remove(index);
+		if (index == storageList.size()) {
+			if (index == 0) {
+				// set focus task to change UI's page
+				Controller.setFocusTask(null); 
+			} else {
+				assert (index > 0);
+				Controller.setFocusTask(storageList.get(index-1));
+			}
+		} else {
+			assert (index != storageList.size());
+			if (storageList.size() == 0) {
+				// set focus task to change UI's page
+				Controller.setFocusTask(null); 
+			} else {
+				assert (storageList.size() > 0);
+				Controller.setFocusTask(storageList.get(index));
+			}
+		}
+		
+		try {
+			_storage.store(storageList);
+		} catch (IOException e) {
+			Log.error("Storage I/O problem",e);
+			feedback = FEEDBACK_INVALID_STORAGE;
+			return feedback;
+		}
+		if (removedTask != null) {
+			feedback = String.format(FEEDBACK_VALID_UNDO, _task.getTaskName());
+		} 
+		else {
+			assert (removedTask == null);
+			feedback = String.format(FEEDBACK_INVALID_UNDO, _task.getTaskName());
+		}
+		
+		return feedback;
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandAdd.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandAdd.java
+	 */
+
+	@Override
+	public boolean isUndoable(){
+		assert isUndoable();
+		return _validity;
+	}
+
+}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandAdd.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandDelete.java
+	 */
+
+	public CommandDelete(int index) {
+		_index = index - 1;
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandDelete.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandDelete.java
+	 */
+
+	public CommandDelete() {
+		_index = -1;
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandDelete.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandDelete.java
+	 */
+
+	public Task getDeletedTask() {
+		return _task;
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandDelete.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandDelete.java
+	 */
+
+	@Override
+	public String execute() {
+		String feedback;
+		LinkedList<Task> storageList;
+		
+		LinkedList<Task> _displayList= Controller.getScheduleList();
+		_storage=Controller.getDBStorage();
+		storageList=_storage.load();
+		
+		if (_index == -1) {
+			_validity = false;
+			return FEEDBACK_INVALID_FORMAT; 
+		} else {
+			assert (_index >= 0);
+			try {
+				_task = _displayList.get(_index);
+				// set focus task to change UI's page
+				Controller.setFocusTask(_task);
+			} catch (IndexOutOfBoundsException ioobe ) {
+				Log.info("Task index is out of bounds");
+				_validity = false;
+				Controller.setFocusTask(null);
+				return String.format(FEEDBACK_INVALID_INDEX, _index+1);
+			}
+		}
+		
+		_displayList.remove(_index);
+		storageList.remove(_task);
+		feedback = String.format(FEEDBACK_VALID_DELETE, _task.getTaskName());
+		_validity=true;
+		try {
+			_storage.store(storageList);
+		} catch (IOException e) {
+			Log.error("Storage I/O problem",e);
+			feedback = FEEDBACK_INVALID_STORAGE;
+			_validity=false;
+			return feedback;
+		}
+		return feedback;
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandDelete.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandDelete.java
+	 */
+
+	@Override
+	public String undo() {
+		String feedback;
+		CommandAdd undoDelete = new CommandAdd(_task);
+		// set focus task to change UI's page
+		Controller.setFocusTask(_task);
+		undoDelete.execute();
+		feedback = FEEDBACK_VALID_UNDO;
+		return feedback;
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandDelete.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandDelete.java
+	 */
+
+	@Override
+	public boolean isUndoable(){
+		assert isUndoable();
+		return _validity;
+	}
+}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandDelete.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandDeleteAll.java
+	 */
+
+	@Override
+	public String execute() {
+		String feedback;
+		_storage = Controller.getDBStorage();
+		_storageList = _storage.load();
+		try {
+			_storage.store(new LinkedList<Task>());
+		} catch (IOException e) {
+			Log.error("Storage I/O problem",e);
+			feedback = FEEDBACK_INVALID_STORAGE;
+			_validity=false;
+			return feedback;
+		}
+		// set focus task to change UI's page
+		Controller.setFocusTask(null);
+		feedback = FEEDBACK_VALID_DELETE_ALL;
+		_validity=true;
+		return feedback;
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandDeleteAll.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandDeleteAll.java
+	 */
+
+	@Override
+	public String undo() {
+		String feedback;
+		try {
+			_storage.store(_storageList);
+		} catch (IOException e) {
+			Log.error("Storage I/O problem",e);
+			feedback = FEEDBACK_INVALID_STORAGE;
+			return feedback;
+		}
+		feedback = FEEDBACK_VALID_UNDO;
+		return feedback;
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandDeleteAll.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandDeleteAll.java
+	 */
+
+	@Override
+	public boolean isUndoable() {
+		assert isUndoable();
+		return _validity;
+	}
+
+}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandDeleteAll.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandDeleteDone.java
+	 */
+
+	@Override
+	public String execute() {
+		String feedback;
+		_storage = Controller.getDBStorage();
+		_storageList = _storage.load();
+		_undoList = new LinkedList <Task> (_storage.load());
+
+		for ( int i=_storageList.size()-1; i >= 0; i-- ) {
+			if (_storageList.get(i).getTaskStatus() == true ) {
+				_storageList.remove(i);
+			}
+		}
+		try {
+			_storage.store(_storageList);
+		} catch (IOException e) {
+			Log.error("Storage I/O problem",e);
+			feedback = FEEDBACK_INVALID_STORAGE;
+			_validity=false;
+			return feedback;
+		}
+		// set focus task to change UI's page
+		Controller.setFocusTask(Controller.getScheduleList().getLast());
+		Controller.setFocusTask(_storageList.getLast());
+		feedback = FEEDBACK_VALID_DELETE_DONE;
+		_validity = true;
+		return feedback;
+	}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandDeleteDone.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandDeleteDone.java
+	 */
+
+	@Override
+	public String undo() {
+		String feedback;
+		try {
+			_storage.store(_undoList);
+		} catch (IOException e) {
+			Log.error("Storage I/O problem",e);
+			feedback = FEEDBACK_INVALID_STORAGE;
+			return feedback;
+		}
+		feedback = FEEDBACK_VALID_UNDO;
+		return feedback;
+	}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandDeleteDone.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandDeleteDone.java
+	 */
+
+	@Override
+	public boolean isUndoable() {
+		assert isUndoable();
+		return _validity;
+	}
+}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandDeleteDone.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandEdit.java
+	 */
+
+	public CommandEdit() {
+		_index = INVALID_INDEX;	
+		_storage = Controller.getDBStorage();
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandEdit.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandEdit.java
+	 */
+
+	public CommandEdit(int index, String toBeEdited, String editType) {
+		_index = index-1;
+		_editType = editType;
+		_toBeEdited = toBeEdited;
+		_storage = Controller.getDBStorage();	
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandEdit.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandEdit.java
+	 */
+
+	public CommandEdit(int index, String editType) {
+		_index = index -1;
+		_editType = editType;
+		_storage = Controller.getDBStorage();
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandEdit.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandEdit.java
+	 */
+
+	public CommandEdit(int index) {
+		_index = index -1;
+		_storage = Controller.getDBStorage();
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandEdit.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandEdit.java
+	 */
+
+	public Task getCurrentTask() {
+		return _taskExisting;
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandEdit.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandEdit.java
+	 */
+
+	public Task getEditedTask() {
+		return _taskEdited;
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandEdit.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandEdit.java
+	 */
+
+	public int getIndex() {
+		return _index;
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandEdit.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandEdit.java
+	 */
+
+	@Override
+	public String execute() {
+		String feedback;
+		LinkedList <Task> storageList;
+		String editedField;
+		storageList = _storage.load();
+		_displayList = Controller.getScheduleList();
+		
+		if (_index == INVALID_INDEX) {
+			_validity = false;
+			return FEEDBACK_INVALID_TASK;
+		} else {
+			assert (_index >= 0);
+			try {
+				_taskExisting = _displayList.get(_index);
+				// set focus task to change UI's page
+				Controller.setFocusTask(_taskExisting); 
+			} catch (IndexOutOfBoundsException ioobe) {
+				Log.info("Task index is out of bounds");
+				_validity = false;
+				Controller.setFocusTask(_displayList.getLast());
+				return String.format(FEEDBACK_INVALID_INDEX, _index+1);
+			}	
+		}
+		
+		if (_editType == null) {
+			_validity = false;
+			return FEEDBACK_INVALID_EDIT_TYPE;
+		}
+		if (_toBeEdited == null) {
+			_validity = false;
+			return FEEDBACK_INVALID_DETAILS;
+		}
+		try {
+			editedField = formNewTask();
+		} catch (Exception e1) {
+			_validity = false;
+			feedback = e1.getMessage();
+			return feedback;
+		}
+		
+		_displayList.remove(_index);
+		storageList.remove(_taskExisting);
+		sortByDate(storageList);
+		
+		try {
+			_storage.store(storageList);
+		} catch (IOException e) {
+			Log.error("Storage I/O problem",e);
+			feedback = FEEDBACK_INVALID_STORAGE;
+			_validity = false;
+			return feedback;
+		}
+		if (editedField.equals(KEYWORD_INVALID)) {
+			feedback = FEEDBACK_INVALID_INPUT;
+			_validity = false;
+		}
+		else {
+			feedback = String.format(FEEDBACK_VALID_EDIT, editedField);
+			_validity = true;
+		}
+		return feedback;
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandEdit.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandEdit.java
+	 */
+
+	public void sortByDate(LinkedList<Task> toSortList) {
+		
+	    if (_taskEdited.getTaskType() == TaskType.FLOATING) {
+	    	toSortList.add(_taskEdited);
+	    	// set focus task to change UI's page
+	    	Controller.setFocusTask(_taskEdited); 
+	    } else {
+	    	assert (_taskEdited.getTaskType() == TaskType.DEADLINE || _taskEdited.getTaskType() == TaskType.TIMED);
+	    	boolean isAdded = false;
+    		for (int i=0; i<toSortList.size(); i++) {
+    			Task current = toSortList.get(i);
+    			if (current.getTaskType() == TaskType.FLOATING) {
+    				toSortList.add(i,_taskEdited);
+    				// set focus task to change UI's page
+    				Controller.setFocusTask(_taskEdited); 
+    				isAdded = true;
+    				break;
+    			} else {
+    				assert (_taskEdited.getTaskType() == TaskType.DEADLINE || _taskEdited.getTaskType() == TaskType.TIMED);
+	    			if (current.getEndDateTime().compareTo(_taskEdited.getEndDateTime()) >0) {
+	    				toSortList.add(i,_taskEdited);
+	    				// set focus task to change UI's page
+	    				Controller.setFocusTask(_taskEdited); 
+	    				isAdded=true;
+	    				break;
+	    			}
+    			}	
+    		}
+    		
+    		if (!isAdded) {
+    			toSortList.add(_taskEdited);
+    		}
+	    }
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandEdit.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandEdit.java
+	 */
+
+	private String formNewTask() throws Exception {
+		_taskEdited = _taskExisting.copy();
+		if (_editType.equalsIgnoreCase(KEYWORD_TASK_NAME) || _editType.equalsIgnoreCase(KEYWORD_NAME)) {
+			_taskEdited.setTaskName(_toBeEdited);
+			return KEYWORD_NAME;
+		} else if (_editType.equalsIgnoreCase(KEYWORD_END_DATE) || _editType.equalsIgnoreCase(KEYWORD_DATE)) {
+			 if (_taskEdited.getTaskType() != TaskType.FLOATING) {
+				 _taskEdited.setEndDate(_toBeEdited);
+				 return KEYWORD_END_DATE;
+			 } else {
+				 throw new Exception(FEEDBACK_INVALID_REQUEST);
+			 }
+		} else if (_editType.equalsIgnoreCase(KEYWORD_START_DATE)){	
+			 if (_taskEdited.getTaskType() != TaskType.FLOATING
+				&& _taskEdited.getTaskType() != TaskType.DEADLINE){
+			 _taskEdited.setStartDate(_toBeEdited);
+			 return KEYWORD_START_DATE;	 
+			 } else {
+				 throw new Exception(FEEDBACK_INVALID_REQUEST);
+			 }
+		} else if (_editType.equalsIgnoreCase(KEYWORD_END_TIME) || _editType.equalsIgnoreCase(KEYWORD_TIME)){
+			 if (_toBeEdited.length() == 4 
+				&& _taskEdited.getTaskType() != TaskType.FLOATING){
+				 _taskEdited.setEndTime(_toBeEdited);
+			 	return KEYWORD_END_TIME;
+			 } else {
+				 throw new Exception(FEEDBACK_INVALID_REQUEST);
+			 }
+		 } else if (_editType.equalsIgnoreCase(KEYWORD_START_TIME)) {
+			 if (_toBeEdited.length() == 4 
+			    && _taskEdited.getTaskType() != TaskType.FLOATING 
+			    && _taskEdited.getTaskType() != TaskType.DEADLINE) {
+				 _taskEdited.setStartTime(_toBeEdited);
+			 	return KEYWORD_START_TIME;
+			 } else {
+				 throw new Exception(FEEDBACK_INVALID_REQUEST);
+			 }
+		 } else if (_editType.equalsIgnoreCase(KEYWORD_VENUE) || _editType.equalsIgnoreCase(KEYWORD_PLACE)) {
+			 _taskEdited.setVenue(_toBeEdited);
+			 return KEYWORD_VENUE;
+		 } else if (_editType.equalsIgnoreCase(KEYWORD_PERSON)) {
+			 _taskEdited.setPerson(_toBeEdited);
+			 return KEYWORD_PERSON;
+		 } else {
+			 throw new Exception (FEEDBACK_INVALID_REQUEST);
+		 }
+	}
+	 
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandEdit.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandEdit.java
+	 */
+
+	@Override
+	public String undo() {
+		String feedback;
+		LinkedList <Task> storageList;
+		int indexInStorage;
+		
+		storageList = _storage.load();
+		_displayList = Controller.getScheduleList();
+		
+		indexInStorage = storageList.indexOf(_displayList.get(_index));
+		storageList.remove(indexInStorage);
+		
+		_displayList.remove(_index);
+		_displayList.add(_index, _taskExisting);
+		storageList.add(indexInStorage, _taskExisting);
+		// set focus task to change UI's page
+		Controller.setFocusTask(_taskExisting); 
+		try {
+			_storage.store(storageList);
+		} catch (IOException e) {
+			Log.error("Storage I/O problem",e);
+			feedback = FEEDBACK_INVALID_STORAGE;;
+			return feedback;
+		}
+		feedback = String.format(FEEDBACK_VALID_UNDO, _editType);
+		return feedback;
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandEdit.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandEdit.java
+	 */
+
+	@Override
+	public boolean isUndoable(){
+		assert isUndoable();
+		return _validity;
+	}
+}
+
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandEdit.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandHelp.java
+	 */
+
+	@Override
+	public String execute() {
+		String inFileText = "";
+		try {
+			URL helpTextUrl = this.getClass().getClassLoader().getResource(FILEPATH_HELPTEXT);
+			inFile = new Scanner(new BufferedReader(new InputStreamReader(helpTextUrl.openStream())));
+			while(inFile.hasNextLine() != false ) {
+				String line = inFile.nextLine();
+				inFileText = inFileText + line + "\n"; 
+			} 	
+		} catch (FileNotFoundException e) {
+			Log.error("helper.txt not found");
+		} catch (IOException e1){
+			Log.error("error reading helper.txt");
+		}
+		if (inFileText != null ) {
+			HelpFrame generateHelpText = new HelpFrame(inFileText);
+			generateHelpText.execute();
+		}
+		return FEEDBACK_HELP;
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandHelp.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandHelp.java
+	 */
+
+	@Override
+	public String undo() {
+		return FEEDBACK_UNDO ;
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandHelp.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandHelp.java
+	 */
+
+	@Override
+	public boolean isUndoable() {
+		return false;
+	}
+}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandHelp.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandLoad.java
+	 */
+
+	public CommandLoad(String fileName) {
+		_oldFileName = Controller.getDBStorage().getFileStorage().getFile().getName();
+		_newFileName = fileName;
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandLoad.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandLoad.java
+	 */
+
+	@Override
+	public String execute() {
+		Controller.init(_newFileName);
+		 // set focus task to change UI's page
+		Controller.setFocusTask( null );
+		return String.format(FEEDBACK_LOADED_FILE_NAME, _newFileName); 
+	}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandLoad.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandLoad.java
+	 */
+
+	@Override
+	public String undo() {
+		Controller.init(_oldFileName);
+		// set focus task to change UI's page
+		Controller.setFocusTask( null ); 
+		return String.format(FEEDBACK_LOADED_FILE_NAME, _oldFileName); 
+	}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandLoad.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandLoad.java
+	 */
+
+	@Override
+	public boolean isUndoable() {
+		assert isUndoable();
+		return true;
+	}
+}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandLoad.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandMarkAsDone.java
+	 */
+
+	public CommandMarkAsDone() {
+		_index = INVALID_INDEX;
+		_storage = Controller.getDBStorage();
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandMarkAsDone.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandMarkAsDone.java
+	 */
+
+	public CommandMarkAsDone(int index) {
+		_index = index - CORRECTION_INDEX;
+		_storage = Controller.getDBStorage();
+	}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandMarkAsDone.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandMarkAsDone.java
+	 */
+
+	public Task getMarkedTask() {
+		return _task;
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandMarkAsDone.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandMarkAsDone.java
+	 */
+
+	@Override 
+	public String execute() {
+		String feedback;
+		_taskList = _storage.load();
+		_displayList = Controller.getScheduleList();
+		
+		try {
+			_task = _displayList.get(_index);
+			_displayList.get(_index).toggleTaskStatus();
+			// set focus task to change UI's page
+			Controller.setFocusTask(_task); 
+			if (_task.getTaskStatus()) {
+				feedback = String.format(FEEDBACK_VALID_MARK_AS_DONE , _task.getTaskName());
+				_validity = true;
+			} else {
+				assert (_task.getTaskStatus() == false);
+				feedback = String.format(FEEDBACK_VALID_MARK_AS_NOT_DONE , _task.getTaskName());
+				_validity = true;
+			}
+		} catch ( IndexOutOfBoundsException ioobe) {
+			Log.info("Task index is out of bounds");
+			_validity = false;
+			return FEEDBACK_INVALID_TASK;	
+		}
+		sortDisplay(_task);
+		try {
+			_storage.store(_taskList);
+		} catch ( IOException e) {
+			Log.error("Storage I/O problem",e);
+			_validity = false;	
+			return FEEDBACK_INVALID_STORAGE;
+			
+		}
+		return feedback;
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandMarkAsDone.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandMarkAsDone.java
+	 */
+
+	public void sortDisplay(Task task) {
+		if (_task.getTaskStatus() == true ) {
+			_taskList.remove(task);
+			_taskList.addLast(task);
+		} else {
+			assert (_task.getTaskStatus() == false);
+			 if (_task.getTaskType() == TaskType.FLOATING) {
+				 	_taskList.remove(_task);
+			    	_taskList.add(_task);
+			    	Controller.setFocusTask(_task); // set focus task to change UI's page
+			    } else {
+			    	assert (_task.getTaskType() == TaskType.DEADLINE || _task.getTaskType() == TaskType.TIMED);
+		    		sortList(_taskList);	
+			    }
+		}
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandMarkAsDone.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandMarkAsDone.java
+	 */
+
+	public void sortList(LinkedList <Task> newList) {
+		boolean isAdded = false;
+		for ( int i=0; i < newList.size(); i++ ) {
+			Task current = newList.get(i);
+			if (current.getTaskType() == TaskType.FLOATING) {
+				newList.remove(_task);
+				newList.add(i, _task);
+				Controller.setFocusTask(_task); // set focus task to change UI's page
+				isAdded = true;
+				break;
+			} else {
+				assert (current.getTaskType() == TaskType.DEADLINE || current.getTaskType() == TaskType.TIMED);
+    			if (current.getEndDateTime().compareTo(_task.getEndDateTime()) > 0) {
+    				newList.remove(_task);
+    				newList.add(i,_task);
+    				// set focus task to change UI's page
+    				Controller.setFocusTask(_task); 
+    				isAdded = true;
+    				break;
+    			}
+			}	
+		}
+		if ( !isAdded) {
+			newList.remove(_task);
+			newList.add(_task);
+		}
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandMarkAsDone.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandMarkAsDone.java
+	 */
+
+	@Override
+	public String undo() {
+		_displayList=Controller.getScheduleList();
+		CommandMarkAsDone undoMarkAsDone = new CommandMarkAsDone(_displayList.indexOf(_task) + CORRECTION_INDEX);
+		return undoMarkAsDone.execute();
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandMarkAsDone.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandMarkAsDone.java
+	 */
+
+	@Override
+	public boolean isUndoable() {
+		assert isUndoable();
+		return _validity;
+	}
+}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandMarkAsDone.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandNumber.java
+	 */
+
+	public CommandNumber(int index) {
+		_index = index - CORRECTION_INDEX;
+	}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandNumber.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandNumber.java
+	 */
+
+	@Override
+	public String execute() {
+		_displayList = Controller.getScheduleList();
+		try {
+			_task = _displayList.get(_index);
+			Controller.setFocusTask(_task);
+			return FEEDBACK_VALID_TASK;
+		} catch (IndexOutOfBoundsException ioobe) {
+			Log.info("Task index is out of bounds");
+			_task = null ;
+			return FEEDBACK_INVALID_TASK;
+		}
+	}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandNumber.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandNumber.java
+	 */
+
+	@Override
+	public String undo() {
+		return FEEDBACK_INVALID_UNDO;
+	}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandNumber.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandNumber.java
+	 */
+
+	@Override
+	public boolean isUndoable() {
+		return false ;
+	}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandNumber.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandNumber.java
+	 */
+
+	public Task getTask() {
+		return _task;
+	}
+
+}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandNumber.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandRedo.java
+	 */
+
+	public CommandRedo(Command toBeRedone) {
+		_toBeRedone = toBeRedone;
+		_history = Controller.getHistory();
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandRedo.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandRedo.java
+	 */
+
+	@Override
+	public String execute() {
+		try {
+			_history.goForwards();
+			return _toBeRedone.execute();
+		} catch (Exception e) {
+			return e.getMessage();
+		}
+	}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandRedo.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandRedo.java
+	 */
+
+	@Override
+	public String undo() {
+		return FEEDBACK_INVALID_UNDO;
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandRedo.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandRedo.java
+	 */
+
+	@Override
+	public boolean isUndoable() {
+		return false;
+	}
+}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandRedo.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandSearch.java
+	 */
+
+	public CommandSearch(String searchKey) {
+		_searchKey = searchKey;
+		_storage = Controller.getDBStorage();
+		_storageList = _storage.load();
+ 	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandSearch.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandSearch.java
+	 */
+
+	public String getSearchKey() {
+		return _searchKey;
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandSearch.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandSearch.java
+	 */
+
+	private void setReturnList(LinkedList <Task> list) {
+		_returnList = list;
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandSearch.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandSearch.java
+	 */
+
+	public LinkedList<Task> getReturnList() {
+		return _returnList;
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandSearch.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandSearch.java
+	 */
+
+	@Override
+	public String execute() {
+		String feedback;
+		Controller.setFocusTask( null ); // set focus task to change UI's page
+		searchName(_searchKey);
+		feedback = String.format(FEEDBACK_VALID_SEARCH, _searchKey);
+		return feedback;
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandSearch.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandSearch.java
+	 */
+
+	public void searchName(String searchKey) {
+		LinkedList<Task> searchList = new LinkedList<Task>();
+		for (int i = 0; i < _storageList.size(); i++ ) {
+			if (_storageList.get(i).getTaskName().toUpperCase().contains(searchKey.toUpperCase())) {
+				searchList.add(_storageList.get(i));
+			}
+		}
+		setReturnList(searchList);
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandSearch.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandSearch.java
+	 */
+
+	@Override
+	public String undo() {
+		return FEEDBACK_INVALID_UNDO;
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandSearch.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandSearch.java
+	 */
+
+	@Override
+	public boolean isUndoable() {
+		return false;
+	}
+}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandSearch.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandUndo.java
+	 */
+
+	public CommandUndo(Command toBeUndone) {
+		_toBeUndone = toBeUndone;
+		_history = Controller.getHistory();
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandUndo.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandUndo.java
+	 */
+
+	@Override
+	public String execute() {
+		try {
+			_history.goBackwards();
+			return _toBeUndone.undo();
+		} catch (Exception e) {
+			return e.getMessage();
+		}
+	}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandUndo.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandUndo.java
+	 */
+
+	@Override
+	public String undo() {
+		return FEEDBACK_INVALID_UNDO;
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandUndo.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandUndo.java
+	 */
+
+	@Override
+	public boolean isUndoable() {
+		return false;
+	}
+}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandUndo.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandView.java
+	 */
+
+	public CommandView(String toView ) {
+		_toView = toView;
+		_storage = Controller.getDBStorage();
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandView.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandView.java
+	 */
+
+	public String getViewType() {
+		return _viewType;
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandView.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandView.java
+	 */
+
+	public LinkedList<Task> getReturnList() {
+		return _returnList;
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandView.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandView.java
+	 */
+
+	@Override
+	public String execute() {
+		String feedback;
+		int year,month,day;
+		DateTime startDay = new DateTime();
+		DateTime endDay = new DateTime();
+		year = startDay.getYear();
+		month = startDay.getMonthOfYear();
+		day = startDay.getDayOfMonth();
+		if (_toView.equalsIgnoreCase(DAY_KEYWORD_TODAY) || _toView.equalsIgnoreCase(DAY_KEYWORD_THIS_DAY)) { 
+			feedback = viewToday(year, month, day);
+		} else if (_toView.equalsIgnoreCase(DAY_KEYWORD_TOMORROW)
+				|| _toView.equalsIgnoreCase(DAY_KEYWORD_TMR)
+				|| _toView.equalsIgnoreCase(DAY_KEYWORD_NEXT_DAY)) {
+			feedback = viewTomorrow(startDay);
+		} else if (isWeekDay()!= null) {
+			feedback = viewWeekDay(startDay);
+		} else if (TaskParser.checkDateFormat(_toView)) {
+			feedback = viewDate();
+		} else if (_toView.equalsIgnoreCase(DAY_KEYWORD_THIS_WEEK)) {
+			feedback = viewThisWeek(startDay);
+		} else if (_toView.equalsIgnoreCase(DAY_KEYWORD_NEXT_WEEK)) {
+			feedback = viewNextWeek(startDay, endDay);
+		} else if (checkMonth() != null ) {
+			feedback = viewMonth(startDay);
+		} else if (_toView.equalsIgnoreCase(KEYWORD_ALL)) {
+			feedback = viewAll();
+		} else if (_toView.equalsIgnoreCase(KEYWORD_OVERDUE)||_toView.equalsIgnoreCase(KEYWORD_PENDING)){
+			feedback = viewOverdue(startDay);	
+		} else {
+			feedback=FEEDBACK_INVALID_COMMAND;
+		}
+		return feedback;
+	}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandView.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandView.java
+	 */
+
+	private String viewOverdue(DateTime startDay) {
+		String feedback;
+		DateTime endDay;
+		endDay = startDay.minusMinutes(1);
+		viewOverDueTasks(endDay);
+		feedback = KEYWORD_OVERDUE;
+		_viewType = KEYWORD_PAST;
+		feedback = String.format(FEEDBACK_VALID, _toView);
+		return feedback;
+	}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandView.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandView.java
+	 */
+
+	private String viewAll() {
+		String feedback;
+		formViewList(new DateTime(0), new DateTime(9999, 12, 31, 23, 59));
+		_viewType = KEYWORD_ALL;
+		feedback = String.format(FEEDBACK_VALID, _toView);
+		return feedback;
+	}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandView.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandView.java
+	 */
+
+	private String viewMonth(DateTime startDay) {
+		String feedback;
+		DateTime endDay;
+		DateTime startOfThisMonth=startDay.dayOfMonth().withMinimumValue().withTimeAtStartOfDay();
+		int currentMonth = startOfThisMonth.getMonthOfYear();
+		if (monthInIntegers >= currentMonth) {
+			startDay = startOfThisMonth.plusMonths(monthInIntegers - currentMonth)
+					.dayOfMonth().withMinimumValue();
+			endDay = startOfThisMonth.plusMonths(monthInIntegers - currentMonth)
+					.dayOfMonth().withMaximumValue();	
+		} else {
+			startDay = startOfThisMonth.minusMonths(currentMonth - monthInIntegers)
+					  .dayOfMonth().withMinimumValue();
+			endDay = startOfThisMonth.minusMonths(currentMonth - monthInIntegers)
+					 .dayOfMonth().withMaximumValue();	
+		}
+		startDay.withHourOfDay(START_MIN_HOUR);
+		startDay.withMinuteOfHour(START_MIN_HOUR);
+		endDay.withHourOfDay(END_TIME_HOUR);
+		endDay.withMinuteOfHour(END_TIME_MINUTE);
+
+		formViewList(startDay,endDay);
+		_viewType = checkMonth() + POSSESSIVE_CASE;
+		feedback = String.format(FEEDBACK_VALID, _toView);
+		return feedback;
+	}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandView.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandView.java
+	 */
+
+	private String viewNextWeek(DateTime startDay, DateTime endDay) {
+		String feedback;
+		startDay = startDay.plusDays(NEXT_WEEK_START);
+		endDay = endDay.plusDays(NEXT_WEEK_END);
+		startDay.withHourOfDay(START_MIN_HOUR);
+		startDay.withMinuteOfHour(START_MIN_HOUR);
+		endDay.withHourOfDay(END_TIME_HOUR);
+		endDay.withMinuteOfHour(END_TIME_MINUTE);
+		formViewList(startDay,endDay);
+		_viewType = DAY_KEYWORD_NEXT_WEEK;
+		feedback = String.format(FEEDBACK_VALID, _toView);
+		return feedback;
+	}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandView.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandView.java
+	 */
+
+	private String viewThisWeek(DateTime startDay) {
+		String feedback;
+		DateTime endDay;
+		endDay = startDay.plusDays(THIS_WEEK_END);
+		startDay.withHourOfDay(START_MIN_HOUR);
+		startDay.withMinuteOfHour(START_MIN_HOUR);
+		endDay.withHourOfDay(END_TIME_HOUR);
+		endDay.withMinuteOfHour(END_TIME_MINUTE);
+		formViewList(startDay,endDay);
+		_viewType = DAY_KEYWORD_THIS_WEEK + POSSESSIVE_CASE;
+		feedback = String.format(FEEDBACK_VALID, _toView);
+		return feedback;
+	}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandView.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandView.java
+	 */
+
+	private String viewDate() {
+		String feedback;
+		int year;
+		int month;
+		int day;
+		DateTime startDay;
+		DateTime endDay;
+		int ddmmyy = Integer.parseInt(_toView);
+		year = ddmmyy % 100 + 2000;
+		month = (ddmmyy / 100) % 100;
+		day = (ddmmyy / 10000);
+		startDay = new DateTime(year, month, day, START_MIN_HOUR, START_MIN_HOUR);
+		endDay = new DateTime(year, month, day, END_TIME_HOUR, END_TIME_MINUTE);
+		formViewList(startDay,endDay);
+		_viewType = _toView + POSSESSIVE_CASE;
+		feedback = String.format(FEEDBACK_VALID, _toView);
+		return feedback;
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandView.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandView.java
+	 */
+
+	private String viewWeekDay(DateTime startDay) {
+		String feedback;
+		int year;
+		int month;
+		int day;
+		DateTime endDay;
+		int currentWeekDay = startDay.getDayOfWeek();
+		int givenWeekDay = TaskParser.parseDayOfWeek(_toView);
+		if (givenWeekDay >= currentWeekDay) {
+			startDay = startDay.plusDays(givenWeekDay - currentWeekDay);	
+		} else {
+			startDay = startDay.plusDays(givenWeekDay - currentWeekDay + THIS_WEEK_END);
+		}
+		year = startDay.getYear();
+		month = startDay.getMonthOfYear();
+		day = startDay.getDayOfMonth();
+		startDay = new DateTime(year, month, day, START_MIN_HOUR, START_MIN_HOUR);
+		endDay = new DateTime(year, month, day, END_TIME_HOUR, END_TIME_MINUTE);
+		formViewList(startDay,endDay);
+		_viewType = isWeekDay() + POSSESSIVE_CASE;
+		feedback = String.format(FEEDBACK_VALID, _toView);
+		return feedback;
+	}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandView.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandView.java
+	 */
+
+	private String viewTomorrow(DateTime startDay) {
+		String feedback;
+		int year;
+		int month;
+		int day;
+		DateTime endDay;
+		startDay = startDay.plusDays(1);
+		year = startDay.getYear();
+		month = startDay.getMonthOfYear();
+		day = startDay.getDayOfMonth();
+		startDay = new DateTime(year, month, day, START_MIN_HOUR, START_MIN_HOUR);
+		endDay = new DateTime(year, month, day, END_TIME_HOUR, END_TIME_MINUTE);
+		formViewList(startDay,endDay);
+		_viewType = DAY_KEYWORD_TOMORROW + POSSESSIVE_CASE;
+		feedback = String.format(FEEDBACK_VALID, _toView);
+		return feedback;
+	}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandView.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandView.java
+	 */
+
+	private String viewToday(int year, int month, int day) {
+		String feedback;
+		DateTime startDay;
+		DateTime endDay;
+		startDay = new DateTime(year, month, day, START_MIN_HOUR, START_MIN_HOUR );
+		endDay = new DateTime(year, month, day, END_TIME_HOUR, END_TIME_MINUTE);
+		formViewList(startDay, endDay);
+		_viewType = DAY_KEYWORD_TODAY + POSSESSIVE_CASE;
+		feedback = String.format(FEEDBACK_VALID, _toView);
+		return feedback;
+	}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandView.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandView.java
+	 */
+
+	public String isWeekDay(){
+		if (_toView.equalsIgnoreCase(KEYWORD_MONDAY1) || _toView.equalsIgnoreCase(KEYWORD_MONDAY2)) {
+			return KEYWORD_MONDAY1;
+		} else if (_toView.equalsIgnoreCase(KEYWORD_TUESDAY1) || _toView.equalsIgnoreCase(KEYWORD_TUESDAY2)) {
+			return KEYWORD_TUESDAY1;
+		} else if (_toView.equalsIgnoreCase(KEYWORD_WEDNESDAY1) || _toView.equalsIgnoreCase(KEYWORD_WEDNESDAY2)) {
+			return KEYWORD_WEDNESDAY1;
+		} else if (_toView.equalsIgnoreCase(KEYWORD_THURSDAY1) || _toView.equalsIgnoreCase(KEYWORD_THURSDAY2)) {
+			return KEYWORD_THURSDAY1;
+		} else if (_toView.equalsIgnoreCase(KEYWORD_FRIDAY1) || _toView.equalsIgnoreCase(KEYWORD_FRIDAY2)) {
+			return KEYWORD_FRIDAY1;
+		} else if (_toView.equalsIgnoreCase(KEYWORD_SATURDAY1) || _toView.equalsIgnoreCase(KEYWORD_SATURDAY2)) {
+			return KEYWORD_SATURDAY1;
+		} else if (_toView.equalsIgnoreCase(KEYWORD_SUNDAY1) || _toView.equalsIgnoreCase(KEYWORD_SUNDAY2)) {
+			return KEYWORD_SUNDAY1;
+		} else {
+			return null;
+		}
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandView.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandView.java
+	 */
+
+	public String checkMonth() {
+		if (_toView.equalsIgnoreCase(KEYWORD_JANUARY1) || _toView.equalsIgnoreCase(KEYWORD_JANUARY2)) {
+			monthInIntegers = 1;
+			return KEYWORD_JANUARY1;
+		} else if (_toView.equalsIgnoreCase(KEYWORD_FEBRUARY1) || _toView.equalsIgnoreCase(KEYWORD_FEBRUARY2)) {
+			monthInIntegers = 2;
+			return KEYWORD_FEBRUARY1;
+		} else if (_toView.equalsIgnoreCase(KEYWORD_MARCH1) || _toView.equalsIgnoreCase(KEYWORD_MARCH2)) {
+			monthInIntegers = 3;
+			return KEYWORD_MARCH1;
+		} else if (_toView.equalsIgnoreCase(KEYWORD_APRIL1) || _toView.equalsIgnoreCase(KEYWORD_APRIL2)) {
+			monthInIntegers = 4;
+			return KEYWORD_APRIL1;
+		} else if (_toView.equalsIgnoreCase(KEYWORD_MAY)) {
+			monthInIntegers = 5;
+			return KEYWORD_MAY;
+		} else if (_toView.equalsIgnoreCase(KEYWORD_JUNE1) || _toView.equalsIgnoreCase(KEYWORD_JUNE2)){
+			monthInIntegers = 6;
+			return KEYWORD_JUNE1;
+		} else if (_toView.equalsIgnoreCase(KEYWORD_JULY1) || _toView.equalsIgnoreCase(KEYWORD_JULY2)) {
+			monthInIntegers = 7;
+			return KEYWORD_JULY1;
+		} else if (_toView.equalsIgnoreCase(KEYWORD_AUGUST1) || _toView.equalsIgnoreCase(KEYWORD_AUGUST2)) {
+			monthInIntegers = 8;
+			return KEYWORD_AUGUST1;
+		} else if (_toView.equalsIgnoreCase(KEYWORD_SEPTEMBER1) || _toView.equalsIgnoreCase(KEYWORD_SEPTEMBER2)) {
+			monthInIntegers = 9;
+			return KEYWORD_SEPTEMBER1;
+		} else if (_toView.equalsIgnoreCase(KEYWORD_OCTOBER1) || _toView.equalsIgnoreCase(KEYWORD_OCTOBER2)) {
+			monthInIntegers = 10;
+			return KEYWORD_OCTOBER1;
+		} else if (_toView.equalsIgnoreCase(KEYWORD_NOVEMBER1)||_toView.equalsIgnoreCase(KEYWORD_NOVEMBER2)) {
+			monthInIntegers = 11;
+			return KEYWORD_NOVEMBER1;
+		} else if (_toView.equalsIgnoreCase(KEYWORD_DECEMBER1)||_toView.equalsIgnoreCase(KEYWORD_DECEMBER2)) {
+			monthInIntegers = 12;
+			return KEYWORD_DECEMBER1;
+		} else {
+			return null ;
+		}
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandView.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandView.java
+	 */
+
+	public void formViewList(DateTime startDay, DateTime endDay){
+		
+		_storage = Controller.getDBStorage();
+		LinkedList<Task> viewList=new LinkedList<Task>();
+
+		for (int i = 0; i < _storage.load().size(); i++) {
+			if (_storage.load().get(i).getTaskType() == TaskType.TIMED) {
+				
+				if (((_storage.load().get(i).getStart().isAfter(startDay))
+						|| (_storage.load().get(i).getStart().isEqual(startDay)))
+						&& ((_storage.load().get(i).getStart().isBefore(endDay))
+							|| (_storage.load().get(i).getStart().isEqual(endDay)))){
+					viewList.add(_storage.load().get(i));
+				} else if (((_storage.load().get(i).getEnd().isAfter(startDay))
+						|| (_storage.load().get(i).getEnd().isEqual(startDay)))
+						&& ((_storage.load().get(i).getEnd().isBefore(endDay))
+								|| (_storage.load().get(i).getEnd().isEqual(endDay)))){
+					viewList.add(_storage.load().get(i));	
+				}
+			} else if (_storage.load().get(i).getTaskType() == TaskType.DEADLINE){
+				if (_storage.load().get(i).getEnd()!=null){
+					if (((_storage.load().get(i).getEnd().isAfter(startDay))
+							|| (_storage.load().get(i).getEnd().isEqual(startDay)))
+							&& ((_storage.load().get(i).getEnd().isBefore(endDay))
+									|| (_storage.load().get(i).getEnd().isEqual(endDay)))){
+						viewList.add(_storage.load().get(i));	
+					}
+				}
+			}	
+		}
+		setReturnList(viewList);	
+	}
+	
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandView.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandView.java
+	 */
+
+	public void viewOverDueTasks(DateTime endDay){
+		LinkedList <Task> viewList = new LinkedList<Task>();
+		for(int i = 0; i < _storage.load().size(); i++ ){
+			if (_storage.load().get(i).getTaskType() == TaskType.FLOATING) {
+				break;
+			}
+			if (((_storage.load().get(i).getEnd().isBefore(endDay))
+					||(_storage.load().get(i).getEnd().isEqual(endDay)))
+					&&(_storage.load().get(i).getTaskStatus() == false)) {
+				viewList.add(_storage.load().get(i));
+			}
+		}
+		setReturnList(viewList);
+	}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandView.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandView.java
+	 */
+
+	private void setReturnList(LinkedList <Task> list) {
+		LinkedList <Task> returnList = new LinkedList <Task>(list);
+		for (Task task : _storage.load()) {
+			if (task.getTaskType() == TaskType.FLOATING) {
+				returnList.add(task);
+			}
+		}
+		_returnList = returnList;
+	}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandView.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandView.java
+	 */
+
+	@Override
+	public String undo() {
+		return FEEDBACK_INVALID_UNDO;
+	}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandView.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\command\CommandView.java
+	 */
+
+	@Override
+	public boolean isUndoable() {
+		return false;
+	}
+}
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\command\CommandView.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\gui\HelpFrame.java
+	 */
+
+public class HelpFrame {
+
+	String _text;
+	
+	public static final String FRAME_HEADER = "HELPER";
+	public HelpFrame (String text) {
+		_text = text;
+	}
+	
+	public void execute() {
+		JTextArea textArea = new JTextArea();
+		textArea.setTabSize(2);
+        DefaultCaret caret1 = (DefaultCaret) textArea.getCaret();
+        caret1.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
+	    textArea.setLineWrap( true );
+	    textArea.setWrapStyleWord( true );
+	    JScrollPane scroll = new JScrollPane(textArea);
+	    scroll.setBackground(Color.BLACK);
+	    textArea.append(_text);
+	    textArea.setForeground(Color.WHITE);
+		JFrame frame = new JFrame(FRAME_HEADER);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        Dimension dimension = new Dimension(700,500);
+        frame.setPreferredSize(dimension);
+        frame.pack();
+        frame.getContentPane().add(scroll, java.awt.BorderLayout.CENTER);
+        textArea.setBackground(Color.DARK_GRAY);
+        frame.setResizable( false );
+        frame.setVisible( true );
+	}
+}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\gui\HelpFrame.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\gui\ReminderLogic.java
+	 */
+
+public class ReminderLogic {
+
+	private DBStorage _storage;
+	private LinkedList<Task> _toBeReminded;
+
+	public ReminderLogic(){
+		_storage=Controller.getDBStorage();
+		_toBeReminded=new LinkedList<Task>();
+	}
+
+	public void execute(){
+		Log.info("Check the tasks for reminder");
+		LinkedList<Task> _storageList=_storage.load();
+		for(int i=0;i<_storageList.size();i++){
+			if(check24hrsBefore(_storageList.get(i))==true){
+				_toBeReminded.add(_storageList.get(i));
+			}
+		}
+
+
+		for(int i=0;i<_toBeReminded.size();i++){
+			ShowMessageDialog one = new ShowMessageDialog(_toBeReminded.get(i));
+			one.execute();
+		}
+
+	}
+
+	public boolean check24hrsBefore(Task task){
+		DateTime currentTime= new DateTime();
+		int year = currentTime.getYear();
+		int month = currentTime.getMonthOfYear();
+		int day = currentTime.getDayOfMonth();
+		int hour= currentTime.getHourOfDay();
+		int min=currentTime.getMinuteOfHour();
+		currentTime= new DateTime(year,month,day,hour,min);
+		if(task.getTaskStatus()==false){
+			if(task.getTaskType()==TaskType.DEADLINE){
+				DateTime dueTime = task.getEndDateTime();
+				DateTime tempTime= dueTime;
+				if(tempTime.minusHours(24).equals(currentTime)){
+					return true;
+				}
+			}
+			else if(task.getTaskType()==TaskType.TIMED){
+				DateTime startTime =task.getStartDateTime();
+				DateTime tempTime =startTime;
+				if(tempTime.minusHours(24).equals(currentTime)){
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\gui\ReminderLogic.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\gui\ShowMessageDialog.java
+	 */
+
+public class ShowMessageDialog {
+	private static Task _task;
+	
+	private static final String FRAME_HEADER = "Reminder";
+	private static final String REMINDER_MESSAGE_DEADLINE = "You have %1$s due tomorrow at %2$s";
+	private static final String REMINDER_MESSAGE_TIMED = "You have %1$s from%2$s at %3$s to%4$s at %5$s"; 
+	private static final String REMINDER_NO_MESSAGE = "Sorry for the wrong reminder";
+	
+	public ShowMessageDialog( Task task) {
+		_task = task;
+	}
+	
+	public void execute() {
+		String message = generateMessage();
+	    JOptionPane.showMessageDialog( null, message, FRAME_HEADER, JOptionPane.WARNING_MESSAGE); 
+	  }
+	
+	public String generateMessage() {
+		String name = _task.getTaskName();
+		String message;
+		if (_task.getTaskType() == TaskType.DEADLINE) {
+			String dueDate = _task.getEndTimeStr();
+			message = String.format(REMINDER_MESSAGE_DEADLINE, name, dueDate);
+		} else if (_task.getTaskType() == TaskType.TIMED) {
+			String startTime = _task.getStartTimeStr();
+			String endTime = _task.getEndTimeStr();
+			int endDate = _task.getEndDate();
+			int endMonth =_task.getEndMonth();
+			int endYear = _task.getEndYear();
+			String endDay = " " + endDate + "/" + endMonth + "/" + endYear;
+			int startDate = _task.getStartDate();
+			int startMonth = _task.getStartMonth();
+			int startYear = _task.getStartYear();
+			String startDay =" " + startDate + "/" + startMonth + "/" + startYear;
+			message = String.format(REMINDER_MESSAGE_TIMED, name, startDay, startTime, endDay, endTime);
+		} else {
+			message = REMINDER_NO_MESSAGE;
+		}
+		return message;
+	}
+}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\gui\ShowMessageDialog.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\gui\UserInterface.java
+	 */
+
+	private void startReminderTimer(){
+		final Timer timer = new Timer( 60000 ,
+				new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent ae) {
+						ReminderLogic reminder = new ReminderLogic();
+						reminder.execute();
+					}
+				});
+		timer.setInitialDelay(0);
+		timer.start();
+		
+	}
+
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\gui\UserInterface.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\test\CommandAddTest.java
+	 */
+
+public class CommandAddTest {
+	@Test
+	public void testExecute() throws Exception {
+		File file = new File ("test.xml");
+		file.delete();
+		Controller.init("test.xml");
+		
+		Controller.acceptUserCommand("add group meeting");
+		CommandAdd command1 = (CommandAdd) Controller.getLatestCommand();
+		assertEquals("Description", "Added group meeting to ToDoLog",command1.execute());
+		
+		Controller.acceptUserCommand("add lunch by monday at 2345");
+		CommandAdd command2 = (CommandAdd) Controller.getLatestCommand();
+		assertEquals("Description", "Added lunch to ToDoLog",command2.execute());
+		
+		Controller.acceptUserCommand("add Movie from monday at 1200 to 1500");
+		CommandAdd command3 = (CommandAdd) Controller.getLatestCommand();
+		assertEquals("Description", "Added Movie to ToDoLog",command3.execute());
+		
+		Controller.acceptUserCommand("add Picnic from tuesday at 1200 to 1500 at 'Gardens by the bay'");
+		CommandAdd command4 = (CommandAdd) Controller.getLatestCommand();
+		assertEquals("Description", "Added Picnic to ToDoLog",command4.execute());
+		
+		Controller.acceptUserCommand("add");
+		CommandAdd command5 = (CommandAdd) Controller.getLatestCommand();
+		assertEquals("Description", "Please enter the task details",command5.execute());
+		
+		Controller.acceptUserCommand("add          ");
+		CommandAdd command6 = (CommandAdd) Controller.getLatestCommand();
+		assertEquals("Description", "Please enter the task details",command6.execute());
+		
+		Controller.acceptUserCommand("add ");
+		CommandAdd command7 = (CommandAdd) Controller.getLatestCommand();
+		assertEquals("Description", "Please enter the task details",command7.execute());
+		
+		Controller.acceptUserCommand("ad");
+		assertEquals("Description", "Invalid command.\nType in a command: add, delete, edit, done.",Controller.getFeedback());
+		
+			
+	}
+}
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\test\CommandAddTest.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\test\CommandDeleteTest.java
+	 */
+
+public class CommandDeleteTest {
+	@Before
+	public void before() throws Exception{
+		CommandAddTest addTest = new CommandAddTest();
+		addTest.testExecute();
+	}
+	@Test
+	public void testExecute() throws Exception{
+		Controller.init("test.xml");
+		
+		LinkedList <Task> displayList = Controller.getScheduleList();
+		Controller.acceptUserCommand("delete -1");
+		CommandDelete command1 = (CommandDelete) Controller.getLatestCommand();
+		assertEquals("Description", "Item number -1 does not exist",command1.execute());
+		
+		Controller.acceptUserCommand("delete 100000000");
+		CommandDelete command2 = (CommandDelete) Controller.getLatestCommand();
+		assertEquals("Description", "Item number 100000000 does not exist",command2.execute());
+		
+		Controller.acceptUserCommand("delete");
+		CommandDelete command3 = (CommandDelete) Controller.getLatestCommand();
+		assertEquals("Description", "Please specify the task to be deleted.",command3.execute());
+		
+		Controller.acceptUserCommand("delete         ");
+		CommandDelete command4 = (CommandDelete) Controller.getLatestCommand();
+		assertEquals("Description", "Please specify the task to be deleted.",command4.execute());
+		
+		Controller.acceptUserCommand("del");
+		assertEquals("Description", "Invalid command.\nType in a command: add, delete, edit, done.",Controller.getFeedback());
+		
+		Controller.acceptUserCommand("delete 3");
+		CommandDelete command6 = (CommandDelete) Controller.getLatestCommand();
+		String deletedName1 = displayList.get(2).getTaskName();
+		assertEquals("Description", "Deleted "+ deletedName1+" from toDoLog",command6.execute());
+		
+		Controller.acceptUserCommand("delete 1 ");
+		Command command7 = Controller.getLatestCommand();
+		String deletedName2 = displayList.get(0).getTaskName();
+		assertEquals("Description", "Deleted "+ deletedName2+" from toDoLog",command7.execute());
+			
+	}
+}
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\test\CommandDeleteTest.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\test\CommandEditTest.java
+	 */
+
+public class CommandEditTest {
+	@Before
+	public void before() throws Exception{
+		CommandAddTest addTest = new CommandAddTest();
+		addTest.testExecute();
+	}
+	@Test
+	public void testExecute() throws Exception{
+		Controller.init("test.xml");
+		LinkedList <Task> displayList = Controller.getScheduleList();
+		
+		Controller.acceptUserCommand("edit -1");
+		Command command1 = Controller.getLatestCommand();
+		assertEquals("Description", "Item number -1 does not exist",command1.execute());
+		
+		Controller.acceptUserCommand("edit 100000000");
+		Command command2 =  Controller.getLatestCommand();
+		assertEquals("Description", "Item number 100000000 does not exist",command2.execute());
+		
+		Controller.acceptUserCommand("edit");
+		Command command3 =  Controller.getLatestCommand();
+		assertEquals("Description", "Please specify task to be edited and the details.",command3.execute());
+		
+		Controller.acceptUserCommand("edit         ");
+		Command command4 = Controller.getLatestCommand();
+		assertEquals("Description", "Please specify task to be edited and the details.",command4.execute());
+		
+		Controller.acceptUserCommand("ed");
+		assertEquals("Description", "Invalid command.\nType in a command: add, delete, edit, done.",Controller.getFeedback());
+		
+		Controller.acceptUserCommand("edit 3 name Have fun");
+		Command command6 = Controller.getLatestCommand();
+		assertEquals("Description", "Edited name of the task.",command6.execute());
+		
+		Controller.acceptUserCommand("edit 3 venue SOC");
+		Command command7 = Controller.getLatestCommand();
+		assertEquals("Description", "Edited venue of the task.",command7.execute());
+		
+		Controller.acceptUserCommand("edit 3 venue");
+		Command command8 = Controller.getLatestCommand();
+		assertEquals("Description", "Please specify the details.",command8.execute());
+		
+		Controller.acceptUserCommand("edit 3 start date");
+		Command command9 = Controller.getLatestCommand();
+		assertEquals("Description", "Please specify the details.",command9.execute());
+		
+		Controller.acceptUserCommand("edit 3 start day 121214");
+		Command command10 = Controller.getLatestCommand();
+		assertEquals("Description", "Incorrect input for edit",command10.execute());
+		
+		Controller.acceptUserCommand("edit 3 start date 121214");
+		Command command11 = Controller.getLatestCommand();
+		if(displayList.get(2).getTaskType() == TaskType.TIMED){
+			assertEquals("Description", "Edited start date of the task.",command11.execute());
+		} else if (displayList.get(2).getTaskType() == TaskType.DEADLINE || displayList.get(3).getTaskType() == TaskType.FLOATING) { 
+			assertEquals("Description", "Incorrect input for edit",command11.execute());
+		}
+		
+		Controller.acceptUserCommand("edit 4 venue SOC");
+		Command command12 = Controller.getLatestCommand();
+		if(displayList.get(0).getTaskType() == TaskType.TIMED || displayList.get(0).getTaskType() == TaskType.DEADLINE ){
+			assertEquals("Description", "Edited venue of the task.",command12.execute());
+		} else if (displayList.get(3).getTaskType() == TaskType.FLOATING) { 
+			assertEquals("Description", "Incorrect input for edit",command12.execute());
+		}
+		
+		Controller.acceptUserCommand("edit 2 end date 121214");
+		Command command13 = Controller.getLatestCommand();
+		if(displayList.get(0).getTaskType() == TaskType.TIMED || displayList.get(0).getTaskType() == TaskType.DEADLINE ){
+			assertEquals("Description", "Edited end date of the task.",command13.execute());
+		} else if (displayList.get(3).getTaskType() == TaskType.FLOATING) { 
+			assertEquals("Description", "Incorrect input for edit",command13.execute());
+		}
+		
+		Controller.acceptUserCommand("edit 4 end date 121214");
+		Command command14 = Controller.getLatestCommand();
+		if(displayList.get(0).getTaskType() == TaskType.TIMED || displayList.get(0).getTaskType() == TaskType.DEADLINE ){
+			assertEquals("Description", "Edited end date of the task.",command14.execute());
+		} else if (displayList.get(3).getTaskType() == TaskType.FLOATING) { 
+			assertEquals("Description", "Incorrect input for edit",command14.execute());
+		}
+		
+		Controller.acceptUserCommand("edit 4 person Linh");
+		Command command15 = Controller.getLatestCommand();
+		if(displayList.get(0).getTaskType() == TaskType.TIMED || displayList.get(0).getTaskType() == TaskType.DEADLINE ){
+			assertEquals("Description", "Edited person of the task.",command15.execute());
+		} else if (displayList.get(3).getTaskType() == TaskType.FLOATING) { 
+			assertEquals("Description", "Incorrect input for edit",command15.execute());
+		}
+		
+		Controller.acceptUserCommand("edit 2 person Linh");
+		Command command16 = Controller.getLatestCommand();
+		if(displayList.get(0).getTaskType() == TaskType.TIMED || displayList.get(0).getTaskType() == TaskType.DEADLINE ){
+			assertEquals("Description", "Edited person of the task.",command16.execute());
+		} else if (displayList.get(3).getTaskType() == TaskType.FLOATING) { 
+			assertEquals("Description", "Incorrect input for edit",command16.execute());
+		}
+		
+		Controller.acceptUserCommand("edit 2 place R5 lounge");
+		Command command17 = Controller.getLatestCommand();
+		if(displayList.get(0).getTaskType() == TaskType.TIMED || displayList.get(0).getTaskType() == TaskType.DEADLINE ){
+			assertEquals("Description", "Edited venue of the task.",command17.execute());
+		} else if (displayList.get(3).getTaskType() == TaskType.FLOATING) { 
+			assertEquals("Description", "Incorrect input for edit",command17.execute());
+		}
+		
+		Controller.acceptUserCommand("edit 4 place R5 lounge");
+		Command command18 = Controller.getLatestCommand();
+		if(displayList.get(0).getTaskType() == TaskType.TIMED || displayList.get(0).getTaskType() == TaskType.DEADLINE ){
+			assertEquals("Description", "Edited venue of the task.",command18.execute());
+		} else if (displayList.get(3).getTaskType() == TaskType.FLOATING) { 
+			assertEquals("Description", "Incorrect input for edit",command18.execute());
+		}
+	}
+}
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\test\CommandEditTest.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Ben\New folder\TodoLog\src\test\CommandMarkAsDoneTest.java
+	 */
+
+public class CommandMarkAsDoneTest {
+	@Before
+	public void before() throws Exception{
+		CommandAddTest addTest = new CommandAddTest();
+		addTest.testExecute();
+	}
+	@Test
+	public void testExecute() throws Exception{
+		Controller.init("test.xml");
+		LinkedList <Task> displayList = Controller.getScheduleList();
+		
+		Controller.acceptUserCommand("done -1");
+		Command command1 = Controller.getLatestCommand();
+		assertEquals("Description", "Invalid task number. Cannot mark.", command1.execute());
+		
+		Controller.acceptUserCommand("done 100000000");
+		Command command2 =  Controller.getLatestCommand();
+		assertEquals("Description", "Invalid task number. Cannot mark.", command2.execute());
+		
+		Controller.acceptUserCommand("done");
+		Command command3 =  Controller.getLatestCommand();
+		assertEquals("Description", "Invalid task number. Cannot mark.", command3.execute());
+		
+		Controller.acceptUserCommand("done         ");
+		Command command4 = Controller.getLatestCommand();
+		assertEquals("Description", "Invalid task number. Cannot mark.", command4.execute());
+		
+		Controller.acceptUserCommand("do");
+		assertEquals("Description", "Invalid command.\nType in a command: add, delete, edit, done.", 
+				Controller.getFeedback());
+		
+		Controller.acceptUserCommand("done 3");
+		Command command6 = Controller.getLatestCommand();
+		String taskName = displayList.get(2).getTaskName();
+		if (displayList.get(2).getTaskStatus() == true) {
+			assertEquals("Description", "" + taskName + " is mark as completed", command6.execute());
+		} else {
+			assertEquals("Description", "" + taskName + " is mark as not completed",command6.execute());
+		}
+		
+		
+		
+	}
+}
+	// End of segment: C:\Users\Ben\New folder\TodoLog\src\test\CommandMarkAsDoneTest.java
+
+
+
+
+
