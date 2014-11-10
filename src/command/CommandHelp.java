@@ -12,7 +12,8 @@ public class CommandHelp implements Command {
 	
 	private static final String FEEDBACK_HELP = "Help is here!";
 	private static final String FEEDBACK_UNDO = "Help cannot be undone";
-
+	
+	//@Author A0118899E
 	@Override
 	public String execute() {
 		String inFileText = "";
@@ -32,16 +33,15 @@ public class CommandHelp implements Command {
 		return FEEDBACK_HELP;
 	}
 	
+	//@Author A0118899E
 	@Override
 	public String undo() {
 		return FEEDBACK_UNDO ;
 	}
 	
+	//@Author A0118899E
 	@Override
 	public boolean isUndoable() {
 		return false;
 	}
-
-	
-	
 }
