@@ -44,12 +44,13 @@ public class CommandEdit implements Command {
 	private static final String FEEDBACK_INVALID_REQUEST = "Incorrect input for edit";
 	private static final String FEEDBACK_VALID_UNDO = "Undone edit the %1$s.";
 	 
-	
+	//@Author A0118899E
 	public CommandEdit() {
 		_index = INVALID_INDEX;	
 		_storage = Controller.getDBStorage();
 	}
 	
+	//@Author A0118899E
 	public CommandEdit(int index, String toBeEdited, String editType) {
 		_index = index-1;
 		_editType = editType;
@@ -57,30 +58,35 @@ public class CommandEdit implements Command {
 		_storage = Controller.getDBStorage();	
 	}
 	
+	//@Author A0118899E
 	public CommandEdit(int index, String editType) {
 		_index = index -1;
 		_editType = editType;
 		_storage = Controller.getDBStorage();
 	}
 	
-
+	//@Author A0118899E
 	public CommandEdit(int index) {
 		_index = index -1;
 		_storage = Controller.getDBStorage();
 	}
 	
+	//@Author A0118899E
 	public Task getCurrentTask() {
 		return _taskExisting;
 	}
 	
+	//@Author A0118899E
 	public Task getEditedTask() {
 		return _taskEdited;
 	}
 	
+	//@Author A0118899E
 	public int getIndex() {
 		return _index;
 	}
 	
+	//@Author A0118899E
 	@Override
 	public String execute() {
 		String feedback;
@@ -145,6 +151,7 @@ public class CommandEdit implements Command {
 		return feedback;
 	}
 	
+	//@Author A0118899E
 	public void sortByDate(LinkedList<Task> toSortList) {
 		
 	    if (_taskEdited.getTaskType() == TaskType.FLOATING) {
@@ -180,6 +187,7 @@ public class CommandEdit implements Command {
 	    }
 	}
 	
+	//@Author A0112156U
 	public String tryExecute() {
 		String feedback;
 		String editedField;
@@ -219,7 +227,8 @@ public class CommandEdit implements Command {
 		}
 		return feedback;
 	}
-
+	
+	//@Author A0118899E
 	private String formNewTask() throws Exception {
 		_taskEdited = _taskExisting.copy();
 		if (_editType.equalsIgnoreCase(KEYWORD_TASK_NAME) || _editType.equalsIgnoreCase(KEYWORD_NAME)) {
@@ -268,6 +277,7 @@ public class CommandEdit implements Command {
 		 }
 	}
 	 
+	//@Author A0118899E
 	@Override
 	public String undo() {
 		String feedback;
@@ -296,6 +306,7 @@ public class CommandEdit implements Command {
 		return feedback;
 	}
 	
+	//@Author A0118899E
 	@Override
 	public boolean isUndoable(){
 		assert isUndoable();
