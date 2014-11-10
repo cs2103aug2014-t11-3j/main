@@ -13,8 +13,6 @@ import storage.DBStorage;
 
 public class CommandView implements Command {
 
-	
-	
 	private static final String FEEDBACK_INVALID_UNDO = "View cannot be undone";
 	private String _toView;
 	private String _viewType;
@@ -86,21 +84,23 @@ public class CommandView implements Command {
 	private static final String KEYWORD_JANUARY2 = "jan";
 	private static final String KEYWORD_JANUARY1 = "january";
 	
-	
-	
+	//@Author A0118899E
 	public CommandView(String toView ) {
 		_toView = toView;
 		_storage = Controller.getDBStorage();
 	}
 	
+	//@Author A0118899E
 	public String getViewType() {
 		return _viewType;
 	}
 	
+	//@Author A0118899E
 	public LinkedList<Task> getReturnList() {
 		return _returnList;
 	}
 	
+	//@Author A0118899E
 	@Override
 	public String execute() {
 		String feedback;
@@ -136,6 +136,7 @@ public class CommandView implements Command {
 		return feedback;
 	}
 
+	//@Author A0118899E
 	private String viewOverdue(DateTime startDay) {
 		String feedback;
 		DateTime endDay;
@@ -147,6 +148,7 @@ public class CommandView implements Command {
 		return feedback;
 	}
 
+	//@Author A0118899E
 	private String viewAll() {
 		String feedback;
 		formViewList(new DateTime(0), new DateTime(9999, 12, 31, 23, 59));
@@ -155,6 +157,7 @@ public class CommandView implements Command {
 		return feedback;
 	}
 
+	//@Author A0118899E
 	private String viewMonth(DateTime startDay) {
 		String feedback;
 		DateTime endDay;
@@ -182,6 +185,7 @@ public class CommandView implements Command {
 		return feedback;
 	}
 
+	//@Author A0118899E
 	private String viewNextWeek(DateTime startDay, DateTime endDay) {
 		String feedback;
 		startDay = startDay.plusDays(NEXT_WEEK_START);
@@ -196,6 +200,7 @@ public class CommandView implements Command {
 		return feedback;
 	}
 
+	//@Author A0118899E
 	private String viewThisWeek(DateTime startDay) {
 		String feedback;
 		DateTime endDay;
@@ -210,6 +215,7 @@ public class CommandView implements Command {
 		return feedback;
 	}
 
+	//@Author A0118899E
 	private String viewDate() {
 		String feedback;
 		int year;
@@ -229,6 +235,7 @@ public class CommandView implements Command {
 		return feedback;
 	}
 	
+	//@Author A0118899E
 	private String viewWeekDay(DateTime startDay) {
 		String feedback;
 		int year;
@@ -253,6 +260,7 @@ public class CommandView implements Command {
 		return feedback;
 	}
 
+	//@Author A0118899E
 	private String viewTomorrow(DateTime startDay) {
 		String feedback;
 		int year;
@@ -271,6 +279,7 @@ public class CommandView implements Command {
 		return feedback;
 	}
 
+	//@Author A0118899E
 	private String viewToday(int year, int month, int day) {
 		String feedback;
 		DateTime startDay;
@@ -283,8 +292,8 @@ public class CommandView implements Command {
 		return feedback;
 	}
 
+	//@Author A0118899E
 	public String isWeekDay(){
-	
 		if (_toView.equalsIgnoreCase(KEYWORD_MONDAY1) || _toView.equalsIgnoreCase(KEYWORD_MONDAY2)) {
 			return KEYWORD_MONDAY1;
 		} else if (_toView.equalsIgnoreCase(KEYWORD_TUESDAY1) || _toView.equalsIgnoreCase(KEYWORD_TUESDAY2)) {
@@ -304,6 +313,7 @@ public class CommandView implements Command {
 		}
 	}
 	
+	//@Author A0118899E
 	public String checkMonth() {
 		if (_toView.equalsIgnoreCase(KEYWORD_JANUARY1) || _toView.equalsIgnoreCase(KEYWORD_JANUARY2)) {
 			monthInIntegers = 1;
@@ -346,6 +356,7 @@ public class CommandView implements Command {
 		}
 	}
 	
+	//@Author A0118899E
 	public void formViewList(DateTime startDay, DateTime endDay){
 		
 		_storage = Controller.getDBStorage();
@@ -379,6 +390,7 @@ public class CommandView implements Command {
 		setReturnList(viewList);	
 	}
 	
+	//@Author A0118899E
 	public void viewOverDueTasks(DateTime endDay){
 		LinkedList <Task> viewList = new LinkedList<Task>();
 		for(int i = 0; i < _storage.load().size(); i++ ){
@@ -394,6 +406,7 @@ public class CommandView implements Command {
 		setReturnList(viewList);
 	}
 
+	//@Author A0118899E
 	private void setReturnList(LinkedList <Task> list) {
 		LinkedList <Task> returnList = new LinkedList <Task>(list);
 		for (Task task : _storage.load()) {
@@ -404,14 +417,15 @@ public class CommandView implements Command {
 		_returnList = returnList;
 	}
 
+	//@Author A0118899E
 	@Override
 	public String undo() {
 		return FEEDBACK_INVALID_UNDO;
 	}
 
+	//@Author A0118899E
 	@Override
 	public boolean isUndoable() {
 		return false;
 	}
-	
 }
