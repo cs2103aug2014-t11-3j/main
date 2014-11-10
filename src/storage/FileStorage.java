@@ -90,6 +90,7 @@ public class FileStorage implements Storage{
 				task = parseIntoDeadline(taskNode);
 				break;
 			default:
+				assert (taskType == TaskType.FLOATING);
 				task = parseIntoFloating(taskNode);
 				break;
 		}
@@ -166,6 +167,7 @@ public class FileStorage implements Storage{
 					addDeadlineTaskToRoot(root, task);
 					break;
 				default:
+					assert false : task.getTaskType();
 					break;
 			}
 		}
