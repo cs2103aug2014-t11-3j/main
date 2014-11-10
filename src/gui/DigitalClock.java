@@ -13,6 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 
+//@Author A0111513B
 public class DigitalClock {
 	private final JLabel time = new JLabel();
     private final SimpleDateFormat sdf  = new SimpleDateFormat("EEE, d MMM yyyy HH:mm");
