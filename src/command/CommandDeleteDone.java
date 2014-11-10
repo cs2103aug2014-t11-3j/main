@@ -18,6 +18,7 @@ import storage.DBStorage;
 		private static final String FEEDBACK_VALID_DELETE_DONE = "Deleted completed tasks";
 		private static final String FEEDBACK_VALID_UNDO = "Undone the delete done command";
 
+		//@Author A0118899E
 		@Override
 		public String execute() {
 			String feedback;
@@ -46,6 +47,7 @@ import storage.DBStorage;
 			return feedback;
 		}
 		
+		//@Author A0112156U
 		public String tryExecute() {
 			String feedback;
 			_storage = Controller.getDBStorage();
@@ -55,6 +57,7 @@ import storage.DBStorage;
 			return feedback;
 		}
 
+		//@Author A0118899E
 		@Override
 		public String undo() {
 			String feedback;
@@ -69,6 +72,7 @@ import storage.DBStorage;
 			return feedback;
 		}
 		
+		//@Author A0118899E
 		@Override
 		public boolean isUndoable() {
 			assert isUndoable();
