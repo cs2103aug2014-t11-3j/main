@@ -8,6 +8,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.text.DefaultCaret;
 
+//@Author A0118899E
 public class HelpFrame {
 
 	String _text;
