@@ -25,6 +25,8 @@ public class Task {
 	private DateTime _taskEnd;
 	
 	private boolean _taskStatus;
+	
+	//@Author A0112156U
 	public Task(String parameter) throws Exception{
 		_taskName = TaskParser.parseTaskName(parameter);
 		_taskType = TaskParser.parseTaskType(parameter);
@@ -34,7 +36,6 @@ public class Task {
 		_taskEnd = TaskParser.parseTaskEnd(_taskStart,parameter);
 	}
 
-	
 	public Task(TaskType floating, String name, boolean status, String person, String venue) {
 		_taskType = floating;
 		_taskName = name;
