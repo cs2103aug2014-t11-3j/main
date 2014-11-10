@@ -11,7 +11,7 @@ import javax.swing.*;
 
 //@Author A0111513B
 public class CustomRenderer extends DefaultTableCellRenderer {
-	private static final int OVERDUE = -1;
+	//private static final int OVERDUE = -1;
 	private static final int NOT_DEADLINE = Integer.MIN_VALUE;
 	/**
 	 * 
@@ -68,19 +68,7 @@ public class CustomRenderer extends DefaultTableCellRenderer {
 		((JComponent) cellComponent).add(highlightCell);
 		
 	}
-	private int computeAlpha(int duePeriod) {
-		if (duePeriod == NOT_DEADLINE) {
-			return 0;
-		}
-		if (duePeriod == OVERDUE) {
-			return 240;
-		}
-		if (duePeriod > 6) {
-			return 0;
-		} 
-		return 210-duePeriod*30;
 		
-	}
 	private void colorCell(Component cellComponent, Color color) {
 		JPanel colorCell = new JPanel()
 		{

@@ -8,12 +8,12 @@ import command.CommandAdd;
 import command.CommandDelete;
 import command.CommandDeleteAll;
 import command.CommandEdit;
-import command.CommandHelp;
+//import command.CommandHelp;
 import command.CommandMarkAsDone;
 import command.CommandNumber;
-import command.CommandRedo;
+//import command.CommandRedo;
 import command.CommandSearch;
-import command.CommandUndo;
+//import command.CommandUndo;
 import command.CommandView;
 import common.Task;
 import common.TaskType;
@@ -21,7 +21,7 @@ import parser.CommandParser;
 import storage.DBStorage;
 import storage.History;
 import storage.InputHistory;
-import static logger.Log.*;
+//import static logger.Log.*;
 
 // remember to write unit test as you code
 
@@ -31,7 +31,7 @@ public class Controller {
 
 	private static History _history;
 	private static InputHistory _input;
-	private static String _textDisplay;
+//	private static String _textDisplay;
 	private static LinkedList<Task> _displayList;
 	private static Task _focusTask;
 	private static String _feedback;
