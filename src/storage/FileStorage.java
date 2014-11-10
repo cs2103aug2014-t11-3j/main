@@ -43,7 +43,7 @@ public class FileStorage implements Storage{
 				writeDocument(_document);
 			} catch (IOException e) {
 				Log.error("Storage I/O problem",e);
-				//return feedback of IO error
+				throw new RuntimeException(e);
 			}
 		}
 		
@@ -60,9 +60,9 @@ public class FileStorage implements Storage{
 		try {
 			return parseDoc(_document);
 		} catch (Exception e) {
-			Log.error("Unsupport file or file corrupted");
+			Log.error("Unsupport XML file or XML file corrupted");
+			throw new RuntimeException(e);
 		}
-		return null;
 		
 	}
 
@@ -75,7 +75,7 @@ public class FileStorage implements Storage{
 				Task task = parseElementToTask((Element) taskNode);
 				tasks.add(task);
 			} else {
-				throw new Exception();
+				throw new Exception("File format incorrect.");
 			}
 			
 		}

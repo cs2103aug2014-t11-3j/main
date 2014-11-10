@@ -42,8 +42,8 @@ public class History {
 				_position--;
 				return null;
 			}
-		} catch (Exception e) {
-			throw new Exception("No commands to redo!");
+		} catch (IndexOutOfBoundsException ioobe) {
+			return null;
 		}
 	}
 	public void goForwards() throws Exception {

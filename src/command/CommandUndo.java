@@ -19,10 +19,10 @@ public class CommandUndo implements Command {
 	public String execute() {
 		try {
 			_history.goBackwards();
+			return _toBeUndone.undo();
 		} catch (Exception e) {
 			return e.getMessage();
 		}
-		return _toBeUndone.undo();
 	}
 
 	@Override

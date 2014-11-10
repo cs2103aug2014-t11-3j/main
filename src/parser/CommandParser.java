@@ -101,6 +101,9 @@ public class CommandParser {
 
 	private static Command parseCommandView(String userCommand) throws Exception {
 		String restOfTheString = getTheRestOfTheString(userCommand);
+		if (restOfTheString == null) {
+			return new CommandView("this week");
+		}
 		CommandView command = new CommandView(restOfTheString);
 		return command;
 	}

@@ -180,7 +180,7 @@ public class TaskParser {
 		try {
 			_year = Integer.parseInt(dateInString);
 		} catch (NumberFormatException nfe) {
-			Log.trace(dateInString+ "is not valid date", nfe);
+			Log.trace(dateInString+ " is not a date : "+nfe.getMessage());
 			return _year;
 		}
 		_year = _year %100;

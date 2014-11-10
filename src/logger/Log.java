@@ -28,7 +28,7 @@ public class Log {
 	 * The level of messages that will be logged. Compiling this and the booleans below as "final" will cause the compiler to
 	 * remove all "if (Log.info) ..." type statements below the set level.
 	 */
-	static private int level = LEVEL_INFO;
+	static private int level = LEVEL_TRACE;
 
 	/** True when the ERROR level will be logged. */
 	static public boolean ERROR = level <= LEVEL_ERROR;
