@@ -27,6 +27,7 @@ public class CommandParser {
 	//private static final String HELP_TEXT_DONE = "To mark/unmark a task as done, enter:\n - done [task number].";
 	//private static final String HELP_TEXT_EDIT = "To edit task name, enter:\n - edit [task number] \"[new name]\"";
 
+	//@author A0112156U
 	public static Command createCommand(String userCommand) throws Exception{
 		userCommand = userCommand.trim();
 		String firstWord = getFirstWord(userCommand);
@@ -67,17 +68,20 @@ public class CommandParser {
 			return parseCommandNumber(taskNumber);
 		}
 	}
-
+	
+	//@author A0112156U
 	private static Command parseCommandNumber(int taskNumber) {
 		CommandNumber command = new CommandNumber(taskNumber);
 		return command;
 	}
 
+	//@author A0112156U
 	private static Command parseCommandHelp() {
 		CommandHelp command = new CommandHelp();
 		return command;
 	}
-
+	
+	//@author A0112156U
 	private static Command parseCommandLoad(String userCommand)
 			throws Exception {
 		String restOfTheString = getTheRestOfTheString(userCommand);
@@ -85,6 +89,7 @@ public class CommandParser {
 		return command;
 	}
 
+	//@author A0112156U
 	private static Command parseCommandRedo() throws Exception {
 		History history = Controller.getHistory();
 		Command toBeUndone = history.getForwards();
@@ -92,13 +97,15 @@ public class CommandParser {
 		return command;
 	}
 
+	//@author A0112156U
 	private static Command parseCommandUndo() throws Exception {
 		History history = Controller.getHistory();
 		Command toBeUndone = history.getBackwards();
 		CommandUndo command = new CommandUndo(toBeUndone);
 		return command;
 	}
-
+	
+	//@author A0112156U
 	private static Command parseCommandView(String userCommand) throws Exception {
 		String restOfTheString = getTheRestOfTheString(userCommand);
 		if (restOfTheString == null) {
@@ -108,12 +115,14 @@ public class CommandParser {
 		return command;
 	}
 
+	//@author A0112156U
 	private static Command parseCommandSearch(String userCommand) throws Exception {
 		String restOfTheString = getTheRestOfTheString(userCommand);
 		CommandSearch command = new CommandSearch(restOfTheString);
 		return command;
 	}
 
+	//@author A0112156U
 	private static Command parseCommandEdit(String userCommand) throws Exception {
 		String restOfTheString = getTheRestOfTheString(userCommand);
 		if (restOfTheString == null) {
@@ -142,6 +151,7 @@ public class CommandParser {
 		return command;
 	}
 
+	//@author A0112156U
 	private static Command parseCommandMarkAsDone(String userCommand)
 			throws Exception {
 		String restOfTheString = getTheRestOfTheString(userCommand);
@@ -154,7 +164,8 @@ public class CommandParser {
 		CommandMarkAsDone command = new CommandMarkAsDone(index);
 		return command;
 	}
-
+	
+	//@author A0112156U
 	private static Command parseCommandDelete(String userCommand)
 			throws Exception {
 		String restOfTheString = getTheRestOfTheString(userCommand);
@@ -181,12 +192,14 @@ public class CommandParser {
 		}
 	}
 
+	//@author A0112156U
 	private static Command parseCommandAdd(String userCommand) throws Exception {
 		Task task = createTask(userCommand);
 		CommandAdd command = new CommandAdd(task);
 		return command;
 	}
 
+	//@author A0112156U
 	public static Task createTask(String userInput) throws Exception{
 		String restOfTheString = getTheRestOfTheString(userInput);
 		if (restOfTheString == null) {
@@ -197,6 +210,7 @@ public class CommandParser {
 		return task;
 	}
 
+	//@author A0111608R
 	public static String getTheRestOfTheString(String userCommand) throws Exception {
 		try {
 			String[] result = userCommand.split(" ", 2);
@@ -207,12 +221,15 @@ public class CommandParser {
 			return null;
 		}
 	}
-
+	
+	//@author A0111608R
 	public static String getFirstWord(String userCommand) {
 		String[] result = userCommand.split(" ", 2);
 		String firstWord = result[0];
 		return firstWord;
 	}
+	
+	//@author A0112156U
 	public static boolean isInteger(String s) {
 		try { 
 			Integer.parseInt(s); 
