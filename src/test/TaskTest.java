@@ -78,12 +78,11 @@ public class TaskTest {
 		assertEquals("output should be 1100", 1100 , task3.getStartTime());
 		assertEquals("output should be 1650", 1650 , task3.getEndTime());
 
-		try {
-			new Task ("group meeting from fri at 11h00 to sat at 16h50");
-		} catch (Exception e) {
-			//pass
-		}
 
+		Task task4=new Task ("group meeting from fri at 11h00 to sat at 16h50");
+		assertEquals("output should not be 1100", 0 , task4.getStartTime());
+		assertEquals("output should not be 1650", 2359 , task4.getEndTime());
+		
 		Task task5 = new Task ("group meeting to sat at 1650");
 		assertEquals("output should be 0000", 0000 , task5.getStartTime());
 		assertEquals("output should be 1650", 1650 , task5.getEndTime());
@@ -144,21 +143,14 @@ public class TaskTest {
 		assertEquals ("output should be 2014", 2014 , task4.getEndYear());
 		assertEquals ("output should be 1500", 1500 , task4.getStartTime());
 		assertEquals ("output should be 0800", 800 , task4.getEndTime());
-
-		try {
+		try{
 			Task task5 = new Task ("engin club meeting with engin club in club room on 331312 at 1500 to 331312 at 0800");
+			fail();
 			assertEquals ("output should be engin club meeting", "engin club meeting", task5.getTaskName());
 			assertEquals ("output should be engin club", "engin club" , task5.getTaskPerson());
 			assertEquals ("output should be club room", "club room" , task5.getTaskVenue());
-			assertEquals ("output should be Invalid Date Format", "Invalid Date Format" , task5.getStartDate());
-			assertEquals ("output should be Invalid Date Format", "Invalid Date Format" , task5.getEndDate());
-			assertEquals ("output should be Invalid Date Format", "Invalid Date Format" , task5.getStartMonth());
-			assertEquals ("output should be Invalid Date Format", "Invalid Date Format" , task5.getEndMonth());
-			assertEquals ("output should be Invalid Date Format", "Invalid Date Format" , task5.getStartYear());
-			assertEquals ("output should be Invalid Date Format", "Invalid Date Format" , task5.getEndYear());
-			assertEquals ("output should be Invalid Date Format", "Invalid Date Format" , task5.getStartTime());
-			assertEquals ("output should be Invalid Date Format", "Invalid Date Format" , task5.getEndTime());
-		} catch (Exception e){
+		} catch (Exception e) {
+			assertEquals("output should be Invalid Date Format", "Invalid Date Format", e.getMessage());
 		}
 	}
 	

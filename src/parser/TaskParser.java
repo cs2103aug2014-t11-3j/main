@@ -1,5 +1,7 @@
 package parser;
 
+import logger.Log;
+
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
 
@@ -167,6 +169,7 @@ public class TaskParser {
 			parseDayOfMonth(dateInString);
 		}
 		catch(Exception e){
+			Log.trace(dateInString +"is not valid date format");
 			return false;
 		}
 		return true;
@@ -177,6 +180,7 @@ public class TaskParser {
 		try {
 			_year = Integer.parseInt(dateInString);
 		} catch (NumberFormatException nfe) {
+			Log.trace(dateInString+ "is not valid date", nfe);
 			return _year;
 		}
 		_year = _year %100;
@@ -338,9 +342,9 @@ public class TaskParser {
 		try { 
 			Integer.parseInt(s); 
 		} catch(NumberFormatException e) { 
+			Log.trace(s+" is not integer",e);
 			return false; 
 		}
-		// only got here if we didn't return false
 		return true;
 	}
 

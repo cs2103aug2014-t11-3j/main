@@ -3,8 +3,8 @@ package command;
 import java.io.IOException;
 import java.util.LinkedList;
 
+import logger.Log;
 import common.Task;
-
 import controller.Controller;
 import storage.DBStorage;
 
@@ -33,6 +33,7 @@ import storage.DBStorage;
 			try {
 				_storage.store(_storageList);
 			} catch (IOException e) {
+				Log.error("Storage I/O problem",e);
 				feedback = FEEDBACK_INVALID_STORAGE;
 				_validity=false;
 				return feedback;
@@ -60,6 +61,7 @@ import storage.DBStorage;
 			try {
 				_storage.store(_undoList);
 			} catch (IOException e) {
+				Log.error("Storage I/O problem",e);
 				feedback = FEEDBACK_INVALID_STORAGE;
 				return feedback;
 			}

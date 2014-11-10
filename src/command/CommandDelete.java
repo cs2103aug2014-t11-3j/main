@@ -3,8 +3,8 @@ package command;
 import java.io.IOException;
 import java.util.LinkedList;
 
+import logger.Log;
 import common.Task;
-
 import controller.Controller;
 import storage.DBStorage;
 
@@ -52,6 +52,7 @@ public class CommandDelete implements Command {
 				// set focus task to change UI's page
 				Controller.setFocusTask(_task);
 			} catch (IndexOutOfBoundsException ioobe ) {
+				Log.info("Task index is out of bounds");
 				_validity = false;
 				Controller.setFocusTask(null);
 				return String.format(FEEDBACK_INVALID_INDEX, _index+1);
@@ -65,6 +66,7 @@ public class CommandDelete implements Command {
 		try {
 			_storage.store(storageList);
 		} catch (IOException e) {
+			Log.error("Storage I/O problem",e);
 			feedback = FEEDBACK_INVALID_STORAGE;
 			_validity=false;
 			return feedback;
@@ -88,6 +90,7 @@ public class CommandDelete implements Command {
 				storageList.get(storageList.indexOf(_task));
 				Controller.setFocusTask(_task);
 			} catch (IndexOutOfBoundsException ioobe ) {
+				Log.info("Task index is out of bounds");
 				_validity = false;
 				Controller.setFocusTask(_displayList.getLast());
 				return String.format(FEEDBACK_INVALID_INDEX, _index+1);

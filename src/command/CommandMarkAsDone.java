@@ -3,9 +3,9 @@ package command;
 import java.io.IOException;
 import java.util.LinkedList;
 
+import logger.Log;
 import common.Task;
 import common.TaskType;
-
 import controller.Controller;
 import storage.DBStorage;
 
@@ -62,6 +62,7 @@ public class CommandMarkAsDone implements Command {
 				_validity = true;
 			}
 		} catch ( IndexOutOfBoundsException ioobe) {
+			Log.info("Task index is out of bounds");
 			_validity = false;
 			return FEEDBACK_INVALID_TASK;	
 		}
@@ -69,6 +70,7 @@ public class CommandMarkAsDone implements Command {
 		try {
 			_storage.store(_taskList);
 		} catch ( IOException e) {
+			Log.error("Storage I/O problem",e);
 			_validity = false;	
 			return FEEDBACK_INVALID_STORAGE;
 			
@@ -98,6 +100,7 @@ public class CommandMarkAsDone implements Command {
 					_validity = true;
 				}
 			} catch (IndexOutOfBoundsException ioobe ) {
+				Log.info("Task index is out of bounds");
 				_validity = false;
 				Controller.setFocusTask(_displayList.getLast());
 				return FEEDBACK_INVALID_TASK;
