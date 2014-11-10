@@ -1,11 +1,12 @@
 package gui;
 import java.util.LinkedList;
 
+import logger.Log;
+
 import org.joda.time.DateTime;
 
 import common.Task;
 import common.TaskType;
-
 import controller.Controller;
 import storage.DBStorage;
 
@@ -20,17 +21,14 @@ public class ReminderLogic {
 	}
 
 	public void execute(){
-		try{
-			LinkedList<Task> _storageList=_storage.load();
-			for(int i=0;i<_storageList.size();i++){
-				if(check24hrsBefore(_storageList.get(i))==true){
-					_toBeReminded.add(_storageList.get(i));
-				}
+		Log.info("Check the tasks for reminder");
+		LinkedList<Task> _storageList=_storage.load();
+		for(int i=0;i<_storageList.size();i++){
+			if(check24hrsBefore(_storageList.get(i))==true){
+				_toBeReminded.add(_storageList.get(i));
 			}
 		}
-		catch(Exception e){
 
-		}
 
 		for(int i=0;i<_toBeReminded.size();i++){
 			ShowMessageDialog one = new ShowMessageDialog(_toBeReminded.get(i));

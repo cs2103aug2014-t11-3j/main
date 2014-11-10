@@ -4,6 +4,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.LinkedList;
 
+import logger.Log;
+
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
@@ -40,6 +42,7 @@ public class FileStorage implements Storage{
 				_file.createNewFile();
 				writeDocument(_document);
 			} catch (IOException e) {
+				Log.error("Storage I/O problem",e);
 				//return feedback of IO error
 			}
 		}
@@ -57,7 +60,7 @@ public class FileStorage implements Storage{
 		try {
 			return parseDoc(_document);
 		} catch (Exception e) {
-			//unsupported file or file corrupted
+			Log.error("Unsupport file or file corrupted");
 		}
 		return null;
 		

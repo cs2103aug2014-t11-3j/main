@@ -3,8 +3,8 @@ package command;
 import java.io.IOException;
 import java.util.LinkedList;
 
+import logger.Log;
 import common.Task;
-
 import controller.Controller;
 import storage.DBStorage;
 
@@ -25,6 +25,7 @@ public class CommandDeleteAll implements Command {
 		try {
 			_storage.store(new LinkedList<Task>());
 		} catch (IOException e) {
+			Log.error("Storage I/O problem",e);
 			feedback = FEEDBACK_INVALID_STORAGE;
 			_validity=false;
 			return feedback;
@@ -53,6 +54,7 @@ public class CommandDeleteAll implements Command {
 		try {
 			_storage.store(_storageList);
 		} catch (IOException e) {
+			Log.error("Storage I/O problem",e);
 			feedback = FEEDBACK_INVALID_STORAGE;
 			return feedback;
 		}

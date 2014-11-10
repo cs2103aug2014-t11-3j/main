@@ -3,9 +3,9 @@ package command;
 import java.io.IOException;
 import java.util.LinkedList;
 
+import logger.Log;
 import common.Task;
 import common.TaskType;
-
 import controller.Controller;
 import storage.DBStorage;
 	
@@ -48,6 +48,7 @@ public class CommandAdd implements Command {
 		try {
 			_storage.store(storageList);
 		} catch (IOException e) {
+			Log.error("Storage I/O problem",e);
 			feedback = FEEDBACK_INVALID_STORAGE;
 			_validity = false;
 			return feedback;
@@ -138,6 +139,7 @@ public class CommandAdd implements Command {
 		try {
 			_storage.store(storageList);
 		} catch (IOException e) {
+			Log.error("Storage I/O problem",e);
 			feedback = FEEDBACK_INVALID_STORAGE;
 			return feedback;
 		}

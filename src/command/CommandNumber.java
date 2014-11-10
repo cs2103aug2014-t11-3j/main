@@ -2,8 +2,8 @@ package command;
 
 import java.util.LinkedList;
 
+import logger.Log;
 import common.Task;
-
 import controller.Controller;
 
 public class CommandNumber implements Command {
@@ -28,6 +28,7 @@ public class CommandNumber implements Command {
 			Controller.setFocusTask(_task);
 			return FEEDBACK_VALID_TASK;
 		} catch (IndexOutOfBoundsException ioobe) {
+			Log.info("Task index is out of bounds");
 			_task = null ;
 			return FEEDBACK_INVALID_TASK;
 		}
@@ -50,6 +51,7 @@ public class CommandNumber implements Command {
 			Controller.setFocusTask(_task);
 			return FEEDBACK_VALID_TASK;
 		} catch (IndexOutOfBoundsException ioobe) {
+			Log.info("Task index is out of bounds");
 			_task = null ;
 			return FEEDBACK_INVALID_TASK;
 		}

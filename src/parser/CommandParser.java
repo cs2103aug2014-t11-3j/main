@@ -1,5 +1,6 @@
 package parser;
 
+import logger.Log;
 import storage.History;
 import command.Command;
 import command.CommandAdd;
@@ -35,6 +36,7 @@ public class CommandParser {
 			taskNumber = Integer.parseInt(firstWord);
 			isNumber = true;
 		} catch (NumberFormatException nfe) {
+			Log.trace("This will not be a CommandNumber");
 			isNumber = false;
 		}
 		if (!isNumber) {
@@ -197,6 +199,7 @@ public class CommandParser {
 			String restOfTheWord = result[1];
 			return restOfTheWord;
 		} catch (ArrayIndexOutOfBoundsException aioobe) {
+			Log.trace("Rest Of The String is null",aioobe);
 			return null;
 		}
 	}
@@ -210,6 +213,7 @@ public class CommandParser {
 		try { 
 			Integer.parseInt(s); 
 		} catch(NumberFormatException e) { 
+			Log.trace(s+" is not a Integer",e);
 			return false; 
 		}
 		return true;

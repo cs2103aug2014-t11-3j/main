@@ -3,6 +3,7 @@ package gui;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
 
+import logger.Log;
 import common.TaskType;
 
 public class UIFeedbackHelper {
@@ -134,6 +135,7 @@ public class UIFeedbackHelper {
 			}
 			return helperText;
 		} catch (NoSuchElementException nsee) {
+			Log.trace("Did not specify the new edit details",nsee);
 			helperText += "Name: " + oldName + "\n" +
 					"Person: " + oldPerson + "\n" +
 					"Venue: " + oldVenue + "\n";
@@ -194,6 +196,7 @@ public class UIFeedbackHelper {
 			}
 			return helperText;
 		} catch (NoSuchElementException nsee) {
+			Log.trace("Did not specify the new edit details",nsee);
 			helperText += "Name: " + oldName + "\n" +
 					"Date: " + oldDate + "\n" +
 					"Time: " + oldTime + "\n" +
@@ -259,6 +262,7 @@ public class UIFeedbackHelper {
 			}
 			return helperText;
 		} catch (NoSuchElementException nsee) {
+			Log.trace("Did not specify the new edit details",nsee);
 			helperText += "Name: " + oldName + "\n" +
 					"Start date: " + oldStartDate + "\n" +
 					"Start time: " + oldStartTime + "\n" +

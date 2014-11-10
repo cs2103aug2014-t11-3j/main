@@ -1,5 +1,6 @@
 package command;
 
+import logger.Log;
 import controller.Controller;
 import storage.History;
 
@@ -21,6 +22,7 @@ public class CommandRedo implements Command {
 			_history.goForwards();
 			return _toBeRedone.execute();
 		} catch (Exception e) {
+			Log.debug("Redo command was redo",e);
 			return FEEDBACK_CANNOT_REDO;
 		}
 	}
