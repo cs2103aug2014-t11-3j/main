@@ -11,10 +11,7 @@ import org.joda.time.format.DateTimeFormat;
 import parser.TaskParser;
 
 public class Task {
-	
-	//MESSAGE
 
-	//private static final int NOT_DEADLINE = -1;
 	//Key Variables
 	
 	private static final int NOT_DEADLINE = Integer.MIN_VALUE;
@@ -28,6 +25,8 @@ public class Task {
 	private DateTime _taskEnd;
 	
 	private boolean _taskStatus;
+	
+	//@Author A0112156U
 	public Task(String parameter) throws Exception{
 		_taskName = TaskParser.parseTaskName(parameter);
 		_taskType = TaskParser.parseTaskType(parameter);
@@ -37,7 +36,6 @@ public class Task {
 		_taskEnd = TaskParser.parseTaskEnd(_taskStart,parameter);
 	}
 
-	
 	public Task(TaskType floating, String name, boolean status, String person, String venue) {
 		_taskType = floating;
 		_taskName = name;
@@ -127,7 +125,6 @@ public class Task {
 	public String getTaskPerson() {
 		return _taskPerson;
 	}
-	
 
 	public boolean getTaskStatus() {
 		return _taskStatus;
@@ -237,6 +234,7 @@ public class Task {
 				return (Days.daysBetween(LocalDate.now(),new LocalDate(getStart()))).getDays();
 			}
 		}
+	assert (getTaskType()== TaskType.FLOATING);
 	return NOT_DEADLINE;
 	}
 	

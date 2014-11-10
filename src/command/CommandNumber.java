@@ -2,8 +2,8 @@ package command;
 
 import java.util.LinkedList;
 
+import logger.Log;
 import common.Task;
-
 import controller.Controller;
 
 public class CommandNumber implements Command {
@@ -15,11 +15,14 @@ public class CommandNumber implements Command {
 	
 	private static final String FEEDBACK_VALID_TASK = "This is a valid task";
 	private static final String FEEDBACK_INVALID_TASK = "This is not a valid index";
+	private static final String FEEDBACK_INVALID_UNDO = "Cannot be undone!";
 	
+	//@Author A0118899E
 	public CommandNumber(int index) {
 		_index = index - CORRECTION_INDEX;
 	}
 
+	//@Author A0118899E
 	@Override
 	public String execute() {
 		_displayList = Controller.getScheduleList();
@@ -28,21 +31,25 @@ public class CommandNumber implements Command {
 			Controller.setFocusTask(_task);
 			return FEEDBACK_VALID_TASK;
 		} catch (IndexOutOfBoundsException ioobe) {
+			Log.info("Task index is out of bounds");
 			_task = null ;
 			return FEEDBACK_INVALID_TASK;
 		}
 	}
 
+	//@Author A0118899E
 	@Override
 	public String undo() {
-		return "Cannot be undone!";
+		return FEEDBACK_INVALID_UNDO;
 	}
 
+	//@Author A0118899E
 	@Override
 	public boolean isUndoable() {
 		return false ;
 	}
 
+	//@Author A0112156U
 	public String tryExecute() {
 		_displayList = Controller.getScheduleList();
 		try {
@@ -50,11 +57,13 @@ public class CommandNumber implements Command {
 			Controller.setFocusTask(_task);
 			return FEEDBACK_VALID_TASK;
 		} catch (IndexOutOfBoundsException ioobe) {
+			Log.info("Task index is out of bounds");
 			_task = null ;
 			return FEEDBACK_INVALID_TASK;
 		}
 	}
 
+	//@Author A0118899E
 	public Task getTask() {
 		return _task;
 	}

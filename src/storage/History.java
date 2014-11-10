@@ -4,6 +4,7 @@ import java.util.LinkedList;
 
 import command.Command;
 
+//@Author A0112156U
 public class History {
 	private LinkedList<Command> _commands;
 	private int _position;
@@ -42,8 +43,8 @@ public class History {
 				_position--;
 				return null;
 			}
-		} catch (Exception e) {
-			throw new Exception("No commands to redo!");
+		} catch (IndexOutOfBoundsException ioobe) {
+			return null;
 		}
 	}
 	public void goForwards() throws Exception {

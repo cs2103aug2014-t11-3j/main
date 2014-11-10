@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import controller.Controller;
 
+//@author A0112156U
 public class SystemTest {
 
 	@BeforeClass

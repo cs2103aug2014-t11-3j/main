@@ -8,6 +8,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.text.DefaultCaret;
 
+//@Author A0118899E
 public class HelpFrame {
 
 	String _text;
@@ -19,6 +20,7 @@ public class HelpFrame {
 	
 	public void execute() {
 		JTextArea textArea = new JTextArea();
+		textArea.setTabSize(2);
         DefaultCaret caret1 = (DefaultCaret) textArea.getCaret();
         caret1.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
 	    textArea.setLineWrap( true );

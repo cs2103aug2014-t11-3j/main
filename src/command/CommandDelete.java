@@ -3,8 +3,8 @@ package command;
 import java.io.IOException;
 import java.util.LinkedList;
 
+import logger.Log;
 import common.Task;
-
 import controller.Controller;
 import storage.DBStorage;
 
@@ -20,19 +20,22 @@ public class CommandDelete implements Command {
 	private static final String FEEDBACK_INVALID_STORAGE = "Cannot store the list to ToDoLog";
 	private static final String FEEDBACK_VALID_UNDO = "Undone the delete command";
 	
-	
+	//@Author A0118899E
 	public CommandDelete(int index) {
 		_index = index - 1;
 	}
 	
+	//@Author A0118899E
 	public CommandDelete() {
 		_index = -1;
 	}
 	
+	//@Author A0118899E
 	public Task getDeletedTask() {
 		return _task;
 	}
 	
+	//@Author A0118899E
 	@Override
 	public String execute() {
 		String feedback;
@@ -46,11 +49,13 @@ public class CommandDelete implements Command {
 			_validity = false;
 			return FEEDBACK_INVALID_FORMAT; 
 		} else {
+			assert (_index >= 0);
 			try {
 				_task = _displayList.get(_index);
 				// set focus task to change UI's page
 				Controller.setFocusTask(_task);
 			} catch (IndexOutOfBoundsException ioobe ) {
+				Log.info("Task index is out of bounds");
 				_validity = false;
 				Controller.setFocusTask(null);
 				return String.format(FEEDBACK_INVALID_INDEX, _index+1);
@@ -64,6 +69,7 @@ public class CommandDelete implements Command {
 		try {
 			_storage.store(storageList);
 		} catch (IOException e) {
+			Log.error("Storage I/O problem",e);
 			feedback = FEEDBACK_INVALID_STORAGE;
 			_validity=false;
 			return feedback;
@@ -71,6 +77,7 @@ public class CommandDelete implements Command {
 		return feedback;
 	}
 	
+	//@Author A0112156U
 	public String tryExecute() { 
 		LinkedList <Task> storageList;
 		LinkedList <Task> _displayList= Controller.getScheduleList();
@@ -81,11 +88,13 @@ public class CommandDelete implements Command {
 			_validity = false;
 			return FEEDBACK_INVALID_FORMAT; 
 		} else {
+			assert (_index >= 0);
 			try {
 				_task = _displayList.get(_index);
 				storageList.get(storageList.indexOf(_task));
 				Controller.setFocusTask(_task);
 			} catch (IndexOutOfBoundsException ioobe ) {
+				Log.info("Task index is out of bounds");
 				_validity = false;
 				Controller.setFocusTask(_displayList.getLast());
 				return String.format(FEEDBACK_INVALID_INDEX, _index+1);
@@ -97,6 +106,7 @@ public class CommandDelete implements Command {
 		return String.format(FEEDBACK_VALID_DELETE, _task.getTaskName());
 	}
 	
+	//@Author A0118899E
 	@Override
 	public String undo() {
 		String feedback;
@@ -108,8 +118,10 @@ public class CommandDelete implements Command {
 		return feedback;
 	}
 	
+	//@Author A0118899E
 	@Override
 	public boolean isUndoable(){
+		assert isUndoable();
 		return _validity;
 	}
 }

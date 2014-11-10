@@ -12,6 +12,7 @@ import command.CommandDelete;
 import common.Task;
 import controller.Controller;
 
+//@author A0118899E
 public class CommandDeleteTest {
 	@Before
 	public void before() throws Exception{
@@ -47,9 +48,9 @@ public class CommandDeleteTest {
 		String deletedName1 = displayList.get(2).getTaskName();
 		assertEquals("Description", "Deleted "+ deletedName1+" from toDoLog",command6.execute());
 		
-		Controller.acceptUserCommand("delete 10 ");
+		Controller.acceptUserCommand("delete 1 ");
 		Command command7 = Controller.getLatestCommand();
-		String deletedName2 = displayList.get(9).getTaskName();
+		String deletedName2 = displayList.get(0).getTaskName();
 		assertEquals("Description", "Deleted "+ deletedName2+" from toDoLog",command7.execute());
 			
 	}

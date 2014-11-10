@@ -1,5 +1,6 @@
 package parser;
 
+import logger.Log;
 import storage.History;
 import command.Command;
 import command.CommandAdd;
@@ -26,6 +27,7 @@ public class CommandParser {
 	//private static final String HELP_TEXT_DONE = "To mark/unmark a task as done, enter:\n - done [task number].";
 	//private static final String HELP_TEXT_EDIT = "To edit task name, enter:\n - edit [task number] \"[new name]\"";
 
+	//@author A0112156U
 	public static Command createCommand(String userCommand) throws Exception{
 		userCommand = userCommand.trim();
 		String firstWord = getFirstWord(userCommand);
@@ -35,6 +37,7 @@ public class CommandParser {
 			taskNumber = Integer.parseInt(firstWord);
 			isNumber = true;
 		} catch (NumberFormatException nfe) {
+			Log.trace("This will not be a CommandNumber");
 			isNumber = false;
 		}
 		if (!isNumber) {
@@ -65,17 +68,20 @@ public class CommandParser {
 			return parseCommandNumber(taskNumber);
 		}
 	}
-
+	
+	//@author A0112156U
 	private static Command parseCommandNumber(int taskNumber) {
 		CommandNumber command = new CommandNumber(taskNumber);
 		return command;
 	}
 
+	//@author A0112156U
 	private static Command parseCommandHelp() {
 		CommandHelp command = new CommandHelp();
 		return command;
 	}
-
+	
+	//@author A0112156U
 	private static Command parseCommandLoad(String userCommand)
 			throws Exception {
 		String restOfTheString = getTheRestOfTheString(userCommand);
@@ -83,6 +89,7 @@ public class CommandParser {
 		return command;
 	}
 
+	//@author A0112156U
 	private static Command parseCommandRedo() throws Exception {
 		History history = Controller.getHistory();
 		Command toBeUndone = history.getForwards();
@@ -90,29 +97,33 @@ public class CommandParser {
 		return command;
 	}
 
+	//@author A0112156U
 	private static Command parseCommandUndo() throws Exception {
 		History history = Controller.getHistory();
 		Command toBeUndone = history.getBackwards();
 		CommandUndo command = new CommandUndo(toBeUndone);
 		return command;
 	}
-
-	private static Command parseCommandView(String userCommand)
-			throws Exception {
+	
+	//@author A0112156U
+	private static Command parseCommandView(String userCommand) throws Exception {
 		String restOfTheString = getTheRestOfTheString(userCommand);
+		if (restOfTheString == null) {
+			return new CommandView("this week");
+		}
 		CommandView command = new CommandView(restOfTheString);
 		return command;
 	}
 
-	private static Command parseCommandSearch(String userCommand)
-			throws Exception {
+	//@author A0112156U
+	private static Command parseCommandSearch(String userCommand) throws Exception {
 		String restOfTheString = getTheRestOfTheString(userCommand);
 		CommandSearch command = new CommandSearch(restOfTheString);
 		return command;
 	}
 
-	private static Command parseCommandEdit(String userCommand)
-			throws Exception {
+	//@author A0112156U
+	private static Command parseCommandEdit(String userCommand) throws Exception {
 		String restOfTheString = getTheRestOfTheString(userCommand);
 		if (restOfTheString == null) {
 			return new CommandEdit();
@@ -128,6 +139,7 @@ public class CommandParser {
 		if (restOfTheString == null) {
 			return new CommandEdit(index,editType);
 		}
+		assert (restOfTheString != null);
 		if (editType.equalsIgnoreCase("start") || editType.equalsIgnoreCase("end")) {
 			editType = editType.concat(" ").concat(getFirstWord(restOfTheString));
 			restOfTheString = getTheRestOfTheString(restOfTheString);
@@ -139,24 +151,28 @@ public class CommandParser {
 		return command;
 	}
 
+	//@author A0112156U
 	private static Command parseCommandMarkAsDone(String userCommand)
 			throws Exception {
 		String restOfTheString = getTheRestOfTheString(userCommand);
 		if (restOfTheString == null) {
 			return new CommandMarkAsDone();
 		}
+		assert (restOfTheString != null);
 		restOfTheString = restOfTheString.trim();
 		int index = Integer.valueOf(restOfTheString);
 		CommandMarkAsDone command = new CommandMarkAsDone(index);
 		return command;
 	}
-
+	
+	//@author A0112156U
 	private static Command parseCommandDelete(String userCommand)
 			throws Exception {
 		String restOfTheString = getTheRestOfTheString(userCommand);
 		if (restOfTheString == null) {
 			return new CommandDelete();
 		}
+		assert (restOfTheString != null);
 		restOfTheString = restOfTheString.trim();
 		if (isInteger(restOfTheString)) {
 			int index = Integer.valueOf(restOfTheString);
@@ -176,40 +192,49 @@ public class CommandParser {
 		}
 	}
 
+	//@author A0112156U
 	private static Command parseCommandAdd(String userCommand) throws Exception {
 		Task task = createTask(userCommand);
 		CommandAdd command = new CommandAdd(task);
 		return command;
 	}
 
+	//@author A0112156U
 	public static Task createTask(String userInput) throws Exception{
 		String restOfTheString = getTheRestOfTheString(userInput);
 		if (restOfTheString == null) {
 			return null;
 		}
+		assert (restOfTheString != null);
 		Task task = new Task(restOfTheString);
 		return task;
 	}
 
+	//@author A0111608R
 	public static String getTheRestOfTheString(String userCommand) throws Exception {
 		try {
 			String[] result = userCommand.split(" ", 2);
 			String restOfTheWord = result[1];
 			return restOfTheWord;
 		} catch (ArrayIndexOutOfBoundsException aioobe) {
+			Log.trace("Rest Of The String is null",aioobe);
 			return null;
 		}
 	}
-
+	
+	//@author A0111608R
 	public static String getFirstWord(String userCommand) {
 		String[] result = userCommand.split(" ", 2);
 		String firstWord = result[0];
 		return firstWord;
 	}
+	
+	//@author A0112156U
 	public static boolean isInteger(String s) {
 		try { 
 			Integer.parseInt(s); 
 		} catch(NumberFormatException e) { 
+			Log.trace(s+" is not a Integer",e);
 			return false; 
 		}
 		return true;

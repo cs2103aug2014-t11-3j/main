@@ -5,6 +5,7 @@ import javax.swing.JOptionPane;
 import common.Task;
 import common.TaskType;
 
+//@Author A0118899E
 public class ShowMessageDialog {
 	private static Task _task;
 	

@@ -3,9 +3,9 @@
 import java.io.IOException;
 import java.util.LinkedList;
 
+import logger.Log;
 import common.Task;
 import common.TaskType;
-
 import controller.Controller;
 import storage.DBStorage;
 
@@ -44,12 +44,13 @@ public class CommandEdit implements Command {
 	private static final String FEEDBACK_INVALID_REQUEST = "Incorrect input for edit";
 	private static final String FEEDBACK_VALID_UNDO = "Undone edit the %1$s.";
 	 
-	
+	//@Author A0118899E
 	public CommandEdit() {
 		_index = INVALID_INDEX;	
 		_storage = Controller.getDBStorage();
 	}
 	
+	//@Author A0118899E
 	public CommandEdit(int index, String toBeEdited, String editType) {
 		_index = index-1;
 		_editType = editType;
@@ -57,30 +58,35 @@ public class CommandEdit implements Command {
 		_storage = Controller.getDBStorage();	
 	}
 	
+	//@Author A0118899E
 	public CommandEdit(int index, String editType) {
 		_index = index -1;
 		_editType = editType;
 		_storage = Controller.getDBStorage();
 	}
 	
-
+	//@Author A0118899E
 	public CommandEdit(int index) {
 		_index = index -1;
 		_storage = Controller.getDBStorage();
 	}
 	
+	//@Author A0118899E
 	public Task getCurrentTask() {
 		return _taskExisting;
 	}
 	
+	//@Author A0118899E
 	public Task getEditedTask() {
 		return _taskEdited;
 	}
 	
+	//@Author A0118899E
 	public int getIndex() {
 		return _index;
 	}
 	
+	//@Author A0118899E
 	@Override
 	public String execute() {
 		String feedback;
@@ -93,11 +99,13 @@ public class CommandEdit implements Command {
 			_validity = false;
 			return FEEDBACK_INVALID_TASK;
 		} else {
+			assert (_index >= 0);
 			try {
 				_taskExisting = _displayList.get(_index);
 				// set focus task to change UI's page
 				Controller.setFocusTask(_taskExisting); 
 			} catch (IndexOutOfBoundsException ioobe) {
+				Log.info("Task index is out of bounds");
 				_validity = false;
 				Controller.setFocusTask(_displayList.getLast());
 				return String.format(FEEDBACK_INVALID_INDEX, _index+1);
@@ -127,11 +135,12 @@ public class CommandEdit implements Command {
 		try {
 			_storage.store(storageList);
 		} catch (IOException e) {
+			Log.error("Storage I/O problem",e);
 			feedback = FEEDBACK_INVALID_STORAGE;
 			_validity = false;
 			return feedback;
 		}
-		if (editedField.equals("invalid")) {
+		if (editedField.equals(KEYWORD_INVALID)) {
 			feedback = FEEDBACK_INVALID_INPUT;
 			_validity = false;
 		}
@@ -142,6 +151,7 @@ public class CommandEdit implements Command {
 		return feedback;
 	}
 	
+	//@Author A0118899E
 	public void sortByDate(LinkedList<Task> toSortList) {
 		
 	    if (_taskEdited.getTaskType() == TaskType.FLOATING) {
@@ -149,6 +159,7 @@ public class CommandEdit implements Command {
 	    	// set focus task to change UI's page
 	    	Controller.setFocusTask(_taskEdited); 
 	    } else {
+	    	assert (_taskEdited.getTaskType() == TaskType.DEADLINE || _taskEdited.getTaskType() == TaskType.TIMED);
 	    	boolean isAdded = false;
     		for (int i=0; i<toSortList.size(); i++) {
     			Task current = toSortList.get(i);
@@ -159,6 +170,7 @@ public class CommandEdit implements Command {
     				isAdded = true;
     				break;
     			} else {
+    				assert (_taskEdited.getTaskType() == TaskType.DEADLINE || _taskEdited.getTaskType() == TaskType.TIMED);
 	    			if (current.getEndDateTime().compareTo(_taskEdited.getEndDateTime()) >0) {
 	    				toSortList.add(i,_taskEdited);
 	    				// set focus task to change UI's page
@@ -175,6 +187,7 @@ public class CommandEdit implements Command {
 	    }
 	}
 	
+	//@Author A0112156U
 	public String tryExecute() {
 		String feedback;
 		String editedField;
@@ -182,11 +195,13 @@ public class CommandEdit implements Command {
 		if (_index == INVALID_INDEX) {
 			return FEEDBACK_INVALID_TASK;
 		} else {
+			assert (_index >= 0);
 			try {
 				_taskExisting = _displayList.get(_index);
 				// set focus task to change UI's page
 				Controller.setFocusTask(_taskExisting); 
 			} catch (IndexOutOfBoundsException ioobe) {
+				Log.info("Task index is out of bounds");
 				Controller.setFocusTask(_displayList.getLast());
 				return String.format(FEEDBACK_INVALID_INDEX, _index+1);
 			}	
@@ -212,7 +227,8 @@ public class CommandEdit implements Command {
 		}
 		return feedback;
 	}
-
+	
+	//@Author A0118899E
 	private String formNewTask() throws Exception {
 		_taskEdited = _taskExisting.copy();
 		if (_editType.equalsIgnoreCase(KEYWORD_TASK_NAME) || _editType.equalsIgnoreCase(KEYWORD_NAME)) {
@@ -261,6 +277,7 @@ public class CommandEdit implements Command {
 		 }
 	}
 	 
+	//@Author A0118899E
 	@Override
 	public String undo() {
 		String feedback;
@@ -281,6 +298,7 @@ public class CommandEdit implements Command {
 		try {
 			_storage.store(storageList);
 		} catch (IOException e) {
+			Log.error("Storage I/O problem",e);
 			feedback = FEEDBACK_INVALID_STORAGE;;
 			return feedback;
 		}
@@ -288,8 +306,10 @@ public class CommandEdit implements Command {
 		return feedback;
 	}
 	
+	//@Author A0118899E
 	@Override
 	public boolean isUndoable(){
+		assert isUndoable();
 		return _validity;
 	}
 }

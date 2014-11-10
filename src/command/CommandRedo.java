@@ -8,32 +8,34 @@ public class CommandRedo implements Command {
 	private Command _toBeRedone;
 	private History _history;
 	
-	private static final String FEEDBACK_CANNOT_REDO = "No more commands to Redo";
-	private static final String FEEDBACK_CANNOT_REDO_UNDO = "Redo cannot be undone";
+	private static final String FEEDBACK_INVALID_UNDO = "Redo cannot be undone";
+	
+	//@Author A0118899E
 	public CommandRedo(Command toBeRedone) {
 		_toBeRedone = toBeRedone;
 		_history = Controller.getHistory();
 	}
 	
+	//@Author A0118899E
 	@Override
 	public String execute() {
 		try {
 			_history.goForwards();
 			return _toBeRedone.execute();
 		} catch (Exception e) {
-			return FEEDBACK_CANNOT_REDO;
+			return e.getMessage();
 		}
 	}
 
+	//@Author A0118899E
 	@Override
 	public String undo() {
-		return FEEDBACK_CANNOT_REDO_UNDO;
+		return FEEDBACK_INVALID_UNDO;
 	}
 	
+	//@Author A0118899E
 	@Override
 	public boolean isUndoable() {
 		return false;
-		
 	}
-
 }

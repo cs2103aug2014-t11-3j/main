@@ -19,6 +19,7 @@ import storage.FileStorage;
 
 public class FileStorageTest {
 	
+	//@author A0112156U
 	@Test
 	public void testConstructorWithString() {
 		FileStorage fileStorageTest = new FileStorage("test.xml");
@@ -28,6 +29,8 @@ public class FileStorageTest {
 		assertEquals(text, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<root/>");
 		file.delete();
 	}
+	
+	//@author A0112156U
 	@Test
 	public void testConstructor() {
 		FileStorage fileStorageTest = new FileStorage();
@@ -36,6 +39,8 @@ public class FileStorageTest {
 		String text = fileStorageTest.getDocument().asXML();
 		assertEquals(text, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<root/>");
 	}
+	
+	//@author A0112156U
 	@Test
 	public void testInit() {
 		String name = createRandomString();
@@ -45,6 +50,8 @@ public class FileStorageTest {
 		assertFalse(new File(createRandomString()).exists());
 		file.delete();
 	}
+	
+	//@author A0112156U
 	@Test
 	public void testLoad() throws IOException {
 		FileStorage fileStorageTestBlank = new FileStorage("blank.xml");
@@ -53,6 +60,8 @@ public class FileStorageTest {
 		assertTrue(tasks.equals(new LinkedList<Task>()));
 		file.delete();
 	}
+	
+	//@author A0112156U
 	@Test
 	public void testStoreFloating() throws IOException {
 		FileStorage fileStorageTest = new FileStorage("test.xml");
@@ -69,6 +78,7 @@ public class FileStorageTest {
 		file.delete();
 	}
 	
+	//@author A0112156U
 	@Test
 	public void testStoreTimed() throws IOException {
 		FileStorage fileStorageTest = new FileStorage("test.xml");
@@ -85,6 +95,7 @@ public class FileStorageTest {
 		file.delete();
 	}
 	
+	//@author A0112156U
 	@Test
 	public void testStoreDeadline() throws IOException {
 		FileStorage fileStorageTest = new FileStorage("test.xml");
@@ -101,7 +112,7 @@ public class FileStorageTest {
 		file.delete();
 	}
 		
-	
+	//@author A0112156U
 	private String createRandomString() {
 		char[] chars = "abcdefghijklmnopqrstuvwxyz01123456789".toCharArray();
 		StringBuilder sb = new StringBuilder();
@@ -112,6 +123,8 @@ public class FileStorageTest {
 		}
 		return sb.toString();
 	}
+	
+	//@author A0112156U
 	private Task createRandomFloatingTask() {
 		char[] chars = "abcdefghijklmnopqrstuvwxyz01123456789".toCharArray();
 		StringBuilder sb = new StringBuilder();
@@ -123,6 +136,8 @@ public class FileStorageTest {
 		String name = sb.toString();
 		return new Task(TaskType.FLOATING, name, false,"bob","soc");
 	}
+	
+	//@author A0111513B
 	private Task createRandomTimedTask() {
 		//TODO
 		char[] chars = "abcdefghijklmnopqrstuvwxyz01123456789".toCharArray();
@@ -135,6 +150,8 @@ public class FileStorageTest {
 		String name = sb.toString();
 		return new Task(TaskType.TIMED, name, new DateTime(2014,12,2,8,0),new DateTime(2014,12,2,23,59),false,"Bob","SOC");
 	}
+	
+	//@author A0111513B
 	private Task createRandomDeadlineTask() {
 		//TODO
 		char[] chars = "abcdefghijklmnopqrstuvwxyz01123456789".toCharArray();

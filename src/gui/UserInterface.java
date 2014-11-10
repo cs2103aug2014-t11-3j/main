@@ -62,12 +62,14 @@ import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 
+import logger.Log;
 import sun.swing.table.DefaultTableCellHeaderRenderer;
 
 import com.melloware.jintellitype.HotkeyListener;
 import com.melloware.jintellitype.JIntellitype;
 import com.melloware.jintellitype.JIntellitypeException;
 //import com.sun.awt.AWTUtilities;
+
 
 
 import common.Task;
@@ -147,14 +149,16 @@ public class UserInterface extends JFrame {
 	/**
 	 * Launch the application.
 	 */
+	//@author A0111513B
 	@Override
 	public void setVisible(boolean value) {
 		super.setVisible(value);
 		commandEntryTextField.requestFocusInWindow();
 	}
 
+	//@author A0111513B
 	public static void main(String[] args) {
-		startReminderTimer();
+		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {  
 				try {
@@ -169,13 +173,17 @@ public class UserInterface extends JFrame {
 			}	
 		});
 	}
+	
+	//@author A0111513B
 	public UserInterface() {
 		initialize(this); 
 		fillUpTheJFrame(this);
 		useJIntellitype();
 		makeTrayIcon(this);
-		
+		startReminderTimer();
 	}
+	
+	//@author A0112156U
 	private void useJIntellitype() {
 		try {
 			JIntellitype.getInstance();
@@ -201,9 +209,12 @@ public class UserInterface extends JFrame {
 	            }       
 			});
 		} catch (JIntellitypeException jie) {
+			Log.warn("Cannot load JIntellitype for hotkeys",jie);
 			helpText.append(MSG_CANNOT_LOAD_HOTKEY);
 		}
 	}
+	
+	//@author A0112156U
 	private void makeTrayIcon(JFrame userInterface) {
 		//Check the SystemTray is supported
         if (!SystemTray.isSupported()) {
@@ -236,6 +247,7 @@ public class UserInterface extends JFrame {
         try {
             tray.add(trayIcon);
         } catch (AWTException e) {
+        	Log.warn("Cannot add tray icon in system tray",e);
             helpText.append(MSG_CANNOT_ADD_TRAYICON);
         }
         isFirstMinimized = false;
@@ -244,12 +256,16 @@ public class UserInterface extends JFrame {
 	/**
 	 * Initialize the contents of the frame.
 	 */
+	
+	//@author A0111513B
 	//this initialize method sets up the main frame for ToDoLog
 	private void initialize(JFrame UserInterface) { 
 		Controller.init();
 		setIconsForApplication(UserInterface);
 		setWindowParameters(UserInterface);	
 	}
+	
+	//@author A0111513B
 	private void setWindowParameters(JFrame UserInterface) {
 		UserInterface.setTitle("ToDoLog");
 		UserInterface.setResizable(false);
@@ -258,7 +274,10 @@ public class UserInterface extends JFrame {
 		UserInterface.setUndecorated(true);
 		UserInterface.setBackground(new Color(255,255,255,255));
 		UserInterface.addWindowListener(new WindowStatusWindowListener());
+		Log.info("Draw the window frame");
 	}
+	
+	//@author A0112156U
 	private void setIconsForApplication(JFrame UserInterface) {
 		ArrayList<Image> images = new ArrayList<Image>();
 		URL url = this.getClass().getClassLoader().getResource(FILEPATH_ICON_16);
@@ -269,8 +288,10 @@ public class UserInterface extends JFrame {
 		images.add(image);
 		
 		UserInterface.setIconImages(images);
+		Log.info("Load icon images to UI");
 	}
 	
+	//@author A0111513B
 	//this method consists of setting the different sections within the frame of ToDoLog
 	private void fillUpTheJFrame(JFrame UserInterface){
 		Container contentPane = UserInterface.getContentPane();
@@ -278,22 +299,31 @@ public class UserInterface extends JFrame {
 		contentPane.add(layeredPane);
 		addBackgroundLabel(layeredPane);
 		addMainPanel(layeredPane);
+		Log.info("Draw all components on frame");
 	}
+	
+	//@author A0112156U
 	private void addBackgroundLabel(Container layeredPane) {
 		backgroundLabel= loadBackgroundImage(FILEPATH_PHOTO_BACKGROUND_IMAGE);
 		layeredPane.add(backgroundLabel,new Integer(0));
 	}
+	
+	//@author A0112156U
 	private JLabel loadBackgroundImage(String filePath) {
 		try {
 			URL url = this.getClass().getClassLoader().getResource(filePath);
 			backgroundImage = ImageIO.read(url);
 			backgroundLabel = new JLabel(new ImageIcon(backgroundImage));
 			backgroundLabel.setBounds(0,0,700, 610);
+			Log.info("Loaded background image");
 			return backgroundLabel;
 		} catch (IOException e) {
+			Log.error("Cannot load background image");
 			return new JLabel();
 		}
 	}
+	
+	//@author A0111513B
 	private void addMainPanel(Container layeredPane) {
 		JPanel mainPanel = new JPanel();
 		mainPanel.setBounds(0, 0, 700, 590);
@@ -303,9 +333,10 @@ public class UserInterface extends JFrame {
 		createTablesHolder(mainPanel);
 		createBottomPanel(mainPanel); 
 		layeredPane.add(mainPanel,new Integer(2));
+		Log.info("Drawed main panel");
 	}	
 	
-
+	//@author A0112156U
 	private void createTopPanel(Container mainPanel){
 		JPanel topPanel = new JPanel(new GridBagLayout());
 		
@@ -323,9 +354,10 @@ public class UserInterface extends JFrame {
 		createButtonPanel(topPanel);
 		
 		mainPanel.add(topPanel, parameters);
-		
+		Log.info("Drawed top panel");
 	}
 	
+	//@author A0112156U
 	private void createIcon(JPanel topPanel) {
 		iconPanel = new JLabel();
 		
@@ -337,17 +369,21 @@ public class UserInterface extends JFrame {
 		GridBagConstraints parameters;
 		parameters = setParameters(ID_ICON_PANEL);
 		topPanel.add(iconPanel,parameters);
+		Log.info("Drawed icon panel");
 		
 	}
+	
+	//@author A0111513B
 	private void createClockPanel(Container topPanel){
 		
-		 
 		 clock = new DigitalClock();
 		 GridBagConstraints clockPanelParameters = setParameters(ID_CLOCK_PANEL);
 		 topPanel.add(clock.getTime(),clockPanelParameters); //clock.getTime() refers to the JLabel within DigitalClock class
 		 clock.start();
+		 Log.info("Drawed clock");
 	}
 	
+	//@author A0112156U
 	private void createButtonPanel(Container topPanel) {
 		
 		JPanel buttonPanel = new JPanel(new GridBagLayout());
@@ -411,7 +447,10 @@ public class UserInterface extends JFrame {
 		//add the button panel to the top panel
 		GridBagConstraints ButtonPanelParameters = setParameters(ID_TOP_RIGHT_BUTTONS_PANEL);
 		topPanel.add(buttonPanel,ButtonPanelParameters);
+		Log.info("Drawed button panel");
 	}
+	
+	//@author A0111513B
 	private void createTablesHolder(Container mainPanel){
 		GridBagConstraints panelParameters;   
 		panelParameters = setParameters(ID_TABLES_HOLDER); 
@@ -430,10 +469,11 @@ public class UserInterface extends JFrame {
 		//add the toDoListHolder to the mainPanel
 		mainPanel.add(toDoListHolder, panelParameters);
 		toDoListHolder.setOpaque(false);
-		
+		Log.info("Drawed all tables");
 		
 	}
 	
+	//@author A0112156U
 	private void createFlexibleTableLabel(JPanel toDoListHolder) {
 		flexibleTableLabel = new JLabel("Flexible tasks:") {
 			/**
@@ -476,6 +516,7 @@ public class UserInterface extends JFrame {
 		
 	}
 
+	//@author A0112156U
 	private void createScheduleTableLabel(JPanel toDoListHolder) {
 		scheduleTableLabel = new JLabel() {
 			/**
@@ -518,6 +559,7 @@ public class UserInterface extends JFrame {
 		
 	}
 	
+	//@author A0111513B
 	/* here is where the table displaying the user's tasks is implemented
 	 * the table is formed in reference to a table model, and then placed into a scroll pane 
 	 * which is then added to the toDoListHolder
@@ -616,6 +658,7 @@ public class UserInterface extends JFrame {
 		toDoListHolder.add(scheduleTableScrollPane,scrollPaneParameters);
 	}
 	
+	//@author A0111513B
 	//implementation is about the same as toDoTaskTable
 	private void createFlexibleTable(JPanel toDoListHolder) {
 		
@@ -706,7 +749,7 @@ public class UserInterface extends JFrame {
 		
 	}
 
-	
+	//@author A0111513B
 	/* this method creates the bottom section of ToDoLog which consists of the command entry
 	 *	line and the dynamic help text area
 	 */
@@ -726,8 +769,10 @@ public class UserInterface extends JFrame {
 		createHelpTextArea(bottomPanel);
 
 		mainPanel.add(bottomPanel, parameters);
+		Log.info("Drawed bottom panel");
 	}
 	
+	//@author A0111513B
 	private void createCommandEntryTextField(JPanel bottomPanel) {
 		
 		//position of the commandEntryTextField within bottom panel
@@ -772,8 +817,10 @@ public class UserInterface extends JFrame {
 		commandEntryTextField.addKeyListener(new CommandEntryTextFieldKeyListener());
 		commandEntryTextField.getDocument().addDocumentListener(new CommandEntryTextFieldDocumentListener());
 		commandEntryTextField.getDocument().putProperty("name", "Text Field");
+		Log.info("Drawed entry text field");
 	}
 	
+	//@author A0111513B
 	private void createHelpTextArea(JPanel bottomPanel){
 		
 		//position of the dynamicHelpText within the bottomPanel
@@ -787,6 +834,7 @@ public class UserInterface extends JFrame {
 		helpText.setLineWrap(true);
 		helpText.setWrapStyleWord(false);
 		helpText.setEditable(false);
+		helpText.setFocusable(false);
 		helpText.setHighlighter(null);
 		helpText.append(Controller.getFeedback());
 		InputStream in = this.getClass().getClassLoader().getResourceAsStream(FILEPATH_FONT_OPENSANS_REGULAR);
@@ -802,7 +850,7 @@ public class UserInterface extends JFrame {
 		}
 		//put the dynamic area into a scroll pane
 		bottomPanel.add(helpText,helpTextParameters);
-		
+		Log.info("Drawed help text area");
 	
 	}	
 	
@@ -810,7 +858,7 @@ public class UserInterface extends JFrame {
 	 * and maximizing, and to hide the application and leave the commandTextField visible
 	 */
 	
-
+	//@author A0111513B
 	// remember to write unit test as you code
 	private class CommandEntryTextFieldActionListener implements ActionListener{
 		@Override
@@ -819,7 +867,7 @@ public class UserInterface extends JFrame {
 			String commandString = commandEntryTextField.getText();
 			//for the case where user exits ToDoLog
 			if (commandString.equalsIgnoreCase("exit")) {
-				window.dispatchEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSING));
+				exitProgram();
 			}
 			
 			//this is where ToDoLog takes in the user's value
@@ -841,10 +889,10 @@ public class UserInterface extends JFrame {
 			flexibleTableModel.fireTableDataChanged();
 			//I want the toDoListItems to show the previous screen if the next screen has no more items to display
 			flipPages();
-
 		}
 	}
 	
+	//@author A0111513B
 	private void flipPages() {
 		if (focusTable == scheduleTable) {
 			if (Controller.getFocusTask() == null) {
@@ -859,7 +907,7 @@ public class UserInterface extends JFrame {
 					
 					((ToDoLogTableModel) focusTable.getModel()).goToPage((index)/TABLE_PAGE_SIZE);
 				//	found = true;
-
+					
 				}
 			}
 		} else {
@@ -879,9 +927,10 @@ public class UserInterface extends JFrame {
 				}
 			}
 		}
-		
+		Log.debug("Change the pages and focus table to where the focus task is");
 	}
 	
+	//@author A0112156U
 	//this method highlights the table which is in focus by the user. the table focused on
 	// has a yellow border surrounding it
 	private void setFocusTable(int tableIndex) {
@@ -916,24 +965,29 @@ public class UserInterface extends JFrame {
 			default: break;
 		}
 	}
+	
+	//@author A0112156U
 	private void toggleFocusTable() {
 		if (focusTable == scheduleTable) {
 			setFocusTable(ID_FLEXIBLE_TABLE);
+			Log.info("Focus table toggled to flexi");
 		} else {
 			setFocusTable(ID_SCHEDULE_TABLE);
+			Log.info("Focus table toggled to schedule");
 		}
 	}
 	
+	//@author A0112156U
 	public class ExitPopupItemActionListener implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			window.dispatchEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSING));
-
+			
+			exitProgram();
 		}
-
 	}
-
+	
+	//@author A0112156U
 	public class ShowPopupItemActionListener implements ActionListener {
 
 		@Override
@@ -943,15 +997,18 @@ public class UserInterface extends JFrame {
 
 	}
 
+	//@author A0112156U
 	public class HelpPopupItemActionListener implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			Controller.acceptUserCommand("help");
-
+			Log.info("Open help screen");
 		}
 
 	}
+	
+	//@author A0112156U
 	private class CommandEntryTextFieldDocumentListener implements DocumentListener {
 		@Override
 		public void insertUpdate(DocumentEvent e) {
@@ -967,6 +1024,7 @@ public class UserInterface extends JFrame {
 		public void changedUpdate(DocumentEvent e) {
 			
 		}
+		
 		private String readKeyForHelperFeedback() {
 			String commandString = commandEntryTextField.getText();
 			LinkedList<String> entryHelper = Controller.getCommandEntryHelperDetailsFromInput(commandString);
@@ -987,10 +1045,12 @@ public class UserInterface extends JFrame {
 				}
 				flipPages();
 			} 
+			Log.debug("Text change in command entry text");
 			return helperText;
 		}
 	}
 	
+	//@author A0111513B
 	private class CommandEntryTextFieldKeyListener implements KeyListener {
 		@Override
 		public void keyPressed(KeyEvent e) {
@@ -1000,15 +1060,18 @@ public class UserInterface extends JFrame {
 			//the user's tasks
 			if ((keyCode == KeyEvent.VK_PAGE_UP) || (keyCode == KeyEvent.VK_F9)){
 				((ToDoLogTableModel) focusTable.getModel()).pageUp();
+				Log.info("Page up pressed");
 			}
 			if ((keyCode == KeyEvent.VK_PAGE_DOWN) || (keyCode == KeyEvent.VK_F10)){
 				((ToDoLogTableModel) focusTable.getModel()).pageDown();
+				Log.info("Page down pressed");
 			}
 			
 			//press the arrow keys to look through past user inputs
 			if (keyCode == KeyEvent.VK_UP){
 				try {
 					commandEntryTextField.setText(Controller.getInput().getBackwards());
+					Log.info("Up pressed");
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
@@ -1017,6 +1080,7 @@ public class UserInterface extends JFrame {
 			if (keyCode == KeyEvent.VK_DOWN){
 				try {
 					commandEntryTextField.setText(Controller.getInput().getForwards());
+					Log.info("Down pressed");
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
@@ -1025,7 +1089,7 @@ public class UserInterface extends JFrame {
 			//press tab to switch focus between the two tables
 			if ((keyCode == KeyEvent.VK_TAB)) {
 				toggleFocusTable();
-				
+				Log.info("Tab pressed");
 			}
 		}
 	
@@ -1040,6 +1104,7 @@ public class UserInterface extends JFrame {
 		}
 	}
 	
+	//@author A0111513B
 	/*the two mouseListener classes below enable the user to drag ToDoLog around 
 	 *the computer screen
 	 */
@@ -1050,6 +1115,7 @@ public class UserInterface extends JFrame {
 				
 				draggingOffsetPoint = new Point();
 				draggingOffsetPoint.setLocation(e.getPoint());
+				Log.info("Start dragging");
 			}
 			
 			@Override
@@ -1071,9 +1137,9 @@ public class UserInterface extends JFrame {
 			public void mouseExited(final MouseEvent e){
 				
 			}
-			
-		
 	}
+	
+	//@author A0111513B
 	private class ScreenDraggingMouseMotionListener implements MouseMotionListener{
         @Override
         public void mouseDragged(final MouseEvent e) {
@@ -1086,6 +1152,7 @@ public class UserInterface extends JFrame {
         }
 	}
 	
+	//@author A0112156U
 	/*listeners added to the minimize button and the close button to enable
 	 *functions such as minimize and exit respectively, also the button will change
 	 *its color when the mouse goes over it
@@ -1110,6 +1177,7 @@ public class UserInterface extends JFrame {
 			repaint();
 			
 			window.setState(JFrame.ICONIFIED);
+			Log.info("Window minimized");
 		}
 
 		@Override
@@ -1123,11 +1191,9 @@ public class UserInterface extends JFrame {
 			minimizeButton.setBackground(new  Color(241, 196, 15, 255));
 			repaint();
 		}
-
-	
-
 	}
-
+	
+	//@author A0112156U
 	private class CloseButtonMouseListener implements MouseListener {
 	
 		@Override
@@ -1160,54 +1226,56 @@ public class UserInterface extends JFrame {
 			closeButton.setBackground(new Color(242, 38, 19, 255));
 			repaint();
 		}
-
-		
-
 	}
 	
+	//@author A0112156U
 	// a pop-up to tell the user that ToDoLog has been minimized
 	private class WindowStatusWindowListener implements WindowListener{
 		public void windowActivated(WindowEvent e) {
-	
+			commandEntryTextField.requestFocusInWindow();
+			Log.info("Window activated");
 		}
 
 		@Override
 		public void windowClosed(WindowEvent e) {
-			
+			Log.info("Window closed");
 		}
 
 		@Override
 		public void windowClosing(WindowEvent e) {
-			
+			Log.info("Window closing");
 		}
 
 		@Override
 		public void windowDeactivated(WindowEvent e) {
-			
+			Log.info("Window deactivated");
 			
 		}
 
 		@Override
 		public void windowDeiconified(WindowEvent e) {
-			
+			Log.info("Window maximized");
 		}
 
 		@Override
 		public void windowIconified(WindowEvent e) {
+			Log.info("Window minimized");
 			if (!isFirstMinimized) {
 				trayIcon.displayMessage("ToDoLog", 
 					"ToDoLog is minimized. To open use combination ALT+B", TrayIcon.MessageType.INFO);
 				isFirstMinimized = true;
+				Log.info("Tray message for first minimized shown");
 			}
 			
 		}
-
+		
 		@Override
 		public void windowOpened(WindowEvent e) {
-			
+			Log.info("Window opened");
 		}
 	}
 	
+	//@author A0111513B
 	/*this method is to set up the parameters of the gridbagconstraints
 	to put the different panels into the right positions on the JFrame
 	here we use the constructor GridBagConstraints(gridx,gridy,gridwidth,gridheight,weightx,weighty,anchor,fill,insets,ipadx,ipady)
@@ -1279,6 +1347,8 @@ public class UserInterface extends JFrame {
 		}
 		return null;
 	} 
+	
+	//@author A0111513B
 	/*	adjust and fix the width of the columns of the toDoTaskTable
 	 */	
 	private void adjustToDoTaskTableColumns(JTable toDoListTable){
@@ -1320,6 +1390,7 @@ public class UserInterface extends JFrame {
 		}
 	}
 	
+	//@author A0111513B
 	//adjust the width of the floatingTaskTable's columns
 	private void adjustFloatingTaskTableColumns(JTable floatingListTable){
 		TableColumn tableColumn = null;
@@ -1368,6 +1439,7 @@ public class UserInterface extends JFrame {
 		}
 	}
 	
+	//@author A0111513B
 	//a renderer to change the color of the rows of the table to show different priorities
 	private void changeToDoTableColors(JTable toDoListTable, DefaultTableCellRenderer renderer){
 		toDoListTable.getColumnModel().getColumn(0).setCellRenderer(renderer);
@@ -1377,11 +1449,13 @@ public class UserInterface extends JFrame {
 		toDoListTable.getColumnModel().getColumn(4).setCellRenderer(renderer);	
 	}
 	
+	//@author A0111513B
 	private void changeFloatingTableColors(JTable toDoListTable, DefaultTableCellRenderer renderer){
 		toDoListTable.getColumnModel().getColumn(0).setCellRenderer(renderer);
 		toDoListTable.getColumnModel().getColumn(1).setCellRenderer(renderer);
 	}
 	
+	//@author A0111513B
 	private void hideWindowExceptCommandEntry() {
 		if(isInvisible == false){
 			commandEntryTextField.setBorder(new LineBorder(new Color(34,167,240),4,true));
@@ -1418,7 +1492,7 @@ public class UserInterface extends JFrame {
 			clock.getTime().setForeground(new Color(255,255,255,20));
 			
 			isInvisible = true;
-			
+			Log.info("Set into stealth mode");
 		}else{
                 //make everything reappear with the same hotkey
 			commandEntryTextField.setBorder(new LineBorder(new Color(34,167,240),2,true));
@@ -1452,31 +1526,44 @@ public class UserInterface extends JFrame {
 			changeFloatingTableColors(flexibleTable,new CustomRenderer());
 			isInvisible = false;
 			toggleFocusTable();toggleFocusTable();
+			Log.info("Exit stealth mode");
 		}
 	}
 
+	//@author A0111513B
 	private void showOrHideWindow() {
 		if (window.getState() == JFrame.ICONIFIED) {
 			window.setState(JFrame.NORMAL);
 			window.setVisible(true);
+			
 		} else {
-			if (isInvisible) hideWindowExceptCommandEntry();
+			if (isInvisible) {
+				hideWindowExceptCommandEntry();
+			}
 			window.setState(JFrame.ICONIFIED);
 			window.dispose();
+			
 		}
 	}
 
-	private static void startReminderTimer(){
+	//@author A0118899E
+	private void startReminderTimer(){
 		final Timer timer = new Timer( 60000 ,
 				new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent ae) {
-						ReminderLogic one = new ReminderLogic();
-						one.execute();
+						ReminderLogic reminder = new ReminderLogic();
+						reminder.execute();
 					}
 				});
 		timer.setInitialDelay(0);
 		timer.start();
 		
+	}
+
+	//@author A0112156U
+	private void exitProgram() {
+		window.dispatchEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSING));
+		Log.info("Exit program");
 	}
 }

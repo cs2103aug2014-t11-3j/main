@@ -4,6 +4,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.LinkedList;
 
+import logger.Log;
+
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
@@ -17,6 +19,7 @@ import org.joda.time.format.ISODateTimeFormat;
 import common.Task;
 import common.TaskType;
 
+//@Author A0112156U
 public class FileStorage implements Storage{
 	private final String DEFAULT_FILE_NAME = "store.xml";
 	private Document _document;
@@ -40,7 +43,8 @@ public class FileStorage implements Storage{
 				_file.createNewFile();
 				writeDocument(_document);
 			} catch (IOException e) {
-				//return feedback of IO error
+				Log.error("Storage I/O problem",e);
+				throw new RuntimeException(e);
 			}
 		}
 		
@@ -57,9 +61,9 @@ public class FileStorage implements Storage{
 		try {
 			return parseDoc(_document);
 		} catch (Exception e) {
-			//unsupported file or file corrupted
+			Log.error("Unsupport XML file or XML file corrupted");
+			throw new RuntimeException(e);
 		}
-		return null;
 		
 	}
 
@@ -72,7 +76,7 @@ public class FileStorage implements Storage{
 				Task task = parseElementToTask((Element) taskNode);
 				tasks.add(task);
 			} else {
-				throw new Exception();
+				throw new Exception("File format incorrect.");
 			}
 			
 		}
@@ -90,6 +94,7 @@ public class FileStorage implements Storage{
 				task = parseIntoDeadline(taskNode);
 				break;
 			default:
+				assert (taskType == TaskType.FLOATING);
 				task = parseIntoFloating(taskNode);
 				break;
 		}
@@ -166,6 +171,7 @@ public class FileStorage implements Storage{
 					addDeadlineTaskToRoot(root, task);
 					break;
 				default:
+					assert false : task.getTaskType();
 					break;
 			}
 		}

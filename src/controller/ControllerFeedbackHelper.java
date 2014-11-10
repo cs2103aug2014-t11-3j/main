@@ -13,9 +13,11 @@ import command.CommandEdit;
 import command.CommandMarkAsDone;
 import command.CommandNumber;
 import common.Task;
+import common.TaskType;
 
 public class ControllerFeedbackHelper {
 
+	//@Author A0112156U
 	public static LinkedList<String> getHelperTextsForCmdNumber(Command command) {
 		((CommandNumber) command).tryExecute();
 		Task task = ((CommandNumber) command).getTask();
@@ -84,6 +86,7 @@ public class ControllerFeedbackHelper {
 				helperTexts.addAll(createDeadlineHelper(task));
 				break;
 			default:
+				assert (task.getTaskType () == TaskType.FLOATING);
 				helperTexts.addAll(createFloatingTaskHelper(task));
 				break;
 		}

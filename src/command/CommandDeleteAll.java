@@ -3,8 +3,8 @@ package command;
 import java.io.IOException;
 import java.util.LinkedList;
 
+import logger.Log;
 import common.Task;
-
 import controller.Controller;
 import storage.DBStorage;
 
@@ -17,6 +17,7 @@ public class CommandDeleteAll implements Command {
 	private static final String FEEDBACK_VALID_DELETE_ALL = "Deleted all tasks";
 	private static final String FEEDBACK_VALID_UNDO = "Undone the delete command";
 
+	//@Author A0118899E
 	@Override
 	public String execute() {
 		String feedback;
@@ -25,6 +26,7 @@ public class CommandDeleteAll implements Command {
 		try {
 			_storage.store(new LinkedList<Task>());
 		} catch (IOException e) {
+			Log.error("Storage I/O problem",e);
 			feedback = FEEDBACK_INVALID_STORAGE;
 			_validity=false;
 			return feedback;
@@ -36,6 +38,7 @@ public class CommandDeleteAll implements Command {
 		return feedback;
 	}
 	
+	//@Author A0112156U
 	public String tryExecute() {
 		String feedback;
 		_storage = Controller.getDBStorage();
@@ -47,12 +50,14 @@ public class CommandDeleteAll implements Command {
 		return feedback;
 	}
 
+	//@Author A0118899E
 	@Override
 	public String undo() {
 		String feedback;
 		try {
 			_storage.store(_storageList);
 		} catch (IOException e) {
+			Log.error("Storage I/O problem",e);
 			feedback = FEEDBACK_INVALID_STORAGE;
 			return feedback;
 		}
@@ -60,8 +65,10 @@ public class CommandDeleteAll implements Command {
 		return feedback;
 	}
 	
+	//@Author A0118899E
 	@Override
 	public boolean isUndoable() {
+		assert isUndoable();
 		return _validity;
 	}
 
