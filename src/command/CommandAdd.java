@@ -20,15 +20,17 @@ public class CommandAdd implements Command {
 	private static final String FEEDBACK_VALID_UNDO = "Undone adding %1$s";
 	private static final String FEEDBACK_INVALID_UNDO = "Cannot undo adding %1$s";
 	
-	
+	//@Author A0118899E
 	public CommandAdd(Task task) {
 		_task = task;
 	}
-
+	
+	//@Author A0118899E
 	public Task getAddedTask() {
 		return _task;
 	}
 	
+	//@Author A0118899E
 	@Override
 	public String execute() {
 		
@@ -58,7 +60,7 @@ public class CommandAdd implements Command {
 		return feedback;
 	}
 	
-	
+	//@Author A0118899E
 	public void sortByDate(LinkedList<Task> toSortList) {
 		
 	    if (_task.getTaskType() == TaskType.FLOATING) {
@@ -93,7 +95,8 @@ public class CommandAdd implements Command {
     		}
 	    }
 	}
-
+	
+	//@Author A0112156U
 	public String tryExecute() {
 		String feedback;
 		LinkedList <Task> storageList;
@@ -112,6 +115,7 @@ public class CommandAdd implements Command {
 		
 	}
 	
+	//@Author A0118899E
 	@Override
 	public String undo() {
 		String feedback;
@@ -157,6 +161,7 @@ public class CommandAdd implements Command {
 		return feedback;
 	}
 	
+	//@Author A0118899E
 	@Override
 	public boolean isUndoable(){
 		assert isUndoable();
