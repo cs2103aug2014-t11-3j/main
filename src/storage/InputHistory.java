@@ -2,6 +2,7 @@ package storage;
 
 import java.util.LinkedList;
 
+//@Author A0111608R
 public class InputHistory {
 	private LinkedList<String> _strings;
 	private int _position;
