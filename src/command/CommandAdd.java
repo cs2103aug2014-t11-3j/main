@@ -8,7 +8,12 @@ import common.Task;
 import common.TaskType;
 import controller.Controller;
 import storage.DBStorage;
-	
+	/**
+	 *  CommandAdd class is called by the controller in order to execute the Add command
+	 *  @param _task - stores the task to be added to the log
+	 *  @param _storage - stores the DBstorage to get the scheduleList
+	 *	@param _validity - to store if undo for add is valid or not
+	 */
 public class CommandAdd implements Command {
 	private Task _task;
 	private DBStorage _storage;

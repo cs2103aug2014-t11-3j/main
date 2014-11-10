@@ -2,6 +2,12 @@ package command;
 
 import controller.Controller;
 
+/**
+ *  CommandLoad class is called by the controller in order to execute the load command
+ *  @param _newFileName - stores the new file name to be loaded
+ *  @param _storage - store the old file name for undo
+ */
+
 public class CommandLoad implements Command {
 	
 	private String _newFileName;

@@ -8,6 +8,14 @@ import common.Task;
 import common.TaskType;
 import controller.Controller;
 import storage.DBStorage;
+/**
+ *  CommandMarkAsDone class is called by the controller in order to execute the done command
+ *  @param _storage - stores the DBstorage to get the storageList
+ *	@param _validity - to store if undo for deleteDone is valid or not
+ *	@param _taskList - stores the complete list of tasks
+ *	@param _displayList - stores the list for every specific view
+ *	@param _index - index of the task to be marked as done or undone.
+ */
 
 public class CommandMarkAsDone implements Command {
 	private Task _task;

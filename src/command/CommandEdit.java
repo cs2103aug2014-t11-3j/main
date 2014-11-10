@@ -8,7 +8,17 @@ import common.Task;
 import common.TaskType;
 import controller.Controller;
 import storage.DBStorage;
-
+/**
+ *  CommandEdit class is called by the controller in order to execute the Edit command
+ *  @param _taskExisting - stores the task to be modified 
+ *  @param _toBeEdited - contains the to be changed string.
+ *  @param _editType - contains the category that is to be edited
+ *  @param _taskEdited - contains the edited Task 
+ *  @param _index - contains the index of the Task to be edited
+ *  @param _storage - stores the DBstorage to get the scheduleList
+ *  @param _displayList - stored the LinkedList<Task> of the tasks on the display screen.
+ *	@param _validity - to store if undo for add is valid or not
+ */
 public class CommandEdit implements Command {
 	private Task _taskExisting;
 	private String _toBeEdited;

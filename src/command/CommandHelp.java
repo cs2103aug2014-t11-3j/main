@@ -11,6 +11,10 @@ import java.util.Scanner;
 
 import logger.Log;
 
+/**
+ *  CommandHelp class is called by the controller in order to execute the help command
+ *  @param inFile - to read the helper.txt file.
+ */
 public class CommandHelp implements Command {
 	
 	private static final String FILEPATH_HELPTEXT = "resources/text/helper.txt";
