@@ -1,7 +1,7 @@
 package command;
 
+import history.History;
 import controller.Controller;
-import storage.History;
 /**
  *  CommandUndo class is called by the controller in order to execute the undo command
  *  @param _history - stores the history of all the commands.

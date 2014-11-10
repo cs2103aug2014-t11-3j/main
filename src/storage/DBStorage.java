@@ -4,8 +4,13 @@ import java.io.IOException;
 import java.util.LinkedList;
 
 import common.Task;
-
-//@Author A0112156U
+/**
+ * DBStorage objects implement Storage interface
+ * stores Task in LinkedList and returns when load() is called
+ * @param _task
+ * @param _fileStorage
+ */
+//@author A0112156U
 public class DBStorage implements Storage {
 	private LinkedList<Task> _tasks;
 	private FileStorage _fileStorage;

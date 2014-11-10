@@ -1,7 +1,7 @@
 package parser;
 
+import history.History;
 import logger.Log;
-import storage.History;
 import command.Command;
 import command.CommandAdd;
 import command.CommandDelete;

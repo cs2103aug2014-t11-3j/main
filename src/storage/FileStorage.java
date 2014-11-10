@@ -18,7 +18,13 @@ import org.joda.time.format.ISODateTimeFormat;
 
 import common.Task;
 import common.TaskType;
-
+/**
+ * FileStorage objects implement Storage interface
+ * stores Task in XML files and returns when load() is called
+ * manage parsing and writing XMLFiles
+ * @param _document
+ * @param _file
+ */
 //@Author A0112156U
 public class FileStorage implements Storage{
 	private final String DEFAULT_FILE_NAME = "store.xml";

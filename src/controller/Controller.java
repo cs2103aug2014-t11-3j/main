@@ -1,5 +1,8 @@
 package controller;
 
+import history.History;
+import history.InputHistory;
+
 import java.util.LinkedList;
 
 import logger.Log;
@@ -19,9 +22,6 @@ import common.Task;
 import common.TaskType;
 import parser.CommandParser;
 import storage.DBStorage;
-import storage.History;
-import storage.InputHistory;
-//import static logger.Log.*;
 
 // remember to write unit test as you code
 
