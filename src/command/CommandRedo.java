@@ -37,7 +37,5 @@ public class CommandRedo implements Command {
 	@Override
 	public boolean isUndoable() {
 		return false;
-		
 	}
-
 }
