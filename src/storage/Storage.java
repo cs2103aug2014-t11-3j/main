@@ -5,6 +5,7 @@ import java.util.LinkedList;
 
 import common.Task;
 
+//@Author A0112156U
 public interface Storage {
 	public LinkedList<Task> load();
 
