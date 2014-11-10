@@ -62,6 +62,7 @@ public class CommandDeleteAll implements Command {
 	
 	@Override
 	public boolean isUndoable() {
+		assert isUndoable();
 		return _validity;
 	}
 

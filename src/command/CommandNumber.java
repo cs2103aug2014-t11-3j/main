@@ -15,6 +15,7 @@ public class CommandNumber implements Command {
 	
 	private static final String FEEDBACK_VALID_TASK = "This is a valid task";
 	private static final String FEEDBACK_INVALID_TASK = "This is not a valid index";
+	private static final String FEEDBACK_INVALID_UNDO = "Cannot be undone!";
 	
 	public CommandNumber(int index) {
 		_index = index - CORRECTION_INDEX;
@@ -35,7 +36,7 @@ public class CommandNumber implements Command {
 
 	@Override
 	public String undo() {
-		return "Cannot be undone!";
+		return FEEDBACK_INVALID_UNDO;
 	}
 
 	@Override

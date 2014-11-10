@@ -93,6 +93,7 @@ public class CommandEdit implements Command {
 			_validity = false;
 			return FEEDBACK_INVALID_TASK;
 		} else {
+			assert (_index >= 0);
 			try {
 				_taskExisting = _displayList.get(_index);
 				// set focus task to change UI's page
@@ -131,7 +132,7 @@ public class CommandEdit implements Command {
 			_validity = false;
 			return feedback;
 		}
-		if (editedField.equals("invalid")) {
+		if (editedField.equals(KEYWORD_INVALID)) {
 			feedback = FEEDBACK_INVALID_INPUT;
 			_validity = false;
 		}
@@ -149,6 +150,7 @@ public class CommandEdit implements Command {
 	    	// set focus task to change UI's page
 	    	Controller.setFocusTask(_taskEdited); 
 	    } else {
+	    	assert (_taskEdited.getTaskType() == TaskType.DEADLINE || _taskEdited.getTaskType() == TaskType.TIMED);
 	    	boolean isAdded = false;
     		for (int i=0; i<toSortList.size(); i++) {
     			Task current = toSortList.get(i);
@@ -159,6 +161,7 @@ public class CommandEdit implements Command {
     				isAdded = true;
     				break;
     			} else {
+    				assert (_taskEdited.getTaskType() == TaskType.DEADLINE || _taskEdited.getTaskType() == TaskType.TIMED);
 	    			if (current.getEndDateTime().compareTo(_taskEdited.getEndDateTime()) >0) {
 	    				toSortList.add(i,_taskEdited);
 	    				// set focus task to change UI's page
@@ -182,6 +185,7 @@ public class CommandEdit implements Command {
 		if (_index == INVALID_INDEX) {
 			return FEEDBACK_INVALID_TASK;
 		} else {
+			assert (_index >= 0);
 			try {
 				_taskExisting = _displayList.get(_index);
 				// set focus task to change UI's page
@@ -290,6 +294,7 @@ public class CommandEdit implements Command {
 	
 	@Override
 	public boolean isUndoable(){
+		assert isUndoable();
 		return _validity;
 	}
 }

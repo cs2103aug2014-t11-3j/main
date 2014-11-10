@@ -46,6 +46,7 @@ public class CommandDelete implements Command {
 			_validity = false;
 			return FEEDBACK_INVALID_FORMAT; 
 		} else {
+			assert (_index >= 0);
 			try {
 				_task = _displayList.get(_index);
 				// set focus task to change UI's page
@@ -81,6 +82,7 @@ public class CommandDelete implements Command {
 			_validity = false;
 			return FEEDBACK_INVALID_FORMAT; 
 		} else {
+			assert (_index >= 0);
 			try {
 				_task = _displayList.get(_index);
 				storageList.get(storageList.indexOf(_task));
@@ -110,6 +112,7 @@ public class CommandDelete implements Command {
 	
 	@Override
 	public boolean isUndoable(){
+		assert isUndoable();
 		return _validity;
 	}
 }

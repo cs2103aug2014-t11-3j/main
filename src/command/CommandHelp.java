@@ -28,7 +28,7 @@ public class CommandHelp implements Command {
 		if (inFileText != null ) {
 			HelpFrame generateHelpText = new HelpFrame(inFileText);
 			generateHelpText.execute();
-			}
+		}
 		return FEEDBACK_HELP;
 	}
 	
