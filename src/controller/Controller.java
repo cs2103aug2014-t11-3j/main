@@ -43,6 +43,7 @@ public class Controller {
 	private static final String FEEDBACK_START = "To start, type a command HELP \n"
 			+ "Or enter a command: add, delete, edit, done, view, search.\n";
 	
+	//@Author A0112156U
 	public static void setStorage(DBStorage DBstorage) {
 		_dbStorage = DBstorage;
 	}
