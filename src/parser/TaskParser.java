@@ -1,5 +1,7 @@
 package parser;
 
+import logger.Log;
+
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
 
@@ -29,9 +31,6 @@ public class TaskParser {
 	//MISC
 	private static final String EMPTY_STRING = "";
 	private static final String SINGLE_SPACE = " ";
-	//	private static final String DATE_SEPARATOR = "/";
-	//	private static final String SYMBOL_DASH = "-";
-	//	private static final String SYMBOL_AT = "@";
 	private static final String QUOTATION_MARK = "'";
 
 	//KEYWORDS
@@ -66,14 +65,9 @@ public class TaskParser {
 	private static final String DAY_KEYWORD_SAT = "sat";
 	private static final String DAY_KEYWORD_SUNDAY = "Sunday";
 	private static final String DAY_KEYWORD_SUN = "sun";
-
-
 	
 	private static final int TODAY = 0;
 	private static final int TOMORROW = -1;
-
-
-	
 
 	private static String[] generateArray(String parameter){
 		parameter = parameter.trim();
@@ -175,6 +169,7 @@ public class TaskParser {
 			parseDayOfMonth(dateInString);
 		}
 		catch(Exception e){
+			Log.trace(dateInString +"is not valid date format");
 			return false;
 		}
 		return true;
@@ -185,12 +180,14 @@ public class TaskParser {
 		try {
 			_year = Integer.parseInt(dateInString);
 		} catch (NumberFormatException nfe) {
+			Log.trace(dateInString+ " is not a date : "+nfe.getMessage());
 			return _year;
 		}
 		_year = _year %100;
 		if (_year<65) {
 			_year = _year + 2000 ;
 		} else {
+			assert (_year >= 65);
 			_year = _year + 1900;
 		}
 		return _year;
@@ -345,9 +342,9 @@ public class TaskParser {
 		try { 
 			Integer.parseInt(s); 
 		} catch(NumberFormatException e) { 
+			Log.trace(s+" is not integer",e);
 			return false; 
 		}
-		// only got here if we didn't return false
 		return true;
 	}
 
@@ -552,8 +549,10 @@ public class TaskParser {
 
 		if (count % 2 == 0) {
 			return true;
-		} else 
+		} else {
+			assert count %2 == 1 : count;
 			return false;
+		}
 	}
 
 	public static DateTime parseTaskStart(String parameter) throws Exception {

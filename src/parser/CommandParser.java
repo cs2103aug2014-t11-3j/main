@@ -1,5 +1,6 @@
 package parser;
 
+import logger.Log;
 import storage.History;
 import command.Command;
 import command.CommandAdd;
@@ -35,6 +36,7 @@ public class CommandParser {
 			taskNumber = Integer.parseInt(firstWord);
 			isNumber = true;
 		} catch (NumberFormatException nfe) {
+			Log.trace("This will not be a CommandNumber");
 			isNumber = false;
 		}
 		if (!isNumber) {
@@ -97,22 +99,22 @@ public class CommandParser {
 		return command;
 	}
 
-	private static Command parseCommandView(String userCommand)
-			throws Exception {
+	private static Command parseCommandView(String userCommand) throws Exception {
 		String restOfTheString = getTheRestOfTheString(userCommand);
+		if (restOfTheString == null) {
+			return new CommandView("this week");
+		}
 		CommandView command = new CommandView(restOfTheString);
 		return command;
 	}
 
-	private static Command parseCommandSearch(String userCommand)
-			throws Exception {
+	private static Command parseCommandSearch(String userCommand) throws Exception {
 		String restOfTheString = getTheRestOfTheString(userCommand);
 		CommandSearch command = new CommandSearch(restOfTheString);
 		return command;
 	}
 
-	private static Command parseCommandEdit(String userCommand)
-			throws Exception {
+	private static Command parseCommandEdit(String userCommand) throws Exception {
 		String restOfTheString = getTheRestOfTheString(userCommand);
 		if (restOfTheString == null) {
 			return new CommandEdit();
@@ -128,6 +130,7 @@ public class CommandParser {
 		if (restOfTheString == null) {
 			return new CommandEdit(index,editType);
 		}
+		assert (restOfTheString != null);
 		if (editType.equalsIgnoreCase("start") || editType.equalsIgnoreCase("end")) {
 			editType = editType.concat(" ").concat(getFirstWord(restOfTheString));
 			restOfTheString = getTheRestOfTheString(restOfTheString);
@@ -145,6 +148,7 @@ public class CommandParser {
 		if (restOfTheString == null) {
 			return new CommandMarkAsDone();
 		}
+		assert (restOfTheString != null);
 		restOfTheString = restOfTheString.trim();
 		int index = Integer.valueOf(restOfTheString);
 		CommandMarkAsDone command = new CommandMarkAsDone(index);
@@ -157,6 +161,7 @@ public class CommandParser {
 		if (restOfTheString == null) {
 			return new CommandDelete();
 		}
+		assert (restOfTheString != null);
 		restOfTheString = restOfTheString.trim();
 		if (isInteger(restOfTheString)) {
 			int index = Integer.valueOf(restOfTheString);
@@ -187,6 +192,7 @@ public class CommandParser {
 		if (restOfTheString == null) {
 			return null;
 		}
+		assert (restOfTheString != null);
 		Task task = new Task(restOfTheString);
 		return task;
 	}
@@ -197,6 +203,7 @@ public class CommandParser {
 			String restOfTheWord = result[1];
 			return restOfTheWord;
 		} catch (ArrayIndexOutOfBoundsException aioobe) {
+			Log.trace("Rest Of The String is null",aioobe);
 			return null;
 		}
 	}
@@ -210,6 +217,7 @@ public class CommandParser {
 		try { 
 			Integer.parseInt(s); 
 		} catch(NumberFormatException e) { 
+			Log.trace(s+" is not a Integer",e);
 			return false; 
 		}
 		return true;

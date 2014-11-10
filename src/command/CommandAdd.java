@@ -3,9 +3,9 @@ package command;
 import java.io.IOException;
 import java.util.LinkedList;
 
+import logger.Log;
 import common.Task;
 import common.TaskType;
-
 import controller.Controller;
 import storage.DBStorage;
 	
@@ -48,6 +48,7 @@ public class CommandAdd implements Command {
 		try {
 			_storage.store(storageList);
 		} catch (IOException e) {
+			Log.error("Storage I/O problem",e);
 			feedback = FEEDBACK_INVALID_STORAGE;
 			_validity = false;
 			return feedback;
@@ -65,8 +66,8 @@ public class CommandAdd implements Command {
 	    	// set focus task to change UI's page
 	    	Controller.setFocusTask(_task); 
 	    } else {
+	    	assert (_task.getTaskType() == TaskType.TIMED || _task.getTaskType() == TaskType.DEADLINE);
 	    	boolean isAdded = false;
-	    	
     		for (int i=0; i<toSortList.size(); i++) {
     			Task current = toSortList.get(i);
     			if (current.getTaskType() == TaskType.FLOATING) {
@@ -76,6 +77,7 @@ public class CommandAdd implements Command {
     				isAdded = true;
     				break;
     			} else {
+    				assert (current.getTaskType() == TaskType.TIMED || current.getTaskType() == TaskType.DEADLINE);
 	    			if (current.getEndDateTime().compareTo(_task.getEndDateTime()) >0) {
 	    				toSortList.add(i,_task);
 	    				// set focus task to change UI's page
@@ -92,7 +94,7 @@ public class CommandAdd implements Command {
 	    }
 	}
 
-	public String fakeExecute() {
+	public String tryExecute() {
 		String feedback;
 		LinkedList <Task> storageList;
 		_storage= Controller.getDBStorage();
@@ -114,7 +116,6 @@ public class CommandAdd implements Command {
 	public String undo() {
 		String feedback;
 		LinkedList <Task> storageList;
-		
 		_storage = Controller.getDBStorage();
 		storageList = _storage.load();
 		int index = storageList.indexOf(_task);
@@ -124,13 +125,16 @@ public class CommandAdd implements Command {
 				// set focus task to change UI's page
 				Controller.setFocusTask(null); 
 			} else {
+				assert (index > 0);
 				Controller.setFocusTask(storageList.get(index-1));
 			}
 		} else {
+			assert (index != storageList.size());
 			if (storageList.size() == 0) {
 				// set focus task to change UI's page
 				Controller.setFocusTask(null); 
 			} else {
+				assert (storageList.size() > 0);
 				Controller.setFocusTask(storageList.get(index));
 			}
 		}
@@ -138,6 +142,7 @@ public class CommandAdd implements Command {
 		try {
 			_storage.store(storageList);
 		} catch (IOException e) {
+			Log.error("Storage I/O problem",e);
 			feedback = FEEDBACK_INVALID_STORAGE;
 			return feedback;
 		}
@@ -145,6 +150,7 @@ public class CommandAdd implements Command {
 			feedback = String.format(FEEDBACK_VALID_UNDO, _task.getTaskName());
 		} 
 		else {
+			assert (removedTask == null);
 			feedback = String.format(FEEDBACK_INVALID_UNDO, _task.getTaskName());
 		}
 		
@@ -153,6 +159,7 @@ public class CommandAdd implements Command {
 	
 	@Override
 	public boolean isUndoable(){
+		assert isUndoable();
 		return _validity;
 	}
 

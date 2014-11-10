@@ -2,6 +2,7 @@ package controller;
 
 import java.util.LinkedList;
 
+import logger.Log;
 import command.Command;
 import command.CommandAdd;
 import command.CommandDelete;
@@ -20,6 +21,7 @@ import parser.CommandParser;
 import storage.DBStorage;
 import storage.History;
 import storage.InputHistory;
+import static logger.Log.*;
 
 // remember to write unit test as you code
 
@@ -80,7 +82,6 @@ public class Controller {
 	}
 	public static History getHistory() {
 		return _history;
-
 	}
 	
 	public static void setInputHistory (InputHistory input) {
@@ -103,16 +104,15 @@ public class Controller {
 			} else {
 				setViewMode(_currentViewMode);
 			}
-			if (!(command instanceof CommandUndo) && !(command instanceof CommandRedo) 
-					&& !(command instanceof CommandSearch) && !(command instanceof CommandView) 
-					&& !(command instanceof CommandHelp)){
+			if (command.isUndoable()){
 				_history.addCommand(command);
+				Log.info("Command created and added to history storage");
 			}
-			
+			Log.info("Command executed and feedback return");
 		} catch (Exception e) {
 			_feedback = e.getMessage();
 			setLatestCommand(null);
-			
+			Log.info("Command not created and executed with "+ e.getClass().getName() + ":"+e.getMessage());
 		}
 	}
 
@@ -154,11 +154,11 @@ public class Controller {
 				return ControllerFeedbackHelper.getHelperTextsForCmdMarkAsDone(command);
 			} else if (command instanceof CommandNumber) {
 				return ControllerFeedbackHelper.getHelperTextsForCmdNumber(command);
-			}
-			 else {
+			} else {
 				return new LinkedList<String>();
 			}
 		} catch (Exception e) {
+			Log.debug("Command is not complete");
 			return new LinkedList<String>();
 		}
 	}
@@ -172,6 +172,7 @@ public class Controller {
 		_feedback = FEEDBACK_START;
 		_currentViewMode = new CommandView("this week");
 		setViewMode(_currentViewMode);
+		Log.info("Initialize controller");
 	}
 	public static void init(String fileName) {
 		_dbStorage = new DBStorage(fileName);
@@ -196,6 +197,7 @@ public class Controller {
 		int numberOfScheduledTasks = 0;
 		for (Task task : _displayList) {
 			if (task.getTaskType() != TaskType.FLOATING) {
+				assert (task.getTaskType() == TaskType.TIMED || task.getTaskType() == TaskType.DEADLINE);
 				numberOfScheduledTasks++;
 			}
 		}

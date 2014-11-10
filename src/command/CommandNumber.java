@@ -2,8 +2,8 @@ package command;
 
 import java.util.LinkedList;
 
+import logger.Log;
 import common.Task;
-
 import controller.Controller;
 
 public class CommandNumber implements Command {
@@ -15,6 +15,7 @@ public class CommandNumber implements Command {
 	
 	private static final String FEEDBACK_VALID_TASK = "This is a valid task";
 	private static final String FEEDBACK_INVALID_TASK = "This is not a valid index";
+	private static final String FEEDBACK_INVALID_UNDO = "Cannot be undone!";
 	
 	public CommandNumber(int index) {
 		_index = index - CORRECTION_INDEX;
@@ -28,6 +29,7 @@ public class CommandNumber implements Command {
 			Controller.setFocusTask(_task);
 			return FEEDBACK_VALID_TASK;
 		} catch (IndexOutOfBoundsException ioobe) {
+			Log.info("Task index is out of bounds");
 			_task = null ;
 			return FEEDBACK_INVALID_TASK;
 		}
@@ -35,7 +37,7 @@ public class CommandNumber implements Command {
 
 	@Override
 	public String undo() {
-		return "Cannot be undone!";
+		return FEEDBACK_INVALID_UNDO;
 	}
 
 	@Override
@@ -50,6 +52,7 @@ public class CommandNumber implements Command {
 			Controller.setFocusTask(_task);
 			return FEEDBACK_VALID_TASK;
 		} catch (IndexOutOfBoundsException ioobe) {
+			Log.info("Task index is out of bounds");
 			_task = null ;
 			return FEEDBACK_INVALID_TASK;
 		}
