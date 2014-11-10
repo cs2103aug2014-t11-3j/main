@@ -1,6 +1,6 @@
 package test;
 
-import static org.junit.Assert.fail;
+//import static org.junit.Assert.fail;
 
 import java.util.Random;
 
@@ -17,7 +17,7 @@ public class SystemTest {
 	
 	@Test
 	public void testScalability() {
-		Controller.init();
+		Controller.init("testScale.xml");
 		//DateTime now = new DateTime();
 		for (int i = 0; i<300; i++) {
 			Controller.acceptUserCommand(createRandomFloatingTaskString());

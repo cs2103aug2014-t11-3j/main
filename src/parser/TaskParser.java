@@ -31,9 +31,6 @@ public class TaskParser {
 	//MISC
 	private static final String EMPTY_STRING = "";
 	private static final String SINGLE_SPACE = " ";
-	//	private static final String DATE_SEPARATOR = "/";
-	//	private static final String SYMBOL_DASH = "-";
-	//	private static final String SYMBOL_AT = "@";
 	private static final String QUOTATION_MARK = "'";
 
 	//KEYWORDS
@@ -68,14 +65,9 @@ public class TaskParser {
 	private static final String DAY_KEYWORD_SAT = "sat";
 	private static final String DAY_KEYWORD_SUNDAY = "Sunday";
 	private static final String DAY_KEYWORD_SUN = "sun";
-
-
 	
 	private static final int TODAY = 0;
 	private static final int TOMORROW = -1;
-
-
-	
 
 	private static String[] generateArray(String parameter){
 		parameter = parameter.trim();
@@ -195,6 +187,7 @@ public class TaskParser {
 		if (_year<65) {
 			_year = _year + 2000 ;
 		} else {
+			assert (_year >= 65);
 			_year = _year + 1900;
 		}
 		return _year;
@@ -556,8 +549,10 @@ public class TaskParser {
 
 		if (count % 2 == 0) {
 			return true;
-		} else 
+		} else {
+			assert count %2 == 1 : count;
 			return false;
+		}
 	}
 
 	public static DateTime parseTaskStart(String parameter) throws Exception {

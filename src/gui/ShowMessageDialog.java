@@ -9,9 +9,9 @@ public class ShowMessageDialog {
 	private static Task _task;
 	
 	private static final String FRAME_HEADER = "Reminder";
-	private static final String REMINDER_MESSAGE_DEADLINE = "You have %1$s due tomorrow at &2$s";
-	private static final String REMINDER_MESSAGE_TIMED = "you have %1$s from%2$s at %3$s to%4$s at %5$s"; 
-	private static final String REMINDER_NO_MESSAGE = "sorry for the wrong reminder";
+	private static final String REMINDER_MESSAGE_DEADLINE = "You have %1$s due tomorrow at %2$s";
+	private static final String REMINDER_MESSAGE_TIMED = "You have %1$s from%2$s at %3$s to%4$s at %5$s"; 
+	private static final String REMINDER_NO_MESSAGE = "Sorry for the wrong reminder";
 	
 	public ShowMessageDialog( Task task) {
 		_task = task;

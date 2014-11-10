@@ -10,7 +10,6 @@ import storage.DBStorage;
 
 public class CommandDelete implements Command {
 	private Task _task;
-	private LinkedList<Task> _displayList;
 	private DBStorage _storage;
 	private int _index;
 	private boolean _validity;
@@ -39,7 +38,7 @@ public class CommandDelete implements Command {
 		String feedback;
 		LinkedList<Task> storageList;
 		
-		_displayList= Controller.getScheduleList();
+		LinkedList<Task> _displayList= Controller.getScheduleList();
 		_storage=Controller.getDBStorage();
 		storageList=_storage.load();
 		
@@ -47,6 +46,7 @@ public class CommandDelete implements Command {
 			_validity = false;
 			return FEEDBACK_INVALID_FORMAT; 
 		} else {
+			assert (_index >= 0);
 			try {
 				_task = _displayList.get(_index);
 				// set focus task to change UI's page
@@ -76,7 +76,7 @@ public class CommandDelete implements Command {
 	
 	public String tryExecute() { 
 		LinkedList <Task> storageList;
-		_displayList= Controller.getScheduleList();
+		LinkedList <Task> _displayList= Controller.getScheduleList();
 		_storage=Controller.getDBStorage();
 		storageList=_storage.load();
 		
@@ -84,6 +84,7 @@ public class CommandDelete implements Command {
 			_validity = false;
 			return FEEDBACK_INVALID_FORMAT; 
 		} else {
+			assert (_index >= 0);
 			try {
 				_task = _displayList.get(_index);
 				storageList.get(storageList.indexOf(_task));
@@ -114,6 +115,7 @@ public class CommandDelete implements Command {
 	
 	@Override
 	public boolean isUndoable(){
+		assert isUndoable();
 		return _validity;
 	}
 }

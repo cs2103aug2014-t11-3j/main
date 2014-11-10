@@ -31,6 +31,7 @@ public class CommandLoad implements Command {
 
 	@Override
 	public boolean isUndoable() {
+		assert isUndoable();
 		return true;
 	}
 

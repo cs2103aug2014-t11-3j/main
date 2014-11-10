@@ -82,7 +82,6 @@ public class Controller {
 	}
 	public static History getHistory() {
 		return _history;
-
 	}
 	
 	public static void setInputHistory (InputHistory input) {
@@ -155,8 +154,7 @@ public class Controller {
 				return ControllerFeedbackHelper.getHelperTextsForCmdMarkAsDone(command);
 			} else if (command instanceof CommandNumber) {
 				return ControllerFeedbackHelper.getHelperTextsForCmdNumber(command);
-			}
-			 else {
+			} else {
 				return new LinkedList<String>();
 			}
 		} catch (Exception e) {
@@ -199,6 +197,7 @@ public class Controller {
 		int numberOfScheduledTasks = 0;
 		for (Task task : _displayList) {
 			if (task.getTaskType() != TaskType.FLOATING) {
+				assert (task.getTaskType() == TaskType.TIMED || task.getTaskType() == TaskType.DEADLINE);
 				numberOfScheduledTasks++;
 			}
 		}

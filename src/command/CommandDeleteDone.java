@@ -25,11 +25,11 @@ import storage.DBStorage;
 			_storageList = _storage.load();
 			_undoList = new LinkedList <Task> (_storage.load());
 			
-				for ( int i=_storageList.size()-1; i >= 0; i-- ) {
-					if (_storageList.get(i).getTaskStatus() == true ) {
-						_storageList.remove(i);
-					}
+			for ( int i=_storageList.size()-1; i >= 0; i-- ) {
+				if (_storageList.get(i).getTaskStatus() == true ) {
+					_storageList.remove(i);
 				}
+			}
 			try {
 				_storage.store(_storageList);
 			} catch (IOException e) {
@@ -71,6 +71,7 @@ import storage.DBStorage;
 		
 		@Override
 		public boolean isUndoable() {
+			assert isUndoable();
 			return _validity;
 		}
 
