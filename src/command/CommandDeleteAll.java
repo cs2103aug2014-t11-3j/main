@@ -7,7 +7,12 @@ import logger.Log;
 import common.Task;
 import controller.Controller;
 import storage.DBStorage;
-
+/**
+ *  CommandDeleteAll class is called by the controller in order to execute the Delete all command
+ *  @param _storage - stores the DBstorage to get the storageList
+ *	@param _validity - to store if undo for deleteAll is valid or not
+ *	@param _storageList - stores the complete list of tasks
+ */
 public class CommandDeleteAll implements Command {
 	private LinkedList<Task> _storageList;
 	private DBStorage _storage;

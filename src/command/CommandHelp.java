@@ -6,6 +6,10 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.Scanner;
 
+/**
+ *  CommandHelp class is called by the controller in order to execute the help command
+ *  @param inFile - to read the helper.txt file.
+ */
 public class CommandHelp implements Command {
 	
 	private Scanner inFile;

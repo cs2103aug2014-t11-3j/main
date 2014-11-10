@@ -8,6 +8,14 @@ import common.Task;
 import controller.Controller;
 import storage.DBStorage;
 
+/**
+ *  CommandDeleteDone class is called by the controller in order to execute the Delete done command
+ *  @param _storage - stores the DBstorage to get the storageList
+ *	@param _validity - to store if undo for deleteDone is valid or not
+ *	@param _storageList - stores the complete list of tasks
+ *	@param _undoList - stores the list before performing the command for undo
+ */
+
 public class CommandDeleteDone implements Command {
 	private LinkedList<Task> _storageList;
 	private DBStorage _storage;

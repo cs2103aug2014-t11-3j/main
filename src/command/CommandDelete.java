@@ -7,7 +7,13 @@ import logger.Log;
 import common.Task;
 import controller.Controller;
 import storage.DBStorage;
-
+/**
+ *  CommandDelete class is called by the controller in order to execute the Delete command
+ *  @param _task - stores the task that is deleted from the log
+ *  @param _storage - stores the DBstorage to get the scheduleList and FlexibleList
+ *	@param _validity - to store if undo for delete is valid or not
+ *	@param _index - stores the index of the task to be deleted
+ */
 public class CommandDelete implements Command {
 	private Task _task;
 	private DBStorage _storage;

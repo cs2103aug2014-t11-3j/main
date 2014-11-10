@@ -10,10 +10,16 @@ import controller.Controller;
 import parser.TaskParser;
 import storage.DBStorage;
 
-
+/**
+ *  CommandView class is called by the controller in order to execute the view command
+ *  @param _toView - stores the user command of what is to be viewed
+ *	@param _viewType - stores the command for feedbacks
+ *	@param _storage - stores the DBstorage to get the storageList
+ *	@param _returnList - stores the list which has all the tasks that contain the search key
+ *  @param monthInIntegers - stores the month in numbers. 
+ */
 public class CommandView implements Command {
 
-	private static final String FEEDBACK_INVALID_UNDO = "View cannot be undone";
 	private String _toView;
 	private String _viewType;
 	private DBStorage _storage;
@@ -31,6 +37,7 @@ public class CommandView implements Command {
 	
 	private static final String FEEDBACK_VALID = "Displaying tasks for %1$s";
 	private static final String FEEDBACK_INVALID_COMMAND = "invalid command";
+	private static final String FEEDBACK_INVALID_UNDO = "View cannot be undone";
 	
 	private static String DAY_KEYWORD_TODAY = "Today";
 	private static String DAY_KEYWORD_THIS_DAY = "This day ";
@@ -144,7 +151,7 @@ public class CommandView implements Command {
 		viewOverDueTasks(endDay);
 		feedback = KEYWORD_OVERDUE;
 		_viewType = KEYWORD_PAST;
-		feedback = String.format(FEEDBACK_VALID,_viewType);
+		feedback = String.format(FEEDBACK_VALID, _toView);
 		return feedback;
 	}
 
@@ -153,7 +160,7 @@ public class CommandView implements Command {
 		String feedback;
 		formViewList(new DateTime(0), new DateTime(9999, 12, 31, 23, 59));
 		_viewType = KEYWORD_ALL;
-		feedback = String.format(FEEDBACK_VALID, _viewType);
+		feedback = String.format(FEEDBACK_VALID, _toView);
 		return feedback;
 	}
 
@@ -181,7 +188,7 @@ public class CommandView implements Command {
 
 		formViewList(startDay,endDay);
 		_viewType = checkMonth() + POSSESSIVE_CASE;
-		feedback = String.format(FEEDBACK_VALID, _viewType);
+		feedback = String.format(FEEDBACK_VALID, _toView);
 		return feedback;
 	}
 
@@ -196,7 +203,7 @@ public class CommandView implements Command {
 		endDay.withMinuteOfHour(END_TIME_MINUTE);
 		formViewList(startDay,endDay);
 		_viewType = DAY_KEYWORD_NEXT_WEEK;
-		feedback = String.format(FEEDBACK_VALID, _viewType);
+		feedback = String.format(FEEDBACK_VALID, _toView);
 		return feedback;
 	}
 
@@ -211,7 +218,7 @@ public class CommandView implements Command {
 		endDay.withMinuteOfHour(END_TIME_MINUTE);
 		formViewList(startDay,endDay);
 		_viewType = DAY_KEYWORD_THIS_WEEK + POSSESSIVE_CASE;
-		feedback = String.format(FEEDBACK_VALID, _viewType);
+		feedback = String.format(FEEDBACK_VALID, _toView);
 		return feedback;
 	}
 
@@ -231,7 +238,7 @@ public class CommandView implements Command {
 		endDay = new DateTime(year, month, day, END_TIME_HOUR, END_TIME_MINUTE);
 		formViewList(startDay,endDay);
 		_viewType = _toView + POSSESSIVE_CASE;
-		feedback = String.format(FEEDBACK_VALID, _viewType);
+		feedback = String.format(FEEDBACK_VALID, _toView);
 		return feedback;
 	}
 	
@@ -256,7 +263,7 @@ public class CommandView implements Command {
 		endDay = new DateTime(year, month, day, END_TIME_HOUR, END_TIME_MINUTE);
 		formViewList(startDay,endDay);
 		_viewType = isWeekDay() + POSSESSIVE_CASE;
-		feedback = String.format(FEEDBACK_VALID, _viewType);
+		feedback = String.format(FEEDBACK_VALID, _toView);
 		return feedback;
 	}
 
@@ -275,7 +282,7 @@ public class CommandView implements Command {
 		endDay = new DateTime(year, month, day, END_TIME_HOUR, END_TIME_MINUTE);
 		formViewList(startDay,endDay);
 		_viewType = DAY_KEYWORD_TOMORROW + POSSESSIVE_CASE;
-		feedback = String.format(FEEDBACK_VALID, _viewType);
+		feedback = String.format(FEEDBACK_VALID, _toView);
 		return feedback;
 	}
 
@@ -288,7 +295,7 @@ public class CommandView implements Command {
 		endDay = new DateTime(year, month, day, END_TIME_HOUR, END_TIME_MINUTE);
 		formViewList(startDay, endDay);
 		_viewType = DAY_KEYWORD_TODAY + POSSESSIVE_CASE;
-		feedback = String.format(FEEDBACK_VALID, _viewType);
+		feedback = String.format(FEEDBACK_VALID, _toView);
 		return feedback;
 	}
 

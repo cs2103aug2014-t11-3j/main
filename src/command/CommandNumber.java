@@ -6,6 +6,13 @@ import logger.Log;
 import common.Task;
 import controller.Controller;
 
+/**
+ *  CommandNumber class is called by the controller in order to execute the Number command
+ *  @param _index - index of the _task of which the details are required.
+ *	@param _displayList - stores the list for every specific view
+ *	@param _task - stores the task of whom the details are required
+ */
+
 public class CommandNumber implements Command {
 	private int _index;
 	private Task _task;

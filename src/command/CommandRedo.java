@@ -2,7 +2,11 @@ package command;
 
 import controller.Controller;
 import storage.History;
-
+/**
+ *  CommandRedo class is called by the controller in order to execute the redo command
+ *  @param _history - stores the history of all the commands.
+ *	@param _toBeRedone - stores the command that has to be redo-ed
+ */
 public class CommandRedo implements Command {
 
 	private Command _toBeRedone;

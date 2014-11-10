@@ -7,6 +7,14 @@ import common.Task;
 import controller.Controller;
 import storage.DBStorage;
 
+/**
+ *  CommandSearch class is called by the controller in order to execute the search command
+ *  @param _storage - stores the DBstorage to get the storageList
+ *	@param _storageList - stores the complete list of tasks
+ *	@param _returnList - stores the list which has all the tasks that contain the search key
+ *	@param _searchKey - has the search element that has to be searched.
+ */
+
 public class CommandSearch implements Command {
 	private static String _searchKey;
 	private static LinkedList<Task> _returnList;
