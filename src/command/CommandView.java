@@ -6,335 +6,396 @@ import org.joda.time.DateTime;
 
 import common.Task;
 import common.TaskType;
-
 import controller.Controller;
 import parser.TaskParser;
 import storage.DBStorage;
 
 
 public class CommandView implements Command {
-	private static final String POSSESSIVE_CASE = "'s";
+
+	
+	
+	private static final String FEEDBACK_INVALID_UNDO = "View cannot be undone";
 	private String _toView;
 	private String _viewType;
 	private DBStorage _storage;
 	private static LinkedList<Task> _returnList;
 	private int monthInIntegers;
-	//private boolean _isMonth;
+	
+	private static final int START_MIN_HOUR = 0;
+	private static final int END_TIME_MINUTE = 59;
+	private static final int END_TIME_HOUR = 23;
+	private static final int THIS_WEEK_END = 7;
+	private static final int NEXT_WEEK_START = 8;
+	private static final int NEXT_WEEK_END = 15;
+	
+	private static final String POSSESSIVE_CASE = "'s";
+	
+	private static final String FEEDBACK_VALID = "Displaying tasks for %1$s";
+	private static final String FEEDBACK_INVALID_COMMAND = "invalid command";
+	
 	private static String DAY_KEYWORD_TODAY = "Today";
 	private static String DAY_KEYWORD_THIS_DAY = "This day ";
 	private static String DAY_KEYWORD_TOMORROW = "Tomorrow";
 	private static String DAY_KEYWORD_TMR = "tmr";
 	private static String DAY_KEYWORD_NEXT_DAY="Next day";
 	private static String DAY_KEYWORD_THIS_WEEK="This week";
-	private static String DAY_KEYWORD_NEXT_WEEK="Next week";	
+	private static String DAY_KEYWORD_NEXT_WEEK="Next week";
+	
+	private static final String KEYWORD_PAST = "Past";
+	private static final String KEYWORD_PENDING = "pending";
+	private static final String KEYWORD_OVERDUE = "overdue";
+	private static final String KEYWORD_ALL = "all";
+	
+	private static final String KEYWORD_SUNDAY2 = "sun";
+	private static final String KEYWORD_SUNDAY1 = "sunday";
+	private static final String KEYWORD_SATURDAY2 = "sat";
+	private static final String KEYWORD_SATURDAY1 = "saturday";
+	private static final String KEYWORD_FRIDAY2 = "fri";
+	private static final String KEYWORD_FRIDAY1 = "Friday";
+	private static final String KEYWORD_THURSDAY2 = "thurs";
+	private static final String KEYWORD_THURSDAY1 = "thursday";
+	private static final String KEYWORD_WEDNESDAY2 = "wed";
+	private static final String KEYWORD_WEDNESDAY1 = "wednesday";
+	private static final String KEYWORD_TUESDAY2 = "tues";
+	private static final String KEYWORD_TUESDAY1 = "tuesday";
+	private static final String KEYWORD_MONDAY2 = "mon";
+	private static final String KEYWORD_MONDAY1 = "monday";
+	
+	private static final String KEYWORD_DECEMBER2 = "dec";
+	private static final String KEYWORD_DECEMBER1 = "december";
+	private static final String KEYWORD_NOVEMBER2 = "nov";
+	private static final String KEYWORD_NOVEMBER1 = "november";
+	private static final String KEYWORD_OCTOBER2 = "oct";
+	private static final String KEYWORD_OCTOBER1 = "october";
+	private static final String KEYWORD_SEPTEMBER2 = "sept";
+	private static final String KEYWORD_SEPTEMBER1 = "september";
+	private static final String KEYWORD_AUGUST2 = "aug";
+	private static final String KEYWORD_AUGUST1 = "august";
+	private static final String KEYWORD_JULY2 = "jul";
+	private static final String KEYWORD_JULY1 = "july";
+	private static final String KEYWORD_JUNE2 = "jun";
+	private static final String KEYWORD_JUNE1 = "june";
+	private static final String KEYWORD_MAY = "may";
+	private static final String KEYWORD_APRIL2 = "apr";
+	private static final String KEYWORD_APRIL1 = "april";
+	private static final String KEYWORD_MARCH2 = "mar";
+	private static final String KEYWORD_MARCH1 = "march";
+	private static final String KEYWORD_FEBRUARY2 = "feb";
+	private static final String KEYWORD_FEBRUARY1 = "february";
+	private static final String KEYWORD_JANUARY2 = "jan";
+	private static final String KEYWORD_JANUARY1 = "january";
 	
 	
 	
 	public CommandView(String toView ) {
 		_toView = toView;
-		_storage=Controller.getDBStorage();
-
-		}
-
+		_storage = Controller.getDBStorage();
+	}
+	
+	public String getViewType() {
+		return _viewType;
+	}
+	
+	public LinkedList<Task> getReturnList() {
+		return _returnList;
+	}
+	
 	@Override
 	public String execute() {
 		String feedback;
 		int year,month,day;
 		DateTime startDay = new DateTime();
-		DateTime endDay= new DateTime();
-		year=startDay.getYear();
-		month=startDay.getMonthOfYear();
-		day=startDay.getDayOfMonth();
-		
-		
-	
-		//checking for today/this day 
-		if(_toView.equalsIgnoreCase(DAY_KEYWORD_TODAY)||_toView.equalsIgnoreCase(DAY_KEYWORD_THIS_DAY)){
-			
-			startDay=new DateTime(year,month,day,0,0);
-			endDay=new DateTime(year,month,day,23,59);
-			formViewList(startDay,endDay);
-			_viewType = DAY_KEYWORD_TODAY + POSSESSIVE_CASE;
-			feedback="Displaying tasks for "+ _viewType;
+		DateTime endDay = new DateTime();
+		year = startDay.getYear();
+		month = startDay.getMonthOfYear();
+		day = startDay.getDayOfMonth();
+		if (_toView.equalsIgnoreCase(DAY_KEYWORD_TODAY) || _toView.equalsIgnoreCase(DAY_KEYWORD_THIS_DAY)) { 
+			feedback = viewToday(year, month, day);
+		} else if (_toView.equalsIgnoreCase(DAY_KEYWORD_TOMORROW)
+				|| _toView.equalsIgnoreCase(DAY_KEYWORD_TMR)
+				|| _toView.equalsIgnoreCase(DAY_KEYWORD_NEXT_DAY)) {
+			feedback = viewTomorrow(startDay);
+		} else if (isWeekDay()!= null) {
+			feedback = viewWeekDay(startDay);
+		} else if (TaskParser.checkDateFormat(_toView)) {
+			feedback = viewDate();
+		} else if (_toView.equalsIgnoreCase(DAY_KEYWORD_THIS_WEEK)) {
+			feedback = viewThisWeek(startDay);
+		} else if (_toView.equalsIgnoreCase(DAY_KEYWORD_NEXT_WEEK)) {
+			feedback = viewNextWeek(startDay, endDay);
+		} else if (checkMonth() != null ) {
+			feedback = viewMonth(startDay);
+		} else if (_toView.equalsIgnoreCase(KEYWORD_ALL)) {
+			feedback = viewAll();
+		} else if (_toView.equalsIgnoreCase(KEYWORD_OVERDUE)||_toView.equalsIgnoreCase(KEYWORD_PENDING)){
+			feedback = viewOverdue(startDay);	
+		} else {
+			feedback=FEEDBACK_INVALID_COMMAND;
 		}
-		//checking for tomorrow/tmr/next day
-		else if(_toView.equalsIgnoreCase(DAY_KEYWORD_TOMORROW)
-				||_toView.equalsIgnoreCase(DAY_KEYWORD_TMR)
-				||_toView.equalsIgnoreCase(DAY_KEYWORD_NEXT_DAY)){
-		
-			startDay=startDay.plusDays(1);
-			year=startDay.getYear();
-			month=startDay.getMonthOfYear();
-			day=startDay.getDayOfMonth();
-			startDay=new DateTime(year,month,day,0,0);
-			endDay=new DateTime(year,month,day,23,59);
-			formViewList(startDay,endDay);
-			_viewType = DAY_KEYWORD_TOMORROW + POSSESSIVE_CASE;
-			feedback="Displaying tasks for "+ _viewType;
-		}
-		//checking for days 
-		else if(isWeekDay()!= null){
-			
-			int currentWeekDay=startDay.getDayOfWeek();
-			int givenWeekDay=TaskParser.parseDayOfWeek(_toView);
-			if(givenWeekDay>=currentWeekDay){
-				startDay=startDay.plusDays(givenWeekDay-currentWeekDay);	
-			}
-			else {
-				startDay=startDay.plusDays(givenWeekDay-currentWeekDay+7);
-			}
-			year=startDay.getYear();
-			month=startDay.getMonthOfYear();
-			day=startDay.getDayOfMonth();
-			startDay=new DateTime(year,month,day,0,0);
-			endDay=new DateTime(year,month,day,23,59);
-			formViewList(startDay,endDay);	
-			_viewType = isWeekDay() + POSSESSIVE_CASE;
-			feedback="Displaying tasks for "+ _viewType;
-			
-		}
-		//checking for date
-		else if(TaskParser.checkDateFormat(_toView)){
-		
-			int ddmmyy=Integer.parseInt(_toView);
-			year=ddmmyy%100+2000;
-			month=(ddmmyy/100)%100;
-			day=(ddmmyy/10000);
-			startDay=new DateTime(year,month,day,0,0);
-			endDay=new DateTime(year,month,day,23,59);
-			formViewList(startDay,endDay);
-			_viewType = _toView + POSSESSIVE_CASE;
-			feedback="Displaying tasks for "+ _viewType;
-		}
-		//checking for this week
-		else if(_toView.equalsIgnoreCase(DAY_KEYWORD_THIS_WEEK)){
-		
-			endDay=startDay.plusDays(7);
-			startDay.withHourOfDay(0);
-			startDay.withMinuteOfHour(0);
-			endDay.withHourOfDay(23);
-			endDay.withMinuteOfHour(59);
-
-			formViewList(startDay,endDay);
-			_viewType = DAY_KEYWORD_THIS_WEEK + POSSESSIVE_CASE;
-			feedback="Displaying tasks for "+ _viewType;
-		}
-		//checking for next week
-		else if(_toView.equalsIgnoreCase(DAY_KEYWORD_NEXT_WEEK)){
-			
-			//changing to next week by adding 7 days
-			
-			startDay=startDay.plusDays(8);
-			endDay=endDay.plusDays(15);
-
-			startDay.withHourOfDay(0);
-			startDay.withMinuteOfHour(0);
-			endDay.withHourOfDay(23);
-			endDay.withMinuteOfHour(59);
-
-			formViewList(startDay,endDay);
-			_viewType = DAY_KEYWORD_NEXT_WEEK;
-			feedback="Displaying tasks for "+ _viewType;
-		}
-		//checking for month 
-		else if(checkMonth() != null ){
-			
-			DateTime startOfThisMonth=startDay.dayOfMonth().withMinimumValue().withTimeAtStartOfDay();
-			int currentMonth=startOfThisMonth.getMonthOfYear();
-			if(monthInIntegers>=currentMonth){
-				startDay=startOfThisMonth.plusMonths(monthInIntegers-currentMonth).dayOfMonth().withMinimumValue();
-
-				endDay=startOfThisMonth.plusMonths(monthInIntegers-currentMonth).dayOfMonth().withMaximumValue();	
-			}
-			else {
-				startDay=startOfThisMonth.minusMonths(currentMonth-monthInIntegers).dayOfMonth().withMinimumValue();
-				endDay=startOfThisMonth.minusMonths(currentMonth-monthInIntegers).dayOfMonth().withMaximumValue();	
-			}
-			startDay.withHourOfDay(0);
-			startDay.withMinuteOfHour(0);
-			endDay.withHourOfDay(23);
-			endDay.withMinuteOfHour(59);
-
-			formViewList(startDay,endDay);
-			_viewType = checkMonth() + POSSESSIVE_CASE;
-			feedback="Displaying tasks for "+ _viewType;
-		}
-		else if(_toView.equalsIgnoreCase("all")){
-			formViewList(new DateTime(0), new DateTime(9999, 12, 31, 23, 59));
-			feedback="Displaying all tasks";
-			_viewType = "All";
-			feedback="Displaying tasks for "+ _viewType;
-		}
-		else if(_toView.equalsIgnoreCase("overdue")||_toView.equalsIgnoreCase("pending")){
-			endDay=startDay.minusMinutes(1);
-			viewOverDueTasks(endDay);
-			feedback="OVERDUE TASKS";
-			_viewType = "Past";
-			feedback="Displaying tasks for "+ _viewType;
-			
-		}
-		else{
-			
-			feedback="invalid command";
-		}
-		
-		
-		
-		//Controller.setFocusTask(null); // set focus task to change UI's page
 		return feedback;
-		
-		
+	}
+
+	private String viewOverdue(DateTime startDay) {
+		String feedback;
+		DateTime endDay;
+		endDay = startDay.minusMinutes(1);
+		viewOverDueTasks(endDay);
+		feedback = KEYWORD_OVERDUE;
+		_viewType = KEYWORD_PAST;
+		feedback = String.format(FEEDBACK_VALID,_viewType);
+		return feedback;
+	}
+
+	private String viewAll() {
+		String feedback;
+		formViewList(new DateTime(0), new DateTime(9999, 12, 31, 23, 59));
+		_viewType = KEYWORD_ALL;
+		feedback = String.format(FEEDBACK_VALID, _viewType);
+		return feedback;
+	}
+
+	private String viewMonth(DateTime startDay) {
+		String feedback;
+		DateTime endDay;
+		DateTime startOfThisMonth=startDay.dayOfMonth().withMinimumValue().withTimeAtStartOfDay();
+		int currentMonth = startOfThisMonth.getMonthOfYear();
+		if (monthInIntegers >= currentMonth) {
+			startDay = startOfThisMonth.plusMonths(monthInIntegers - currentMonth)
+					.dayOfMonth().withMinimumValue();
+			endDay = startOfThisMonth.plusMonths(monthInIntegers - currentMonth)
+					.dayOfMonth().withMaximumValue();	
+		} else {
+			startDay = startOfThisMonth.minusMonths(currentMonth - monthInIntegers)
+					  .dayOfMonth().withMinimumValue();
+			endDay = startOfThisMonth.minusMonths(currentMonth - monthInIntegers)
+					 .dayOfMonth().withMaximumValue();	
+		}
+		startDay.withHourOfDay(START_MIN_HOUR);
+		startDay.withMinuteOfHour(START_MIN_HOUR);
+		endDay.withHourOfDay(END_TIME_HOUR);
+		endDay.withMinuteOfHour(END_TIME_MINUTE);
+
+		formViewList(startDay,endDay);
+		_viewType = checkMonth() + POSSESSIVE_CASE;
+		feedback = String.format(FEEDBACK_VALID, _viewType);
+		return feedback;
+	}
+
+	private String viewNextWeek(DateTime startDay, DateTime endDay) {
+		String feedback;
+		startDay = startDay.plusDays(NEXT_WEEK_START);
+		endDay = endDay.plusDays(NEXT_WEEK_END);
+		startDay.withHourOfDay(START_MIN_HOUR);
+		startDay.withMinuteOfHour(START_MIN_HOUR);
+		endDay.withHourOfDay(END_TIME_HOUR);
+		endDay.withMinuteOfHour(END_TIME_MINUTE);
+		formViewList(startDay,endDay);
+		_viewType = DAY_KEYWORD_NEXT_WEEK;
+		feedback = String.format(FEEDBACK_VALID, _viewType);
+		return feedback;
+	}
+
+	private String viewThisWeek(DateTime startDay) {
+		String feedback;
+		DateTime endDay;
+		endDay = startDay.plusDays(THIS_WEEK_END);
+		startDay.withHourOfDay(START_MIN_HOUR);
+		startDay.withMinuteOfHour(START_MIN_HOUR);
+		endDay.withHourOfDay(END_TIME_HOUR);
+		endDay.withMinuteOfHour(END_TIME_MINUTE);
+		formViewList(startDay,endDay);
+		_viewType = DAY_KEYWORD_THIS_WEEK + POSSESSIVE_CASE;
+		feedback = String.format(FEEDBACK_VALID, _viewType);
+		return feedback;
+	}
+
+	private String viewDate() {
+		String feedback;
+		int year;
+		int month;
+		int day;
+		DateTime startDay;
+		DateTime endDay;
+		int ddmmyy = Integer.parseInt(_toView);
+		year = ddmmyy % 100 + 2000;
+		month = (ddmmyy / 100) % 100;
+		day = (ddmmyy / 10000);
+		startDay = new DateTime(year, month, day, START_MIN_HOUR, START_MIN_HOUR);
+		endDay = new DateTime(year, month, day, END_TIME_HOUR, END_TIME_MINUTE);
+		formViewList(startDay,endDay);
+		_viewType = _toView + POSSESSIVE_CASE;
+		feedback = String.format(FEEDBACK_VALID, _viewType);
+		return feedback;
+	}
+	
+	private String viewWeekDay(DateTime startDay) {
+		String feedback;
+		int year;
+		int month;
+		int day;
+		DateTime endDay;
+		int currentWeekDay = startDay.getDayOfWeek();
+		int givenWeekDay = TaskParser.parseDayOfWeek(_toView);
+		if (givenWeekDay >= currentWeekDay) {
+			startDay = startDay.plusDays(givenWeekDay - currentWeekDay);	
+		} else {
+			startDay = startDay.plusDays(givenWeekDay - currentWeekDay + THIS_WEEK_END);
+		}
+		year = startDay.getYear();
+		month = startDay.getMonthOfYear();
+		day = startDay.getDayOfMonth();
+		startDay = new DateTime(year, month, day, START_MIN_HOUR, START_MIN_HOUR);
+		endDay = new DateTime(year, month, day, END_TIME_HOUR, END_TIME_MINUTE);
+		formViewList(startDay,endDay);
+		_viewType = isWeekDay() + POSSESSIVE_CASE;
+		feedback = String.format(FEEDBACK_VALID, _viewType);
+		return feedback;
+	}
+
+	private String viewTomorrow(DateTime startDay) {
+		String feedback;
+		int year;
+		int month;
+		int day;
+		DateTime endDay;
+		startDay = startDay.plusDays(1);
+		year = startDay.getYear();
+		month = startDay.getMonthOfYear();
+		day = startDay.getDayOfMonth();
+		startDay = new DateTime(year, month, day, START_MIN_HOUR, START_MIN_HOUR);
+		endDay = new DateTime(year, month, day, END_TIME_HOUR, END_TIME_MINUTE);
+		formViewList(startDay,endDay);
+		_viewType = DAY_KEYWORD_TOMORROW + POSSESSIVE_CASE;
+		feedback = String.format(FEEDBACK_VALID, _viewType);
+		return feedback;
+	}
+
+	private String viewToday(int year, int month, int day) {
+		String feedback;
+		DateTime startDay;
+		DateTime endDay;
+		startDay = new DateTime(year, month, day, START_MIN_HOUR, START_MIN_HOUR );
+		endDay = new DateTime(year, month, day, END_TIME_HOUR, END_TIME_MINUTE);
+		formViewList(startDay, endDay);
+		_viewType = DAY_KEYWORD_TODAY + POSSESSIVE_CASE;
+		feedback = String.format(FEEDBACK_VALID, _viewType);
+		return feedback;
 	}
 
 	public String isWeekDay(){
 	
-		if(_toView.equalsIgnoreCase("monday")||_toView.equalsIgnoreCase("mon")){
-			return "Monday";
-		}else if(_toView.equalsIgnoreCase("tuesday")||_toView.equalsIgnoreCase("tues")){
-			return "Tuesday";
-		}else if(_toView.equalsIgnoreCase("wednesday")||_toView.equalsIgnoreCase("wed")){
-			return "Wednesday";
-		}else if(_toView.equalsIgnoreCase("thursday")||_toView.equalsIgnoreCase("thurs")){
-			return "Thursday";
-		}else if(_toView.equalsIgnoreCase("friday")||_toView.equalsIgnoreCase("fri")){
-			return "Friday";
-		}else if(_toView.equalsIgnoreCase("saturday")||_toView.equalsIgnoreCase("sat")){
-			return "Saturday";
-		}else if(_toView.equalsIgnoreCase("sunday")||_toView.equalsIgnoreCase("sun")){
-			return "Sunday";
-		}
-		else{
+		if (_toView.equalsIgnoreCase(KEYWORD_MONDAY1) || _toView.equalsIgnoreCase(KEYWORD_MONDAY2)) {
+			return KEYWORD_MONDAY1;
+		} else if (_toView.equalsIgnoreCase(KEYWORD_TUESDAY1) || _toView.equalsIgnoreCase(KEYWORD_TUESDAY2)) {
+			return KEYWORD_TUESDAY1;
+		} else if (_toView.equalsIgnoreCase(KEYWORD_WEDNESDAY1) || _toView.equalsIgnoreCase(KEYWORD_WEDNESDAY2)) {
+			return KEYWORD_WEDNESDAY1;
+		} else if (_toView.equalsIgnoreCase(KEYWORD_THURSDAY1) || _toView.equalsIgnoreCase(KEYWORD_THURSDAY2)) {
+			return KEYWORD_THURSDAY1;
+		} else if (_toView.equalsIgnoreCase(KEYWORD_FRIDAY1) || _toView.equalsIgnoreCase(KEYWORD_FRIDAY2)) {
+			return KEYWORD_FRIDAY1;
+		} else if (_toView.equalsIgnoreCase(KEYWORD_SATURDAY1) || _toView.equalsIgnoreCase(KEYWORD_SATURDAY2)) {
+			return KEYWORD_SATURDAY1;
+		} else if (_toView.equalsIgnoreCase(KEYWORD_SUNDAY1) || _toView.equalsIgnoreCase(KEYWORD_SUNDAY2)) {
+			return KEYWORD_SUNDAY1;
+		} else {
 			return null;
 		}
-		
 	}
 	
 	public String checkMonth() {
-		
-		if(_toView.equalsIgnoreCase("january")||_toView.equalsIgnoreCase("jan")){
-			monthInIntegers=1;
-		
-			return "January";
+		if (_toView.equalsIgnoreCase(KEYWORD_JANUARY1) || _toView.equalsIgnoreCase(KEYWORD_JANUARY2)) {
+			monthInIntegers = 1;
+			return KEYWORD_JANUARY1;
+		} else if (_toView.equalsIgnoreCase(KEYWORD_FEBRUARY1) || _toView.equalsIgnoreCase(KEYWORD_FEBRUARY2)) {
+			monthInIntegers = 2;
+			return KEYWORD_FEBRUARY1;
+		} else if (_toView.equalsIgnoreCase(KEYWORD_MARCH1) || _toView.equalsIgnoreCase(KEYWORD_MARCH2)) {
+			monthInIntegers = 3;
+			return KEYWORD_MARCH1;
+		} else if (_toView.equalsIgnoreCase(KEYWORD_APRIL1) || _toView.equalsIgnoreCase(KEYWORD_APRIL2)) {
+			monthInIntegers = 4;
+			return KEYWORD_APRIL1;
+		} else if (_toView.equalsIgnoreCase(KEYWORD_MAY)) {
+			monthInIntegers = 5;
+			return KEYWORD_MAY;
+		} else if (_toView.equalsIgnoreCase(KEYWORD_JUNE1) || _toView.equalsIgnoreCase(KEYWORD_JUNE2)){
+			monthInIntegers = 6;
+			return KEYWORD_JUNE1;
+		} else if (_toView.equalsIgnoreCase(KEYWORD_JULY1) || _toView.equalsIgnoreCase(KEYWORD_JULY2)) {
+			monthInIntegers = 7;
+			return KEYWORD_JULY1;
+		} else if (_toView.equalsIgnoreCase(KEYWORD_AUGUST1) || _toView.equalsIgnoreCase(KEYWORD_AUGUST2)) {
+			monthInIntegers = 8;
+			return KEYWORD_AUGUST1;
+		} else if (_toView.equalsIgnoreCase(KEYWORD_SEPTEMBER1) || _toView.equalsIgnoreCase(KEYWORD_SEPTEMBER2)) {
+			monthInIntegers = 9;
+			return KEYWORD_SEPTEMBER1;
+		} else if (_toView.equalsIgnoreCase(KEYWORD_OCTOBER1) || _toView.equalsIgnoreCase(KEYWORD_OCTOBER2)) {
+			monthInIntegers = 10;
+			return KEYWORD_OCTOBER1;
+		} else if (_toView.equalsIgnoreCase(KEYWORD_NOVEMBER1)||_toView.equalsIgnoreCase(KEYWORD_NOVEMBER2)) {
+			monthInIntegers = 11;
+			return KEYWORD_NOVEMBER1;
+		} else if (_toView.equalsIgnoreCase(KEYWORD_DECEMBER1)||_toView.equalsIgnoreCase(KEYWORD_DECEMBER2)) {
+			monthInIntegers = 12;
+			return KEYWORD_DECEMBER1;
+		} else {
+			return null ;
 		}
-		else if(_toView.equalsIgnoreCase("february")||_toView.equalsIgnoreCase("feb")){
-			monthInIntegers=2;
-
-			return "February";
-		}
-		else if(_toView.equalsIgnoreCase("march")||_toView.equalsIgnoreCase("mar")){
-			monthInIntegers=3;
-		
-			return "March";
-		}
-		else if(_toView.equalsIgnoreCase("april")||_toView.equalsIgnoreCase("apr")){
-			monthInIntegers=4;
-		
-			return "April";
-		}
-		else if (_toView.equalsIgnoreCase("may")){
-			monthInIntegers=5;
-		
-			return "May";
-		}
-		else if(_toView.equalsIgnoreCase("june")||_toView.equalsIgnoreCase("jun")){
-			monthInIntegers=6;
-	
-			return "June";
-		}
-		else if(_toView.equalsIgnoreCase("july")||_toView.equalsIgnoreCase("jul")){
-			monthInIntegers=7;
-	
-			return "July";
-		}
-		else if(_toView.equalsIgnoreCase("august")||_toView.equalsIgnoreCase("aug")){
-			monthInIntegers=8;
-		
-			return "August";
-		}
-		else if(_toView.equalsIgnoreCase("september")||_toView.equalsIgnoreCase("sept")){
-			monthInIntegers=9;
-		
-			return "September";
-		}
-		else if(_toView.equalsIgnoreCase("october")||_toView.equalsIgnoreCase("oct")){
-			monthInIntegers=10;
-		
-			return "October";
-		}
-		else if(_toView.equalsIgnoreCase("november")||_toView.equalsIgnoreCase("nov")){
-			monthInIntegers=11;
-			
-			return "November";
-		}
-		else if(_toView.equalsIgnoreCase("december")||_toView.equalsIgnoreCase("dec")){
-			monthInIntegers=12;
-		
-			return "December";
-		}
-		else{
-			
-			return null;
-		}
-		
 	}
-
 	
 	public void formViewList(DateTime startDay, DateTime endDay){
 		
 		_storage = Controller.getDBStorage();
-		//LinkedList<Task> storageList = _storage.load();
 		LinkedList<Task> viewList=new LinkedList<Task>();
 
-		for (int i = 0; i < _storage.load().size(); i++){
-			if(_storage.load().get(i).getTaskType()==TaskType.TIMED){
+		for (int i = 0; i < _storage.load().size(); i++) {
+			if (_storage.load().get(i).getTaskType() == TaskType.TIMED) {
 				
-				if(((_storage.load().get(i).getStart().isAfter(startDay))||(_storage.load().get(i).getStart().isEqual(startDay)))
-						&&((_storage.load().get(i).getStart().isBefore(endDay))||(_storage.load().get(i).getStart().isEqual(endDay)))){
-					
+				if (((_storage.load().get(i).getStart().isAfter(startDay))
+						|| (_storage.load().get(i).getStart().isEqual(startDay)))
+						&& ((_storage.load().get(i).getStart().isBefore(endDay))
+							|| (_storage.load().get(i).getStart().isEqual(endDay)))){
 					viewList.add(_storage.load().get(i));
-				}
-				else if(((_storage.load().get(i).getEnd().isAfter(startDay))||(_storage.load().get(i).getEnd().isEqual(startDay)))
-						&&((_storage.load().get(i).getEnd().isBefore(endDay))||(_storage.load().get(i).getEnd().isEqual(endDay)))){
-					
+				} else if (((_storage.load().get(i).getEnd().isAfter(startDay))
+						|| (_storage.load().get(i).getEnd().isEqual(startDay)))
+						&& ((_storage.load().get(i).getEnd().isBefore(endDay))
+								|| (_storage.load().get(i).getEnd().isEqual(endDay)))){
 					viewList.add(_storage.load().get(i));	
 				}
-			}
-			else if(_storage.load().get(i).getTaskType()==TaskType.DEADLINE){
-			
-				if(_storage.load().get(i).getEnd()!=null){
-				
-					if(((_storage.load().get(i).getEnd().isAfter(startDay))||(_storage.load().get(i).getEnd().isEqual(startDay)))
-							&&((_storage.load().get(i).getEnd().isBefore(endDay))||(_storage.load().get(i).getEnd().isEqual(endDay)))){
-					
-						viewList.add(_storage.load().get(i));
-						
+			} else if (_storage.load().get(i).getTaskType() == TaskType.DEADLINE){
+				if (_storage.load().get(i).getEnd()!=null){
+					if (((_storage.load().get(i).getEnd().isAfter(startDay))
+							|| (_storage.load().get(i).getEnd().isEqual(startDay)))
+							&& ((_storage.load().get(i).getEnd().isBefore(endDay))
+									|| (_storage.load().get(i).getEnd().isEqual(endDay)))){
+						viewList.add(_storage.load().get(i));	
 					}
 				}
-			}
-			
+			}	
 		}
-		setReturnList(viewList);
-	
-		
+		setReturnList(viewList);	
 	}
+	
 	public void viewOverDueTasks(DateTime endDay){
-		
-		LinkedList<Task> viewList= new LinkedList<Task>();
-		for(int i=0;i<_storage.load().size();i++){
-			
-			if(_storage.load().get(i).getTaskType()==TaskType.FLOATING){
+		LinkedList <Task> viewList = new LinkedList<Task>();
+		for(int i = 0; i < _storage.load().size(); i++ ){
+			if (_storage.load().get(i).getTaskType() == TaskType.FLOATING) {
 				break;
-				
 			}
-			if(((_storage.load().get(i).getEnd().isBefore(endDay))||(_storage.load().get(i).getEnd().isEqual(endDay)))
-					&&(_storage.load().get(i).getTaskStatus()==false)){
+			if (((_storage.load().get(i).getEnd().isBefore(endDay))
+					||(_storage.load().get(i).getEnd().isEqual(endDay)))
+					&&(_storage.load().get(i).getTaskStatus() == false)) {
 				viewList.add(_storage.load().get(i));
 			}
 		}
 		setReturnList(viewList);
 	}
-	private void setReturnList(LinkedList<Task> list) {
-		LinkedList<Task> returnList = new LinkedList<Task>(list);
+
+	private void setReturnList(LinkedList <Task> list) {
+		LinkedList <Task> returnList = new LinkedList <Task>(list);
 		for (Task task : _storage.load()) {
 			if (task.getTaskType() == TaskType.FLOATING) {
 				returnList.add(task);
@@ -343,23 +404,14 @@ public class CommandView implements Command {
 		_returnList = returnList;
 	}
 
-	public LinkedList<Task> getReturnList() {
-		return _returnList;
-	}
-
 	@Override
 	public String undo() {
-		return "View cannot be undone";
+		return FEEDBACK_INVALID_UNDO;
 	}
 
 	@Override
 	public boolean isUndoable() {
 		return false;
 	}
-
-	public String getViewType() {
-		return _viewType;
-	}
-
 	
 }
